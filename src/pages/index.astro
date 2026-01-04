@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCategory from '../components/ProductCategory.astro';
+import { categories } from '../data/categories';
+import '../styles/index.css';
+---
+
+<BaseLayout title="Home - Quality Essentials Imported to Cameroon">
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Quality Essentials for Everyday Life</h1>
+        <p class="hero-subtitle">Imported with care from USA and Canada to Cameroon</p>
+        <p class="hero-description">
+          We provide quality, affordable essential goods to families in Cameroon. 
+          From personal care to household items, we bring you the products you need 
+          for daily living.
+        </p>
+        <div class="hero-buttons">
+          <a href="/shop" class="btn">Shop Now</a>
+          <a href="/about" class="btn btn-secondary">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features section">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <h3>Sourced from USA & Canada</h3>
+          <p>Direct access to quality products through our network in North America</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✅</div>
+          <h3>Quality Assured</h3>
+          <p>Every product is carefully selected and verified before import</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📦</div>
+          <h3>Essential Products</h3>
+          <p>Focus on daily necessities that families need to survive and thrive</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💝</div>
+          <h3>Trusted Service</h3>
+          <p>Committed to quality and customer satisfaction with every order</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Shop by Category</h2>
+        <p>Browse our wide selection of essential goods</p>
+      </div>
+      <div class="categories-grid">
+        {categories.map((category) => (
+          <ProductCategory category={category} />
+        ))}
+      </div>
+      <div class="text-center" style="margin-top: 3rem;">
+        <a href="/shop" class="btn">View All Categories</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta section" style="background: var(--bg-light);">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Need Bulk Orders?</h2>
+        <p>We offer special pricing for businesses and bulk purchases</p>
+        <a href="/bulk-orders" class="btn">Contact Us for Bulk Orders</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

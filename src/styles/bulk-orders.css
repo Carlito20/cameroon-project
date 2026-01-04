@@ -1,0 +1,189 @@
+.bulk-hero {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.bulk-hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.lead {
+  font-size: 1.3rem;
+  color: var(--text-light);
+}
+
+.bulk-intro {
+  max-width: 800px;
+  margin: 0 auto 4rem;
+  text-align: center;
+}
+
+.bulk-intro h2 {
+  margin-bottom: 1.5rem;
+}
+
+.bulk-intro p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-color);
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.benefit-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.benefit-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.benefit-card h3 {
+  margin-bottom: 1rem;
+  color: var(--secondary-color);
+}
+
+.benefit-card p {
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.process-section {
+  margin: 4rem 0;
+}
+
+.process-section h2 {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.process-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.process-item {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  align-items: flex-start;
+}
+
+.process-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.process-item h4 {
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.process-item p {
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.pricing-info {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.pricing-list {
+  list-style: none;
+  margin: 1rem 0;
+}
+
+.pricing-list li {
+  padding: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--text-color);
+}
+
+.pricing-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+
+.contact-form-section {
+  max-width: 700px;
+  margin: 4rem auto 0;
+}
+
+.contact-form-section h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.bulk-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.bulk-form .btn {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .bulk-hero h1 {
+    font-size: 2rem;
+  }
+
+  .process-item {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+

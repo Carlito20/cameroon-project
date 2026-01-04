@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/about.css';
+---
+
+<BaseLayout title="About Us - Our Story">
+  <section class="about-hero section" style="background: var(--bg-light);">
+    <div class="container">
+      <h1>About Us</h1>
+      <p class="lead">Dedicated to Bringing Quality Essentials to Cameroon</p>
+    </div>
+  </section>
+
+  <section class="about-content section">
+    <div class="container">
+      <div class="about-story">
+        <h2>Our Story</h2>
+        <p>
+          Essential Goods CM was born from a simple idea: to provide quality essential goods
+          to families in Cameroon by leveraging our connections in North America.
+          With partners in the USA and Canada, we have direct access to
+          trusted suppliers and quality products.
+        </p>
+        <p>
+          We focus on the essentials - the products that people need every day to maintain 
+          hygiene, comfort, and basic living standards. From personal care items to household 
+          cleaning supplies, baby products to health and wellness items, we carefully select 
+          and import products that meet the fundamental needs of Cameroonian families.
+        </p>
+      </div>
+
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">🎯</div>
+          <h3>Our Mission</h3>
+          <p>To provide quality, affordable essential goods to families in Cameroon by importing products from the United States and Canada.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">💎</div>
+          <h3>Quality First</h3>
+          <p>Every product is carefully selected and verified before import. We only bring in products we would use ourselves.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🤝</div>
+          <h3>Family Values</h3>
+          <p>As a family-operated business, we treat every customer like family. Your trust and satisfaction are our top priorities.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🌍</div>
+          <h3>Community Impact</h3>
+          <p>We're committed to making a positive impact in our community by providing access to quality essential goods.</p>
+        </div>
+      </div>
+
+      <div class="team-section">
+        <h2>Our Team</h2>
+        <div class="team-grid">
+          <div class="team-member">
+            <div class="member-icon">👨‍💼</div>
+            <h4>USA Operations</h4>
+            <p>Our brother handles sourcing and purchasing from suppliers in the United States, ensuring quality and competitive pricing.</p>
+          </div>
+          <div class="team-member">
+            <div class="member-icon">👩‍💼</div>
+            <h4>Canada Operations</h4>
+            <p>Our sister manages sourcing from Canadian suppliers, expanding our product range and ensuring diverse options.</p>
+          </div>
+          <div class="team-member">
+            <div class="member-icon">🏠</div>
+            <h4>Cameroon Operations</h4>
+            <p>We handle local operations, customer service, sales, and distribution to bring these products directly to you.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section section" style="background: var(--primary-color); color: white;">
+    <div class="container" style="text-align: center;">
+      <h2 style="color: white;">Ready to Shop?</h2>
+      <p style="margin: 1rem 0 2rem; font-size: 1.1rem;">Browse our selection of essential goods imported with care</p>
+      <a href="/shop" class="btn" style="background: white; color: var(--primary-color);">View Products</a>
+    </div>
+  </section>
+</BaseLayout>
+

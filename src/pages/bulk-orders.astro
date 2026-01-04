@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/bulk-orders.css';
+---
+
+<BaseLayout title="Bulk Orders - Special Pricing for Businesses">
+  <section class="bulk-hero section" style="background: var(--bg-light);">
+    <div class="container">
+      <h1>Bulk Orders</h1>
+      <p class="lead">Special Pricing for Businesses and Large Orders</p>
+    </div>
+  </section>
+
+  <section class="bulk-content section">
+    <div class="container">
+      <div class="bulk-intro">
+        <h2>Why Choose Bulk Orders?</h2>
+        <p>
+          Whether you're a retailer, distributor, or organization needing large quantities 
+          of essential goods, we offer competitive bulk pricing and personalized service. 
+          Our family network in USA and Canada allows us to source products efficiently 
+          and pass savings to you.
+        </p>
+      </div>
+
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">💰</div>
+          <h3>Competitive Pricing</h3>
+          <p>Better prices for larger quantities. The more you order, the more you save.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🚚</div>
+          <h3>Dedicated Support</h3>
+          <p>Personal account manager to handle your orders and answer questions.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">📦</div>
+          <h3>Custom Orders</h3>
+          <p>We can source specific products based on your requirements.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">⏱️</div>
+          <h3>Priority Processing</h3>
+          <p>Bulk orders get priority in our import and shipping schedule.</p>
+        </div>
+      </div>
+
+      <div class="process-section">
+        <h2>How Bulk Orders Work</h2>
+        <div class="process-list">
+          <div class="process-item">
+            <div class="process-icon">1️⃣</div>
+            <div>
+              <h4>Contact Us</h4>
+              <p>Reach out with your product requirements, quantities, and timeline.</p>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="process-icon">2️⃣</div>
+            <div>
+              <h4>Quote & Planning</h4>
+              <p>We provide a detailed quote including all costs, shipping time, and payment terms.</p>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="process-icon">3️⃣</div>
+            <div>
+              <h4>Order Confirmation</h4>
+              <p>Once approved, we confirm your order and begin sourcing products.</p>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="process-icon">4️⃣</div>
+            <div>
+              <h4>Sourcing & Import</h4>
+              <p>Our team in USA/Canada purchases and ships your order. We handle all import procedures.</p>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="process-icon">5️⃣</div>
+            <div>
+              <h4>Delivery</h4>
+              <p>Your order arrives and is ready for pickup or delivery as arranged.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing-section" style="background: var(--bg-light); padding: 3rem; border-radius: 10px; margin: 3rem 0;">
+        <h2 style="text-align: center; margin-bottom: 2rem;">Pricing Structure</h2>
+        <div class="pricing-info">
+          <p>
+            Bulk order pricing is customized based on:
+          </p>
+          <ul class="pricing-list">
+            <li>Order quantity and volume</li>
+            <li>Product categories selected</li>
+            <li>Shipping method and timeline</li>
+            <li>Payment terms</li>
+            <li>Frequency of orders (recurring orders get better rates)</li>
+          </ul>
+          <p style="margin-top: 1.5rem;">
+            <strong>Contact us for a personalized quote</strong> - we'll work with you to find 
+            the best pricing structure for your needs.
+          </p>
+        </div>
+      </div>
+
+      <div class="contact-form-section">
+        <h2>Request a Bulk Order Quote</h2>
+        <form class="bulk-form" action="/contact" method="get">
+          <div class="form-group">
+            <label for="name">Your Name / Company Name *</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number *</label>
+            <input type="tel" id="phone" name="phone" required>
+          </div>
+          <div class="form-group">
+            <label for="products">Products of Interest *</label>
+            <textarea id="products" name="products" rows="4" required placeholder="List the products and approximate quantities you're interested in"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="timeline">Desired Timeline</label>
+            <input type="text" id="timeline" name="timeline" placeholder="e.g., Within 2 months">
+          </div>
+          <div class="form-group">
+            <label for="message">Additional Information</label>
+            <textarea id="message" name="message" rows="4" placeholder="Any specific requirements or questions"></textarea>
+          </div>
+          <button type="submit" class="btn">Request Quote</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

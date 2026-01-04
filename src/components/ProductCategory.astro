@@ -1,0 +1,26 @@
+---
+import type { Category } from '../data/categories';
+import '../styles/product-category.css';
+
+interface Props {
+  category: Category;
+}
+
+const { category } = Astro.props;
+---
+
+<div class="category-card">
+  <div class="category-icon">{category.icon}</div>
+  <h3>{category.name}</h3>
+  <p>{category.description}</p>
+  <ul class="category-items">
+    {category.items.slice(0, 4).map((item) => (
+      <li>{item}</li>
+    ))}
+    {category.items.length > 4 && (
+      <li class="more-items">+ {category.items.length - 4} more items</li>
+    )}
+  </ul>
+  <a href={`/shop#${category.id}`} class="btn">View Products</a>
+</div>
+

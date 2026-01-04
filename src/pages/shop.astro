@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { categories } from '../data/categories';
+import '../styles/shop.css';
+---
+
+<BaseLayout title="Shop - Browse Our Products">
+  <section class="shop-header section" style="background: var(--bg-light);">
+    <div class="container">
+      <h1>Shop Essential Goods</h1>
+      <p>Browse our complete selection of imported essentials from USA and Canada</p>
+    </div>
+  </section>
+
+  <section class="shop-content section">
+    <div class="container">
+      {categories.map((category) => (
+        <div class="category-section" id={category.id}>
+          <div class="category-header">
+            <span class="category-icon-large">{category.icon}</span>
+            <div>
+              <h2>{category.name}</h2>
+              <p>{category.description}</p>
+            </div>
+          </div>
+          <div class="products-grid">
+            {category.items.map((item) => (
+              <div class="product-item">
+                <div class="product-info">
+                  <h4>{item}</h4>
+                  <p class="product-note">Available - Imported from USA/Canada</p>
+                </div>
+                <a href="/contact" class="btn btn-small">Inquire</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="shop-cta section" style="background: var(--primary-color); color: white;">
+    <div class="container" style="text-align: center;">
+      <h2 style="color: white; margin-bottom: 1rem;">Can't Find What You're Looking For?</h2>
+      <p style="margin-bottom: 2rem; font-size: 1.1rem;">Contact us and we'll help you find it or add it to our next shipment</p>
+      <a href="/contact" class="btn" style="background: white; color: var(--primary-color);">Contact Us</a>
+    </div>
+  </section>
+</BaseLayout>
+

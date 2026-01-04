@@ -1,0 +1,42 @@
+---
+const currentPath = Astro.url.pathname;
+import '../styles/navigation.css';
+---
+
+<nav class="navbar">
+  <div class="container">
+    <div class="nav-content">
+      <a href="/" class="logo">
+        <span class="logo-icon">📦</span>
+        <span class="logo-text">Essential Goods CM</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/" class={currentPath === '/' ? 'active' : ''}>Home</a></li>
+        <li><a href="/shop" class={currentPath === '/shop' ? 'active' : ''}>Shop</a></li>
+        <li><a href="/about" class={currentPath === '/about' ? 'active' : ''}>About Us</a></li>
+        <li><a href="/how-we-import" class={currentPath === '/how-we-import' ? 'active' : ''}>How We Import</a></li>
+        <li><a href="/bulk-orders" class={currentPath === '/bulk-orders' ? 'active' : ''}>Bulk Orders</a></li>
+        <li><a href="/contact" class={currentPath === '/contact' ? 'active' : ''}>Contact</a></li>
+      </ul>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (toggle && navLinks) {
+      toggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    }
+  });
+</script>
+
