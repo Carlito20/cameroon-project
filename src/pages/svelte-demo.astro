@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductFilter from '../components/svelte/ProductFilter.svelte';
+import ShoppingCart from '../components/svelte/ShoppingCart.svelte';
+---
+
+<BaseLayout title="Svelte Demo - Interactive Components">
+  <div style="padding: 40px 20px; max-width: 1200px; margin: 0 auto;">
+    <h1 style="text-align: center; color: #2c3e50;">Svelte Components Demo</h1>
+    <p style="text-align: center; color: #7f8c8d; max-width: 600px; margin: 0 auto 40px;">
+      This page demonstrates interactive Svelte components in your Astro project.
+      These components are fully interactive and reactive!
+    </p>
+
+    <!-- Shopping Cart Component (Fixed Position) -->
+    <ShoppingCart client:load />
+
+    <div style="margin-bottom: 60px;">
+      <h2 style="color: #2c3e50;">1. Shopping Cart Component</h2>
+      <p>Click the cart icon in the top-right corner and try adding items!</p>
+    </div>
+
+    <!-- Product Filter Component -->
+    <div>
+      <h2 style="color: #2c3e50; margin-bottom: 20px;">2. Product Filter Component</h2>
+      <ProductFilter client:load />
+    </div>
+
+    <div style="margin-top: 60px; padding: 30px; background: #f8f9fa; border-radius: 8px;">
+      <h2 style="color: #2c3e50;">How to Use Svelte Components</h2>
+
+      <h3 style="color: #34495e; margin-top: 30px;">In Astro Pages (.astro files):</h3>
+      <pre style="background: #2c3e50; color: #fff; padding: 20px; border-radius: 8px; overflow-x: auto;"><code>---
+import ProductFilter from '../components/svelte/ProductFilter.svelte';
+---
+
+&lt;ProductFilter client:load /&gt;</code></pre>
+
+      <h3 style="color: #34495e; margin-top: 30px;">Client Directives:</h3>
+      <ul style="line-height: 2;">
+        <li><code>client:load</code> - Load immediately on page load (best for visible components)</li>
+        <li><code>client:idle</code> - Load when browser is idle (good for non-critical components)</li>
+        <li><code>client:visible</code> - Load when component becomes visible (great for below-fold content)</li>
+        <li><code>client:only="svelte"</code> - Only render on client, skip server rendering</li>
+      </ul>
+
+      <h3 style="color: #34495e; margin-top: 30px;">Why Use Svelte?</h3>
+      <ul style="line-height: 2;">
+        <li>✅ <strong>Reactive:</strong> UI automatically updates when data changes</li>
+        <li>✅ <strong>Interactive:</strong> Perfect for forms, filters, carts, dashboards</li>
+        <li>✅ <strong>Clean Code:</strong> Less boilerplate than React or Vue</li>
+        <li>✅ <strong>Fast:</strong> Compiles to optimized vanilla JavaScript</li>
+        <li>✅ <strong>Built-in Animations:</strong> Easy transitions and effects</li>
+      </ul>
+
+      <h3 style="color: #34495e; margin-top: 30px;">When to Use Svelte vs Astro:</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+        <div style="background: white; padding: 20px; border-radius: 8px;">
+          <h4 style="color: #667eea; margin-top: 0;">Use Svelte For:</h4>
+          <ul>
+            <li>Shopping carts</li>
+            <li>Product filters</li>
+            <li>Search functionality</li>
+            <li>Forms with validation</li>
+            <li>Inventory dashboards</li>
+            <li>User accounts</li>
+            <li>Interactive galleries</li>
+          </ul>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px;">
+          <h4 style="color: #e74c3c; margin-top: 0;">Use Astro For:</h4>
+          <ul>
+            <li>Home page</li>
+            <li>About page</li>
+            <li>Static product listings</li>
+            <li>Blog posts</li>
+            <li>Contact info pages</li>
+            <li>How We Import page</li>
+            <li>SEO-focused content</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="color: #34495e; margin-top: 30px;">Next Steps:</h3>
+      <ol style="line-height: 2;">
+        <li>Explore the code in <code>src/components/svelte/ProductFilter.svelte</code></li>
+        <li>Explore the code in <code>src/components/svelte/ShoppingCart.svelte</code></li>
+        <li>Modify the components to match your products</li>
+        <li>Create new Svelte components for your specific needs</li>
+        <li>Integrate them into your shop page and other pages</li>
+      </ol>
+    </div>
+  </div>
+</BaseLayout>
