@@ -1,3 +1,7 @@
+/* Tailwind CSS v4 Import */
+@import "tailwindcss";
+
+/* Your Custom Styles (work alongside Tailwind) */
 * {
   margin: 0;
   padding: 0;
@@ -125,6 +129,33 @@ h3 {
   .section {
     padding: 40px 0;
   }
+}
+
+/* Hide Google Translate Banner & UI */
+.goog-te-banner-frame,
+.skiptranslate,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-te-menu-frame,
+.goog-te-spinner-pos,
+.goog-tooltip {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+html.translated-ltr,
+html.translated-rtl {
+  margin-top: 0 !important;
+}
+
+iframe.goog-te-banner-frame,
+iframe.skiptranslate {
+  display: none !important;
+  height: 0 !important;
 }
 
 

@@ -1,0 +1,156 @@
+---
+/**
+ * Clean Language Toggle (EN | FR)
+ *
+ * Uses Google Translate but with custom styled buttons
+ * instead of the ugly default dropdown.
+ */
+---
+
+<!-- Clean Language Toggle -->
+<div class="lang-toggle">
+  <button class="lang-btn active" data-lang="en" title="English">EN</button>
+  <span class="lang-divider">|</span>
+  <button class="lang-btn" data-lang="fr" title="Français">FR</button>
+</div>
+
+<!-- Hidden Google Translate Element -->
+<div id="google_translate_element" style="display: none;"></div>
+
+<script is:inline>
+  // Initialize Google Translate (hidden)
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,fr',
+      autoDisplay: false
+    }, 'google_translate_element');
+  }
+
+  // Handle language button clicks
+  document.addEventListener('DOMContentLoaded', function() {
+    const langBtns = document.querySelectorAll('.lang-btn');
+
+    langBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const lang = this.getAttribute('data-lang');
+
+        // Update active state
+        langBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        // Trigger Google Translate
+        changeLanguage(lang);
+      });
+    });
+  });
+
+  // Function to change language
+  function changeLanguage(lang) {
+    // Find Google Translate dropdown and change it
+    const select = document.querySelector('.goog-te-combo');
+    if (select) {
+      select.value = lang;
+      select.dispatchEvent(new Event('change'));
+    } else {
+      // If Google Translate not loaded yet, try again
+      setTimeout(() => changeLanguage(lang), 500);
+    }
+  }
+
+  // Check current language on page load
+  function checkCurrentLanguage() {
+    const langCookie = document.cookie.match(/googtrans=\/en\/(\w+)/);
+    if (langCookie && langCookie[1] === 'fr') {
+      const frBtn = document.querySelector('.lang-btn[data-lang="fr"]');
+      const enBtn = document.querySelector('.lang-btn[data-lang="en"]');
+      if (frBtn && enBtn) {
+        enBtn.classList.remove('active');
+        frBtn.classList.add('active');
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', checkCurrentLanguage);
+</script>
+
+<script is:inline src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<style>
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .lang-btn {
+    background: none;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #999;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .lang-btn:hover {
+    color: #3498db;
+  }
+
+  .lang-btn.active {
+    background: #3498db;
+    color: white;
+  }
+
+  .lang-divider {
+    color: #ddd;
+    font-size: 0.75rem;
+  }
+
+  /* Hide ALL Google Translate UI elements */
+  :global(.goog-te-banner-frame),
+  :global(.skiptranslate),
+  :global(.goog-te-gadget-icon),
+  :global(#goog-gt-tt),
+  :global(.goog-te-balloon-frame),
+  :global(.goog-te-menu-frame),
+  :global(.goog-te-menu2),
+  :global(#google_translate_element),
+  :global(.goog-te-spinner-pos),
+  :global(.goog-tooltip),
+  :global(.goog-tooltip:hover),
+  :global(.goog-text-highlight) {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  :global(body) {
+    top: 0 !important;
+    position: static !important;
+  }
+
+  :global(html.translated-ltr),
+  :global(html.translated-rtl) {
+    margin-top: 0 !important;
+  }
+
+  :global(.goog-text-highlight) {
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide the iframe that Google injects */
+  :global(iframe.goog-te-banner-frame),
+  :global(iframe.skiptranslate) {
+    display: none !important;
+    height: 0 !important;
+    width: 0 !important;
+    border: none !important;
+  }
+</style>

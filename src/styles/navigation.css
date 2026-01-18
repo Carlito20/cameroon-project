@@ -60,6 +60,13 @@
   background: var(--primary-color);
 }
 
+/* Right side of nav (language selector + mobile menu) */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .mobile-menu-toggle {
   display: none;
   flex-direction: column;

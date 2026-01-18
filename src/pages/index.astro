@@ -3,22 +3,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCategory from '../components/ProductCategory.astro';
 import { categories } from '../data/categories';
 import '../styles/index.css';
+
+const whatsappNumber = "237670358551";
 ---
 
-<BaseLayout title="Home - Quality Essentials Imported to Cameroon">
+<BaseLayout title="American Select Market - Quality Goods from USA & Canada">
   <section class="hero">
     <div class="container">
       <div class="hero-content">
-        <h1>Quality Essentials for Everyday Life</h1>
-        <p class="hero-subtitle">Imported with care from USA and Canada to Cameroon</p>
+        <h1>Quality Goods from USA & Canada</h1>
+        <p class="hero-subtitle">Delivered to Cameroon - Order via WhatsApp</p>
         <p class="hero-description">
-          We provide quality, affordable essential goods to families in Cameroon. 
-          From personal care to household items, we bring you the products you need 
+          American Select Market brings you quality, affordable essential goods from North America.
+          From personal care to household items, we deliver the products you need
           for daily living.
         </p>
         <div class="hero-buttons">
-          <a href="/shop" class="btn">Shop Now</a>
-          <a href="/about" class="btn btn-secondary">Learn More</a>
+          <a href="/shop" class="btn">Browse Products</a>
+          <a
+            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi, I'm interested in your products. Can you help me?")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-whatsapp">
+            Order on WhatsApp
+          </a>
         </div>
       </div>
     </div>

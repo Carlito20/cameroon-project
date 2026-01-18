@@ -1,6 +1,7 @@
 ---
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -27,6 +28,9 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
       <slot />
     </main>
     <Footer />
+
+    <!-- WhatsApp floating button - appears on all pages -->
+    <WhatsAppFloat />
   </body>
 </html>
 

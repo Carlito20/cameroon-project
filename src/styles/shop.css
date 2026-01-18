@@ -8,9 +8,33 @@
   margin-bottom: 1rem;
 }
 
-.shop-header p {
+.shop-header > .container > p {
   font-size: 1.2rem;
   color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+.shop-how-to-order {
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.shop-how-to-order p {
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.link-how {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link-how:hover {
+  text-decoration: underline;
 }
 
 .category-section {
@@ -79,6 +103,15 @@
   padding: 8px 16px;
   font-size: 0.9rem;
   white-space: nowrap;
+}
+
+.btn-whatsapp {
+  background: #25D366;
+  color: white !important;
+}
+
+.btn-whatsapp:hover {
+  background: #128C7E;
 }
 
 .shop-cta {

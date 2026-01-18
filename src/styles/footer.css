@@ -65,6 +65,26 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* WhatsApp link styling */
+.footer-whatsapp {
+  display: inline-block;
+  background: #25D366;
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.footer-whatsapp:hover {
+  background: #128C7E;
+  transform: scale(1.05);
+}
+
+.footer-intl {
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
 @media (max-width: 768px) {
   .footer-content {
     grid-template-columns: 1fr;

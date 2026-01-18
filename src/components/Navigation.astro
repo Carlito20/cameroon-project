@@ -1,6 +1,7 @@
 ---
 const currentPath = Astro.url.pathname;
 import '../styles/navigation.css';
+import LanguageSelector from './LanguageSelector.astro';
 ---
 
 <nav class="navbar">
@@ -14,15 +15,17 @@ import '../styles/navigation.css';
         <li><a href="/" class={currentPath === '/' ? 'active' : ''}>Home</a></li>
         <li><a href="/shop" class={currentPath === '/shop' ? 'active' : ''}>Shop</a></li>
         <li><a href="/about" class={currentPath === '/about' ? 'active' : ''}>About Us</a></li>
-        <li><a href="/how-we-import" class={currentPath === '/how-we-import' ? 'active' : ''}>How We Import</a></li>
         <li><a href="/bulk-orders" class={currentPath === '/bulk-orders' ? 'active' : ''}>Bulk Orders</a></li>
         <li><a href="/contact" class={currentPath === '/contact' ? 'active' : ''}>Contact</a></li>
       </ul>
-      <button class="mobile-menu-toggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      <div class="nav-right">
+        <LanguageSelector />
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
     </div>
   </div>
 </nav>

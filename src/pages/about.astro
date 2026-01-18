@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/about.css';
+
+const whatsappNumber = "237670358551";
 ---
 
-<BaseLayout title="About Us - Our Story">
+<BaseLayout title="About Us - American Select Market">
   <section class="about-hero section" style="background: var(--bg-light);">
     <div class="container">
       <h1>About Us</h1>
@@ -77,9 +79,19 @@ import '../styles/about.css';
 
   <section class="cta-section section" style="background: var(--primary-color); color: white;">
     <div class="container" style="text-align: center;">
-      <h2 style="color: white;">Ready to Shop?</h2>
-      <p style="margin: 1rem 0 2rem; font-size: 1.1rem;">Browse our selection of essential goods imported with care</p>
-      <a href="/shop" class="btn" style="background: white; color: var(--primary-color);">View Products</a>
+      <h2 style="color: white;">Ready to Order?</h2>
+      <p style="margin: 1rem 0 2rem; font-size: 1.1rem;">Browse our products and order via WhatsApp</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/shop" class="btn" style="background: white; color: var(--primary-color);">Browse Products</a>
+        <a
+          href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi, I'd like to learn more about American Select Market.")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn"
+          style="background: #25D366; color: white;">
+          Contact Us on WhatsApp
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>

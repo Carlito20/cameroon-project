@@ -1,19 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { categories } from '../data/categories';
+import HowToOrderModal from '../components/HowToOrderModal.svelte';
 import '../styles/shop.css';
+
+const whatsappNumber = "237670358551";
 ---
 
-<BaseLayout title="Shop - Browse Our Products">
+<BaseLayout title="Shop - American Select Market">
   <section class="shop-header section" style="background: var(--bg-light);">
     <div class="container">
-      <h1>Shop Essential Goods</h1>
-      <p>Browse our complete selection of imported essentials from USA and Canada</p>
+      <h1>Shop Our Products</h1>
+      <p>Quality goods imported from USA and Canada - Order via WhatsApp</p>
     </div>
   </section>
 
   <section class="shop-content section">
     <div class="container">
+      <!-- How to Order Modal (Svelte Component with Tailwind CSS) -->
+      <HowToOrderModal client:load />
+
       {categories.map((category) => (
         <div class="category-section" id={category.id}>
           <div class="category-header">
@@ -30,7 +36,13 @@ import '../styles/shop.css';
                   <h4>{item}</h4>
                   <p class="product-note">Available - Imported from USA/Canada</p>
                 </div>
-                <a href="/contact" class="btn btn-small">Inquire</a>
+                <a
+                  href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi, I'm interested in ordering: ${item}\n\nPlease let me know the price and availability.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-small btn-whatsapp">
+                  Order via WhatsApp
+                </a>
               </div>
             ))}
           </div>
@@ -43,8 +55,14 @@ import '../styles/shop.css';
     <div class="container" style="text-align: center;">
       <h2 style="color: white; margin-bottom: 1rem;">Can't Find What You're Looking For?</h2>
       <p style="margin-bottom: 2rem; font-size: 1.1rem;">Contact us and we'll help you find it or add it to our next shipment</p>
-      <a href="/contact" class="btn" style="background: white; color: var(--primary-color);">Contact Us</a>
+      <a
+        href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi, I'm looking for a product that's not on your website. Can you help me?")}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn"
+        style="background: white; color: var(--primary-color);">
+        Request a Product
+      </a>
     </div>
   </section>
 </BaseLayout>
-

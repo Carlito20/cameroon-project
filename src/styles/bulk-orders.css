@@ -176,6 +176,40 @@
   margin-top: 1rem;
 }
 
+/* WhatsApp CTA */
+.quick-whatsapp {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(37, 211, 102, 0.1);
+  border-radius: 10px;
+}
+
+.whatsapp-btn {
+  background: #25D366;
+  color: white !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.whatsapp-btn:hover {
+  background: #128C7E;
+}
+
+.form-intro {
+  text-align: center;
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+.form-note {
+  text-align: center;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
 @media (max-width: 768px) {
   .bulk-hero h1 {
     font-size: 2rem;

@@ -47,7 +47,6 @@ npm run preview
 │   │   ├── index.astro (Home)
 │   │   ├── shop.astro
 │   │   ├── about.astro
-│   │   ├── how-we-import.astro
 │   │   ├── bulk-orders.astro
 │   │   └── contact.astro
 │   └── data/
