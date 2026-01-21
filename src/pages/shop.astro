@@ -3,14 +3,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { categories } from '../data/categories';
 import HowToOrderModal from '../components/HowToOrderModal.svelte';
 import ShopFilter from '../components/ShopFilter.svelte';
+import InquiryBasket from '../components/InquiryBasket.svelte';
 import '../styles/shop.css';
 
 const whatsappNumber = "237670358551";
 ---
 
 <BaseLayout title="Shop - American Select Market">
-  <section class="shop-header section" style="background: var(--bg-light);">
-    <div class="container">
+  <section class="shop-header">
+    <div class="shop-header-bg" style="background-image: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920&h=600&fit=crop');"></div>
+    <div class="shop-header-overlay"></div>
+    <div class="container shop-header-content">
       <h1>Shop Our Products</h1>
       <p>Quality goods imported from USA and Canada - Order via WhatsApp</p>
     </div>
@@ -25,6 +28,12 @@ const whatsappNumber = "237670358551";
       <ShopFilter
         client:load
         categories={categories}
+        whatsappNumber={whatsappNumber}
+      />
+
+      <!-- Inquiry Basket (Floating) -->
+      <InquiryBasket
+        client:load
         whatsappNumber={whatsappNumber}
       />
     </div>

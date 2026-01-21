@@ -21,6 +21,6 @@ const { category } = Astro.props;
       <li class="more-items">+ {category.items.length - 4} more items</li>
     )}
   </ul>
-  <a href={`/shop#${category.id}`} class="btn">View Products</a>
+  <a href={`/shop?category=${category.id}`} class="btn">View Products</a>
 </div>
 

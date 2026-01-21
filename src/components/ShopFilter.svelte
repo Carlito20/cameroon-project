@@ -45,6 +45,51 @@
     const message = encodeURIComponent(`Hi, I'm interested in ordering: ${item}\n\nPlease let me know the price and availability.`);
     return `https://wa.me/${whatsappNumber}?text=${message}`;
   }
+
+  // Track which items have been added to inquiry
+  let addedItems = new Set();
+
+  // Track which item has the confirmation popup open
+  let confirmingItem = null;
+
+  function handleInquiryClick(item, categoryName) {
+    if (addedItems.has(item)) {
+      // Item already added - show confirmation popup
+      confirmingItem = confirmingItem === item ? null : item;
+    } else {
+      // Add new item
+      addToInquiry(item, categoryName);
+    }
+  }
+
+  function addToInquiry(item, categoryName) {
+    // Dispatch custom event for InquiryBasket to listen to
+    const event = new CustomEvent('add-to-inquiry', {
+      detail: { name: item, category: categoryName }
+    });
+    window.dispatchEvent(event);
+
+    // Mark as added for visual feedback
+    addedItems.add(item);
+    addedItems = addedItems; // Trigger reactivity
+  }
+
+  function removeFromInquiry(item) {
+    // Dispatch custom event to remove from InquiryBasket
+    const event = new CustomEvent('remove-from-inquiry', {
+      detail: { name: item }
+    });
+    window.dispatchEvent(event);
+
+    // Remove from local tracking
+    addedItems.delete(item);
+    addedItems = addedItems; // Trigger reactivity
+    confirmingItem = null;
+  }
+
+  function keepItem() {
+    confirmingItem = null;
+  }
 </script>
 
 <!-- Category Filter Dropdown -->
@@ -93,14 +138,40 @@
             <h4>{item}</h4>
             <p class="product-note">Available - Imported from USA/Canada</p>
           </div>
-          <a
-            href={getWhatsAppLink(item)}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-small btn-whatsapp"
-          >
-            Order via WhatsApp
-          </a>
+          <div class="product-actions-wrapper">
+            <div class="product-actions">
+              <button
+                class="btn btn-small btn-inquiry"
+                class:added={addedItems.has(item)}
+                on:click={() => handleInquiryClick(item, category.name)}
+              >
+                {addedItems.has(item) ? '✓ Added' : '+ Add to List'}
+              </button>
+              <a
+                href={getWhatsAppLink(item)}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-small btn-whatsapp"
+              >
+                WhatsApp
+              </a>
+            </div>
+
+            <!-- Confirmation Popup -->
+            {#if confirmingItem === item}
+              <div class="confirm-popup">
+                <div class="confirm-message">Already in your list!</div>
+                <div class="confirm-actions">
+                  <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(item)}>
+                    Remove
+                  </button>
+                  <button class="confirm-btn keep-btn" on:click={keepItem}>
+                    Keep
+                  </button>
+                </div>
+              </div>
+            {/if}
+          </div>
         </div>
       {/each}
     </div>
@@ -269,6 +340,113 @@
     background: #128C7E;
   }
 
+  .product-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .btn-inquiry {
+    background: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-inquiry:hover {
+    background: #2980b9;
+  }
+
+  .btn-inquiry.added {
+    background: #27ae60;
+  }
+
+  .btn-inquiry.added:hover {
+    background: #219a52;
+  }
+
+  .product-actions-wrapper {
+    position: relative;
+  }
+
+  .confirm-popup {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    padding: 12px 16px;
+    z-index: 50;
+    min-width: 180px;
+    animation: popupFadeIn 0.2s ease;
+  }
+
+  .confirm-popup::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    background: white;
+    transform: rotate(45deg);
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  @keyframes popupFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .confirm-message {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .confirm-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .confirm-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .confirm-btn.remove-btn {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  .confirm-btn.remove-btn:hover {
+    background: #fecaca;
+  }
+
+  .confirm-btn.keep-btn {
+    background: #d1fae5;
+    color: #059669;
+  }
+
+  .confirm-btn.keep-btn:hover {
+    background: #a7f3d0;
+  }
+
   @media (max-width: 768px) {
     .filter-container {
       flex-direction: column;
@@ -291,6 +469,33 @@
     .product-item {
       flex-direction: column;
       text-align: center;
+    }
+
+    .product-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .product-actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .product-actions-wrapper {
+      width: 100%;
+    }
+
+    .confirm-popup {
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      min-width: 200px;
+    }
+
+    .confirm-popup::before {
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%) rotate(45deg);
     }
 
     .showing-category {
