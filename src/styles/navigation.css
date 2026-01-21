@@ -4,6 +4,14 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hide navbar on scroll */
+.navbar.navbar-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .nav-content {

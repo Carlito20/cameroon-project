@@ -55,10 +55,85 @@ import { categories } from '../data/categories';
   document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.querySelector('.mobile-menu-toggle');
     const navLinks = document.querySelector('.nav-links');
-    
+    const navbar = document.querySelector('.navbar');
+
+    // Mobile menu toggle
     if (toggle && navLinks) {
       toggle.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+      });
+    }
+
+    // Hide navbar on scroll, show on mouse movement
+    if (navbar) {
+      let lastScrollY = window.scrollY;
+      let isHidden = false;
+      let mouseTimer = null;
+
+      // Hide navbar when scrolling down, show when scrolling up
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+
+        // Don't hide if at the very top of the page
+        if (currentScrollY < 100) {
+          navbar.classList.remove('navbar-hidden');
+          isHidden = false;
+          return;
+        }
+
+        // Scrolling down - hide navbar
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          navbar.classList.add('navbar-hidden');
+          isHidden = true;
+        }
+        // Scrolling up - show navbar
+        else if (currentScrollY < lastScrollY) {
+          navbar.classList.remove('navbar-hidden');
+          isHidden = false;
+        }
+
+        lastScrollY = currentScrollY;
+      });
+
+      // Show navbar when mouse moves to top area or moves after being still
+      document.addEventListener('mousemove', (e) => {
+        // Show navbar when mouse is in top 80px of screen
+        if (e.clientY < 80) {
+          navbar.classList.remove('navbar-hidden');
+          isHidden = false;
+        }
+
+        // Also show briefly when mouse moves anywhere (then hide again after delay)
+        if (isHidden && window.scrollY > 100) {
+          navbar.classList.remove('navbar-hidden');
+
+          // Clear existing timer
+          if (mouseTimer) clearTimeout(mouseTimer);
+
+          // Hide again after 2 seconds of no mouse in top area
+          mouseTimer = setTimeout(() => {
+            if (window.scrollY > 100) {
+              navbar.classList.add('navbar-hidden');
+            }
+          }, 2000);
+        }
+      });
+
+      // Show navbar on touch (for mobile)
+      document.addEventListener('touchstart', () => {
+        if (isHidden) {
+          navbar.classList.remove('navbar-hidden');
+          isHidden = false;
+
+          // Hide again after delay
+          if (mouseTimer) clearTimeout(mouseTimer);
+          mouseTimer = setTimeout(() => {
+            if (window.scrollY > 100) {
+              navbar.classList.add('navbar-hidden');
+              isHidden = true;
+            }
+          }, 3000);
+        }
       });
     }
   });
