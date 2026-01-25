@@ -7,7 +7,7 @@ import '../styles/shop.css';
 const whatsappNumber = "237670358551";
 ---
 
-<BaseLayout title="Shop - American Select Market">
+<BaseLayout title="Shop - American Select">
   <section class="shop-header section" style="background: var(--bg-light);">
     <div class="container">
       <h1>Shop Our Products</h1>
@@ -19,6 +19,18 @@ const whatsappNumber = "237670358551";
     <div class="container">
       <!-- How to Order Modal (Svelte Component with Tailwind CSS) -->
       <HowToOrderModal client:load />
+
+      <!-- Category Navigation -->
+      <nav class="category-nav">
+        <div class="category-nav-scroll">
+          {categories.map((category) => (
+            <a href={`#${category.id}`} class="category-nav-link">
+              <span class="category-nav-icon">{category.icon}</span>
+              <span class="category-nav-text">{category.name}</span>
+            </a>
+          ))}
+        </div>
+      </nav>
 
       {categories.map((category) => (
         <div class="category-section" id={category.id}>

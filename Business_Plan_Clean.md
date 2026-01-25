@@ -1,11 +1,11 @@
 # Business Plan: Essential Goods Import & Retail
-## American Select Market - Cameroon
+## American Select - Cameroon
 
 ---
 
 ## 📋 Executive Summary
 
-**Business Name:** American Select Market
+**Business Name:** American Select
 **Location:** Cameroon
 **Business Type:** Import & Retail of Essential Consumer Goods
 **Mission:** To provide quality, affordable essential goods to families in Cameroon by importing products from the United States and Canada.
@@ -484,7 +484,7 @@ Based on market research, successful import/retail businesses share these charac
 
 **Document Version**: 2.0
 **Date**: January 2026
-**Prepared For**: American Select Market - Cameroon
+**Prepared For**: American Select - Cameroon
 
 ---
 
