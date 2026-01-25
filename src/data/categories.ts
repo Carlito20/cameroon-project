@@ -37,8 +37,8 @@ export const categories: Category[] = [
     ]
   },
   {
-    id: 'baby-diapers',
-    name: 'Baby & Diapers',
+    id: 'kids',
+    name: 'Kids',
     icon: '👶',
     description: 'Everything for your little ones',
     items: [

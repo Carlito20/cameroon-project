@@ -2,14 +2,18 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { categories } from '../data/categories';
 import HowToOrderModal from '../components/HowToOrderModal.svelte';
+import ShopFilter from '../components/ShopFilter.svelte';
+import InquiryBasket from '../components/InquiryBasket.svelte';
 import '../styles/shop.css';
 
 const whatsappNumber = "237670358551";
 ---
 
 <BaseLayout title="Shop - American Select">
-  <section class="shop-header section" style="background: var(--bg-light);">
-    <div class="container">
+  <section class="shop-header">
+    <div class="shop-header-bg" style="background-image: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920&h=600&fit=crop');"></div>
+    <div class="shop-header-overlay"></div>
+    <div class="container shop-header-content">
       <h1>Shop Our Products</h1>
       <p>Quality goods imported from USA and Canada - Order via WhatsApp</p>
     </div>
@@ -17,49 +21,21 @@ const whatsappNumber = "237670358551";
 
   <section class="shop-content section">
     <div class="container">
-      <!-- How to Order Modal (Svelte Component with Tailwind CSS) -->
+      <!-- How to Order Modal (Svelte Component) -->
       <HowToOrderModal client:load />
 
-      <!-- Category Navigation -->
-      <nav class="category-nav">
-        <div class="category-nav-scroll">
-          {categories.map((category) => (
-            <a href={`#${category.id}`} class="category-nav-link">
-              <span class="category-nav-icon">{category.icon}</span>
-              <span class="category-nav-text">{category.name}</span>
-            </a>
-          ))}
-        </div>
-      </nav>
+      <!-- Category Filter & Products (Svelte Component) -->
+      <ShopFilter
+        client:load
+        categories={categories}
+        whatsappNumber={whatsappNumber}
+      />
 
-      {categories.map((category) => (
-        <div class="category-section" id={category.id}>
-          <div class="category-header">
-            <span class="category-icon-large">{category.icon}</span>
-            <div>
-              <h2>{category.name}</h2>
-              <p>{category.description}</p>
-            </div>
-          </div>
-          <div class="products-grid">
-            {category.items.map((item) => (
-              <div class="product-item">
-                <div class="product-info">
-                  <h4>{item}</h4>
-                  <p class="product-note">Available - Imported from USA/Canada</p>
-                </div>
-                <a
-                  href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi, I'm interested in ordering: ${item}\n\nPlease let me know the price and availability.`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="btn btn-small btn-whatsapp">
-                  Order via WhatsApp
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+      <!-- Inquiry Basket (Floating) -->
+      <InquiryBasket
+        client:load
+        whatsappNumber={whatsappNumber}
+      />
     </div>
   </section>
 

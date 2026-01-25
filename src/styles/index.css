@@ -1,3 +1,88 @@
+/* Welcome Section */
+.welcome-section {
+  background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+  color: white;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.welcome-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.welcome-content h1 {
+  font-size: 2.2rem;
+  color: white;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.welcome-content .brand-name {
+  color: #f1c40f;
+  font-weight: 700;
+}
+
+.welcome-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  opacity: 0.95;
+}
+
+.welcome-text strong {
+  color: #f1c40f;
+  font-weight: 600;
+}
+
+.welcome-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.welcome-cta .btn {
+  padding: 12px 28px;
+  font-size: 0.95rem;
+}
+
+.welcome-cta .btn-outline {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+}
+
+.welcome-cta .btn-outline:hover {
+  background: white;
+  color: #2c3e50;
+}
+
+@media (max-width: 768px) {
+  .welcome-section {
+    padding: 2rem 0;
+  }
+
+  .welcome-content h1 {
+    font-size: 1.6rem;
+  }
+
+  .welcome-text {
+    font-size: 0.95rem;
+  }
+
+  .welcome-cta {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .welcome-cta .btn {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* Old Hero (keeping for reference, can be removed) */
 .hero {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   color: white;

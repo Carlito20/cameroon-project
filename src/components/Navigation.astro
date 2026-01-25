@@ -2,6 +2,7 @@
 const currentPath = Astro.url.pathname;
 import '../styles/navigation.css';
 import LanguageSelector from './LanguageSelector.astro';
+import { categories } from '../data/categories';
 ---
 
 <nav class="navbar">
@@ -13,7 +14,27 @@ import LanguageSelector from './LanguageSelector.astro';
       </a>
       <ul class="nav-links">
         <li><a href="/" class={currentPath === '/' ? 'active' : ''}>Home</a></li>
-        <li><a href="/shop" class={currentPath === '/shop' ? 'active' : ''}>Shop</a></li>
+        <li class="nav-dropdown">
+          <a href="/shop" class={currentPath.startsWith('/shop') ? 'active dropdown-trigger' : 'dropdown-trigger'}>
+            Shop
+            <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none">
+              <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-menu">
+            <a href="/shop" class="dropdown-item dropdown-all">
+              <span class="dropdown-icon">📦</span>
+              All Categories
+            </a>
+            <div class="dropdown-divider"></div>
+            {categories.map((category) => (
+              <a href={`/shop?category=${category.id}`} class="dropdown-item">
+                <span class="dropdown-icon">{category.icon}</span>
+                {category.name}
+              </a>
+            ))}
+          </div>
+        </li>
         <li><a href="/about" class={currentPath === '/about' ? 'active' : ''}>About Us</a></li>
         <li><a href="/bulk-orders" class={currentPath === '/bulk-orders' ? 'active' : ''}>Bulk Orders</a></li>
         <li><a href="/contact" class={currentPath === '/contact' ? 'active' : ''}>Contact</a></li>
@@ -34,10 +55,85 @@ import LanguageSelector from './LanguageSelector.astro';
   document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.querySelector('.mobile-menu-toggle');
     const navLinks = document.querySelector('.nav-links');
-    
+    const navbar = document.querySelector('.navbar');
+
+    // Mobile menu toggle
     if (toggle && navLinks) {
       toggle.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+      });
+    }
+
+    // Hide navbar on scroll, show on mouse movement
+    if (navbar) {
+      let lastScrollY = window.scrollY;
+      let isHidden = false;
+      let mouseTimer = null;
+
+      // Hide navbar when scrolling down, show when scrolling up
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+
+        // Don't hide if at the very top of the page
+        if (currentScrollY < 100) {
+          navbar.classList.remove('navbar-hidden');
+          isHidden = false;
+          return;
+        }
+
+        // Scrolling down - hide navbar
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          navbar.classList.add('navbar-hidden');
+          isHidden = true;
+        }
+        // Scrolling up - show navbar
+        else if (currentScrollY < lastScrollY) {
+          navbar.classList.remove('navbar-hidden');
+          isHidden = false;
+        }
+
+        lastScrollY = currentScrollY;
+      });
+
+      // Show navbar when mouse moves to top area or moves after being still
+      document.addEventListener('mousemove', (e) => {
+        // Show navbar when mouse is in top 80px of screen
+        if (e.clientY < 80) {
+          navbar.classList.remove('navbar-hidden');
+          isHidden = false;
+        }
+
+        // Also show briefly when mouse moves anywhere (then hide again after delay)
+        if (isHidden && window.scrollY > 100) {
+          navbar.classList.remove('navbar-hidden');
+
+          // Clear existing timer
+          if (mouseTimer) clearTimeout(mouseTimer);
+
+          // Hide again after 2 seconds of no mouse in top area
+          mouseTimer = setTimeout(() => {
+            if (window.scrollY > 100) {
+              navbar.classList.add('navbar-hidden');
+            }
+          }, 2000);
+        }
+      });
+
+      // Show navbar on touch (for mobile)
+      document.addEventListener('touchstart', () => {
+        if (isHidden) {
+          navbar.classList.remove('navbar-hidden');
+          isHidden = false;
+
+          // Hide again after delay
+          if (mouseTimer) clearTimeout(mouseTimer);
+          mouseTimer = setTimeout(() => {
+            if (window.scrollY > 100) {
+              navbar.classList.add('navbar-hidden');
+              isHidden = true;
+            }
+          }, 3000);
+        }
       });
     }
   });

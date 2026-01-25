@@ -1,36 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProductCategory from '../components/ProductCategory.astro';
-import { categories } from '../data/categories';
+import WelcomeHero from '../components/WelcomeHero.svelte';
+import HeroSlider from '../components/HeroSlider.svelte';
 import '../styles/index.css';
 
 const whatsappNumber = "237670358551";
 ---
 
 <BaseLayout title="American Select - Quality Goods from USA & Canada">
-  <section class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <h1>Quality Goods from USA & Canada</h1>
-        <p class="hero-subtitle">Delivered to Cameroon - Order via WhatsApp</p>
-        <p class="hero-description">
-          American Select brings you quality, affordable essential goods from North America.
-          From personal care to household items, we deliver the products you need
-          for daily living.
-        </p>
-        <div class="hero-buttons">
-          <a href="/shop" class="btn">Browse Products</a>
-          <a
-            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi, I'm interested in your products. Can you help me?")}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-whatsapp">
-            Order on WhatsApp
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Welcome Section with Background Slideshow -->
+  <WelcomeHero client:load whatsappNumber={whatsappNumber} />
+
+  <!-- Category Slider -->
+  <HeroSlider client:load />
 
   <section class="features section">
     <div class="container">
@@ -55,23 +37,6 @@ const whatsappNumber = "237670358551";
           <h3>Trusted Service</h3>
           <p>Committed to quality and customer satisfaction with every order</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="categories section">
-    <div class="container">
-      <div class="section-title">
-        <h2>Shop by Category</h2>
-        <p>Browse our wide selection of essential goods</p>
-      </div>
-      <div class="categories-grid">
-        {categories.map((category) => (
-          <ProductCategory category={category} />
-        ))}
-      </div>
-      <div class="text-center" style="margin-top: 3rem;">
-        <a href="/shop" class="btn">View All Categories</a>
       </div>
     </div>
   </section>

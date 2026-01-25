@@ -7,11 +7,17 @@
   function openModal() {
     isOpen = true;
     document.body.style.overflow = 'hidden';
+    // Hide navbar on mobile when modal opens
+    const navbar = document.querySelector('.navbar');
+    if (navbar) navbar.style.display = 'none';
   }
 
   function closeModal() {
     isOpen = false;
     document.body.style.overflow = 'auto';
+    // Show navbar again when modal closes
+    const navbar = document.querySelector('.navbar');
+    if (navbar) navbar.style.display = '';
   }
 
   function handleBackdropClick(event) {
