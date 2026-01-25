@@ -5,6 +5,19 @@
   export let categories = [];
   export let whatsappNumber = "237670358551";
 
+  // Helper functions for product items
+  function isSubCategory(item) {
+    return typeof item === 'object' && 'items' in item;
+  }
+
+  function getProductName(item) {
+    return typeof item === 'string' ? item : item.name;
+  }
+
+  function getProductImage(item) {
+    return typeof item === 'string' ? null : item.image;
+  }
+
   let selectedCategory = 'all';
   let filteredCategories = categories;
 
@@ -42,7 +55,8 @@
   }
 
   function getWhatsAppLink(item) {
-    const message = encodeURIComponent(`Hi, I'm interested in ordering: ${item}\n\nPlease let me know the price and availability.`);
+    const name = getProductName(item);
+    const message = encodeURIComponent(`Hi, I'm interested in ordering: ${name}\n\nPlease let me know the price and availability.`);
     return `https://wa.me/${whatsappNumber}?text=${message}`;
   }
 
@@ -51,6 +65,18 @@
 
   // Track which item has the confirmation popup open
   let confirmingItem = null;
+
+  // Track which sub-categories are expanded
+  let expandedSubCategories = new Set();
+
+  function toggleSubCategory(name) {
+    if (expandedSubCategories.has(name)) {
+      expandedSubCategories.delete(name);
+    } else {
+      expandedSubCategories.add(name);
+    }
+    expandedSubCategories = expandedSubCategories; // Trigger reactivity
+  }
 
   function handleInquiryClick(item, categoryName) {
     if (addedItems.has(item)) {
@@ -133,46 +159,115 @@
     </div>
     <div class="products-grid">
       {#each category.items as item}
-        <div class="product-item">
-          <div class="product-info">
-            <h4>{item}</h4>
-            <p class="product-note">Available - Imported from USA/Canada</p>
-          </div>
-          <div class="product-actions-wrapper">
-            <div class="product-actions">
-              <button
-                class="btn btn-small btn-inquiry"
-                class:added={addedItems.has(item)}
-                on:click={() => handleInquiryClick(item, category.name)}
-              >
-                {addedItems.has(item) ? '✓ Added' : '+ Add to List'}
-              </button>
-              <a
-                href={getWhatsAppLink(item)}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-small btn-whatsapp"
-              >
-                WhatsApp
-              </a>
-            </div>
-
-            <!-- Confirmation Popup -->
-            {#if confirmingItem === item}
-              <div class="confirm-popup">
-                <div class="confirm-message">Already in your list!</div>
-                <div class="confirm-actions">
-                  <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(item)}>
-                    Remove
-                  </button>
-                  <button class="confirm-btn keep-btn" on:click={keepItem}>
-                    Keep
-                  </button>
+        {#if isSubCategory(item)}
+          <!-- Sub-category -->
+          <div class="subcategory-section" class:expanded={expandedSubCategories.has(item.name)}>
+            <button class="subcategory-header" on:click={() => toggleSubCategory(item.name)}>
+              {#if item.icon}<span class="subcategory-icon">{item.icon}</span>{/if}
+              <h3>{item.name}</h3>
+              <span class="subcategory-toggle">{expandedSubCategories.has(item.name) ? '−' : '+'}</span>
+            </button>
+            {#if expandedSubCategories.has(item.name)}
+            <div class="subcategory-products">
+              {#if item.items.length === 0}
+                <p class="no-products">Products coming soon...</p>
+              {/if}
+              {#each item.items as subItem}
+                <div class="product-item" class:has-image={getProductImage(subItem)}>
+                  {#if getProductImage(subItem)}
+                    <div class="product-image">
+                      <img src={getProductImage(subItem)} alt={getProductName(subItem)} />
+                    </div>
+                  {/if}
+                  <div class="product-info">
+                    <h4>{getProductName(subItem)}</h4>
+                    <p class="product-note">Available - Imported from USA/Canada</p>
+                  </div>
+                  <div class="product-actions-wrapper">
+                    <div class="product-actions">
+                      <button
+                        class="btn btn-small btn-inquiry"
+                        class:added={addedItems.has(getProductName(subItem))}
+                        on:click={() => handleInquiryClick(getProductName(subItem), item.name)}
+                      >
+                        {addedItems.has(getProductName(subItem)) ? '✓ Added' : '+ Add to List'}
+                      </button>
+                      <a
+                        href={getWhatsAppLink(subItem)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn btn-small btn-whatsapp"
+                      >
+                        WhatsApp
+                      </a>
+                    </div>
+                    {#if confirmingItem === getProductName(subItem)}
+                      <div class="confirm-popup">
+                        <div class="confirm-message">Already in your list!</div>
+                        <div class="confirm-actions">
+                          <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(getProductName(subItem))}>
+                            Remove
+                          </button>
+                          <button class="confirm-btn keep-btn" on:click={keepItem}>
+                            Keep
+                          </button>
+                        </div>
+                      </div>
+                    {/if}
+                  </div>
                 </div>
-              </div>
+              {/each}
+            </div>
             {/if}
           </div>
-        </div>
+        {:else}
+          <!-- Regular product item -->
+          <div class="product-item" class:has-image={getProductImage(item)}>
+            {#if getProductImage(item)}
+              <div class="product-image">
+                <img src={getProductImage(item)} alt={getProductName(item)} />
+              </div>
+            {/if}
+            <div class="product-info">
+              <h4>{getProductName(item)}</h4>
+              <p class="product-note">Available - Imported from USA/Canada</p>
+            </div>
+            <div class="product-actions-wrapper">
+              <div class="product-actions">
+                <button
+                  class="btn btn-small btn-inquiry"
+                  class:added={addedItems.has(getProductName(item))}
+                  on:click={() => handleInquiryClick(getProductName(item), category.name)}
+                >
+                  {addedItems.has(getProductName(item)) ? '✓ Added' : '+ Add to List'}
+                </button>
+                <a
+                  href={getWhatsAppLink(item)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-small btn-whatsapp"
+                >
+                  WhatsApp
+                </a>
+              </div>
+
+              <!-- Confirmation Popup -->
+              {#if confirmingItem === getProductName(item)}
+                <div class="confirm-popup">
+                  <div class="confirm-message">Already in your list!</div>
+                  <div class="confirm-actions">
+                    <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(getProductName(item))}>
+                      Remove
+                    </button>
+                    <button class="confirm-btn keep-btn" on:click={keepItem}>
+                      Keep
+                    </button>
+                  </div>
+                </div>
+              {/if}
+            </div>
+          </div>
+        {/if}
       {/each}
     </div>
   </div>
@@ -291,6 +386,81 @@
     gap: 1rem;
   }
 
+  /* Sub-category styles */
+  .subcategory-section {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 0.5rem 0;
+    border: 2px solid #e0e0e0;
+  }
+
+  .subcategory-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    margin: -1.5rem -1.5rem 0 -1.5rem;
+    border: none;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    cursor: pointer;
+    width: calc(100% + 3rem);
+    text-align: left;
+    border-radius: 12px 12px 0 0;
+    transition: all 0.2s ease;
+  }
+
+  .subcategory-header:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #1a5276 100%);
+  }
+
+  .subcategory-section:not(.expanded) .subcategory-header {
+    border-radius: 12px;
+    margin-bottom: -1.5rem;
+  }
+
+  .subcategory-icon {
+    font-size: 1.5rem;
+  }
+
+  .subcategory-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.1rem;
+    flex: 1;
+  }
+
+  .subcategory-toggle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+  }
+
+  .subcategory-products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #d0d0d0;
+  }
+
+  .no-products {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 1rem;
+  }
+
   .product-item {
     background: #f8f9fa;
     padding: 1rem;
@@ -305,6 +475,25 @@
 
   .product-item:hover {
     border-color: #3498db;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-item.has-image {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .product-image {
+    width: 100%;
+    max-width: 150px;
+    margin: 0 auto 0.75rem;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
