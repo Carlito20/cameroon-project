@@ -62,7 +62,7 @@
       title: "Health &",
       subtitle: "Wellness",
       description: "Vitamins, supplements, first aid supplies, pain relief and wellness devices for your wellbeing.",
-      image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1400&h=600&fit=crop&crop=center",
+      image: "/images/health-wellness-slider.jpg",
       color: "#f0e8fc",
       link: "/shop?category=health-wellness"
     },
