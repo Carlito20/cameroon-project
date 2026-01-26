@@ -17,7 +17,7 @@
       title: "Body, Bath &",
       subtitle: "Personal Care",
       description: "Bath soaps, body lotions, oral care, hair care and grooming products from top North American brands.",
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1400&h=600&fit=crop&crop=center",
+      image: "/images/body-bath-personal-care-home.jpg",
       color: "#fce8f4",
       link: "/shop?category=body-bath"
     },
@@ -26,7 +26,7 @@
       title: "Food &",
       subtitle: "Pantry",
       description: "Authentic American snacks, breakfast items, canned foods, beverages and spices delivered to Cameroon.",
-      image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=600&fit=crop&crop=center",
+      image: "/images/food-pantry-slider.jpg",
       color: "#fcf4e8",
       link: "/shop?category=food-pantry"
     },
@@ -44,7 +44,7 @@
       title: "Household Cleaning",
       subtitle: "& Supplies",
       description: "Laundry detergents, dishwashing supplies, surface cleaners, air fresheners and more.",
-      image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&h=600&fit=crop&crop=center",
+      image: "/images/household-cleaning-slider.jpg",
       color: "#e8fcf4",
       link: "/shop?category=household-cleaning"
     },

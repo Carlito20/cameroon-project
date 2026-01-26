@@ -84,7 +84,7 @@ export const categories: Category[] = [
   {
     id: 'body-bath',
     name: 'Body, Bath & Personal Care',
-    icon: '/images/body-bath-personal-care.jpg',
+    icon: '/images/body-bath-personal-care-home.jpg',
     description: 'Personal hygiene and grooming products',
     items: [
       {
