@@ -90,7 +90,7 @@
 
   <!-- Content - Changes with each slide -->
   <div class="welcome-content">
-    <p class="welcome-intro">Welcome to <span class="brand-name">American Select Market</span></p>
+    <p class="welcome-intro">Welcome to <span class="brand-name">American Select</span></p>
 
     {#each slides as slide, index}
       <div class="slide-text" class:active={index === currentSlide}>
