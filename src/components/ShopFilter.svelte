@@ -51,6 +51,15 @@
       selectedCategory = categoryParam;
       filterCategories();
     }
+
+    // Close dropdown when clicking outside
+    const handleClickOutside = (event) => {
+      if (isDropdownOpen && !event.target.closest('.custom-dropdown')) {
+        isDropdownOpen = false;
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   });
 
   function filterCategories() {
@@ -81,11 +90,38 @@
     return `https://wa.me/${whatsappNumber}?text=${message}`;
   }
 
-  // Track which items have been added to inquiry
-  let addedItems = new Set();
+  // Track which items have been added to inquiry with their quantities
+  let addedItems = {};  // { productName: quantity }
+
+  // Track selected quantities before adding (default 1)
+  let selectedQuantities = {};
 
   // Track which item has the confirmation popup open
   let confirmingItem = null;
+
+  // Get or initialize quantity for a product
+  function getSelectedQty(productName) {
+    return selectedQuantities[productName] || 1;
+  }
+
+  // Increment quantity
+  function incrementQty(productName, maxQty) {
+    const current = getSelectedQty(productName);
+    const max = maxQty || 99;
+    if (current < max) {
+      selectedQuantities[productName] = current + 1;
+      selectedQuantities = selectedQuantities; // Trigger reactivity
+    }
+  }
+
+  // Decrement quantity
+  function decrementQty(productName) {
+    const current = getSelectedQty(productName);
+    if (current > 1) {
+      selectedQuantities[productName] = current - 1;
+      selectedQuantities = selectedQuantities; // Trigger reactivity
+    }
+  }
 
   // Track which sub-categories are expanded
   let expandedSubCategories = new Set();
@@ -93,6 +129,40 @@
   // Image lightbox
   let lightboxImage = null;
   let lightboxAlt = '';
+
+  // Custom dropdown state
+  let isDropdownOpen = false;
+
+  function toggleDropdown() {
+    isDropdownOpen = !isDropdownOpen;
+  }
+
+  function selectCategory(categoryId) {
+    selectedCategory = categoryId;
+    filterCategories();
+    isDropdownOpen = false;
+
+    // Update URL without reload
+    const url = new URL(window.location.href);
+    if (selectedCategory === 'all') {
+      url.searchParams.delete('category');
+    } else {
+      url.searchParams.set('category', selectedCategory);
+    }
+    window.history.pushState({}, '', url);
+  }
+
+  function getSelectedCategoryName() {
+    if (selectedCategory === 'all') return 'All Categories';
+    const cat = categories.find(c => c.id === selectedCategory);
+    return cat ? cat.name : 'All Categories';
+  }
+
+  function getSelectedCategoryIcon() {
+    if (selectedCategory === 'all') return '📦';
+    const cat = categories.find(c => c.id === selectedCategory);
+    return cat ? cat.icon : '📦';
+  }
 
   function openLightbox(imageSrc, alt) {
     lightboxImage = imageSrc;
@@ -113,25 +183,27 @@
     expandedSubCategories = expandedSubCategories; // Trigger reactivity
   }
 
-  function handleInquiryClick(item, categoryName) {
-    if (addedItems.has(item)) {
+  function handleInquiryClick(item, categoryName, stockQty) {
+    if (addedItems[item]) {
       // Item already added - show confirmation popup
       confirmingItem = confirmingItem === item ? null : item;
     } else {
-      // Add new item
-      addToInquiry(item, categoryName);
+      // Add new item with selected quantity
+      addToInquiry(item, categoryName, stockQty);
     }
   }
 
-  function addToInquiry(item, categoryName) {
+  function addToInquiry(item, categoryName, stockQty) {
+    const qty = getSelectedQty(item);
+
     // Dispatch custom event for InquiryBasket to listen to
     const event = new CustomEvent('add-to-inquiry', {
-      detail: { name: item, category: categoryName }
+      detail: { name: item, category: categoryName, quantity: qty, maxStock: stockQty || 99 }
     });
     window.dispatchEvent(event);
 
-    // Mark as added for visual feedback
-    addedItems.add(item);
+    // Mark as added with quantity for visual feedback
+    addedItems[item] = qty;
     addedItems = addedItems; // Trigger reactivity
   }
 
@@ -143,8 +215,13 @@
     window.dispatchEvent(event);
 
     // Remove from local tracking
-    addedItems.delete(item);
+    delete addedItems[item];
     addedItems = addedItems; // Trigger reactivity
+
+    // Reset selected quantity
+    delete selectedQuantities[item];
+    selectedQuantities = selectedQuantities;
+
     confirmingItem = null;
   }
 
@@ -155,20 +232,38 @@
 
 <!-- Category Filter Dropdown -->
 <div class="filter-container">
-  <label for="category-select" class="filter-label">
-Filter by Category:
-  </label>
-  <select
-    id="category-select"
-    class="category-select"
-    bind:value={selectedCategory}
-    on:change={handleCategoryChange}
-  >
-    <option value="all">All Categories</option>
-    {#each categories as category}
-      <option value={category.id}>{isImagePath(category.icon) ? '👶' : category.icon} {category.name}</option>
-    {/each}
-  </select>
+  <span class="filter-label">Filter by Category:</span>
+  <div class="custom-dropdown">
+    <button class="dropdown-trigger" on:click={toggleDropdown} type="button">
+      <span class="dropdown-selected">
+        {#if isImagePath(getSelectedCategoryIcon())}
+          <img src={getSelectedCategoryIcon()} alt="" class="dropdown-option-icon" />
+        {:else}
+          <span class="dropdown-option-emoji">{getSelectedCategoryIcon()}</span>
+        {/if}
+        {getSelectedCategoryName()}
+      </span>
+      <span class="dropdown-arrow" class:open={isDropdownOpen}>▼</span>
+    </button>
+    {#if isDropdownOpen}
+      <div class="dropdown-options">
+        <button class="dropdown-option" class:selected={selectedCategory === 'all'} on:click={() => selectCategory('all')}>
+          <span class="dropdown-option-emoji">📦</span>
+          All Categories
+        </button>
+        {#each categories as category}
+          <button class="dropdown-option" class:selected={selectedCategory === category.id} on:click={() => selectCategory(category.id)}>
+            {#if isImagePath(category.icon)}
+              <img src={category.icon} alt="" class="dropdown-option-icon" />
+            {:else}
+              <span class="dropdown-option-emoji">{category.icon}</span>
+            {/if}
+            {category.name}
+          </button>
+        {/each}
+      </div>
+    {/if}
+  </div>
 </div>
 
 <!-- Showing indicator -->
@@ -239,13 +334,20 @@ Filter by Category:
                     {/if}
                   </div>
                   <div class="product-actions-wrapper">
+                    {#if !addedItems[getProductName(subItem)]}
+                      <div class="quantity-selector">
+                        <button class="qty-btn" on:click={() => decrementQty(getProductName(subItem))} disabled={getSelectedQty(getProductName(subItem)) <= 1}>−</button>
+                        <span class="qty-value">{getSelectedQty(getProductName(subItem))}</span>
+                        <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getProductQuantity(subItem))} disabled={getProductQuantity(subItem) && getSelectedQty(getProductName(subItem)) >= getProductQuantity(subItem)}>+</button>
+                      </div>
+                    {/if}
                     <div class="product-actions">
                       <button
                         class="btn btn-small btn-inquiry"
-                        class:added={addedItems.has(getProductName(subItem))}
-                        on:click={() => handleInquiryClick(getProductName(subItem), item.name)}
+                        class:added={addedItems[getProductName(subItem)]}
+                        on:click={() => handleInquiryClick(getProductName(subItem), item.name, getProductQuantity(subItem))}
                       >
-                        {addedItems.has(getProductName(subItem)) ? '✓ Added' : '+ Add to List'}
+                        {addedItems[getProductName(subItem)] ? `✓ Added (${addedItems[getProductName(subItem)]})` : '+ Add to List'}
                       </button>
                       <a
                         href={getWhatsAppLink(subItem)}
@@ -258,7 +360,7 @@ Filter by Category:
                     </div>
                     {#if confirmingItem === getProductName(subItem)}
                       <div class="confirm-popup">
-                        <div class="confirm-message">Already in your list!</div>
+                        <div class="confirm-message">Already in your list ({addedItems[getProductName(subItem)]})</div>
                         <div class="confirm-actions">
                           <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(getProductName(subItem))}>
                             Remove
@@ -305,13 +407,20 @@ Filter by Category:
               {/if}
             </div>
             <div class="product-actions-wrapper">
+              {#if !addedItems[getProductName(item)]}
+                <div class="quantity-selector">
+                  <button class="qty-btn" on:click={() => decrementQty(getProductName(item))} disabled={getSelectedQty(getProductName(item)) <= 1}>−</button>
+                  <span class="qty-value">{getSelectedQty(getProductName(item))}</span>
+                  <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getProductQuantity(item))} disabled={getProductQuantity(item) && getSelectedQty(getProductName(item)) >= getProductQuantity(item)}>+</button>
+                </div>
+              {/if}
               <div class="product-actions">
                 <button
                   class="btn btn-small btn-inquiry"
-                  class:added={addedItems.has(getProductName(item))}
-                  on:click={() => handleInquiryClick(getProductName(item), category.name)}
+                  class:added={addedItems[getProductName(item)]}
+                  on:click={() => handleInquiryClick(getProductName(item), category.name, getProductQuantity(item))}
                 >
-                  {addedItems.has(getProductName(item)) ? '✓ Added' : '+ Add to List'}
+                  {addedItems[getProductName(item)] ? `✓ Added (${addedItems[getProductName(item)]})` : '+ Add to List'}
                 </button>
                 <a
                   href={getWhatsAppLink(item)}
@@ -326,7 +435,7 @@ Filter by Category:
               <!-- Confirmation Popup -->
               {#if confirmingItem === getProductName(item)}
                 <div class="confirm-popup">
-                  <div class="confirm-message">Already in your list!</div>
+                  <div class="confirm-message">Already in your list ({addedItems[getProductName(item)]})</div>
                   <div class="confirm-actions">
                     <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(getProductName(item))}>
                       Remove
@@ -377,11 +486,17 @@ Filter by Category:
     color: #2c3e50;
   }
 
-  .filter-icon {
-    font-size: 1.2rem;
+  /* Custom Dropdown Styles */
+  .custom-dropdown {
+    position: relative;
+    min-width: 220px;
   }
 
-  .category-select {
+  .dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     padding: 0.6rem 1rem;
     font-size: 0.95rem;
     border: 2px solid #e0e0e0;
@@ -389,18 +504,97 @@ Filter by Category:
     background: white;
     color: #333;
     cursor: pointer;
-    min-width: 200px;
     transition: all 0.2s ease;
   }
 
-  .category-select:hover {
+  .dropdown-trigger:hover {
     border-color: #3498db;
   }
 
-  .category-select:focus {
+  .dropdown-trigger:focus {
     outline: none;
     border-color: #3498db;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+  }
+
+  .dropdown-selected {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .dropdown-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+  }
+
+  .dropdown-arrow.open {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-options {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .dropdown-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: none;
+    background: none;
+    font-size: 0.95rem;
+    color: #333;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease;
+  }
+
+  .dropdown-option:hover {
+    background: #f0f7ff;
+  }
+
+  .dropdown-option.selected {
+    background: #e8f4fc;
+    color: #3498db;
+    font-weight: 600;
+  }
+
+  .dropdown-option:first-child {
+    border-radius: 6px 6px 0 0;
+  }
+
+  .dropdown-option:last-child {
+    border-radius: 0 0 6px 6px;
+  }
+
+  .dropdown-option-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  .dropdown-option-emoji {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+  }
+
+  /* Close dropdown when clicking outside */
+  :global(body.dropdown-open) {
+    overflow: hidden;
   }
 
   .showing-category {
@@ -453,9 +647,10 @@ Filter by Category:
   }
 
   .category-icon-image {
-    width: 60px;
-    height: 60px;
+    width: 150px;
+    height: 150px;
     object-fit: contain;
+    border-radius: 12px;
   }
 
   .category-header h2 {
@@ -681,6 +876,50 @@ Filter by Category:
     font-size: 0.85rem;
   }
 
+  /* Quantity Selector */
+  .quantity-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .qty-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #3498db;
+    background: white;
+    color: #3498db;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .qty-btn:hover:not(:disabled) {
+    background: #3498db;
+    color: white;
+  }
+
+  .qty-btn:disabled {
+    border-color: #ccc;
+    color: #ccc;
+    cursor: not-allowed;
+  }
+
+  .qty-value {
+    min-width: 40px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
   .in-stock {
     color: #27ae60;
     font-weight: 600;
@@ -824,7 +1063,7 @@ Filter by Category:
       align-items: stretch;
     }
 
-    .category-select {
+    .custom-dropdown {
       width: 100%;
     }
 

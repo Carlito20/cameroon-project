@@ -19,6 +19,14 @@
   margin-bottom: 1rem;
 }
 
+.category-icon-image {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+}
+
 .category-card h3 {
   color: var(--secondary-color);
   margin-bottom: 0.5rem;

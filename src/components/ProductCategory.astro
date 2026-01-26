@@ -10,7 +10,11 @@ const { category } = Astro.props;
 ---
 
 <div class="category-card">
-  <div class="category-icon">{category.icon}</div>
+  {category.icon.startsWith('/') ? (
+    <img src={category.icon} alt={category.name} class="category-icon-image" />
+  ) : (
+    <div class="category-icon">{category.icon}</div>
+  )}
   <h3>{category.name}</h3>
   <p>{category.description}</p>
   <ul class="category-items">

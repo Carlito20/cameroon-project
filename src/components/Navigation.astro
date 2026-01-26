@@ -29,7 +29,11 @@ import { categories } from '../data/categories';
             <div class="dropdown-divider"></div>
             {categories.map((category) => (
               <a href={`/shop?category=${category.id}`} class="dropdown-item">
-                <span class="dropdown-icon">{category.icon}</span>
+                {category.icon.startsWith('/') ? (
+                  <img src={category.icon} alt="" class="dropdown-icon-image" />
+                ) : (
+                  <span class="dropdown-icon">{category.icon}</span>
+                )}
                 {category.name}
               </a>
             ))}

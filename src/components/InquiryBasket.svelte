@@ -13,7 +13,11 @@
     window.addEventListener('add-to-inquiry', (e) => {
       const item = e.detail;
       if (!inquiryItems.find(i => i.name === item.name)) {
-        inquiryItems = [...inquiryItems, item];
+        inquiryItems = [...inquiryItems, {
+          ...item,
+          quantity: item.quantity || 1,
+          maxStock: item.maxStock || 99
+        }];
       }
     });
 
@@ -23,6 +27,29 @@
       inquiryItems = inquiryItems.filter(i => i.name !== item.name);
     });
   });
+
+  // Get total items count
+  function getTotalItems() {
+    return inquiryItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  }
+
+  // Update quantity for an item (respecting stock limits)
+  function updateItemQty(itemName, delta) {
+    inquiryItems = inquiryItems.map(item => {
+      if (item.name === itemName) {
+        const currentQty = item.quantity || 1;
+        const maxQty = item.maxStock || 99;
+        const newQty = Math.max(1, Math.min(maxQty, currentQty + delta));
+        return { ...item, quantity: newQty };
+      }
+      return item;
+    });
+  }
+
+  // Check if item is at max stock
+  function isAtMaxStock(item) {
+    return item.maxStock && (item.quantity || 1) >= item.maxStock;
+  }
 
   function removeItem(itemName) {
     inquiryItems = inquiryItems.filter(i => i.name !== itemName);
@@ -36,9 +63,13 @@
   function sendViaWhatsApp() {
     if (inquiryItems.length === 0) return;
 
-    const itemList = inquiryItems.map(item => `• ${item.name}${item.category ? ` (${item.category})` : ''}`).join('\n');
+    const itemList = inquiryItems.map(item => {
+      const qty = item.quantity || 1;
+      return `• ${item.name} x${qty}${item.category ? ` (${item.category})` : ''}`;
+    }).join('\n');
 
-    const message = `Hi! I'm interested in ordering:\n\n${itemList}\n\nPlease confirm availability and prices.`;
+    const totalItems = getTotalItems();
+    const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nPlease confirm availability and total price.`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
@@ -55,26 +86,33 @@
 {#if inquiryItems.length > 0}
   <div class="inquiry-basket-float">
     <button class="basket-toggle" on:click={toggleBasket}>
-      <span class="basket-icon">📋</span>
-      <span class="basket-count">{inquiryItems.length}</span>
-      <span class="basket-label">Inquiry List</span>
+      <span class="basket-icon">🛒</span>
+      <span class="basket-count">{getTotalItems()}</span>
+      <span class="basket-label">Cart</span>
     </button>
 
     <!-- Expanded Basket Panel -->
     {#if isOpen}
       <div class="basket-panel">
         <div class="basket-header">
-          <h3>Your Inquiry List</h3>
+          <h3>🛒 Your Cart</h3>
           <button class="close-btn" on:click={() => isOpen = false}>✕</button>
         </div>
 
         <div class="basket-items">
           {#each inquiryItems as item (item.name)}
             <div class="basket-item">
-              <span class="item-name">{item.name}</span>
-              {#if item.category}
-                <span class="item-category">{item.category}</span>
-              {/if}
+              <div class="item-details">
+                <span class="item-name">{item.name}</span>
+                {#if item.category}
+                  <span class="item-category">{item.category}</span>
+                {/if}
+              </div>
+              <div class="item-qty-controls">
+                <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
+                <span class="item-qty">{item.quantity || 1}</span>
+                <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
+              </div>
               <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
             </div>
           {/each}
@@ -221,8 +259,14 @@
     border-bottom: none;
   }
 
-  .item-name {
+  .item-details {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .item-name {
     font-size: 0.9rem;
     color: #2c3e50;
   }
@@ -233,6 +277,48 @@
     background: #e9ecef;
     padding: 2px 8px;
     border-radius: 10px;
+    width: fit-content;
+  }
+
+  .item-qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .item-qty-btn {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #3498db;
+    background: white;
+    color: #3498db;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .item-qty-btn:hover:not(:disabled) {
+    background: #3498db;
+    color: white;
+  }
+
+  .item-qty-btn:disabled {
+    border-color: #ccc;
+    color: #ccc;
+    cursor: not-allowed;
+  }
+
+  .item-qty {
+    min-width: 24px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2c3e50;
   }
 
   .remove-btn {

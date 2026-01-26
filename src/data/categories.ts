@@ -45,12 +45,19 @@ export const categories: Category[] = [
   {
     id: 'home-kitchen',
     name: 'Home & Kitchen',
-    icon: '🏠',
+    icon: '/images/home-and-kitchen.jpg',
     description: 'Cookware, bakeware, storage, and kitchen essentials',
     items: [
       {
         name: 'Cookware & Bakeware',
-        items: []
+        items: [
+          {
+            name: 'Manual Pasta Maker Machine, 9 Adjustable Thickness Settings',
+            images: ['/images/products/manual-pasta-maker-1.jpg', '/images/products/manual-pasta-maker-2.jpg'],
+            price: 20000,
+            quantity: 2
+          }
+        ]
       },
       {
         name: 'Food Storage & Containers',
@@ -77,7 +84,7 @@ export const categories: Category[] = [
   {
     id: 'body-bath',
     name: 'Body, Bath & Personal Care',
-    icon: '🛁',
+    icon: '/images/body-bath-personal-care.jpg',
     description: 'Personal hygiene and grooming products',
     items: [
       {
@@ -155,7 +162,7 @@ export const categories: Category[] = [
   {
     id: 'household-cleaning',
     name: 'Household Cleaning & Supplies',
-    icon: '🧼',
+    icon: '/images/household-cleaning-supplies.jpg',
     description: 'Keep your home clean and fresh',
     items: [
       {
@@ -187,7 +194,7 @@ export const categories: Category[] = [
   {
     id: 'electronics',
     name: 'Electronics & Accessories',
-    icon: '🔌',
+    icon: '/images/electronics-accessories.jpg',
     description: 'Essential electronics and accessories',
     items: [
       {
@@ -219,7 +226,7 @@ export const categories: Category[] = [
   {
     id: 'health-wellness',
     name: 'Health & Wellness',
-    icon: '🧴',
+    icon: '/images/health-wellness.jpg',
     description: 'Support your health and wellbeing',
     items: [
       {
@@ -247,7 +254,7 @@ export const categories: Category[] = [
   {
     id: 'home-essentials',
     name: 'Home Essentials',
-    icon: '🧺',
+    icon: '/images/home-essentials.jpg',
     description: 'Comfort and organization for your home',
     items: [
       {
@@ -275,7 +282,7 @@ export const categories: Category[] = [
   {
     id: 'food-pantry',
     name: 'Food & Pantry',
-    icon: '🧃',
+    icon: '/images/food-pantry.jpg',
     description: 'Non-perishable food items (subject to import regulations)',
     items: [
       {
