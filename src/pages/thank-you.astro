@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Message Sent - Thank You">
+  <section class="thank-you-section">
+    <div class="container">
+      <div class="thank-you-content">
+        <div class="success-icon">✓</div>
+        <h1>Thank You!</h1>
+        <p class="lead">Your message has been sent successfully.</p>
+        <p>We've received your inquiry and will get back to you within 24 hours.</p>
+        <p>A confirmation email has been sent to your email address.</p>
+
+        <div class="next-steps">
+          <h3>What's Next?</h3>
+          <ul>
+            <li>Check your email for a confirmation message</li>
+            <li>We'll review your message and respond soon</li>
+            <li>For urgent inquiries, contact us on WhatsApp</li>
+          </ul>
+        </div>
+
+        <div class="action-buttons">
+          <a href="/" class="btn btn-primary">Back to Home</a>
+          <a href="https://wa.me/237670358551" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+            Chat on WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .thank-you-section {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+  }
+
+  .thank-you-content {
+    text-align: center;
+    max-width: 600px;
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    background: #27ae60;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+
+  h1 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+  }
+
+  .lead {
+    font-size: 1.25rem;
+    color: #27ae60;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  .next-steps {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 2rem 0;
+    text-align: left;
+  }
+
+  .next-steps h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .next-steps ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .next-steps li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    color: #555;
+  }
+
+  .next-steps li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: #3498db;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background: #3498db;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    background: white;
+    color: #25d366;
+    border: 2px solid #25d366;
+  }
+
+  .btn-outline:hover {
+    background: #25d366;
+    color: white;
+  }
+
+  @media (max-width: 600px) {
+    .thank-you-content {
+      padding: 2rem 1.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

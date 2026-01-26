@@ -70,6 +70,13 @@ const formspreeEndpoint = "https://formspree.io/f/mlggaegp";
         <div class="contact-form-wrapper">
           <h2>Send Us a Message</h2>
           <form class="contact-form" action={formspreeEndpoint} method="POST">
+            <!-- Redirect to thank you page after submission -->
+            <input type="hidden" name="_next" value="https://americanselect.netlify.app/thank-you">
+            <!-- Email subject line -->
+            <input type="hidden" name="_subject" value="New Contact Form Message - American Select">
+            <!-- Auto-response configuration -->
+            <input type="hidden" name="_autoresponse" value="Thank you for contacting American Select! We have received your message and will get back to you within 24 hours. For urgent inquiries, please contact us on WhatsApp at +237 670 35 85 51.">
+
             <div class="form-group">
               <label for="name">Your Name *</label>
               <input type="text" id="name" name="name" required>
