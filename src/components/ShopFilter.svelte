@@ -18,6 +18,27 @@
     return typeof item === 'string' ? null : item.image;
   }
 
+  function getProductImages(item) {
+    if (typeof item === 'string') return null;
+    return item.images || (item.image ? [item.image] : null);
+  }
+
+  function getProductPrice(item) {
+    return typeof item === 'string' ? null : item.price;
+  }
+
+  function getProductQuantity(item) {
+    return typeof item === 'string' ? null : item.quantity;
+  }
+
+  function formatPrice(price) {
+    return price ? `${price.toLocaleString()} XAF` : null;
+  }
+
+  function isImagePath(icon) {
+    return icon && icon.startsWith('/');
+  }
+
   let selectedCategory = 'all';
   let filteredCategories = categories;
 
@@ -68,6 +89,20 @@
 
   // Track which sub-categories are expanded
   let expandedSubCategories = new Set();
+
+  // Image lightbox
+  let lightboxImage = null;
+  let lightboxAlt = '';
+
+  function openLightbox(imageSrc, alt) {
+    lightboxImage = imageSrc;
+    lightboxAlt = alt;
+  }
+
+  function closeLightbox() {
+    lightboxImage = null;
+    lightboxAlt = '';
+  }
 
   function toggleSubCategory(name) {
     if (expandedSubCategories.has(name)) {
@@ -121,8 +156,7 @@
 <!-- Category Filter Dropdown -->
 <div class="filter-container">
   <label for="category-select" class="filter-label">
-    <span class="filter-icon">📁</span>
-    Filter by Category:
+Filter by Category:
   </label>
   <select
     id="category-select"
@@ -132,7 +166,7 @@
   >
     <option value="all">All Categories</option>
     {#each categories as category}
-      <option value={category.id}>{category.icon} {category.name}</option>
+      <option value={category.id}>{isImagePath(category.icon) ? '👶' : category.icon} {category.name}</option>
     {/each}
   </select>
 </div>
@@ -151,7 +185,11 @@
 {#each filteredCategories as category (category.id)}
   <div class="category-section" id={category.id}>
     <div class="category-header">
-      <span class="category-icon-large">{category.icon}</span>
+      {#if isImagePath(category.icon)}
+        <img src={category.icon} alt={category.name} class="category-icon-image" />
+      {:else}
+        <span class="category-icon-large">{category.icon}</span>
+      {/if}
       <div>
         <h2>{category.name}</h2>
         <p>{category.description}</p>
@@ -173,15 +211,32 @@
                 <p class="no-products">Products coming soon...</p>
               {/if}
               {#each item.items as subItem}
-                <div class="product-item" class:has-image={getProductImage(subItem)}>
-                  {#if getProductImage(subItem)}
-                    <div class="product-image">
-                      <img src={getProductImage(subItem)} alt={getProductName(subItem)} />
+                <div class="product-item" class:has-image={getProductImages(subItem)}>
+                  {#if getProductImages(subItem)}
+                    <div class="product-images">
+                      {#each getProductImages(subItem) as img}
+                        <button class="product-image" on:click={() => openLightbox(img, getProductName(subItem))}>
+                          <img src={img} alt={getProductName(subItem)} />
+                        </button>
+                      {/each}
                     </div>
                   {/if}
                   <div class="product-info">
                     <h4>{getProductName(subItem)}</h4>
-                    <p class="product-note">Available - Imported from USA/Canada</p>
+                    {#if getProductPrice(subItem)}
+                      <p class="product-price">{formatPrice(getProductPrice(subItem))}</p>
+                    {/if}
+                    {#if getProductQuantity(subItem) !== null && getProductQuantity(subItem) !== undefined}
+                      <p class="product-quantity">
+                        {#if getProductQuantity(subItem) > 0}
+                          <span class="in-stock">In Stock: {getProductQuantity(subItem)}</span>
+                        {:else}
+                          <span class="out-of-stock">Out of Stock</span>
+                        {/if}
+                      </p>
+                    {:else}
+                      <p class="product-note">Available - Imported from USA/Canada</p>
+                    {/if}
                   </div>
                   <div class="product-actions-wrapper">
                     <div class="product-actions">
@@ -222,15 +277,32 @@
           </div>
         {:else}
           <!-- Regular product item -->
-          <div class="product-item" class:has-image={getProductImage(item)}>
-            {#if getProductImage(item)}
-              <div class="product-image">
-                <img src={getProductImage(item)} alt={getProductName(item)} />
+          <div class="product-item" class:has-image={getProductImages(item)}>
+            {#if getProductImages(item)}
+              <div class="product-images">
+                {#each getProductImages(item) as img}
+                  <button class="product-image" on:click={() => openLightbox(img, getProductName(item))}>
+                    <img src={img} alt={getProductName(item)} />
+                  </button>
+                {/each}
               </div>
             {/if}
             <div class="product-info">
               <h4>{getProductName(item)}</h4>
-              <p class="product-note">Available - Imported from USA/Canada</p>
+              {#if getProductPrice(item)}
+                <p class="product-price">{formatPrice(getProductPrice(item))}</p>
+              {/if}
+              {#if getProductQuantity(item) !== null && getProductQuantity(item) !== undefined}
+                <p class="product-quantity">
+                  {#if getProductQuantity(item) > 0}
+                    <span class="in-stock">In Stock: {getProductQuantity(item)}</span>
+                  {:else}
+                    <span class="out-of-stock">Out of Stock</span>
+                  {/if}
+                </p>
+              {:else}
+                <p class="product-note">Available - Imported from USA/Canada</p>
+              {/if}
             </div>
             <div class="product-actions-wrapper">
               <div class="product-actions">
@@ -272,6 +344,17 @@
     </div>
   </div>
 {/each}
+
+<!-- Image Lightbox -->
+{#if lightboxImage}
+  <div class="lightbox-overlay" on:click={closeLightbox} role="dialog" aria-modal="true">
+    <div class="lightbox-content" on:click|stopPropagation>
+      <button class="lightbox-close" on:click={closeLightbox} aria-label="Close">×</button>
+      <img src={lightboxImage} alt={lightboxAlt} />
+      <p class="lightbox-caption">{lightboxAlt}</p>
+    </div>
+  </div>
+{/if}
 
 <style>
   .filter-container {
@@ -367,6 +450,12 @@
 
   .category-icon-large {
     font-size: 3rem;
+  }
+
+  .category-icon-image {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
   }
 
   .category-header h2 {
@@ -483,10 +572,29 @@
     text-align: center;
   }
 
+  .product-images {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
   .product-image {
     width: 100%;
-    max-width: 150px;
-    margin: 0 auto 0.75rem;
+    max-width: 120px;
+  }
+
+  .product-image {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: zoom-in;
+    transition: transform 0.2s ease;
+  }
+
+  .product-image:hover {
+    transform: scale(1.05);
   }
 
   .product-image img {
@@ -495,6 +603,58 @@
     border-radius: 8px;
     object-fit: cover;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Lightbox styles */
+  .lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+
+  .lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    text-align: center;
+  }
+
+  .lightbox-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .lightbox-close:hover {
+    color: #ccc;
+  }
+
+  .lightbox-caption {
+    color: white;
+    margin-top: 1rem;
+    font-size: 1.1rem;
   }
 
   .product-info h4 {
@@ -507,6 +667,28 @@
     margin: 0;
     font-size: 0.8rem;
     color: #666;
+  }
+
+  .product-price {
+    margin: 0.25rem 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #27ae60;
+  }
+
+  .product-quantity {
+    margin: 0.25rem 0;
+    font-size: 0.85rem;
+  }
+
+  .in-stock {
+    color: #27ae60;
+    font-weight: 600;
+  }
+
+  .out-of-stock {
+    color: #e74c3c;
+    font-weight: 600;
   }
 
   .btn {
