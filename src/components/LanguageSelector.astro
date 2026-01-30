@@ -20,7 +20,7 @@
 <script is:inline>
   // Track if Google Translate is ready
   let googleTranslateReady = false;
-  let pendingLanguage = null;
+  let translateSelect = null;
 
   // Initialize Google Translate (hidden)
   function googleTranslateElementInit() {
@@ -30,73 +30,45 @@
       autoDisplay: false
     }, 'google_translate_element');
 
-    // Wait for combo box to appear, then mark as ready
+    // Aggressively poll for combo box - check every 50ms
     const checkReady = setInterval(() => {
-      const select = document.querySelector('.goog-te-combo');
-      if (select) {
+      translateSelect = document.querySelector('.goog-te-combo');
+      if (translateSelect) {
         clearInterval(checkReady);
         googleTranslateReady = true;
-        // If there's a pending language change, execute it now
-        if (pendingLanguage) {
-          doLanguageChange(pendingLanguage);
-          pendingLanguage = null;
-        }
       }
-    }, 100);
+    }, 50);
   }
 
   // Handle language button clicks
   document.addEventListener('DOMContentLoaded', function() {
     const langBtns = document.querySelectorAll('.lang-btn');
-    const langToggle = document.querySelector('.lang-toggle');
 
     langBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         const lang = this.getAttribute('data-lang');
 
-        // Immediate visual feedback - switch active state instantly
+        // Immediate visual feedback
         langBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
 
-        // Add loading indicator
-        langToggle.classList.add('loading');
-
-        // Trigger Google Translate
-        changeLanguage(lang);
+        // Instant language change - no loading state
+        if (translateSelect) {
+          translateSelect.value = lang;
+          translateSelect.dispatchEvent(new Event('change'));
+        } else if (googleTranslateReady) {
+          translateSelect = document.querySelector('.goog-te-combo');
+          if (translateSelect) {
+            translateSelect.value = lang;
+            translateSelect.dispatchEvent(new Event('change'));
+          }
+        }
       });
     });
 
     // Check current language on load
     checkCurrentLanguage();
   });
-
-  // Function to change language
-  function changeLanguage(lang) {
-    if (googleTranslateReady) {
-      doLanguageChange(lang);
-    } else {
-      // Store pending language and wait for Google Translate
-      pendingLanguage = lang;
-    }
-  }
-
-  // Actually perform the language change
-  function doLanguageChange(lang) {
-    const select = document.querySelector('.goog-te-combo');
-    const langToggle = document.querySelector('.lang-toggle');
-
-    if (select) {
-      select.value = lang;
-      select.dispatchEvent(new Event('change'));
-
-      // Remove loading state after a short delay
-      setTimeout(() => {
-        if (langToggle) langToggle.classList.remove('loading');
-      }, 300);
-    } else {
-      if (langToggle) langToggle.classList.remove('loading');
-    }
-  }
 
   // Check current language on page load
   function checkCurrentLanguage() {
@@ -112,7 +84,8 @@
   }
 </script>
 
-<script is:inline src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<!-- Load Google Translate script with high priority -->
+<script is:inline src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 
 <style>
   .lang-toggle {
@@ -150,30 +123,6 @@
 
   .lang-btn:active {
     transform: scale(0.95);
-  }
-
-  /* Loading state */
-  .lang-toggle.loading {
-    opacity: 0.7;
-    pointer-events: none;
-  }
-
-  .lang-toggle.loading::after {
-    content: '';
-    position: absolute;
-    right: -20px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
-    border: 2px solid #3498db;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-  }
-
-  @keyframes spin {
-    to { transform: translateY(-50%) rotate(360deg); }
   }
 
   .lang-divider {
