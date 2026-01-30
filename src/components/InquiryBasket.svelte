@@ -7,6 +7,9 @@
   let inquiryItems = [];
   let isOpen = false;
 
+  // Reactive total count - updates automatically when inquiryItems changes
+  $: totalItems = inquiryItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
   // Listen for custom events from ShopFilter
   onMount(() => {
     // Add item to inquiry
@@ -27,11 +30,6 @@
       inquiryItems = inquiryItems.filter(i => i.name !== item.name);
     });
   });
-
-  // Get total items count
-  function getTotalItems() {
-    return inquiryItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
-  }
 
   // Update quantity for an item (respecting stock limits)
   function updateItemQty(itemName, delta) {
@@ -68,7 +66,6 @@
       return `• ${item.name} x${qty}${item.category ? ` (${item.category})` : ''}`;
     }).join('\n');
 
-    const totalItems = getTotalItems();
     const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nPlease confirm availability and total price.`;
 
     const encodedMessage = encodeURIComponent(message);
@@ -87,7 +84,9 @@
   <div class="inquiry-basket-float">
     <button class="basket-toggle" on:click={toggleBasket}>
       <span class="basket-icon">🛒</span>
-      <span class="basket-count">{getTotalItems()}</span>
+{#key totalItems}
+        <span class="basket-count">{totalItems}</span>
+      {/key}
       <span class="basket-label">Cart</span>
     </button>
 
@@ -176,6 +175,13 @@
     justify-content: center;
     font-size: 0.85rem;
     font-weight: bold;
+    animation: countPop 0.3s ease;
+  }
+
+  @keyframes countPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
   }
 
   .basket-label {
