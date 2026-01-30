@@ -387,10 +387,141 @@
   }
 
   /* Mobile adjustments */
-  @media (max-width: 400px) {
+  @media (max-width: 768px) {
+    .inquiry-basket-float {
+      bottom: 90px;
+      right: 15px;
+    }
+
+    .basket-toggle {
+      padding: 10px 16px;
+      min-height: 48px;
+    }
+
     .basket-panel {
-      width: calc(100vw - 40px);
-      right: -10px;
+      width: 300px;
+      max-height: 350px;
+    }
+
+    .basket-items {
+      max-height: 180px;
+    }
+
+    .basket-item {
+      padding: 8px 15px;
+    }
+
+    .item-qty-btn {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+    }
+
+    .basket-actions {
+      padding: 12px 15px;
+    }
+
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .inquiry-basket-float {
+      bottom: 85px;
+      right: 10px;
+    }
+
+    .basket-panel {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      width: 100%;
+      max-height: 60vh;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .basket-toggle {
+      padding: 10px 14px;
+      font-size: 0.9rem;
+    }
+
+    .basket-icon {
+      font-size: 1.2rem;
+    }
+
+    .basket-count {
+      width: 22px;
+      height: 22px;
+      font-size: 0.8rem;
+    }
+
+    .basket-header {
+      padding: 12px 15px;
+    }
+
+    .basket-header h3 {
+      font-size: 0.95rem;
+    }
+
+    .basket-items {
+      max-height: calc(60vh - 140px);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .basket-item {
+      padding: 10px 15px;
+    }
+
+    .item-name {
+      font-size: 0.85rem;
+    }
+
+    .item-category {
+      font-size: 0.7rem;
+    }
+
+    .item-qty-btn {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+    }
+
+    .remove-btn {
+      padding: 6px 10px;
+      font-size: 1rem;
+    }
+
+    .basket-actions {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .clear-btn, .send-btn {
+      flex: none;
+      width: 100%;
+      min-height: 44px;
+    }
+
+    .send-btn {
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Touch-friendly improvements */
+  @media (hover: none) and (pointer: coarse) {
+    .basket-toggle:hover {
+      transform: none;
+    }
+
+    .item-qty-btn, .remove-btn, .clear-btn, .send-btn, .close-btn {
+      min-height: 44px;
+      min-width: 44px;
     }
   }
 </style>

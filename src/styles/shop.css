@@ -234,6 +234,78 @@
     gap: 1rem;
     text-align: center;
   }
+
+  .category-section {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .category-icon-large {
+    font-size: 3rem;
+  }
+
+  .btn-small {
+    padding: 12px 20px;
+    min-height: 44px;
+    width: 100%;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .shop-header {
+    min-height: 180px;
+    padding: 2rem 0;
+  }
+
+  .shop-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .shop-header p {
+    font-size: 0.9rem;
+  }
+
+  .category-nav-scroll {
+    padding: 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .category-nav-link {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .category-section {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .category-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
+
+  .category-icon-large {
+    font-size: 2.5rem;
+  }
+
+  .product-item {
+    padding: 1rem;
+  }
+
+  .product-info h4 {
+    font-size: 1rem;
+  }
+
+  .shop-how-to-order {
+    padding: 0.75rem 1rem;
+  }
+
+  .shop-how-to-order p {
+    font-size: 0.9rem;
+  }
 }
 
 

@@ -215,13 +215,31 @@
 }
 
 @media (max-width: 768px) {
+  .order-hero {
+    padding: 3rem 0;
+  }
+
   .order-hero h1 {
     font-size: 2rem;
+  }
+
+  .lead {
+    font-size: 1.1rem;
+  }
+
+  .order-intro {
+    margin-bottom: 3rem;
+  }
+
+  .steps-container {
+    margin-bottom: 3rem;
   }
 
   .step-card {
     flex-direction: column;
     text-align: center;
+    padding: 1.5rem;
+    gap: 1.5rem;
   }
 
   .step-card:hover {
@@ -230,5 +248,147 @@
 
   .step-number {
     margin: 0 auto;
+  }
+
+  .whatsapp-btn.large {
+    padding: 14px 28px;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+
+  .info-section {
+    margin: 3rem 0;
+  }
+
+  .info-grid {
+    gap: 1.5rem;
+  }
+
+  .info-card {
+    padding: 1.5rem;
+  }
+
+  .faq-section {
+    margin: 3rem 0;
+  }
+
+  .faq-grid {
+    gap: 1rem;
+  }
+
+  .faq-item {
+    padding: 1.25rem;
+  }
+
+  .cta-section {
+    padding: 3rem 1.5rem;
+    margin-top: 3rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .order-hero {
+    padding: 2rem 0;
+  }
+
+  .order-hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+  }
+
+  .order-intro {
+    margin-bottom: 2rem;
+  }
+
+  .order-intro h2 {
+    font-size: 1.3rem;
+  }
+
+  .order-intro p {
+    font-size: 1rem;
+  }
+
+  .steps-container {
+    margin-bottom: 2rem;
+  }
+
+  .step-card {
+    padding: 1.25rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .step-number {
+    width: 44px;
+    height: 44px;
+    font-size: 1.25rem;
+  }
+
+  .step-content h3 {
+    font-size: 1.1rem;
+  }
+
+  .step-content p {
+    font-size: 0.95rem;
+  }
+
+  .whatsapp-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .whatsapp-btn.large {
+    width: 100%;
+  }
+
+  .info-section {
+    margin: 2rem 0;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .info-card {
+    padding: 1.25rem;
+  }
+
+  .info-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .faq-section {
+    margin: 2rem 0;
+  }
+
+  .faq-section h2 {
+    font-size: 1.4rem;
+  }
+
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-item h4 {
+    font-size: 1rem;
+  }
+
+  .cta-section {
+    padding: 2rem 1rem;
+    margin-top: 2rem;
+    border-radius: 10px;
+  }
+
+  .cta-section h2 {
+    font-size: 1.4rem;
+  }
+
+  .cta-section p {
+    font-size: 1rem;
   }
 }

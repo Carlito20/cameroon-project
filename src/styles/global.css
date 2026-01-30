@@ -117,6 +117,7 @@ h3 {
   font-size: 1.1rem;
 }
 
+/* Tablet breakpoint */
 @media (max-width: 768px) {
   h1 {
     font-size: 2rem;
@@ -126,8 +127,93 @@ h3 {
     font-size: 1.75rem;
   }
 
+  h3 {
+    font-size: 1.25rem;
+  }
+
   .section {
     padding: 40px 0;
+  }
+
+  .section-title h2 {
+    font-size: 2rem;
+  }
+
+  .section-title p {
+    font-size: 1rem;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Ensure minimum touch target size (44px) */
+  .btn {
+    min-height: 44px;
+    padding: 12px 20px;
+  }
+}
+
+/* Small phone breakpoint */
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+  }
+
+  .section {
+    padding: 30px 0;
+  }
+
+  .section-title {
+    margin-bottom: 2rem;
+  }
+
+  .section-title h2 {
+    font-size: 1.6rem;
+  }
+
+  .container {
+    padding: 0 12px;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .btn:hover {
+    transform: none;
+  }
+
+  /* Larger tap targets */
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* iOS smooth scrolling and safe area support */
+@supports (-webkit-touch-callout: none) {
+  body {
+    -webkit-overflow-scrolling: touch;
   }
 }
 

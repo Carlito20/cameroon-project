@@ -152,6 +152,107 @@
     font-size: 1.1rem;
     padding: 0 1rem;
   }
+
+  .about-story {
+    margin-bottom: 3rem;
+  }
+
+  .about-story p {
+    font-size: 1rem;
+  }
+
+  .values-grid {
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .value-card {
+    padding: 1.5rem;
+  }
+
+  .value-icon {
+    font-size: 2.5rem;
+  }
+
+  .team-section {
+    margin-top: 3rem;
+  }
+
+  .team-grid {
+    gap: 1.5rem;
+  }
+
+  .team-member {
+    padding: 1.5rem;
+  }
+
+  .member-icon {
+    font-size: 3rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .about-hero {
+    min-height: 160px;
+    padding: 2rem 0;
+  }
+
+  .about-hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+  }
+
+  .about-story {
+    margin-bottom: 2rem;
+  }
+
+  .about-story h2 {
+    font-size: 1.4rem;
+  }
+
+  .about-story p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .value-card {
+    padding: 1.25rem;
+  }
+
+  .value-icon {
+    font-size: 2rem;
+  }
+
+  .value-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .team-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+  }
+
+  .team-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .team-member {
+    padding: 1.25rem;
+  }
+
+  .member-icon {
+    font-size: 2.5rem;
+  }
 }
 
 

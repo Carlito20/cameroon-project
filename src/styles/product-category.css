@@ -64,5 +64,69 @@
   text-align: center;
 }
 
+/* Tablet */
+@media (max-width: 768px) {
+  .category-card {
+    padding: 1.5rem;
+  }
+
+  .category-icon {
+    font-size: 2.5rem;
+  }
+
+  .category-icon-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .category-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .category-items li {
+    padding: 0.6rem 0;
+    font-size: 0.95rem;
+  }
+
+  .category-card .btn {
+    min-height: 44px;
+    padding: 12px 20px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .category-card {
+    padding: 1.25rem;
+  }
+
+  .category-icon {
+    font-size: 2rem;
+  }
+
+  .category-icon-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .category-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .category-card > p {
+    font-size: 0.95rem;
+  }
+
+  .category-items li {
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .category-card .btn {
+    width: 100%;
+    font-size: 0.95rem;
+  }
+}
+
 
 

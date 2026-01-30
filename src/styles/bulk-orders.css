@@ -275,9 +275,149 @@
     padding: 0 1rem;
   }
 
+  .bulk-intro {
+    margin-bottom: 3rem;
+  }
+
+  .benefits-grid {
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .benefit-card {
+    padding: 1.5rem;
+  }
+
+  .benefit-icon {
+    font-size: 2.5rem;
+  }
+
+  .process-section {
+    margin: 3rem 0;
+  }
+
   .process-item {
     flex-direction: column;
     text-align: center;
+    gap: 1rem;
+  }
+
+  .process-icon {
+    font-size: 1.75rem;
+  }
+
+  .contact-form-section {
+    margin-top: 3rem;
+  }
+
+  .bulk-form {
+    padding: 1.5rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 14px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  .bulk-form .btn {
+    min-height: 48px;
+  }
+
+  .whatsapp-btn {
+    min-height: 48px;
+    padding: 14px 24px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .bulk-hero {
+    min-height: 160px;
+    padding: 2rem 0;
+  }
+
+  .bulk-hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+  }
+
+  .bulk-intro {
+    margin-bottom: 2rem;
+  }
+
+  .bulk-intro h2 {
+    font-size: 1.4rem;
+  }
+
+  .bulk-intro p {
+    font-size: 1rem;
+  }
+
+  .benefits-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .benefit-card {
+    padding: 1.25rem;
+  }
+
+  .benefit-icon {
+    font-size: 2rem;
+  }
+
+  .benefit-icon.benefit-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .benefit-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .process-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+  }
+
+  .process-item {
+    margin-bottom: 1.5rem;
+  }
+
+  .process-item h4 {
+    font-size: 1.1rem;
+  }
+
+  .pricing-info {
+    padding: 0 0.5rem;
+  }
+
+  .pricing-list li {
+    font-size: 0.95rem;
+  }
+
+  .contact-form-section {
+    margin-top: 2rem;
+  }
+
+  .contact-form-section h2 {
+    font-size: 1.4rem;
+  }
+
+  .bulk-form {
+    padding: 1.25rem;
+  }
+
+  .quick-whatsapp {
+    padding: 1.25rem;
+  }
+
+  .quick-whatsapp p {
+    font-size: 0.95rem;
   }
 }
 
