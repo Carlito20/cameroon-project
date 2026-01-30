@@ -18,6 +18,10 @@
 <div id="google_translate_element" style="display: none;"></div>
 
 <script is:inline>
+  // Track if Google Translate is ready
+  let googleTranslateReady = false;
+  let pendingLanguage = null;
+
   // Initialize Google Translate (hidden)
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
@@ -25,36 +29,72 @@
       includedLanguages: 'en,fr',
       autoDisplay: false
     }, 'google_translate_element');
+
+    // Wait for combo box to appear, then mark as ready
+    const checkReady = setInterval(() => {
+      const select = document.querySelector('.goog-te-combo');
+      if (select) {
+        clearInterval(checkReady);
+        googleTranslateReady = true;
+        // If there's a pending language change, execute it now
+        if (pendingLanguage) {
+          doLanguageChange(pendingLanguage);
+          pendingLanguage = null;
+        }
+      }
+    }, 100);
   }
 
   // Handle language button clicks
   document.addEventListener('DOMContentLoaded', function() {
     const langBtns = document.querySelectorAll('.lang-btn');
+    const langToggle = document.querySelector('.lang-toggle');
 
     langBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         const lang = this.getAttribute('data-lang');
 
-        // Update active state
+        // Immediate visual feedback - switch active state instantly
         langBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
+
+        // Add loading indicator
+        langToggle.classList.add('loading');
 
         // Trigger Google Translate
         changeLanguage(lang);
       });
     });
+
+    // Check current language on load
+    checkCurrentLanguage();
   });
 
   // Function to change language
   function changeLanguage(lang) {
-    // Find Google Translate dropdown and change it
+    if (googleTranslateReady) {
+      doLanguageChange(lang);
+    } else {
+      // Store pending language and wait for Google Translate
+      pendingLanguage = lang;
+    }
+  }
+
+  // Actually perform the language change
+  function doLanguageChange(lang) {
     const select = document.querySelector('.goog-te-combo');
+    const langToggle = document.querySelector('.lang-toggle');
+
     if (select) {
       select.value = lang;
       select.dispatchEvent(new Event('change'));
+
+      // Remove loading state after a short delay
+      setTimeout(() => {
+        if (langToggle) langToggle.classList.remove('loading');
+      }, 300);
     } else {
-      // If Google Translate not loaded yet, try again
-      setTimeout(() => changeLanguage(lang), 500);
+      if (langToggle) langToggle.classList.remove('loading');
     }
   }
 
@@ -70,8 +110,6 @@
       }
     }
   }
-
-  document.addEventListener('DOMContentLoaded', checkCurrentLanguage);
 </script>
 
 <script is:inline src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -85,6 +123,8 @@
     padding: 0.25rem 0.5rem;
     border-radius: 6px;
     border: 1px solid #e0e0e0;
+    position: relative;
+    transition: opacity 0.2s ease;
   }
 
   .lang-btn {
@@ -106,6 +146,34 @@
   .lang-btn.active {
     background: #3498db;
     color: white;
+  }
+
+  .lang-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Loading state */
+  .lang-toggle.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .lang-toggle.loading::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border: 2px solid #3498db;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: translateY(-50%) rotate(360deg); }
   }
 
   .lang-divider {
