@@ -236,11 +236,6 @@
   <div class="custom-dropdown">
     <button class="dropdown-trigger" on:click={toggleDropdown} type="button">
       <span class="dropdown-selected">
-        {#if isImagePath(getSelectedCategoryIcon())}
-          <img src={getSelectedCategoryIcon()} alt="" class="dropdown-option-icon" />
-        {:else}
-          <span class="dropdown-option-emoji">{getSelectedCategoryIcon()}</span>
-        {/if}
         {getSelectedCategoryName()}
       </span>
       <span class="dropdown-arrow" class:open={isDropdownOpen}>▼</span>
@@ -248,16 +243,10 @@
     {#if isDropdownOpen}
       <div class="dropdown-options">
         <button class="dropdown-option" class:selected={selectedCategory === 'all'} on:click={() => selectCategory('all')}>
-          <span class="dropdown-option-emoji">📦</span>
           All Categories
         </button>
         {#each categories as category}
           <button class="dropdown-option" class:selected={selectedCategory === category.id} on:click={() => selectCategory(category.id)}>
-            {#if isImagePath(category.icon)}
-              <img src={category.icon} alt="" class="dropdown-option-icon" />
-            {:else}
-              <span class="dropdown-option-emoji">{category.icon}</span>
-            {/if}
             {category.name}
           </button>
         {/each}
@@ -280,11 +269,6 @@
 {#each filteredCategories as category (category.id)}
   <div class="category-section" id={category.id}>
     <div class="category-header">
-      {#if isImagePath(category.icon)}
-        <img src={category.icon} alt={category.name} class="category-icon-image" />
-      {:else}
-        <span class="category-icon-large">{category.icon}</span>
-      {/if}
       <div>
         <h2>{category.name}</h2>
         <p>{category.description}</p>
@@ -296,7 +280,6 @@
           <!-- Sub-category -->
           <div class="subcategory-section" class:expanded={expandedSubCategories.has(item.name)}>
             <button class="subcategory-header" on:click={() => toggleSubCategory(item.name)}>
-              {#if item.icon}<span class="subcategory-icon">{item.icon}</span>{/if}
               <h3>{item.name}</h3>
               <span class="subcategory-toggle">{expandedSubCategories.has(item.name) ? '−' : '+'}</span>
             </button>

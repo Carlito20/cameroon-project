@@ -45,7 +45,7 @@ export const categories: Category[] = [
   {
     id: 'home-kitchen',
     name: 'Home & Kitchen',
-    icon: '/images/home-and-kitchen.jpg',
+    icon: '',
     description: 'Cookware, bakeware, storage, and kitchen essentials',
     items: [
       {
@@ -84,7 +84,7 @@ export const categories: Category[] = [
   {
     id: 'body-bath',
     name: 'Body, Bath & Personal Care',
-    icon: '/images/body-bath-personal-care-home.jpg',
+    icon: '',
     description: 'Personal hygiene and grooming products',
     items: [
       {
@@ -135,7 +135,7 @@ export const categories: Category[] = [
   {
     id: 'kids',
     name: 'Kids & Babies',
-    icon: '/images/kids-and-babies.png',
+    icon: '',
     description: 'Everything for your little ones',
     items: [
       {
@@ -163,7 +163,7 @@ export const categories: Category[] = [
   {
     id: 'household-cleaning',
     name: 'Household Cleaning & Supplies',
-    icon: '/images/household-cleaning-supplies.jpg',
+    icon: '',
     description: 'Keep your home clean and fresh',
     items: [
       {
@@ -195,7 +195,7 @@ export const categories: Category[] = [
   {
     id: 'electronics',
     name: 'Electronics & Accessories',
-    icon: '/images/electronics-accessories.jpg',
+    icon: '',
     description: 'Essential electronics and accessories',
     items: [
       {
@@ -227,7 +227,7 @@ export const categories: Category[] = [
   {
     id: 'health-wellness',
     name: 'Health & Wellness',
-    icon: '/images/health-wellness.jpg',
+    icon: '',
     description: 'Support your health and wellbeing',
     items: [
       {
@@ -255,7 +255,7 @@ export const categories: Category[] = [
   {
     id: 'home-essentials',
     name: 'Home Essentials',
-    icon: '/images/home-essentials.jpg',
+    icon: '',
     description: 'Comfort and organization for your home',
     items: [
       {
@@ -283,7 +283,7 @@ export const categories: Category[] = [
   {
     id: 'food-pantry',
     name: 'Food & Pantry',
-    icon: '/images/food-pantry.jpg',
+    icon: '',
     description: 'Non-perishable food items (subject to import regulations)',
     items: [
       {
