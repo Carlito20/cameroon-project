@@ -330,7 +330,7 @@
                         class:added={addedItems[getProductName(subItem)]}
                         on:click={() => handleInquiryClick(getProductName(subItem), item.name, getProductQuantity(subItem))}
                       >
-                        {addedItems[getProductName(subItem)] ? `✓ Added (${addedItems[getProductName(subItem)]})` : '+ Add to List'}
+                        {addedItems[getProductName(subItem)] ? `✓ Added (${addedItems[getProductName(subItem)]})` : 'Add to Cart'}
                       </button>
                       <a
                         href={getWhatsAppLink(subItem)}
@@ -403,7 +403,7 @@
                   class:added={addedItems[getProductName(item)]}
                   on:click={() => handleInquiryClick(getProductName(item), category.name, getProductQuantity(item))}
                 >
-                  {addedItems[getProductName(item)] ? `✓ Added (${addedItems[getProductName(item)]})` : '+ Add to List'}
+                  {addedItems[getProductName(item)] ? `✓ Added (${addedItems[getProductName(item)]})` : 'Add to Cart'}
                 </button>
                 <a
                   href={getWhatsAppLink(item)}
