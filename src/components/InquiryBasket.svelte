@@ -121,7 +121,7 @@
           <button class="clear-btn" on:click={clearAll}>Clear All</button>
           <button class="send-btn" on:click={sendViaWhatsApp}>
             <span class="whatsapp-icon">💬</span>
-            Send via WhatsApp
+            Order Via WhatsApp
           </button>
         </div>
       </div>
