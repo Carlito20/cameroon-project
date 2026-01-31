@@ -79,12 +79,48 @@
   }
 </script>
 
-<!-- Floating Basket Button -->
+<!-- Desktop Sidebar Cart -->
 {#if inquiryItems.length > 0}
-  <div class="inquiry-basket-float">
+  <div class="cart-sidebar desktop-only">
+    <div class="basket-header">
+      <h3>🛒 Your Cart</h3>
+    </div>
+
+    <div class="basket-items">
+      {#each inquiryItems as item (item.name)}
+        <div class="basket-item">
+          <div class="item-details">
+            <span class="item-name">{item.name}</span>
+            {#if item.category}
+              <span class="item-category">{item.category}</span>
+            {/if}
+          </div>
+          <div class="item-qty-controls">
+            <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
+            <span class="item-qty">{item.quantity || 1}</span>
+            <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
+          </div>
+          <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
+        </div>
+      {/each}
+    </div>
+
+    <div class="basket-actions">
+      <button class="clear-btn" on:click={clearAll}>Clear All</button>
+      <button class="send-btn" on:click={sendViaWhatsApp}>
+        <span class="whatsapp-icon">💬</span>
+        Order Via WhatsApp
+      </button>
+    </div>
+  </div>
+{/if}
+
+<!-- Mobile Floating Basket Button -->
+{#if inquiryItems.length > 0}
+  <div class="inquiry-basket-float mobile-only">
     <button class="basket-toggle" on:click={toggleBasket}>
       <span class="basket-icon">🛒</span>
-{#key totalItems}
+      {#key totalItems}
         <span class="basket-count">{totalItems}</span>
       {/key}
       <span class="basket-label">Cart</span>
@@ -130,6 +166,55 @@
 {/if}
 
 <style>
+  /* Desktop Sidebar Cart */
+  .cart-sidebar {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 998;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart-sidebar .basket-header {
+    border-radius: 12px 12px 0 0;
+  }
+
+  .cart-sidebar .basket-items {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .cart-sidebar .basket-actions {
+    border-radius: 0 0 12px 12px;
+  }
+
+  /* Show/hide based on screen size */
+  .desktop-only {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-only {
+    display: none;
+  }
+
+  @media (max-width: 1024px) {
+    .desktop-only {
+      display: none;
+    }
+
+    .mobile-only {
+      display: block;
+    }
+  }
+
   .inquiry-basket-float {
     position: fixed;
     bottom: 100px;
