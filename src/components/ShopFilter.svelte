@@ -124,12 +124,12 @@
   // Track which item has the confirmation popup open
   let confirmingItem = null;
 
-  // Get or initialize quantity for a product (use cart quantity if in cart)
+  // Reactive combined quantities - merges cart and pre-cart quantities for display
+  $: displayQuantities = { ...selectedQuantities, ...addedItems };
+
+  // Get quantity for display (reactive via displayQuantities)
   function getSelectedQty(productName) {
-    if (addedItems[productName]) {
-      return addedItems[productName];
-    }
-    return selectedQuantities[productName] || 1;
+    return displayQuantities[productName] || 1;
   }
 
   // Increment quantity
@@ -368,9 +368,9 @@
                   </div>
                   <div class="product-actions-wrapper">
                     <div class="quantity-selector">
-                      <button class="qty-btn" on:click={() => decrementQty(getProductName(subItem))} disabled={getSelectedQty(getProductName(subItem)) <= 1}>−</button>
-                      <span class="qty-value">{getSelectedQty(getProductName(subItem))}</span>
-                      <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getProductQuantity(subItem))} disabled={getProductQuantity(subItem) && getSelectedQty(getProductName(subItem)) >= getProductQuantity(subItem)}>+</button>
+                      <button class="qty-btn" on:click={() => decrementQty(getProductName(subItem))} disabled={(displayQuantities[getProductName(subItem)] || 1) <= 1}>−</button>
+                      <span class="qty-value">{displayQuantities[getProductName(subItem)] || 1}</span>
+                      <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getProductQuantity(subItem))} disabled={getProductQuantity(subItem) && (displayQuantities[getProductName(subItem)] || 1) >= getProductQuantity(subItem)}>+</button>
                     </div>
                     <div class="product-actions">
                       <button
@@ -439,9 +439,9 @@
             </div>
             <div class="product-actions-wrapper">
               <div class="quantity-selector">
-                <button class="qty-btn" on:click={() => decrementQty(getProductName(item))} disabled={getSelectedQty(getProductName(item)) <= 1}>−</button>
-                <span class="qty-value">{getSelectedQty(getProductName(item))}</span>
-                <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getProductQuantity(item))} disabled={getProductQuantity(item) && getSelectedQty(getProductName(item)) >= getProductQuantity(item)}>+</button>
+                <button class="qty-btn" on:click={() => decrementQty(getProductName(item))} disabled={(displayQuantities[getProductName(item)] || 1) <= 1}>−</button>
+                <span class="qty-value">{displayQuantities[getProductName(item)] || 1}</span>
+                <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getProductQuantity(item))} disabled={getProductQuantity(item) && (displayQuantities[getProductName(item)] || 1) >= getProductQuantity(item)}>+</button>
               </div>
               <div class="product-actions">
                 <button
