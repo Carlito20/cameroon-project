@@ -253,6 +253,14 @@
       </div>
     {/if}
   </div>
+
+  <!-- Mobile Fixed Bottom Order Button -->
+  <div class="mobile-order-bar mobile-only">
+    <button class="mobile-order-btn" on:click={sendViaWhatsApp}>
+      <span class="whatsapp-icon">💬</span>
+      Order Via WhatsApp ({totalItems} {totalItems === 1 ? 'item' : 'items'})
+    </button>
+  </div>
 {/if}
 
 <style>
@@ -303,6 +311,46 @@
     .mobile-only {
       display: block;
     }
+  }
+
+  /* Mobile Fixed Bottom Order Bar */
+  .mobile-order-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    background: white;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+  }
+
+  .mobile-order-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 20px;
+    background: #25D366;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background 0.2s ease;
+  }
+
+  .mobile-order-btn:hover,
+  .mobile-order-btn:active {
+    background: #128C7E;
+  }
+
+  .mobile-order-btn .whatsapp-icon {
+    font-size: 1.3rem;
   }
 
   .inquiry-basket-float {
@@ -574,6 +622,16 @@
       right: 15px;
     }
 
+    .mobile-order-bar {
+      padding: 10px 12px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    }
+
+    .mobile-order-btn {
+      padding: 14px 16px;
+      font-size: 1rem;
+    }
+
     .basket-toggle {
       padding: 10px 16px;
       min-height: 48px;
@@ -619,11 +677,11 @@
 
     .basket-panel {
       position: fixed;
-      bottom: 0;
+      bottom: 70px;
       right: 0;
       left: 0;
       width: 100%;
-      max-height: 60vh;
+      max-height: calc(60vh - 70px);
       border-radius: 16px 16px 0 0;
     }
 
