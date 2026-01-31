@@ -63,6 +63,13 @@
       inquiryItems = savedItems;
       // Remove any expired items immediately
       removeExpiredItems();
+
+      // Notify ShopFilter about loaded cart items
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('cart-loaded', {
+          detail: { items: inquiryItems }
+        }));
+      }, 100);
     }
 
     // Check for expired items every minute

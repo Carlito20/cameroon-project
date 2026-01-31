@@ -52,6 +52,16 @@
       filterCategories();
     }
 
+    // Listen for cart loaded from localStorage (on page refresh)
+    const handleCartLoaded = (e) => {
+      const { items } = e.detail;
+      items.forEach(item => {
+        addedItems[item.name] = item.quantity || 1;
+      });
+      addedItems = addedItems; // Trigger reactivity
+    };
+    window.addEventListener('cart-loaded', handleCartLoaded);
+
     // Close dropdown when clicking outside
     const handleClickOutside = (event) => {
       if (isDropdownOpen && !event.target.closest('.custom-dropdown')) {
@@ -59,7 +69,11 @@
       }
     };
     document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      window.removeEventListener('cart-loaded', handleCartLoaded);
+    };
   });
 
   function filterCategories() {
