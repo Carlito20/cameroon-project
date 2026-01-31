@@ -18,7 +18,7 @@
       description: "Premium skincare, haircare, and grooming products for the whole family."
     },
     {
-      url: "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=1920&h=800&fit=crop",
+      url: "/images/food-pantry-hero.jpg",
       title: "Taste the American Favorites",
       subtitle: "Food & Pantry",
       description: "Authentic snacks, cereals, canned goods and pantry essentials."
@@ -174,8 +174,8 @@
     height: 100%;
     background: linear-gradient(
       135deg,
-      rgba(44, 62, 80, 0.5) 0%,
-      rgba(0, 0, 0, 0.4) 100%
+      rgba(44, 62, 80, 0.3) 0%,
+      rgba(0, 0, 0, 0.25) 100%
     );
     z-index: 2;
   }
