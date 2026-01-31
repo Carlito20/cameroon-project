@@ -62,6 +62,16 @@
     };
     window.addEventListener('cart-loaded', handleCartLoaded);
 
+    // Listen for cart quantity updates from cart sidebar
+    const handleCartQtyUpdated = (e) => {
+      const { name, quantity } = e.detail;
+      if (addedItems[name]) {
+        addedItems[name] = quantity;
+        addedItems = addedItems; // Trigger reactivity
+      }
+    };
+    window.addEventListener('cart-qty-updated', handleCartQtyUpdated);
+
     // Close dropdown when clicking outside
     const handleClickOutside = (event) => {
       if (isDropdownOpen && !event.target.closest('.custom-dropdown')) {
@@ -73,6 +83,7 @@
     return () => {
       document.removeEventListener('click', handleClickOutside);
       window.removeEventListener('cart-loaded', handleCartLoaded);
+      window.removeEventListener('cart-qty-updated', handleCartQtyUpdated);
     };
   });
 
@@ -113,8 +124,11 @@
   // Track which item has the confirmation popup open
   let confirmingItem = null;
 
-  // Get or initialize quantity for a product
+  // Get or initialize quantity for a product (use cart quantity if in cart)
   function getSelectedQty(productName) {
+    if (addedItems[productName]) {
+      return addedItems[productName];
+    }
     return selectedQuantities[productName] || 1;
   }
 
@@ -123,8 +137,19 @@
     const current = getSelectedQty(productName);
     const max = maxQty || 99;
     if (current < max) {
-      selectedQuantities[productName] = current + 1;
-      selectedQuantities = selectedQuantities; // Trigger reactivity
+      const newQty = current + 1;
+      if (addedItems[productName]) {
+        // Update cart quantity
+        addedItems[productName] = newQty;
+        addedItems = addedItems;
+        // Notify cart to update
+        window.dispatchEvent(new CustomEvent('update-cart-qty', {
+          detail: { name: productName, quantity: newQty }
+        }));
+      } else {
+        selectedQuantities[productName] = newQty;
+        selectedQuantities = selectedQuantities;
+      }
     }
   }
 
@@ -132,8 +157,19 @@
   function decrementQty(productName) {
     const current = getSelectedQty(productName);
     if (current > 1) {
-      selectedQuantities[productName] = current - 1;
-      selectedQuantities = selectedQuantities; // Trigger reactivity
+      const newQty = current - 1;
+      if (addedItems[productName]) {
+        // Update cart quantity
+        addedItems[productName] = newQty;
+        addedItems = addedItems;
+        // Notify cart to update
+        window.dispatchEvent(new CustomEvent('update-cart-qty', {
+          detail: { name: productName, quantity: newQty }
+        }));
+      } else {
+        selectedQuantities[productName] = newQty;
+        selectedQuantities = selectedQuantities;
+      }
     }
   }
 
@@ -331,13 +367,11 @@
                     {/if}
                   </div>
                   <div class="product-actions-wrapper">
-                    {#if !addedItems[getProductName(subItem)]}
-                      <div class="quantity-selector">
-                        <button class="qty-btn" on:click={() => decrementQty(getProductName(subItem))} disabled={getSelectedQty(getProductName(subItem)) <= 1}>−</button>
-                        <span class="qty-value">{getSelectedQty(getProductName(subItem))}</span>
-                        <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getProductQuantity(subItem))} disabled={getProductQuantity(subItem) && getSelectedQty(getProductName(subItem)) >= getProductQuantity(subItem)}>+</button>
-                      </div>
-                    {/if}
+                    <div class="quantity-selector">
+                      <button class="qty-btn" on:click={() => decrementQty(getProductName(subItem))} disabled={getSelectedQty(getProductName(subItem)) <= 1}>−</button>
+                      <span class="qty-value">{getSelectedQty(getProductName(subItem))}</span>
+                      <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getProductQuantity(subItem))} disabled={getProductQuantity(subItem) && getSelectedQty(getProductName(subItem)) >= getProductQuantity(subItem)}>+</button>
+                    </div>
                     <div class="product-actions">
                       <button
                         class="btn btn-small btn-inquiry"
@@ -404,13 +438,11 @@
               {/if}
             </div>
             <div class="product-actions-wrapper">
-              {#if !addedItems[getProductName(item)]}
-                <div class="quantity-selector">
-                  <button class="qty-btn" on:click={() => decrementQty(getProductName(item))} disabled={getSelectedQty(getProductName(item)) <= 1}>−</button>
-                  <span class="qty-value">{getSelectedQty(getProductName(item))}</span>
-                  <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getProductQuantity(item))} disabled={getProductQuantity(item) && getSelectedQty(getProductName(item)) >= getProductQuantity(item)}>+</button>
-                </div>
-              {/if}
+              <div class="quantity-selector">
+                <button class="qty-btn" on:click={() => decrementQty(getProductName(item))} disabled={getSelectedQty(getProductName(item)) <= 1}>−</button>
+                <span class="qty-value">{getSelectedQty(getProductName(item))}</span>
+                <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getProductQuantity(item))} disabled={getProductQuantity(item) && getSelectedQty(getProductName(item)) >= getProductQuantity(item)}>+</button>
+              </div>
               <div class="product-actions">
                 <button
                   class="btn btn-small btn-inquiry"

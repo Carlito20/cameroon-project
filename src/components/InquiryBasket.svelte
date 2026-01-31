@@ -93,6 +93,17 @@
       const item = e.detail;
       inquiryItems = inquiryItems.filter(i => i.name !== item.name);
     });
+
+    // Update cart quantity from product listing
+    window.addEventListener('update-cart-qty', (e) => {
+      const { name, quantity } = e.detail;
+      inquiryItems = inquiryItems.map(item => {
+        if (item.name === name) {
+          return { ...item, quantity };
+        }
+        return item;
+      });
+    });
   });
 
   onDestroy(() => {
@@ -103,15 +114,23 @@
 
   // Update quantity for an item (respecting stock limits)
   function updateItemQty(itemName, delta) {
+    let newQuantity;
     inquiryItems = inquiryItems.map(item => {
       if (item.name === itemName) {
         const currentQty = item.quantity || 1;
         const maxQty = item.maxStock || 99;
-        const newQty = Math.max(1, Math.min(maxQty, currentQty + delta));
-        return { ...item, quantity: newQty };
+        newQuantity = Math.max(1, Math.min(maxQty, currentQty + delta));
+        return { ...item, quantity: newQuantity };
       }
       return item;
     });
+
+    // Sync with ShopFilter
+    if (newQuantity !== undefined) {
+      window.dispatchEvent(new CustomEvent('cart-qty-updated', {
+        detail: { name: itemName, quantity: newQuantity }
+      }));
+    }
   }
 
   // Check if item is at max stock
