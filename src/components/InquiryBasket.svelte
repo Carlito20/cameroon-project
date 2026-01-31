@@ -1,17 +1,73 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
 
   export let whatsappNumber = "237670358551";
+
+  // Cart expiration time: 1 hour in milliseconds
+  const CART_EXPIRY_MS = 60 * 60 * 1000;
+  const STORAGE_KEY = 'americanSelectCart';
 
   // Inquiry items stored in this component
   let inquiryItems = [];
   let isOpen = false;
+  let expiryCheckInterval;
 
   // Reactive total count - updates automatically when inquiryItems changes
   $: totalItems = inquiryItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
+  // Save cart to localStorage whenever it changes
+  $: if (typeof window !== 'undefined') {
+    saveCart(inquiryItems);
+  }
+
+  // Save cart to localStorage
+  function saveCart(items) {
+    if (items.length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }
+
+  // Load cart from localStorage
+  function loadCart() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error('Error loading cart:', e);
+    }
+    return [];
+  }
+
+  // Remove expired items (older than 1 hour)
+  function removeExpiredItems() {
+    const now = Date.now();
+    const validItems = inquiryItems.filter(item => {
+      const addedAt = item.addedAt || now;
+      return (now - addedAt) < CART_EXPIRY_MS;
+    });
+
+    if (validItems.length !== inquiryItems.length) {
+      inquiryItems = validItems;
+    }
+  }
+
   // Listen for custom events from ShopFilter
   onMount(() => {
+    // Load saved cart on mount
+    const savedItems = loadCart();
+    if (savedItems.length > 0) {
+      inquiryItems = savedItems;
+      // Remove any expired items immediately
+      removeExpiredItems();
+    }
+
+    // Check for expired items every minute
+    expiryCheckInterval = setInterval(removeExpiredItems, 60 * 1000);
+
     // Add item to inquiry
     window.addEventListener('add-to-inquiry', (e) => {
       const item = e.detail;
@@ -19,7 +75,8 @@
         inquiryItems = [...inquiryItems, {
           ...item,
           quantity: item.quantity || 1,
-          maxStock: item.maxStock || 99
+          maxStock: item.maxStock || 99,
+          addedAt: Date.now()
         }];
       }
     });
@@ -29,6 +86,12 @@
       const item = e.detail;
       inquiryItems = inquiryItems.filter(i => i.name !== item.name);
     });
+  });
+
+  onDestroy(() => {
+    if (expiryCheckInterval) {
+      clearInterval(expiryCheckInterval);
+    }
   });
 
   // Update quantity for an item (respecting stock limits)
@@ -55,6 +118,7 @@
 
   function clearAll() {
     inquiryItems = [];
+    localStorage.removeItem(STORAGE_KEY);
     isOpen = false;
   }
 
