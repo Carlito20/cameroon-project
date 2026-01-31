@@ -173,7 +173,7 @@
 {#if inquiryItems.length > 0}
   <div class="cart-sidebar desktop-only">
     <div class="basket-header">
-      <h3>🛒 Your Cart</h3>
+      <h3>🛒 Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
     </div>
 
     <div class="basket-items">
@@ -220,7 +220,7 @@
     {#if isOpen}
       <div class="basket-panel">
         <div class="basket-header">
-          <h3>🛒 Your Cart</h3>
+          <h3>🛒 Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
           <button class="close-btn" on:click={() => isOpen = false}>✕</button>
         </div>
 
