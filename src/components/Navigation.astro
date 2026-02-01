@@ -13,12 +13,7 @@ import { categories } from '../data/categories';
         <span class="logo-text">American Select</span>
       </a>
       <ul class="nav-links">
-        <li>
-          <a href="/" class={currentPath === '/' ? 'active nav-link-arrow' : 'nav-link-arrow'}>
-            <span>Home</span>
-            <svg class="nav-arrow" width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </li>
+        <li><a href="/" class={currentPath === '/' ? 'active' : ''}>Home</a></li>
         <li class="nav-dropdown">
           <div class="dropdown-trigger">
             <a href="/shop" class={currentPath.startsWith('/shop') ? 'active shop-link' : 'shop-link'}>
@@ -42,24 +37,9 @@ import { categories } from '../data/categories';
             ))}
           </div>
         </li>
-        <li>
-          <a href="/bulk-orders" class={currentPath === '/bulk-orders' ? 'active nav-link-arrow' : 'nav-link-arrow'}>
-            <span>Bulk Orders</span>
-            <svg class="nav-arrow" width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </li>
-        <li>
-          <a href="/contact" class={currentPath === '/contact' ? 'active nav-link-arrow' : 'nav-link-arrow'}>
-            <span>Contact Us</span>
-            <svg class="nav-arrow" width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </li>
-        <li>
-          <a href="/about" class={currentPath === '/about' ? 'active nav-link-arrow' : 'nav-link-arrow'}>
-            <span>About Us</span>
-            <svg class="nav-arrow" width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </li>
+        <li><a href="/bulk-orders" class={currentPath === '/bulk-orders' ? 'active' : ''}>Bulk Orders</a></li>
+        <li><a href="/contact" class={currentPath === '/contact' ? 'active' : ''}>Contact Us</a></li>
+        <li><a href="/about" class={currentPath === '/about' ? 'active' : ''}>About Us</a></li>
       </ul>
       <div class="nav-right">
         <LanguageSelector />
