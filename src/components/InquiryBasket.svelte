@@ -499,7 +499,7 @@
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     width: 320px;
-    max-height: 400px;
+    max-height: 450px;
     overflow: hidden;
     animation: slideUp 0.2s ease;
     display: flex;
@@ -555,8 +555,12 @@
   .basket-items {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 10px 0;
     min-height: 0;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
   }
 
   .basket-item {
@@ -763,7 +767,11 @@
 
     .basket-panel {
       width: 300px;
-      max-height: 350px;
+      max-height: 400px;
+    }
+
+    .basket-items {
+      padding: 8px 0;
     }
 
     .basket-item {
@@ -832,6 +840,8 @@
 
     .basket-items {
       -webkit-overflow-scrolling: touch;
+      padding: 6px 0;
+      scroll-behavior: smooth;
     }
 
     .basket-item {
