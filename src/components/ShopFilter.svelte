@@ -715,11 +715,17 @@
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: 0;
     padding: 1.5rem;
-    margin: 0.5rem -3rem;
+    margin: 0.5rem 0;
     border: none;
     border-top: 2px solid #e0e0e0;
     border-bottom: 2px solid #e0e0e0;
-    width: calc(100% + 6rem);
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw;
+    box-sizing: border-box;
   }
 
   .subcategory-header {
@@ -727,12 +733,12 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1rem 1.5rem;
-    margin: -1.5rem -3rem 0 -3rem;
+    margin: -1.5rem 0 0 0;
     border: none;
     background: #3498db;
     color: white;
     cursor: pointer;
-    width: calc(100% + 6rem);
+    width: 100%;
     text-align: left;
     border-radius: 0;
     transition: all 0.2s ease;
@@ -744,7 +750,7 @@
 
   .subcategory-section:not(.expanded) .subcategory-header {
     border-radius: 0;
-    margin-bottom: -3rem;
+    margin-bottom: -1.5rem;
   }
 
   .subcategory-icon {
@@ -1133,22 +1139,16 @@
     }
 
     .subcategory-section {
-      margin: 0.5rem -2rem;
       padding: 1rem;
-      width: calc(100% + 4rem);
-      border-radius: 0;
     }
 
     .subcategory-header {
-      margin: -1rem -2rem 0 -2rem;
+      margin: -1rem 0 0 0;
       padding: 1rem;
-      width: calc(100% + 4rem);
-      border-radius: 0;
     }
 
     .subcategory-section:not(.expanded) .subcategory-header {
-      margin-bottom: -2rem;
-      border-radius: 0;
+      margin-bottom: -1rem;
     }
 
     .category-header {
@@ -1266,22 +1266,16 @@
     }
 
     .subcategory-section {
-      margin: 0.5rem -1.5rem;
       padding: 0.75rem;
-      width: calc(100% + 3rem);
-      border-radius: 0;
     }
 
     .subcategory-header {
-      margin: -0.75rem -1.5rem 0 -1.5rem;
+      margin: -0.75rem 0 0 0;
       padding: 0.75rem;
-      width: calc(100% + 3rem);
-      border-radius: 0;
     }
 
     .subcategory-section:not(.expanded) .subcategory-header {
-      margin-bottom: -1.5rem;
-      border-radius: 0;
+      margin-bottom: -0.75rem;
     }
 
     .category-header h2 {
