@@ -259,7 +259,7 @@
   .nav-links > li > a:not(.shop-link):not(.dropdown-item) {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     min-height: 56px;
     padding: 16px 20px;
     font-size: 1.1rem;
