@@ -10,7 +10,7 @@
   // Inquiry items stored in this component
   let inquiryItems = [];
   let isOpen = false;
-  let isDesktopExpanded = true; // Desktop cart expanded/collapsed state
+  let isDesktopExpanded = false; // Desktop cart starts collapsed
   let expiryCheckInterval;
   let hasLoadedFromStorage = false; // Prevent saving before initial load
 
