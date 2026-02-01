@@ -62,6 +62,14 @@
     };
     window.addEventListener('cart-loaded', handleCartLoaded);
 
+    // Listen for item removed from cart
+    const handleItemRemoved = (e) => {
+      const { name } = e.detail;
+      delete addedItems[name];
+      addedItems = addedItems;
+    };
+    window.addEventListener('item-removed-from-cart', handleItemRemoved);
+
     // Listen for cart quantity updates from cart sidebar
     const handleCartQtyUpdated = (e) => {
       const { name, quantity } = e.detail;
@@ -84,6 +92,7 @@
       document.removeEventListener('click', handleClickOutside);
       window.removeEventListener('cart-loaded', handleCartLoaded);
       window.removeEventListener('cart-qty-updated', handleCartQtyUpdated);
+      window.removeEventListener('item-removed-from-cart', handleItemRemoved);
     };
   });
 
@@ -233,22 +242,22 @@
     expandedSubCategories = expandedSubCategories; // Trigger reactivity
   }
 
-  function handleInquiryClick(item, categoryName, stockQty) {
+  function handleInquiryClick(item, categoryName, stockQty, itemPrice) {
     if (addedItems[item]) {
       // Item already added - show confirmation popup
       confirmingItem = confirmingItem === item ? null : item;
     } else {
       // Add new item with selected quantity
-      addToInquiry(item, categoryName, stockQty);
+      addToInquiry(item, categoryName, stockQty, itemPrice);
     }
   }
 
-  function addToInquiry(item, categoryName, stockQty) {
+  function addToInquiry(item, categoryName, stockQty, itemPrice) {
     const qty = getSelectedQty(item);
 
     // Dispatch custom event for InquiryBasket to listen to
     const event = new CustomEvent('add-to-inquiry', {
-      detail: { name: item, category: categoryName, quantity: qty, maxStock: stockQty || 99 }
+      detail: { name: item, category: categoryName, quantity: qty, maxStock: stockQty || 99, price: itemPrice || 0 }
     });
     window.dispatchEvent(event);
 
@@ -376,7 +385,7 @@
                       <button
                         class="btn btn-small btn-inquiry"
                         class:added={addedItems[getProductName(subItem)]}
-                        on:click={() => handleInquiryClick(getProductName(subItem), item.name, getProductQuantity(subItem))}
+                        on:click={() => handleInquiryClick(getProductName(subItem), item.name, getProductQuantity(subItem), getProductPrice(subItem))}
                       >
                         {addedItems[getProductName(subItem)] ? `✓ Added (${addedItems[getProductName(subItem)]})` : 'Add to Cart'}
                       </button>
@@ -447,7 +456,7 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getProductName(item)]}
-                  on:click={() => handleInquiryClick(getProductName(item), category.name, getProductQuantity(item))}
+                  on:click={() => handleInquiryClick(getProductName(item), category.name, getProductQuantity(item), getProductPrice(item))}
                 >
                   {addedItems[getProductName(item)] ? `✓ Added (${addedItems[getProductName(item)]})` : 'Add to Cart'}
                 </button>

@@ -15,6 +15,18 @@
   // Reactive total count - updates automatically when inquiryItems changes
   $: totalItems = inquiryItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
+  // Reactive total price - calculates sum of all items
+  $: totalPrice = inquiryItems.reduce((sum, item) => {
+    const price = parseFloat(item.price) || 0;
+    const qty = item.quantity || 1;
+    return sum + (price * qty);
+  }, 0);
+
+  // Format price with commas
+  function formatPrice(price) {
+    return price.toLocaleString('en-US');
+  }
+
   // Save cart to localStorage whenever it changes
   $: if (typeof window !== 'undefined') {
     saveCart(inquiryItems);
@@ -140,6 +152,10 @@
 
   function removeItem(itemName) {
     inquiryItems = inquiryItems.filter(i => i.name !== itemName);
+    // Notify ShopFilter that item was removed
+    window.dispatchEvent(new CustomEvent('item-removed-from-cart', {
+      detail: { name: itemName }
+    }));
   }
 
   function clearAll() {
@@ -153,10 +169,11 @@
 
     const itemList = inquiryItems.map(item => {
       const qty = item.quantity || 1;
-      return `• ${item.name} x${qty}${item.category ? ` (${item.category})` : ''}`;
+      const itemTotal = item.price ? ` - ${formatPrice(item.price * qty)} FCFA` : '';
+      return `• ${item.name} x${qty}${itemTotal}`;
     }).join('\n');
 
-    const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nPlease confirm availability and total price.`;
+    const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nEstimated Total: ${formatPrice(totalPrice)} FCFA\n\nPlease confirm availability and final price.`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
@@ -181,8 +198,8 @@
         <div class="basket-item">
           <div class="item-details">
             <span class="item-name">{item.name}</span>
-            {#if item.category}
-              <span class="item-category">{item.category}</span>
+            {#if item.price}
+              <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
             {/if}
           </div>
           <div class="item-qty-controls">
@@ -193,6 +210,11 @@
           <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
         </div>
       {/each}
+    </div>
+
+    <div class="basket-total">
+      <span class="total-label">Total:</span>
+      <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
     </div>
 
     <div class="basket-actions">
@@ -229,8 +251,8 @@
             <div class="basket-item">
               <div class="item-details">
                 <span class="item-name">{item.name}</span>
-                {#if item.category}
-                  <span class="item-category">{item.category}</span>
+                {#if item.price}
+                  <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
                 {/if}
               </div>
               <div class="item-qty-controls">
@@ -241,6 +263,11 @@
               <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
             </div>
           {/each}
+        </div>
+
+        <div class="basket-total">
+          <span class="total-label">Total:</span>
+          <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
         </div>
 
         <div class="basket-actions">
@@ -509,6 +536,12 @@
     width: fit-content;
   }
 
+  .item-price {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #3498db;
+  }
+
   .item-qty-controls {
     display: flex;
     align-items: center;
@@ -563,6 +596,27 @@
 
   .remove-btn:hover {
     background: #fee;
+  }
+
+  .basket-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: #e8f4fc;
+    border-top: 1px solid #e9ecef;
+  }
+
+  .total-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .total-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #3498db;
   }
 
   .basket-actions {
