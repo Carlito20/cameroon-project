@@ -11,6 +11,7 @@
   let inquiryItems = [];
   let isOpen = false;
   let expiryCheckInterval;
+  let hasLoadedFromStorage = false; // Prevent saving before initial load
 
   // Reactive total count - updates automatically when inquiryItems changes
   $: totalItems = inquiryItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
@@ -27,8 +28,8 @@
     return price.toLocaleString('en-US');
   }
 
-  // Save cart to localStorage whenever it changes
-  $: if (typeof window !== 'undefined') {
+  // Save cart to localStorage whenever it changes (but only after initial load)
+  $: if (typeof window !== 'undefined' && hasLoadedFromStorage) {
     saveCart(inquiryItems);
   }
 
@@ -83,6 +84,9 @@
         }));
       }, 100);
     }
+
+    // Mark as loaded so reactive statement can now save changes
+    hasLoadedFromStorage = true;
 
     // Check for expired items every minute
     expiryCheckInterval = setInterval(removeExpiredItems, 60 * 1000);
