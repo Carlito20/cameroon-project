@@ -151,27 +151,59 @@
   width: 100%;
 }
 
-.faq-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+/* FAQ Accordion */
+.faq-accordion {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .faq-item {
   background: white;
-  padding: 1.5rem;
   border-radius: 8px;
   box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+  overflow: hidden;
 }
 
-.faq-item h4 {
-  margin-bottom: 0.75rem;
+.faq-item[open] {
+  box-shadow: var(--shadow-lg, 0 4px 20px rgba(0, 0, 0, 0.15));
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  font-weight: 600;
   color: var(--secondary-color);
+  list-style: none;
+  transition: background 0.2s ease;
 }
 
-.faq-item p {
+.faq-question::-webkit-details-marker {
+  display: none;
+}
+
+.faq-question:hover {
+  background: var(--bg-light);
+}
+
+.faq-arrow {
+  font-size: 0.8rem;
+  color: var(--primary-color);
+  transition: transform 0.3s ease;
+}
+
+.faq-item[open] .faq-arrow {
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  padding: 0 1.5rem 1.25rem;
   color: var(--text-light);
-  line-height: 1.6;
+  line-height: 1.7;
+  margin: 0;
 }
 
 /* WhatsApp styling */
@@ -273,12 +305,18 @@
     font-size: 1.75rem;
   }
 
-  .faq-grid {
-    gap: 1rem;
+  .faq-accordion {
+    margin: 0 -0.5rem;
   }
 
-  .faq-item {
-    padding: 1.25rem;
+  .faq-question {
+    padding: 1rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .faq-answer {
+    padding: 0 1.25rem 1rem;
+    font-size: 0.95rem;
   }
 }
 
