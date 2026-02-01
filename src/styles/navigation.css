@@ -230,6 +230,7 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     align-items: center;
+    justify-content: center;
   }
 
   .nav-links.active {
