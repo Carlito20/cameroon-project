@@ -89,6 +89,11 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
     }
   }
 
+  /* Hide when cart is open on mobile */
+  :global(body.cart-open) .whatsapp-float {
+    display: none;
+  }
+
   /* Accessibility: reduce motion for users who prefer it */
   @media (prefers-reduced-motion: reduce) {
     .whatsapp-float {

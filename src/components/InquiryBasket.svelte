@@ -162,6 +162,7 @@
     inquiryItems = [];
     localStorage.removeItem(STORAGE_KEY);
     isOpen = false;
+    updateBodyClass();
   }
 
   function sendViaWhatsApp() {
@@ -183,6 +184,22 @@
 
   function toggleBasket() {
     isOpen = !isOpen;
+    updateBodyClass();
+  }
+
+  function closeBasket() {
+    isOpen = false;
+    updateBodyClass();
+  }
+
+  function updateBodyClass() {
+    if (typeof document !== 'undefined') {
+      if (isOpen) {
+        document.body.classList.add('cart-open');
+      } else {
+        document.body.classList.remove('cart-open');
+      }
+    }
   }
 </script>
 
@@ -243,7 +260,7 @@
       <div class="basket-panel">
         <div class="basket-header">
           <h3>🛒 Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
-          <button class="close-btn" on:click={() => isOpen = false}>✕</button>
+          <button class="close-btn" on:click={closeBasket}>✕</button>
         </div>
 
         <div class="basket-items">
@@ -265,33 +282,24 @@
           {/each}
         </div>
 
-        <div class="basket-total">
-          <span class="total-label">Total:</span>
-          <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
-        </div>
+        <div class="basket-footer">
+          <div class="basket-total">
+            <span class="total-label">Total:</span>
+            <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
+          </div>
 
-        <div class="basket-actions">
-          <button class="clear-btn" on:click={clearAll}>Clear All</button>
-          <button class="send-btn" on:click={sendViaWhatsApp}>
-            <span class="whatsapp-icon">💬</span>
-            Order Via WhatsApp
-          </button>
+          <div class="basket-actions">
+            <button class="clear-btn" on:click={clearAll}>Clear All</button>
+            <button class="send-btn" on:click={sendViaWhatsApp}>
+              <span class="whatsapp-icon">💬</span>
+              Order Via WhatsApp
+            </button>
+          </div>
         </div>
       </div>
     {/if}
   </div>
 
-  <!-- Mobile Fixed Bottom Order Button -->
-  <div class="mobile-order-bar mobile-only">
-    <div class="mobile-order-info">
-      <span class="mobile-item-count">{totalItems} {totalItems === 1 ? 'item' : 'items'}</span>
-      <span class="mobile-total-price">{formatPrice(totalPrice)} FCFA</span>
-    </div>
-    <button class="mobile-order-btn" on:click={sendViaWhatsApp}>
-      <span class="whatsapp-icon">💬</span>
-      Order Via WhatsApp
-    </button>
-  </div>
 {/if}
 
 <style>
@@ -364,21 +372,30 @@
     gap: 8px;
   }
 
-  .mobile-order-info {
+  .mobile-item-count {
+    font-size: 1rem;
+    color: #2c3e50;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 6px;
+  }
+
+  .mobile-total-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 4px;
+    padding-top: 8px;
+    border-top: 1px solid #e9ecef;
   }
 
-  .mobile-item-count {
-    font-size: 0.9rem;
-    color: #6c757d;
-    font-weight: 500;
+  .mobile-total-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
   }
 
   .mobile-total-price {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: #3498db;
   }
@@ -412,7 +429,7 @@
 
   .inquiry-basket-float {
     position: fixed;
-    bottom: 100px;
+    bottom: 80px;
     right: 20px;
     z-index: 999;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -485,6 +502,14 @@
     max-height: 400px;
     overflow: hidden;
     animation: slideUp 0.2s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .basket-footer {
+    flex-shrink: 0;
+    background: white;
+    border-top: 1px solid #e9ecef;
   }
 
   @keyframes slideUp {
@@ -528,9 +553,10 @@
   }
 
   .basket-items {
-    max-height: 220px;
+    flex: 1;
     overflow-y: auto;
     padding: 10px 0;
+    min-height: 0;
   }
 
   .basket-item {
@@ -703,7 +729,7 @@
   /* Mobile adjustments */
   @media (max-width: 768px) {
     .inquiry-basket-float {
-      bottom: 90px;
+      bottom: 75px;
       right: 15px;
     }
 
@@ -713,13 +739,21 @@
       padding-bottom: calc(10px + env(safe-area-inset-bottom));
     }
 
-    .mobile-order-info {
-      padding: 0 2px;
+    .mobile-item-count {
+      font-size: 0.95rem;
     }
 
     .mobile-order-btn {
       padding: 12px 16px;
       font-size: 1rem;
+    }
+
+    .mobile-total-label {
+      font-size: 0.95rem;
+    }
+
+    .mobile-total-price {
+      font-size: 1.2rem;
     }
 
     .basket-toggle {
@@ -730,10 +764,6 @@
     .basket-panel {
       width: 300px;
       max-height: 350px;
-    }
-
-    .basket-items {
-      max-height: 180px;
     }
 
     .basket-item {
@@ -761,7 +791,7 @@
 
   @media (max-width: 400px) {
     .inquiry-basket-float {
-      bottom: 85px;
+      bottom: 70px;
       right: 10px;
     }
 
@@ -773,6 +803,8 @@
       width: 100%;
       max-height: calc(60vh - 70px);
       border-radius: 16px 16px 0 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .basket-toggle {
@@ -799,7 +831,6 @@
     }
 
     .basket-items {
-      max-height: calc(60vh - 140px);
       -webkit-overflow-scrolling: touch;
     }
 
@@ -847,21 +878,26 @@
       padding-bottom: calc(8px + env(safe-area-inset-bottom));
     }
 
-    .mobile-order-info {
-      padding: 0;
-    }
-
     .mobile-item-count {
-      font-size: 0.85rem;
-    }
-
-    .mobile-total-price {
-      font-size: 1rem;
+      font-size: 0.9rem;
+      padding-bottom: 4px;
     }
 
     .mobile-order-btn {
-      padding: 12px 14px;
+      padding: 10px 14px;
       font-size: 0.95rem;
+    }
+
+    .mobile-total-row {
+      padding-top: 6px;
+    }
+
+    .mobile-total-label {
+      font-size: 0.9rem;
+    }
+
+    .mobile-total-price {
+      font-size: 1.1rem;
     }
   }
 
