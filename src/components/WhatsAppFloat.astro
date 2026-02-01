@@ -28,8 +28,8 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
     right: 20px;
     background: #25D366;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,6 +37,11 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
     z-index: 1000;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-decoration: none;
+  }
+
+  .whatsapp-float svg {
+    width: 28px;
+    height: 28px;
   }
 
   .whatsapp-float:hover {
@@ -79,13 +84,25 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
     .whatsapp-float {
       bottom: 15px;
       right: 15px;
-      width: 55px;
-      height: 55px;
+      width: 48px;
+      height: 48px;
     }
 
     .whatsapp-float svg {
-      width: 35px;
-      height: 35px;
+      width: 26px;
+      height: 26px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .whatsapp-float {
+      width: 46px;
+      height: 46px;
+    }
+
+    .whatsapp-float svg {
+      width: 24px;
+      height: 24px;
     }
   }
 

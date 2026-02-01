@@ -10,6 +10,7 @@
   // Inquiry items stored in this component
   let inquiryItems = [];
   let isOpen = false;
+  let isDesktopExpanded = true; // Desktop cart expanded/collapsed state
   let expiryCheckInterval;
   let hasLoadedFromStorage = false; // Prevent saving before initial load
 
@@ -191,6 +192,10 @@
     updateBodyClass();
   }
 
+  function toggleDesktopCart() {
+    isDesktopExpanded = !isDesktopExpanded;
+  }
+
   function closeBasket() {
     isOpen = false;
     updateBodyClass();
@@ -209,43 +214,57 @@
 
 <!-- Desktop Sidebar Cart -->
 {#if inquiryItems.length > 0}
-  <div class="cart-sidebar desktop-only">
-    <div class="basket-header">
-      <h3>🛒 Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
-    </div>
+  {#if isDesktopExpanded}
+    <div class="cart-sidebar desktop-only">
+      <div class="basket-header">
+        <h3>🛒 Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
+        <button class="collapse-btn" on:click={toggleDesktopCart} aria-label="Collapse cart">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
 
-    <div class="basket-items">
-      {#each inquiryItems as item (item.name)}
-        <div class="basket-item">
-          <div class="item-details">
-            <span class="item-name">{item.name}</span>
-            {#if item.price}
-              <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
-            {/if}
+      <div class="basket-items">
+        {#each inquiryItems as item (item.name)}
+          <div class="basket-item">
+            <div class="item-details">
+              <span class="item-name">{item.name}</span>
+              {#if item.price}
+                <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
+              {/if}
+            </div>
+            <div class="item-qty-controls">
+              <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
+              <span class="item-qty">{item.quantity || 1}</span>
+              <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
+            </div>
+            <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
           </div>
-          <div class="item-qty-controls">
-            <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
-            <span class="item-qty">{item.quantity || 1}</span>
-            <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
-          </div>
-          <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
-        </div>
-      {/each}
-    </div>
+        {/each}
+      </div>
 
-    <div class="basket-total">
-      <span class="total-label">Total:</span>
-      <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
-    </div>
+      <div class="basket-total">
+        <span class="total-label">Total:</span>
+        <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
+      </div>
 
-    <div class="basket-actions">
-      <button class="clear-btn" on:click={clearAll}>Clear All</button>
-      <button class="send-btn" on:click={sendViaWhatsApp}>
-        <span class="whatsapp-icon">💬</span>
-        Order Via WhatsApp
-      </button>
+      <div class="basket-actions">
+        <button class="clear-btn" on:click={clearAll}>Clear All</button>
+        <button class="send-btn" on:click={sendViaWhatsApp}>
+          <span class="whatsapp-icon">💬</span>
+          Order Via WhatsApp
+        </button>
+      </div>
     </div>
-  </div>
+  {:else}
+    <button class="cart-collapsed desktop-only" on:click={toggleDesktopCart} aria-label="Expand cart">
+      <span class="cart-collapsed-icon">🛒</span>
+      {#key totalItems}
+        <span class="cart-collapsed-count">{totalItems}</span>
+      {/key}
+    </button>
+  {/if}
 {/if}
 
 <!-- Mobile Floating Basket Button -->
@@ -325,6 +344,72 @@
 
   .cart-sidebar .basket-header {
     border-radius: 12px 12px 0 0;
+    justify-content: space-between;
+  }
+
+  .collapse-btn {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .collapse-btn:hover {
+    background: #e9ecef;
+    color: #2c3e50;
+  }
+
+  /* Collapsed cart button */
+  .cart-collapsed {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: #3498db;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    z-index: 998;
+    transition: all 0.3s ease;
+  }
+
+  .cart-collapsed:hover {
+    background: #2980b9;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5);
+  }
+
+  .cart-collapsed-icon {
+    font-size: 1.5rem;
+  }
+
+  .cart-collapsed-count {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #e74c3c;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    animation: countPop 0.3s ease;
   }
 
   .cart-sidebar .basket-items {
@@ -442,17 +527,20 @@
   .basket-toggle {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
     background: #3498db;
     color: white;
     border: none;
-    padding: 12px 20px;
-    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border-radius: 50%;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
     transition: all 0.3s ease;
     font-size: 0.95rem;
     font-weight: 600;
+    position: relative;
   }
 
   .basket-toggle:hover {
@@ -466,15 +554,18 @@
   }
 
   .basket-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
     background: #e74c3c;
     color: white;
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: bold;
     animation: countPop 0.3s ease;
   }
@@ -487,12 +578,6 @@
 
   .basket-label {
     display: none;
-  }
-
-  @media (min-width: 500px) {
-    .basket-label {
-      display: inline;
-    }
   }
 
   .basket-panel {
@@ -765,9 +850,8 @@
     }
 
     .basket-toggle {
-      padding: 12px 18px;
-      min-height: 50px;
-      font-size: 1rem;
+      width: 48px;
+      height: 48px;
     }
 
     .basket-panel {
@@ -857,18 +941,20 @@
     }
 
     .basket-toggle {
-      padding: 12px 16px;
-      font-size: 1rem;
+      width: 46px;
+      height: 46px;
     }
 
     .basket-icon {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
 
     .basket-count {
-      width: 24px;
-      height: 24px;
-      font-size: 0.9rem;
+      width: 20px;
+      height: 20px;
+      font-size: 0.7rem;
+      top: -3px;
+      right: -3px;
     }
 
     .basket-header {
