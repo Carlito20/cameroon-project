@@ -229,7 +229,8 @@
     gap: 0.5rem;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    align-items: stretch;
+    align-items: center;
+    justify-content: center;
   }
 
   .nav-links.active {
@@ -238,6 +239,7 @@
 
   .nav-links li {
     width: 100%;
+    max-width: 300px;
     display: flex;
     flex-direction: column;
   }
