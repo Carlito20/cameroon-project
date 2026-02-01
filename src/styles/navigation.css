@@ -223,14 +223,15 @@
     background: white;
     width: 100%;
     height: calc(100vh - 70px);
-    padding: 2rem 1rem;
+    padding: 1rem;
+    padding-top: 0;
     box-shadow: var(--shadow-lg);
     transition: left 0.3s ease;
     gap: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .nav-links.active {
