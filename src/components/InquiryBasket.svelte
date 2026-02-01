@@ -744,53 +744,90 @@
     }
 
     .mobile-item-count {
-      font-size: 0.95rem;
+      font-size: 1.05rem;
     }
 
     .mobile-order-btn {
-      padding: 12px 16px;
-      font-size: 1rem;
+      padding: 14px 18px;
+      font-size: 1.1rem;
     }
 
     .mobile-total-label {
-      font-size: 0.95rem;
+      font-size: 1.05rem;
     }
 
     .mobile-total-price {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
 
     .basket-toggle {
-      padding: 10px 16px;
-      min-height: 48px;
+      padding: 12px 18px;
+      min-height: 50px;
+      font-size: 1rem;
     }
 
     .basket-panel {
-      width: 300px;
-      max-height: 400px;
+      width: 320px;
+      max-height: 420px;
     }
 
     .basket-items {
-      padding: 8px 0;
+      padding: 10px 0;
+    }
+
+    .basket-header h3 {
+      font-size: 1.1rem;
     }
 
     .basket-item {
-      padding: 8px 15px;
+      padding: 12px 18px;
+    }
+
+    .item-name {
+      font-size: 1.05rem;
+    }
+
+    .item-price {
+      font-size: 1rem;
+    }
+
+    .item-qty {
+      font-size: 1rem;
     }
 
     .item-qty-btn {
-      width: 28px;
-      height: 28px;
-      min-width: 28px;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      font-size: 1.1rem;
+    }
+
+    .total-label {
+      font-size: 1.15rem;
+    }
+
+    .total-price {
+      font-size: 1.3rem;
     }
 
     .basket-actions {
-      padding: 12px 15px;
+      padding: 14px 18px;
+    }
+
+    .clear-btn {
+      font-size: 0.95rem;
+      padding: 12px;
+    }
+
+    .send-btn {
+      font-size: 1rem;
+      padding: 12px 16px;
     }
 
     .close-btn {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
+      font-size: 1.4rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -809,105 +846,127 @@
       right: 0;
       left: 0;
       width: 100%;
-      max-height: calc(60vh - 70px);
+      max-height: calc(65vh - 70px);
       border-radius: 16px 16px 0 0;
       display: flex;
       flex-direction: column;
     }
 
     .basket-toggle {
-      padding: 10px 14px;
-      font-size: 0.9rem;
+      padding: 12px 16px;
+      font-size: 1rem;
     }
 
     .basket-icon {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
 
     .basket-count {
-      width: 22px;
-      height: 22px;
-      font-size: 0.8rem;
+      width: 24px;
+      height: 24px;
+      font-size: 0.9rem;
     }
 
     .basket-header {
-      padding: 12px 15px;
+      padding: 14px 16px;
     }
 
     .basket-header h3 {
-      font-size: 0.95rem;
+      font-size: 1.05rem;
     }
 
     .basket-items {
       -webkit-overflow-scrolling: touch;
-      padding: 6px 0;
+      padding: 8px 0;
       scroll-behavior: smooth;
     }
 
     .basket-item {
-      padding: 10px 15px;
+      padding: 12px 16px;
     }
 
     .item-name {
-      font-size: 0.85rem;
+      font-size: 1rem;
+    }
+
+    .item-price {
+      font-size: 0.95rem;
     }
 
     .item-category {
-      font-size: 0.7rem;
+      font-size: 0.8rem;
+    }
+
+    .item-qty {
+      font-size: 1rem;
     }
 
     .item-qty-btn {
-      width: 32px;
-      height: 32px;
-      min-width: 32px;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      font-size: 1.2rem;
     }
 
     .remove-btn {
-      padding: 6px 10px;
-      font-size: 1rem;
+      padding: 8px 12px;
+      font-size: 1.1rem;
+    }
+
+    .total-label {
+      font-size: 1.1rem;
+    }
+
+    .total-price {
+      font-size: 1.25rem;
     }
 
     .basket-actions {
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
+      padding: 14px 16px;
     }
 
     .clear-btn, .send-btn {
       flex: none;
       width: 100%;
-      min-height: 44px;
+      min-height: 48px;
+    }
+
+    .clear-btn {
+      font-size: 1rem;
     }
 
     .send-btn {
-      font-size: 0.95rem;
+      font-size: 1.05rem;
     }
 
     .mobile-order-bar {
       display: flex;
-      padding: 8px 10px;
-      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      padding: 10px 12px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
     }
 
     .mobile-item-count {
-      font-size: 0.9rem;
-      padding-bottom: 4px;
+      font-size: 1rem;
+      padding-bottom: 6px;
     }
 
     .mobile-order-btn {
-      padding: 10px 14px;
-      font-size: 0.95rem;
+      padding: 12px 16px;
+      font-size: 1.05rem;
     }
 
     .mobile-total-row {
-      padding-top: 6px;
+      padding-top: 8px;
     }
 
     .mobile-total-label {
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
 
     .mobile-total-price {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
     }
   }
 
