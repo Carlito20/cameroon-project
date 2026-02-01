@@ -378,7 +378,7 @@
   }
 
   .mobile-total-price {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #3498db;
   }
@@ -553,12 +553,13 @@
   }
 
   .item-name {
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: 500;
     color: #2c3e50;
   }
 
   .item-category {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: #6c757d;
     background: #e9ecef;
     padding: 2px 8px;
@@ -567,7 +568,7 @@
   }
 
   .item-price {
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: #3498db;
   }
@@ -638,13 +639,13 @@
   }
 
   .total-label {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: #2c3e50;
   }
 
   .total-price {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #3498db;
   }
