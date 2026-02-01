@@ -669,7 +669,6 @@
     background: white;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
   }
 
   .category-header {
@@ -713,25 +712,17 @@
   .subcategory-section {
     grid-column: 1 / -1;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 0;
+    border-radius: 12px;
     padding: 1.5rem;
-    margin: 0.5rem -1.5rem;
-    margin-left: -1.5rem;
-    margin-right: -1.5rem;
-    border: none;
-    border-top: 2px solid #e0e0e0;
-    border-bottom: 2px solid #e0e0e0;
-    width: auto;
-    position: relative;
-    left: 0;
-    right: 0;
+    margin: 0.5rem 0;
+    border: 2px solid #e0e0e0;
   }
 
   .subcategory-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.5rem;
+    gap: 0.75rem;
+    padding: 1rem;
     margin: -1.5rem -1.5rem 0 -1.5rem;
     border: none;
     background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
@@ -739,9 +730,8 @@
     cursor: pointer;
     width: calc(100% + 3rem);
     text-align: left;
-    border-radius: 0;
+    border-radius: 12px 12px 0 0;
     transition: all 0.2s ease;
-    box-shadow: -20px 0 0 0 #3498db, 20px 0 0 0 #2980b9;
   }
 
   .subcategory-header:hover {
@@ -749,7 +739,7 @@
   }
 
   .subcategory-section:not(.expanded) .subcategory-header {
-    border-radius: 0;
+    border-radius: 12px;
     margin-bottom: -1.5rem;
   }
 
@@ -761,6 +751,7 @@
     margin: 0;
     color: white;
     font-size: 1.1rem;
+    flex: 1;
   }
 
   .subcategory-toggle {
@@ -1134,7 +1125,6 @@
     .category-section {
       padding: 1rem;
       margin-bottom: 1.5rem;
-      overflow: hidden;
     }
 
     .category-header {
@@ -1224,23 +1214,9 @@
       padding: 0.5rem 1rem;
     }
 
-    .subcategory-section {
-      padding: 1rem;
-      border-radius: 0;
-      margin: 0.5rem -1rem;
-      margin-left: -1rem;
-      margin-right: -1rem;
-    }
-
     .subcategory-header {
       padding: 0.75rem 1rem;
       min-height: 48px;
-      margin: -1rem -1rem 0 -1rem;
-      box-shadow: -30px 0 0 0 #3498db, 30px 0 0 0 #2980b9;
-    }
-
-    .subcategory-section:not(.expanded) .subcategory-header {
-      margin-bottom: -1rem;
     }
 
     .subcategory-header h3 {
@@ -1267,7 +1243,6 @@
     .category-section {
       padding: 0.75rem;
       border-radius: 8px;
-      overflow: hidden;
     }
 
     .category-header h2 {
@@ -1288,27 +1263,19 @@
     }
 
     .subcategory-section {
-      padding: 0.75rem;
-      border-radius: 0;
-      margin: 0.5rem -0.75rem;
-      margin-left: -0.75rem;
-      margin-right: -0.75rem;
-      width: auto;
+      padding: 1rem;
+      border-radius: 8px;
     }
 
     .subcategory-header {
-      margin: -0.75rem -0.75rem 0 -0.75rem;
-      margin-left: -0.75rem;
-      margin-right: -0.75rem;
-      width: auto;
-      border-radius: 0;
-      padding: 0.75rem 1rem;
-      box-shadow: -30px 0 0 0 #3498db, 30px 0 0 0 #2980b9;
+      margin: -1rem -1rem 0 -1rem;
+      width: calc(100% + 2rem);
+      border-radius: 8px 8px 0 0;
     }
 
     .subcategory-section:not(.expanded) .subcategory-header {
-      border-radius: 0;
-      margin-bottom: -0.75rem;
+      border-radius: 8px;
+      margin-bottom: -1rem;
     }
 
     .subcategory-icon {
