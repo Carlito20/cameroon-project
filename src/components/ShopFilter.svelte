@@ -1159,6 +1159,14 @@
       margin-bottom: 1rem;
     }
 
+    .category-header h2 {
+      font-size: 1.5rem;
+    }
+
+    .category-header p {
+      font-size: 1rem;
+    }
+
     .category-icon-large {
       font-size: 2.5rem;
     }
@@ -1184,7 +1192,11 @@
     }
 
     .product-info h4 {
-      font-size: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .product-note {
+      font-size: 0.9rem;
     }
 
     .quantity-selector {
@@ -1205,9 +1217,9 @@
     .product-actions .btn {
       width: 100%;
       justify-content: center;
-      min-height: 44px;
-      padding: 12px 16px;
-      font-size: 0.95rem;
+      min-height: 48px;
+      padding: 14px 18px;
+      font-size: 1.05rem;
     }
 
     .product-actions-wrapper {
@@ -1239,7 +1251,11 @@
     }
 
     .subcategory-header h3 {
-      font-size: 1rem;
+      font-size: 1.15rem;
+    }
+
+    .product-price {
+      font-size: 1.2rem;
     }
 
     .lightbox-close {
