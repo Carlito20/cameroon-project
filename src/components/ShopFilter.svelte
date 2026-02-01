@@ -715,11 +715,11 @@
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: 0;
     padding: 1.5rem;
-    margin: 0.5rem -1.5rem;
+    margin: 0.5rem -1.6rem;
     border: none;
     border-top: 2px solid #e0e0e0;
     border-bottom: 2px solid #e0e0e0;
-    width: calc(100% + 3rem);
+    width: calc(100% + 3.2rem);
     box-sizing: border-box;
   }
 
@@ -727,13 +727,13 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    margin: -1.5rem -1.5rem 0 -1.5rem;
+    padding: 1rem 1.6rem;
+    margin: -1.5rem -1.6rem 0 -1.6rem;
     border: none;
     background: #3498db;
     color: white;
     cursor: pointer;
-    width: calc(100% + 3rem);
+    width: calc(100% + 3.2rem);
     text-align: left;
     border-radius: 0;
     transition: all 0.2s ease;
@@ -745,8 +745,8 @@
 
   .subcategory-section:not(.expanded) .subcategory-header {
     border-radius: 0;
-    margin-bottom: -1.5rem;
-    padding-bottom: 1.5rem;
+    margin-bottom: -1.6rem;
+    padding-bottom: 1.6rem;
   }
 
   .subcategory-icon {
@@ -1136,19 +1136,19 @@
 
     .subcategory-section {
       padding: 1rem;
-      margin: 0.5rem -1rem;
-      width: calc(100% + 2rem);
+      margin: 0.5rem -1.1rem;
+      width: calc(100% + 2.2rem);
     }
 
     .subcategory-header {
-      margin: -1rem -1rem 0 -1rem;
-      padding: 1rem;
-      width: calc(100% + 2rem);
+      margin: -1rem -1.1rem 0 -1.1rem;
+      padding: 1rem 1.1rem;
+      width: calc(100% + 2.2rem);
     }
 
     .subcategory-section:not(.expanded) .subcategory-header {
-      margin-bottom: -1rem;
-      padding-bottom: 1rem;
+      margin-bottom: -1.1rem;
+      padding-bottom: 1.1rem;
     }
 
     .category-header {
@@ -1283,19 +1283,19 @@
 
     .subcategory-section {
       padding: 0.75rem;
-      margin: 0.5rem -0.75rem;
-      width: calc(100% + 1.5rem);
+      margin: 0.5rem -0.85rem;
+      width: calc(100% + 1.7rem);
     }
 
     .subcategory-header {
-      margin: -0.75rem -0.75rem 0 -0.75rem;
-      padding: 0.75rem;
-      width: calc(100% + 1.5rem);
+      margin: -0.75rem -0.85rem 0 -0.85rem;
+      padding: 0.75rem 0.85rem;
+      width: calc(100% + 1.7rem);
     }
 
     .subcategory-section:not(.expanded) .subcategory-header {
-      margin-bottom: -0.75rem;
-      padding-bottom: 0.75rem;
+      margin-bottom: -0.85rem;
+      padding-bottom: 0.85rem;
     }
 
     .category-header h2 {
