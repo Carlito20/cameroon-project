@@ -171,7 +171,7 @@
     const itemList = inquiryItems.map(item => {
       const qty = item.quantity || 1;
       const itemTotal = item.price ? ` - ${formatPrice(item.price * qty)} FCFA` : '';
-      return `• ${item.name} x${qty}${itemTotal}`;
+      return `• ${item.name} (${qty})${itemTotal}`;
     }).join('\n');
 
     const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nEstimated Total: ${formatPrice(totalPrice)} FCFA\n\nPlease confirm availability and final price.`;
