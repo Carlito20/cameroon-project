@@ -283,9 +283,13 @@
 
   <!-- Mobile Fixed Bottom Order Button -->
   <div class="mobile-order-bar mobile-only">
+    <div class="mobile-order-info">
+      <span class="mobile-item-count">{totalItems} {totalItems === 1 ? 'item' : 'items'}</span>
+      <span class="mobile-total-price">{formatPrice(totalPrice)} FCFA</span>
+    </div>
     <button class="mobile-order-btn" on:click={sendViaWhatsApp}>
       <span class="whatsapp-icon">💬</span>
-      Order Via WhatsApp ({totalItems} {totalItems === 1 ? 'item' : 'items'})
+      Order Via WhatsApp
     </button>
   </div>
 {/if}
@@ -338,6 +342,10 @@
     .mobile-only {
       display: block;
     }
+
+    .mobile-order-bar.mobile-only {
+      display: flex;
+    }
   }
 
   /* Mobile Fixed Bottom Order Bar */
@@ -351,6 +359,28 @@
     background: white;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mobile-order-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px;
+  }
+
+  .mobile-item-count {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+  }
+
+  .mobile-total-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #3498db;
   }
 
   .mobile-order-btn {
@@ -359,7 +389,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 16px 20px;
+    padding: 14px 20px;
     background: #25D366;
     color: white;
     border: none;
@@ -677,12 +707,17 @@
     }
 
     .mobile-order-bar {
+      display: flex;
       padding: 10px 12px;
       padding-bottom: calc(10px + env(safe-area-inset-bottom));
     }
 
+    .mobile-order-info {
+      padding: 0 2px;
+    }
+
     .mobile-order-btn {
-      padding: 14px 16px;
+      padding: 12px 16px;
       font-size: 1rem;
     }
 
@@ -802,6 +837,29 @@
     }
 
     .send-btn {
+      font-size: 0.95rem;
+    }
+
+    .mobile-order-bar {
+      display: flex;
+      padding: 8px 10px;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    }
+
+    .mobile-order-info {
+      padding: 0;
+    }
+
+    .mobile-item-count {
+      font-size: 0.85rem;
+    }
+
+    .mobile-total-price {
+      font-size: 1rem;
+    }
+
+    .mobile-order-btn {
+      padding: 12px 14px;
       font-size: 0.95rem;
     }
   }
