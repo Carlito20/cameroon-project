@@ -227,17 +227,26 @@
 
       <div class="basket-items">
         {#each inquiryItems as item (item.name)}
-          <div class="basket-item">
+          <div class="basket-item-with-image">
+            {#if item.image}
+              <div class="item-image item-image-small">
+                <img src={item.image} alt={item.name} />
+              </div>
+            {:else}
+              <div class="item-image item-image-small item-image-placeholder">
+                <span>📦</span>
+              </div>
+            {/if}
             <div class="item-details">
               <span class="item-name">{item.name}</span>
               {#if item.price}
                 <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
               {/if}
-            </div>
-            <div class="item-qty-controls">
-              <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
-              <span class="item-qty">{item.quantity || 1}</span>
-              <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
+              <div class="item-qty-controls">
+                <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
+                <span class="item-qty">{item.quantity || 1}</span>
+                <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
+              </div>
             </div>
             <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
           </div>
@@ -270,59 +279,74 @@
 <!-- Mobile Floating Basket Button -->
 {#if inquiryItems.length > 0}
   <div class="inquiry-basket-float mobile-only">
-    <button class="basket-toggle" on:click={toggleBasket}>
-      <span class="basket-icon">🛒</span>
-      {#key totalItems}
-        <span class="basket-count">{totalItems}</span>
-      {/key}
-      <span class="basket-label">Cart</span>
-    </button>
+    {#if !isOpen}
+      <button class="basket-toggle" on:click={toggleBasket}>
+        <span class="basket-icon">🛒</span>
+        {#key totalItems}
+          <span class="basket-count">{totalItems}</span>
+        {/key}
+      </button>
+    {/if}
 
-    <!-- Expanded Basket Panel -->
+    <!-- Expanded Full-Screen Cart -->
     {#if isOpen}
-      <div class="basket-panel">
-        <div class="basket-header">
-          <h3>🛒 Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
-          <button class="close-btn" on:click={closeBasket}>✕</button>
-        </div>
-
-        <div class="basket-items">
-          {#each inquiryItems as item (item.name)}
-            <div class="basket-item">
-              <div class="item-details">
-                <span class="item-name">{item.name}</span>
-                {#if item.price}
-                  <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
-                {/if}
-              </div>
-              <div class="item-qty-controls">
-                <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
-                <span class="item-qty">{item.quantity || 1}</span>
-                <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
-              </div>
-              <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
-            </div>
-          {/each}
-        </div>
-
-        <div class="basket-footer">
-          <div class="basket-total">
-            <span class="total-label">Total:</span>
-            <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
+      <div class="mobile-cart-overlay">
+        <div class="mobile-cart-expanded">
+          <div class="basket-header">
+            <h3>🛒 Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
+            <button class="collapse-cart-btn" on:click={closeBasket} aria-label="Collapse cart">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
           </div>
 
-          <div class="basket-actions">
-            <button class="clear-btn" on:click={clearAll}>Clear All</button>
-            <button class="send-btn" on:click={sendViaWhatsApp}>
-              <span class="whatsapp-icon">💬</span>
-              Order Via WhatsApp
-            </button>
+          <div class="basket-items">
+            {#each inquiryItems as item (item.name)}
+              <div class="basket-item-with-image">
+                {#if item.image}
+                  <div class="item-image">
+                    <img src={item.image} alt={item.name} />
+                  </div>
+                {:else}
+                  <div class="item-image item-image-placeholder">
+                    <span>📦</span>
+                  </div>
+                {/if}
+                <div class="item-details">
+                  <span class="item-name">{item.name}</span>
+                  {#if item.price}
+                    <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
+                  {/if}
+                  <div class="item-qty-controls">
+                    <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
+                    <span class="item-qty">{item.quantity || 1}</span>
+                    <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
+                  </div>
+                </div>
+                <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
+              </div>
+            {/each}
+          </div>
+
+          <div class="basket-footer">
+            <div class="basket-total">
+              <span class="total-label">Total:</span>
+              <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
+            </div>
+
+            <div class="basket-actions">
+              <button class="clear-btn" on:click={clearAll}>Clear All</button>
+              <button class="send-btn" on:click={sendViaWhatsApp}>
+                <span class="whatsapp-icon">💬</span>
+                Order Via WhatsApp
+              </button>
+            </div>
           </div>
         </div>
       </div>
     {/if}
   </div>
-
 {/if}
 
 <style>
@@ -578,6 +602,129 @@
 
   .basket-label {
     display: none;
+  }
+
+  /* Mobile Full-Screen Cart */
+  .mobile-cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    display: flex;
+    align-items: flex-end;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .mobile-cart-expanded {
+    width: 100%;
+    max-height: 85vh;
+    background: white;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    animation: slideUpFull 0.3s ease;
+  }
+
+  @keyframes slideUpFull {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .mobile-cart-expanded .basket-header {
+    border-radius: 20px 20px 0 0;
+    padding: 18px 20px;
+  }
+
+  .collapse-cart-btn {
+    background: #e9ecef;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    transition: all 0.2s ease;
+  }
+
+  .collapse-cart-btn:hover {
+    background: #dee2e6;
+    color: #2c3e50;
+  }
+
+  /* Cart item with image */
+  .basket-item-with-image {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #f1f1f1;
+    gap: 12px;
+  }
+
+  .basket-item-with-image:last-child {
+    border-bottom: none;
+  }
+
+  .item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f8f9fa;
+  }
+
+  .item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .item-image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  /* Smaller image for desktop sidebar */
+  .item-image-small {
+    width: 45px;
+    height: 45px;
+    border-radius: 6px;
+  }
+
+  .item-image-small.item-image-placeholder {
+    font-size: 1.2rem;
+  }
+
+  .basket-item-with-image .item-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .basket-item-with-image .item-qty-controls {
+    margin-top: 6px;
+  }
+
+  .basket-item-with-image .remove-btn {
+    align-self: flex-start;
   }
 
   .basket-panel {
@@ -920,6 +1067,51 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* Mobile expanded cart styles */
+    .mobile-cart-expanded {
+      max-height: 80vh;
+    }
+
+    .mobile-cart-expanded .basket-header {
+      padding: 16px 18px;
+    }
+
+    .mobile-cart-expanded .basket-header h3 {
+      font-size: 1.15rem;
+    }
+
+    .item-image {
+      width: 65px;
+      height: 65px;
+    }
+
+    .basket-item-with-image {
+      padding: 14px 18px;
+    }
+
+    .basket-item-with-image .item-name {
+      font-size: 1.05rem;
+    }
+
+    .basket-item-with-image .item-price {
+      font-size: 1rem;
+    }
+
+    .basket-item-with-image .item-qty-btn {
+      width: 34px;
+      height: 34px;
+      font-size: 1.1rem;
+    }
+
+    .basket-item-with-image .item-qty {
+      font-size: 1rem;
+      min-width: 28px;
+    }
+
+    .mobile-cart-expanded .basket-footer {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
   }
 
   @media (max-width: 400px) {
@@ -1057,6 +1249,35 @@
 
     .mobile-total-price {
       font-size: 1.2rem;
+    }
+
+    /* Small phone expanded cart */
+    .mobile-cart-expanded {
+      max-height: 85vh;
+    }
+
+    .item-image {
+      width: 55px;
+      height: 55px;
+    }
+
+    .basket-item-with-image {
+      padding: 12px 16px;
+      gap: 10px;
+    }
+
+    .basket-item-with-image .item-name {
+      font-size: 1rem;
+    }
+
+    .basket-item-with-image .item-price {
+      font-size: 0.95rem;
+    }
+
+    .basket-item-with-image .item-qty-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
     }
   }
 

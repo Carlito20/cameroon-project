@@ -15,7 +15,9 @@
   }
 
   function getProductImage(item) {
-    return typeof item === 'string' ? null : item.image;
+    if (typeof item === 'string') return null;
+    // Return single image or first image from images array
+    return item.image || (item.images && item.images.length > 0 ? item.images[0] : null);
   }
 
   function getProductImages(item) {
@@ -242,43 +244,54 @@
     expandedSubCategories = expandedSubCategories; // Trigger reactivity
   }
 
-  function handleInquiryClick(item, categoryName, stockQty, itemPrice) {
-    if (addedItems[item]) {
+  function handleInquiryClick(productItem, categoryName, stockQty, itemPrice) {
+    const itemName = getProductName(productItem);
+    if (addedItems[itemName]) {
       // Item already added - show confirmation popup
-      confirmingItem = confirmingItem === item ? null : item;
+      confirmingItem = confirmingItem === itemName ? null : itemName;
     } else {
       // Add new item with selected quantity
-      addToInquiry(item, categoryName, stockQty, itemPrice);
+      addToInquiry(productItem, categoryName, stockQty, itemPrice);
     }
   }
 
-  function addToInquiry(item, categoryName, stockQty, itemPrice) {
-    const qty = getSelectedQty(item);
+  function addToInquiry(productItem, categoryName, stockQty, itemPrice) {
+    const itemName = getProductName(productItem);
+    const qty = getSelectedQty(itemName);
+    const itemImage = getProductImage(productItem);
 
     // Dispatch custom event for InquiryBasket to listen to
     const event = new CustomEvent('add-to-inquiry', {
-      detail: { name: item, category: categoryName, quantity: qty, maxStock: stockQty || 99, price: itemPrice || 0 }
+      detail: {
+        name: itemName,
+        category: categoryName,
+        quantity: qty,
+        maxStock: stockQty || 99,
+        price: itemPrice || 0,
+        image: itemImage
+      }
     });
     window.dispatchEvent(event);
 
     // Mark as added with quantity for visual feedback
-    addedItems[item] = qty;
+    addedItems[itemName] = qty;
     addedItems = addedItems; // Trigger reactivity
   }
 
-  function removeFromInquiry(item) {
+  function removeFromInquiry(productItem) {
+    const itemName = getProductName(productItem);
     // Dispatch custom event to remove from InquiryBasket
     const event = new CustomEvent('remove-from-inquiry', {
-      detail: { name: item }
+      detail: { name: itemName }
     });
     window.dispatchEvent(event);
 
     // Remove from local tracking
-    delete addedItems[item];
+    delete addedItems[itemName];
     addedItems = addedItems; // Trigger reactivity
 
     // Reset selected quantity
-    delete selectedQuantities[item];
+    delete selectedQuantities[itemName];
     selectedQuantities = selectedQuantities;
 
     confirmingItem = null;
@@ -385,7 +398,7 @@
                       <button
                         class="btn btn-small btn-inquiry"
                         class:added={addedItems[getProductName(subItem)]}
-                        on:click={() => handleInquiryClick(getProductName(subItem), item.name, getProductQuantity(subItem), getProductPrice(subItem))}
+                        on:click={() => handleInquiryClick(subItem, item.name, getProductQuantity(subItem), getProductPrice(subItem))}
                       >
                         {addedItems[getProductName(subItem)] ? `✓ Added (${addedItems[getProductName(subItem)]})` : 'Add to Cart'}
                       </button>
@@ -402,7 +415,7 @@
                       <div class="confirm-popup">
                         <div class="confirm-message">Already in your list ({addedItems[getProductName(subItem)]})</div>
                         <div class="confirm-actions">
-                          <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(getProductName(subItem))}>
+                          <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(subItem)}>
                             Remove
                           </button>
                           <button class="confirm-btn keep-btn" on:click={keepItem}>
@@ -456,7 +469,7 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getProductName(item)]}
-                  on:click={() => handleInquiryClick(getProductName(item), category.name, getProductQuantity(item), getProductPrice(item))}
+                  on:click={() => handleInquiryClick(item, category.name, getProductQuantity(item), getProductPrice(item))}
                 >
                   {addedItems[getProductName(item)] ? `✓ Added (${addedItems[getProductName(item)]})` : 'Add to Cart'}
                 </button>
@@ -475,7 +488,7 @@
                 <div class="confirm-popup">
                   <div class="confirm-message">Already in your list ({addedItems[getProductName(item)]})</div>
                   <div class="confirm-actions">
-                    <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(getProductName(item))}>
+                    <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(item)}>
                       Remove
                     </button>
                     <button class="confirm-btn keep-btn" on:click={keepItem}>
