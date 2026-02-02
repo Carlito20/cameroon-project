@@ -44,6 +44,67 @@
   let selectedCategory = 'all';
   let filteredCategories = categories;
 
+  // Search functionality
+  let searchQuery = '';
+  let searchResults = [];
+
+  // Search through all products
+  function performSearch(query) {
+    if (!query || query.trim().length < 2) {
+      searchResults = [];
+      return;
+    }
+
+    const lowerQuery = query.toLowerCase().trim();
+    const results = [];
+
+    categories.forEach(category => {
+      category.items.forEach(item => {
+        if (isSubCategory(item)) {
+          // Search within subcategory items
+          item.items.forEach(subItem => {
+            const name = getProductName(subItem);
+            if (name.toLowerCase().includes(lowerQuery)) {
+              results.push({
+                product: subItem,
+                productName: name,
+                categoryName: category.name,
+                subCategoryName: item.name,
+                price: getProductPrice(subItem),
+                quantity: getProductQuantity(subItem),
+                image: getProductImage(subItem)
+              });
+            }
+          });
+        } else {
+          // Search regular items
+          const name = getProductName(item);
+          if (name.toLowerCase().includes(lowerQuery)) {
+            results.push({
+              product: item,
+              productName: name,
+              categoryName: category.name,
+              subCategoryName: null,
+              price: getProductPrice(item),
+              quantity: getProductQuantity(item),
+              image: getProductImage(item)
+            });
+          }
+        }
+      });
+    });
+
+    searchResults = results;
+  }
+
+  // Reactive search - triggers when searchQuery changes
+  $: performSearch(searchQuery);
+
+  function clearSearch() {
+    searchQuery = '';
+    searchResults = [];
+  }
+
   onMount(() => {
     // Read category from URL parameter
     const urlParams = new URLSearchParams(window.location.search);
@@ -302,33 +363,60 @@
   }
 </script>
 
-<!-- Category Filter Dropdown -->
+<!-- Category Filter and Search -->
 <div class="filter-container">
-  <span class="filter-label">Filter by Category:</span>
-  <div class="custom-dropdown">
-    <button class="dropdown-trigger" on:click={toggleDropdown} type="button">
-      <span class="dropdown-selected">
-        {getSelectedCategoryName()}
-      </span>
-      <span class="dropdown-arrow" class:open={isDropdownOpen}>▼</span>
-    </button>
-    {#if isDropdownOpen}
-      <div class="dropdown-options">
-        <button class="dropdown-option" class:selected={selectedCategory === 'all'} on:click={() => selectCategory('all')}>
-          All Categories
-        </button>
-        {#each categories as category}
-          <button class="dropdown-option" class:selected={selectedCategory === category.id} on:click={() => selectCategory(category.id)}>
-            {category.name}
+  <div class="filter-group">
+    <span class="filter-label">Filter by Category:</span>
+    <div class="custom-dropdown">
+      <button class="dropdown-trigger" on:click={toggleDropdown} type="button">
+        <span class="dropdown-selected">
+          {getSelectedCategoryName()}
+        </span>
+        <span class="dropdown-arrow" class:open={isDropdownOpen}>▼</span>
+      </button>
+      {#if isDropdownOpen}
+        <div class="dropdown-options">
+          <button class="dropdown-option" class:selected={selectedCategory === 'all'} on:click={() => selectCategory('all')}>
+            All Categories
           </button>
-        {/each}
-      </div>
-    {/if}
+          {#each categories as category}
+            <button class="dropdown-option" class:selected={selectedCategory === category.id} on:click={() => selectCategory(category.id)}>
+              {category.name}
+            </button>
+          {/each}
+        </div>
+      {/if}
+    </div>
+  </div>
+  <div class="search-group">
+    <div class="search-input-wrapper">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search products..."
+        bind:value={searchQuery}
+      />
+      {#if searchQuery}
+        <button class="search-clear" on:click={clearSearch} aria-label="Clear search">✕</button>
+      {/if}
+    </div>
   </div>
 </div>
 
 <!-- Showing indicator -->
-{#if selectedCategory !== 'all'}
+{#if searchQuery && searchQuery.trim().length >= 2}
+  <div class="showing-category">
+    {#if searchResults.length > 0}
+      Found <strong>{searchResults.length}</strong> {searchResults.length === 1 ? 'product' : 'products'} for "<strong>{searchQuery}</strong>"
+    {:else}
+      No products found for "<strong>{searchQuery}</strong>"
+    {/if}
+    <button class="clear-filter" on:click={clearSearch}>
+      ✕ Clear Search
+    </button>
+  </div>
+{:else if selectedCategory !== 'all'}
   <div class="showing-category">
     Showing: <strong>{filteredCategories[0]?.name || 'All'}</strong>
     <button class="clear-filter" on:click={() => { selectedCategory = 'all'; filterCategories(); window.history.pushState({}, '', '/shop'); }}>
@@ -337,6 +425,89 @@
   </div>
 {/if}
 
+<!-- Search Results -->
+{#if searchQuery && searchQuery.trim().length >= 2}
+  <div class="search-results-section">
+    {#if searchResults.length === 0}
+      <div class="no-results">
+        <span class="no-results-icon">🔍</span>
+        <p>No products found matching "<strong>{searchQuery}</strong>"</p>
+        <p class="no-results-hint">Try a different search term or browse categories</p>
+      </div>
+    {:else}
+      <div class="products-grid">
+        {#each searchResults as result (result.productName)}
+          <div class="product-item" class:has-image={result.image}>
+            {#if result.image}
+              <div class="product-images">
+                <button class="product-image" on:click={() => openLightbox(result.image, result.productName)}>
+                  <img src={result.image} alt={result.productName} />
+                </button>
+              </div>
+            {/if}
+            <div class="product-info">
+              <h4>{result.productName}</h4>
+              <p class="product-category-tag">
+                {result.categoryName}{result.subCategoryName ? ` > ${result.subCategoryName}` : ''}
+              </p>
+              {#if result.price}
+                <p class="product-price">{formatPrice(result.price)}</p>
+              {/if}
+              {#if result.quantity !== null && result.quantity !== undefined}
+                <p class="product-quantity">
+                  {#if result.quantity > 0}
+                    <span class="in-stock">In Stock: {result.quantity}</span>
+                  {:else}
+                    <span class="out-of-stock">Out of Stock</span>
+                  {/if}
+                </p>
+              {:else}
+                <p class="product-note">Available - Imported from USA/Canada</p>
+              {/if}
+            </div>
+            <div class="product-actions-wrapper">
+              <div class="quantity-selector">
+                <button class="qty-btn" on:click={() => decrementQty(result.productName)} disabled={(displayQuantities[result.productName] || 1) <= 1}>−</button>
+                <span class="qty-value">{displayQuantities[result.productName] || 1}</span>
+                <button class="qty-btn" on:click={() => incrementQty(result.productName, result.quantity)} disabled={result.quantity && (displayQuantities[result.productName] || 1) >= result.quantity}>+</button>
+              </div>
+              <div class="product-actions">
+                <button
+                  class="btn btn-small btn-inquiry"
+                  class:added={addedItems[result.productName]}
+                  on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, result.price)}
+                >
+                  {addedItems[result.productName] ? `✓ Added (${addedItems[result.productName]})` : 'Add to Cart'}
+                </button>
+                <a
+                  href={getWhatsAppLink(result.product)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-small btn-whatsapp"
+                >
+                  WhatsApp
+                </a>
+              </div>
+              {#if confirmingItem === result.productName}
+                <div class="confirm-popup">
+                  <div class="confirm-message">Already in your list ({addedItems[result.productName]})</div>
+                  <div class="confirm-actions">
+                    <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(result.product)}>
+                      Remove
+                    </button>
+                    <button class="confirm-btn keep-btn" on:click={keepItem}>
+                      Keep
+                    </button>
+                  </div>
+                </div>
+              {/if}
+            </div>
+          </div>
+        {/each}
+      </div>
+    {/if}
+  </div>
+{:else}
 <!-- Categories Grid -->
 {#each filteredCategories as category (category.id)}
   <div class="category-section" id={category.id}>
@@ -504,6 +675,7 @@
     </div>
   </div>
 {/each}
+{/if}
 
 <!-- Image Lightbox -->
 {#if lightboxImage}
@@ -520,6 +692,7 @@
   .filter-container {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1rem;
     margin-bottom: 1.5rem;
     padding: 1rem;
@@ -529,12 +702,127 @@
     flex-wrap: wrap;
   }
 
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
   .filter-label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
     color: #2c3e50;
+  }
+
+  /* Search Styles */
+  .search-group {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 280px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.6rem 2.5rem 0.6rem 2.5rem;
+    font-size: 0.95rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    transition: all 0.2s ease;
+  }
+
+  .search-input:hover {
+    border-color: #3498db;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+  }
+
+  .search-input::placeholder {
+    color: #999;
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 8px;
+    background: #e0e0e0;
+    border: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #666;
+    transition: all 0.2s ease;
+  }
+
+  .search-clear:hover {
+    background: #ccc;
+    color: #333;
+  }
+
+  /* Search Results */
+  .search-results-section {
+    margin-bottom: 2rem;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  }
+
+  .no-results-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .no-results p {
+    margin: 0.5rem 0;
+    color: #2c3e50;
+  }
+
+  .no-results-hint {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .product-category-tag {
+    font-size: 0.75rem;
+    color: #666;
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 0.25rem;
   }
 
   /* Custom Dropdown Styles */
@@ -1119,6 +1407,12 @@
       flex-direction: column;
       align-items: stretch;
       padding: 0.75rem;
+      gap: 0.75rem;
+    }
+
+    .filter-group {
+      flex-direction: column;
+      width: 100%;
     }
 
     .filter-label {
@@ -1127,6 +1421,26 @@
 
     .custom-dropdown {
       width: 100%;
+    }
+
+    .search-group {
+      width: 100%;
+    }
+
+    .search-input-wrapper {
+      max-width: none;
+    }
+
+    .search-input {
+      padding: 0.75rem 2.5rem;
+      min-height: 48px;
+      font-size: 1rem;
+    }
+
+    .search-clear {
+      width: 28px;
+      height: 28px;
+      font-size: 0.85rem;
     }
 
     .dropdown-trigger {
@@ -1139,6 +1453,18 @@
       padding: 0.75rem 1rem;
       min-height: 48px;
       font-size: 1rem;
+    }
+
+    .no-results {
+      padding: 2rem 1rem;
+    }
+
+    .no-results-icon {
+      font-size: 2.5rem;
+    }
+
+    .product-category-tag {
+      font-size: 0.8rem;
     }
 
     .category-section {
