@@ -136,6 +136,11 @@
     visibility: visible;
     transform: translateY(0);
   }
+
+  .dropdown-item {
+    justify-content: center;
+    text-align: center;
+  }
 }
 
 .dropdown-item {
