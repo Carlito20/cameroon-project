@@ -692,7 +692,7 @@
   .filter-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 1rem;
     margin-bottom: 1.5rem;
     padding: 1rem;
@@ -700,6 +700,13 @@
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     flex-wrap: wrap;
+    position: relative;
+  }
+
+  @media (min-width: 769px) {
+    .filter-container {
+      justify-content: space-between;
+    }
   }
 
   .filter-group {
@@ -721,9 +728,9 @@
   .search-group {
     display: flex;
     align-items: center;
-    margin-left: auto;
   }
 
+  
   .search-input-wrapper {
     position: relative;
     display: flex;
@@ -898,6 +905,13 @@
     cursor: pointer;
     text-align: left;
     transition: background 0.15s ease;
+  }
+
+  @media (min-width: 769px) {
+    .dropdown-option {
+      justify-content: center;
+      text-align: center;
+    }
   }
 
   .dropdown-option:hover {
