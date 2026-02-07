@@ -28,6 +28,14 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--secondary-color);
+  margin-right: auto;
+}
+
+@media (min-width: 769px) {
+  .navbar .container {
+    max-width: 100%;
+    padding-left: 2rem;
+  }
 }
 
 .logo:hover {
