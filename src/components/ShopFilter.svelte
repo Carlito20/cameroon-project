@@ -1228,6 +1228,23 @@
     display: block;
   }
 
+  /* Watermark overlay on product images */
+  .product-image::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
+    background-image: url('/images/as-logo.jpeg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.7;
+    pointer-events: none;
+    border-radius: 4px;
+  }
+
   
   /* Lightbox styles */
   .lightbox-overlay {
