@@ -4,7 +4,7 @@ import path from 'path';
 
 const productsDir = './public/images/products';
 const logoPath = 'c:/Cameroon Project/Images/Pages/AS Logo new.jpeg';
-const watermarkSize = 60; // Size of watermark in pixels
+const watermarkSize = 40; // Size of watermark in pixels
 const tempDir = './public/images/products/temp';
 
 async function addWatermark() {
