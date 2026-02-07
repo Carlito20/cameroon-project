@@ -89,11 +89,43 @@ export const categories: Category[] = [
     items: [
       {
         name: 'Bath Soaps & Shower Gels',
-        items: []
+        items: [
+          {
+            name: "Dr Teal's Body Wash with Prebiotic Lemon Balm and Essential Oil Blend",
+            images: ['/images/products/dr-teals-lemon-balm1.jpg', '/images/products/dr-teals-lemon-balm2.jpg'],
+            quantity: 10,
+            price: 3500
+          },
+          {
+            name: "Dr Teal's Body Wash Relax and Relief with Eucalyptus Spearmint",
+            images: ['/images/products/dr-teals-eucalyptus1.jpg', '/images/products/dr-teals-eucalyptus2.jpg'],
+            quantity: 10,
+            price: 3500
+          }
+        ]
       },
       {
         name: 'Body Lotions & Creams',
-        items: []
+        items: [
+          {
+            name: 'CeraVe Daily Moisturizing Lotion For Normal to Dry Skin',
+            image: '/images/products/cerave-lotion.jpg',
+            quantity: 12,
+            price: 8500
+          },
+          {
+            name: 'Cetaphil Moisturizing Cream',
+            images: ['/images/products/cetaphil-moisturizer1.jpg', '/images/products/cetaphil-moisturizer2.jpg'],
+            quantity: 12,
+            price: 10000
+          },
+          {
+            name: 'Aveeno Daily Moisturizing Body Lotion 18oz',
+            image: '/images/products/aveeno-lotion.jpg',
+            quantity: 12,
+            price: 6000
+          }
+        ]
       },
       {
         name: 'Deodorants & Perfumes',
@@ -148,7 +180,14 @@ export const categories: Category[] = [
       },
       {
         name: 'Baby Bath & Skincare',
-        items: []
+        items: [
+          {
+            name: "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",
+            images: ['/images/products/dr-teals-kids.jpg', '/images/products/dr-teals-kids1.jpg', '/images/products/dr-teals-kids2.jpg'],
+            quantity: 12,
+            price: 3000
+          }
+        ]
       },
       {
         name: 'Baby Feeding (bottles, formula containers)',
@@ -208,14 +247,17 @@ export const categories: Category[] = [
       },
       {
         name: 'Home Electronics',
-        items: []
+        items: [
+          {
+            name: 'Rechargeable LED Flashlight With High Power Lamp',
+            images: ['/images/products/torch1.jpeg', '/images/products/torch.jpeg', '/images/products/torch2.jpeg', '/images/products/torch3.jpeg'],
+            quantity: 15,
+            price: 2500
+          }
+        ]
       },
       {
         name: 'Cables & Adapters',
-        items: []
-      },
-      {
-        name: 'Batteries',
         items: []
       },
       {
