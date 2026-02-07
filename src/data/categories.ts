@@ -151,7 +151,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Jergens Original Scent Dry Skin Body Lotion, Hand and Body Moisturizer, Cherry Almond Essence',
-            images: ['/images/products/jergens-cherry1.jpg', '/images/products/jergens-cherry2.jpg', '/images/products/jergens-cherry3.jpg'],
+            images: ['/images/products/jergens-cherry1.jpg', '/images/products/jergens-cherry3.jpg'],
             quantity: 6,
             price: 6000
           },
@@ -223,7 +223,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Vaseline Intensive Care Sensitive Skin Relief Body Lotion with Colloidal Oatmeal',
-            images: ['/images/products/vaseline-sensitive1.jpg', '/images/products/vaseline-sensitive2.jpg', '/images/products/vaseline-sensitive3.jpg'],
+            images: ['/images/products/vaseline-sensitive1.jpg', '/images/products/vaseline-sensitive3.jpg'],
             quantity: 6,
             price: 6000
           },
