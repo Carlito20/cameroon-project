@@ -1232,17 +1232,28 @@
   .product-image::after {
     content: '';
     position: absolute;
-    bottom: 8px;
-    right: 8px;
-    width: 40px;
-    height: 40px;
+    bottom: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
     background-image: url('/images/as-logo.jpeg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    opacity: 0.7;
+    opacity: 0.6;
     pointer-events: none;
-    border-radius: 4px;
+    border-radius: 3px;
+  }
+
+  @media (min-width: 769px) {
+    .product-image::after {
+      width: 40px;
+      height: 40px;
+      bottom: 8px;
+      right: 8px;
+      opacity: 0.7;
+      border-radius: 4px;
+    }
   }
 
   
