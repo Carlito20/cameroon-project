@@ -147,31 +147,31 @@ export const categories: Category[] = [
             name: 'Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil',
             images: ['/images/products/jergens-coconut1.jpg', '/images/products/jergens-coconut2.jpg', '/images/products/jergens-coconut3.jpg', '/images/products/jergens-coconut4.jpg'],
             quantity: 6,
-            price: 5000
+            price: 6000
           },
           {
             name: 'Jergens Original Scent Dry Skin Body Lotion, Hand and Body Moisturizer, Cherry Almond Essence',
             images: ['/images/products/jergens-cherry1.jpg', '/images/products/jergens-cherry2.jpg', '/images/products/jergens-cherry3.jpg'],
             quantity: 6,
-            price: 5000
+            price: 6000
           },
           {
             name: 'Jergens Shea Butter Hand and Body Lotion, Deep Conditioning Moisturizer',
             images: ['/images/products/jergens-shea1.jpg', '/images/products/jergens-shea2.jpg', '/images/products/jergens-common.jpg'],
             quantity: 6,
-            price: 5000
+            price: 6000
           },
           {
             name: 'Jergens Soothing Aloe Body Lotion, Aloe Vera Body and Hand Moisturizer',
             images: ['/images/products/jergens-aloe1.jpg', '/images/products/jergens-aloe2.png', '/images/products/jergens-aloe3.jpg'],
             quantity: 6,
-            price: 5000
+            price: 6000
           },
           {
             name: 'Jergens Ultra Healing Dry Skin Lotion, Hand and Body Moisturizer',
             images: ['/images/products/jergens-ultra1.jpg', '/images/products/jergens-ultra2.jpg', '/images/products/jergens-ultra3.jpg'],
             quantity: 6,
-            price: 5000
+            price: 6000
           }
         ]
       },
