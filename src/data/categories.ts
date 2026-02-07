@@ -236,7 +236,14 @@ export const categories: Category[] = [
       },
       {
         name: 'First Aid Supplies',
-        items: []
+        items: [
+          {
+            name: 'Non Contact Forehead Digital Thermometer',
+            images: ['/images/products/therm2.jpeg', '/images/products/therm.jpeg', '/images/products/therm1.jpeg'],
+            quantity: 10,
+            price: 3000
+          }
+        ]
       },
       {
         name: 'Pain Relief & OTC Products',

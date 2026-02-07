@@ -72,7 +72,7 @@
                 subCategoryName: item.name,
                 price: getProductPrice(subItem),
                 quantity: getProductQuantity(subItem),
-                image: getProductImage(subItem)
+                images: getProductImages(subItem)
               });
             }
           });
@@ -87,7 +87,7 @@
               subCategoryName: null,
               price: getProductPrice(item),
               quantity: getProductQuantity(item),
-              image: getProductImage(item)
+              images: getProductImages(item)
             });
           }
         }
@@ -248,9 +248,12 @@
   // Track which sub-categories are expanded
   let expandedSubCategories = new Set();
 
-  // Image lightbox
-  let lightboxImage = null;
+  // Image lightbox with gallery support
+  let lightboxImages = [];
+  let lightboxIndex = 0;
   let lightboxAlt = '';
+  let touchStartX = 0;
+  let touchEndX = 0;
 
   // Custom dropdown state
   let isDropdownOpen = false;
@@ -286,14 +289,53 @@
     return cat ? cat.icon : '📦';
   }
 
-  function openLightbox(imageSrc, alt) {
-    lightboxImage = imageSrc;
+  function openLightbox(images, alt, startIndex = 0) {
+    lightboxImages = Array.isArray(images) ? images : [images];
+    lightboxIndex = startIndex;
     lightboxAlt = alt;
   }
 
   function closeLightbox() {
-    lightboxImage = null;
+    lightboxImages = [];
+    lightboxIndex = 0;
     lightboxAlt = '';
+  }
+
+  function nextImage() {
+    if (lightboxIndex < lightboxImages.length - 1) {
+      lightboxIndex++;
+    } else {
+      lightboxIndex = 0;
+    }
+  }
+
+  function prevImage() {
+    if (lightboxIndex > 0) {
+      lightboxIndex--;
+    } else {
+      lightboxIndex = lightboxImages.length - 1;
+    }
+  }
+
+  function handleTouchStart(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  }
+
+  function handleTouchEnd(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        nextImage();
+      } else {
+        prevImage();
+      }
+    }
   }
 
   function toggleSubCategory(name) {
@@ -437,12 +479,12 @@
     {:else}
       <div class="products-grid">
         {#each searchResults as result (result.productName)}
-          <div class="product-item" class:has-image={result.image}>
-            {#if result.image}
+          <div class="product-item" class:has-image={result.images}>
+            {#if result.images}
               <div class="product-images">
-                <button class="product-image" on:click={() => openLightbox(result.image, result.productName)}>
-                  <img src={result.image} alt={result.productName} />
-                </button>
+                <button class="product-image" on:click={() => openLightbox(result.images, result.productName)}>
+                  <img src={result.images[0]} alt={result.productName} />
+                                  </button>
               </div>
             {/if}
             <div class="product-info">
@@ -535,11 +577,9 @@
                 <div class="product-item" class:has-image={getProductImages(subItem)}>
                   {#if getProductImages(subItem)}
                     <div class="product-images">
-                      {#each getProductImages(subItem) as img}
-                        <button class="product-image" on:click={() => openLightbox(img, getProductName(subItem))}>
-                          <img src={img} alt={getProductName(subItem)} />
-                        </button>
-                      {/each}
+                      <button class="product-image" on:click={() => openLightbox(getProductImages(subItem), getProductName(subItem))}>
+                        <img src={getProductImages(subItem)[0]} alt={getProductName(subItem)} />
+                                              </button>
                     </div>
                   {/if}
                   <div class="product-info">
@@ -606,11 +646,9 @@
           <div class="product-item" class:has-image={getProductImages(item)}>
             {#if getProductImages(item)}
               <div class="product-images">
-                {#each getProductImages(item) as img}
-                  <button class="product-image" on:click={() => openLightbox(img, getProductName(item))}>
-                    <img src={img} alt={getProductName(item)} />
-                  </button>
-                {/each}
+                <button class="product-image" on:click={() => openLightbox(getProductImages(item), getProductName(item))}>
+                  <img src={getProductImages(item)[0]} alt={getProductName(item)} />
+                                  </button>
               </div>
             {/if}
             <div class="product-info">
@@ -677,13 +715,24 @@
 {/each}
 {/if}
 
-<!-- Image Lightbox -->
-{#if lightboxImage}
+<!-- Image Lightbox with Gallery -->
+{#if lightboxImages.length > 0}
   <div class="lightbox-overlay" on:click={closeLightbox} role="dialog" aria-modal="true">
-    <div class="lightbox-content" on:click|stopPropagation>
+    <div class="lightbox-content" on:click|stopPropagation on:touchstart={handleTouchStart} on:touchend={handleTouchEnd}>
       <button class="lightbox-close" on:click={closeLightbox} aria-label="Close">×</button>
-      <img src={lightboxImage} alt={lightboxAlt} />
-      <p class="lightbox-caption">{lightboxAlt}</p>
+      {#if lightboxImages.length > 1}
+        <button class="lightbox-nav lightbox-prev" on:click={prevImage} aria-label="Previous image">‹</button>
+      {/if}
+      <img src={lightboxImages[lightboxIndex]} alt={lightboxAlt} />
+      {#if lightboxImages.length > 1}
+        <button class="lightbox-nav lightbox-next" on:click={nextImage} aria-label="Next image">›</button>
+        <div class="lightbox-dots">
+          {#each lightboxImages as _, i}
+            <button class="lightbox-dot" class:active={i === lightboxIndex} on:click={() => lightboxIndex = i} aria-label="Go to image {i + 1}"></button>
+          {/each}
+        </div>
+      {/if}
+      <p class="lightbox-caption">{lightboxAlt} {lightboxImages.length > 1 ? `(${lightboxIndex + 1}/${lightboxImages.length})` : ''}</p>
     </div>
   </div>
 {/if}
@@ -1137,14 +1186,13 @@
   .product-image {
     width: 100%;
     max-width: 120px;
-  }
-
-  .product-image {
+    position: relative;
     border: none;
     background: none;
     padding: 0;
     cursor: zoom-in;
     transition: transform 0.2s ease;
+    display: inline-block;
   }
 
   .product-image:hover {
@@ -1157,8 +1205,10 @@
     border-radius: 8px;
     object-fit: cover;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: block;
   }
 
+  
   /* Lightbox styles */
   .lightbox-overlay {
     position: fixed;
@@ -1209,6 +1259,55 @@
     color: white;
     margin-top: 1rem;
     font-size: 1.1rem;
+  }
+
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+  }
+
+  .lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .lightbox-prev {
+    left: -60px;
+  }
+
+  .lightbox-next {
+    right: -60px;
+  }
+
+  .lightbox-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+
+  .lightbox-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s ease;
+  }
+
+  .lightbox-dot:hover,
+  .lightbox-dot.active {
+    background: white;
   }
 
   .product-info h4 {
@@ -1614,6 +1713,19 @@
     .lightbox-close {
       top: -50px;
       font-size: 3rem;
+    }
+
+    .lightbox-nav {
+      font-size: 2rem;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .lightbox-prev {
+      left: 10px;
+    }
+
+    .lightbox-next {
+      right: 10px;
     }
   }
 
