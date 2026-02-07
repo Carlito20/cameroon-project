@@ -254,6 +254,7 @@
   let lightboxAlt = '';
   let touchStartX = 0;
   let touchEndX = 0;
+  let isZoomed = false;
 
   // Custom dropdown state
   let isDropdownOpen = false;
@@ -299,9 +300,15 @@
     lightboxImages = [];
     lightboxIndex = 0;
     lightboxAlt = '';
+    isZoomed = false;
+  }
+
+  function toggleZoom() {
+    isZoomed = !isZoomed;
   }
 
   function nextImage() {
+    isZoomed = false;
     if (lightboxIndex < lightboxImages.length - 1) {
       lightboxIndex++;
     } else {
@@ -310,6 +317,7 @@
   }
 
   function prevImage() {
+    isZoomed = false;
     if (lightboxIndex > 0) {
       lightboxIndex--;
     } else {
@@ -717,14 +725,21 @@
 
 <!-- Image Lightbox with Gallery -->
 {#if lightboxImages.length > 0}
-  <div class="lightbox-overlay" on:click={closeLightbox} role="dialog" aria-modal="true">
-    <div class="lightbox-content" on:click|stopPropagation on:touchstart={handleTouchStart} on:touchend={handleTouchEnd}>
+  <div class="lightbox-overlay" class:zoomed={isZoomed} on:click={closeLightbox} role="dialog" aria-modal="true">
+    <div class="lightbox-content" class:zoomed={isZoomed} on:click|stopPropagation on:touchstart={handleTouchStart} on:touchend={handleTouchEnd}>
       <button class="lightbox-close" on:click={closeLightbox} aria-label="Close">×</button>
-      {#if lightboxImages.length > 1}
+      {#if lightboxImages.length > 1 && !isZoomed}
         <button class="lightbox-nav lightbox-prev" on:click={prevImage} aria-label="Previous image">‹</button>
       {/if}
-      <img src={lightboxImages[lightboxIndex]} alt={lightboxAlt} />
-      {#if lightboxImages.length > 1}
+      <div class="lightbox-image-container" class:zoomed={isZoomed}>
+        <img
+          src={lightboxImages[lightboxIndex]}
+          alt={lightboxAlt}
+          class:zoomed={isZoomed}
+          on:click={toggleZoom}
+        />
+      </div>
+      {#if lightboxImages.length > 1 && !isZoomed}
         <button class="lightbox-nav lightbox-next" on:click={nextImage} aria-label="Next image">›</button>
         <div class="lightbox-dots">
           {#each lightboxImages as _, i}
@@ -732,7 +747,12 @@
           {/each}
         </div>
       {/if}
-      <p class="lightbox-caption">{lightboxAlt} {lightboxImages.length > 1 ? `(${lightboxIndex + 1}/${lightboxImages.length})` : ''}</p>
+      {#if !isZoomed}
+        <p class="lightbox-caption">{lightboxAlt} {lightboxImages.length > 1 ? `(${lightboxIndex + 1}/${lightboxImages.length})` : ''}</p>
+      {/if}
+      <button class="lightbox-zoom-hint" on:click={toggleZoom}>
+        {isZoomed ? '🔍- Tap to zoom out' : '🔍+ Tap image to zoom'}
+      </button>
     </div>
   </div>
 {/if}
@@ -1308,6 +1328,49 @@
   .lightbox-dot:hover,
   .lightbox-dot.active {
     background: white;
+  }
+
+  .lightbox-image-container {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-image-container.zoomed {
+    overflow: auto;
+    max-width: 95vw;
+    max-height: 85vh;
+    cursor: zoom-out;
+  }
+
+  .lightbox-content img {
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+  }
+
+  .lightbox-content img.zoomed {
+    transform: scale(2);
+    cursor: zoom-out;
+  }
+
+  .lightbox-zoom-hint {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .lightbox-zoom-hint:hover {
+    background: rgba(0, 0, 0, 0.8);
   }
 
   .product-info h4 {
