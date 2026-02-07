@@ -174,7 +174,7 @@ export const categories: Category[] = [
             price: 6000
           },
           {
-            name: "Dr Teal's Body Lotion, Prebiotic Lemon Balm & Essential Oils",
+            name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Prebiotic Lemon Balm & Essential Oils",
             images: ['/images/products/dr-teals-lotion-lemon1.jpg', '/images/products/dr-teals-lotion-lemon2.jpg', '/images/products/dr-teals-lotion-lemon3.jpg'],
             quantity: 6,
             price: 5000
@@ -192,7 +192,7 @@ export const categories: Category[] = [
             price: 5000
           },
           {
-            name: "Dr Teal's Body Lotion, Shea Butter & Almond",
+            name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Shea Butter & Almond",
             images: ['/images/products/dr-teals-lotion-shea1.jpg', '/images/products/dr-teals-lotion-shea2.jpg', '/images/products/dr-teals-lotion-shea3.jpg'],
             quantity: 6,
             price: 5000
@@ -202,6 +202,42 @@ export const categories: Category[] = [
             images: ['/images/products/dr-teals-lotion-lavender1.jpg', '/images/products/dr-teals-lotion-lavender2.jpg'],
             quantity: 6,
             price: 5000
+          },
+          {
+            name: 'Vaseline Men Cooling Hydration 3-in-1 Face, Hands & Body Lotion with Menthol',
+            images: ['/images/products/vaseline-men-cooling1.jpg', '/images/products/vaseline-men-cooling2.jpg', '/images/products/vaseline-men-cooling3.jpg'],
+            quantity: 6,
+            price: 6000
+          },
+          {
+            name: 'Vaseline Intensive Care Body Lotion Cocoa Radiant with Pure Cocoa Butter',
+            images: ['/images/products/vaseline-cocoa1.jpg', '/images/products/vaseline-cocoa2.jpg', '/images/products/vaseline-cocoa3.jpg'],
+            quantity: 6,
+            price: 6000
+          },
+          {
+            name: 'Vaseline Intensive Care Soothing Hydration Body Lotion with Aloe Vera',
+            images: ['/images/products/vaseline-aloe1.jpg', '/images/products/vaseline-aloe2.jpg'],
+            quantity: 6,
+            price: 6000
+          },
+          {
+            name: 'Vaseline Intensive Care Sensitive Skin Relief Body Lotion with Colloidal Oatmeal',
+            images: ['/images/products/vaseline-sensitive1.jpg', '/images/products/vaseline-sensitive2.jpg', '/images/products/vaseline-sensitive3.jpg'],
+            quantity: 6,
+            price: 6000
+          },
+          {
+            name: 'Vaseline Intensive Care Calm Healing Body Lotion with Lavender Extract',
+            images: ['/images/products/vaseline-lavender1.jpg', '/images/products/vaseline-lavender2.jpg'],
+            quantity: 6,
+            price: 6000
+          },
+          {
+            name: 'Vaseline Intensive Care Nourishing Moisture Body Lotion with Pure Oat Extract',
+            images: ['/images/products/vaseline-oat1.jpg', '/images/products/vaseline-oat2.jpg'],
+            quantity: 6,
+            price: 6000
           }
         ]
       },
@@ -264,6 +300,12 @@ export const categories: Category[] = [
             images: ['/images/products/dr-teals-kids.jpg', '/images/products/dr-teals-kids1.jpg', '/images/products/dr-teals-kids2.jpg'],
             quantity: 12,
             price: 3000
+          },
+          {
+            name: 'Cetaphil Moisturizing Cream',
+            images: ['/images/products/cetaphil-moisturizer1.jpg', '/images/products/cetaphil-moisturizer2.jpg'],
+            quantity: 12,
+            price: 10000
           }
         ]
       },
