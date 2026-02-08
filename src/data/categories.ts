@@ -308,7 +308,7 @@ export const categories: Category[] = [
         ]
       },
       {
-        name: 'Baby Feeding (bottles, formula containers)',
+        name: 'Nursing & Feeding',
         items: []
       },
       {
