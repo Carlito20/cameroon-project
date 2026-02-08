@@ -72,10 +72,6 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Dinnerware & Utensils',
-        items: []
-      },
-      {
         name: 'Cleaning Tools (sponges, mops, brushes)',
         items: []
       }
