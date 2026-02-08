@@ -70,6 +70,10 @@ export const categories: Category[] = [
       {
         name: 'Cleaning Tools (sponges, mops, brushes)',
         items: []
+      },
+      {
+        name: 'Dining & Entertaining',
+        items: []
       }
     ]
   },
