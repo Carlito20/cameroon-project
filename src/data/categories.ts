@@ -454,10 +454,6 @@ export const categories: Category[] = [
       {
         name: 'Beverages (powders, drink mixes)',
         items: []
-      },
-      {
-        name: 'Spices & Condiments',
-        items: []
       }
     ]
   }
