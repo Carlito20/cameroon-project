@@ -356,10 +356,6 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Kitchen Electronics (blenders, kettles)',
-        items: []
-      },
-      {
         name: 'Home Electronics',
         items: [
           {
