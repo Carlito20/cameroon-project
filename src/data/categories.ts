@@ -440,10 +440,6 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Home Fragrances',
-        items: []
-      },
-      {
         name: 'Light Home Décor',
         items: []
       }
