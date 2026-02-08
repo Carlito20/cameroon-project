@@ -103,6 +103,18 @@
   function clearSearch() {
     searchQuery = '';
     searchResults = [];
+
+    // Check if we came from cart and should return to previous page
+    const returnUrl = sessionStorage.getItem('cartReturnUrl');
+    if (returnUrl) {
+      sessionStorage.removeItem('cartReturnUrl');
+      window.location.href = returnUrl;
+    } else {
+      // Just clear the URL search parameter
+      const url = new URL(window.location.href);
+      url.searchParams.delete('search');
+      window.history.pushState({}, '', url);
+    }
   }
 
   onMount(() => {

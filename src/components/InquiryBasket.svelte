@@ -202,6 +202,8 @@
   }
 
   function viewProduct(itemName) {
+    // Store current URL to return to after viewing product
+    sessionStorage.setItem('cartReturnUrl', window.location.href);
     // Navigate to shop page with search query for this product
     const searchQuery = encodeURIComponent(itemName);
     window.location.href = `/shop?search=${searchQuery}`;
