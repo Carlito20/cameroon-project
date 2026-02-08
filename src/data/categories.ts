@@ -242,22 +242,32 @@ export const categories: Category[] = [
         ]
       },
       {
-        name: 'Deodorants & Perfumes',
+        name: 'Deodorant, Body Mist & Perfumes',
         items: [
-          { name: 'Paris Night Just for Men', image: '/images/products/paris-night-just-for-men.jpeg', price: 5000, quantity: 10 },
-          { name: 'Fantastic Pink 3.4 oz Edp Women', image: '/images/products/fantastic-pink-edp-women.jpg', price: 3000, quantity: 8 },
-          { name: 'Fleur De Paris 3.4 oz Edp For Women', image: '/images/products/fleur-de-paris-edp-women.jpg', price: 5000, quantity: 5 },
-          { name: 'Infinity 3.3 oz Edt For Men', image: '/images/products/infinity-edt-men.jpg', price: 3000, quantity: 12 },
-          { name: 'Lazell Night Bloom For Women Edp 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.jpg', price: 5000, quantity: 6 },
-          { name: 'Lazell Spring For Women Edp 3.4 oz', image: '/images/products/lazell-spring-edp-women.jpg', price: 6000, quantity: 4 },
-          { name: 'Miss Coco 3.4 oz Edp For Women', image: '/images/products/miss-coco-edp-women.jpg', price: 3000, quantity: 7 },
-          { name: 'Platinum 3.4 oz Edp For Men', image: '/images/products/platinum-edp-men.jpg', price: 3000, quantity: 3 },
-          { name: 'Savage 3.4 oz Edp For Men', image: '/images/products/savage-edp-men.jpg', price: 3000, quantity: 9 },
-          { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.jpg', price: 6000, quantity: 5 },
-          { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.jpg', price: 6000, quantity: 4 },
-          { name: 'Victory 3.3 oz Edt For Men', image: '/images/products/victory-edt-men.jpg', price: 3500, quantity: 11 },
-          { name: 'Hercules Paris 3.4 oz Edp For Men', image: '/images/products/hercules-paris-edp-men.jpg', price: 3000, quantity: 6 },
-          { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.jpg', price: 3000, quantity: 15 }
+          {
+            name: 'Men',
+            items: [
+              { name: 'Paris Night Just for Men', image: '/images/products/paris-night-just-for-men.jpeg', price: 5000, quantity: 10 },
+              { name: 'Infinity 3.3 oz Edt For Men', image: '/images/products/infinity-edt-men.jpg', price: 3000, quantity: 12 },
+              { name: 'Platinum 3.4 oz Edp For Men', image: '/images/products/platinum-edp-men.jpg', price: 3000, quantity: 3 },
+              { name: 'Savage 3.4 oz Edp For Men', image: '/images/products/savage-edp-men.jpg', price: 3000, quantity: 9 },
+              { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.jpg', price: 6000, quantity: 5 },
+              { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.jpg', price: 6000, quantity: 4 },
+              { name: 'Victory 3.3 oz Edt For Men', image: '/images/products/victory-edt-men.jpg', price: 3500, quantity: 11 },
+              { name: 'Hercules Paris 3.4 oz Edp For Men', image: '/images/products/hercules-paris-edp-men.jpg', price: 3000, quantity: 6 },
+              { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.jpg', price: 3000, quantity: 15 }
+            ]
+          },
+          {
+            name: 'Women',
+            items: [
+              { name: 'Fantastic Pink 3.4 oz Edp Women', image: '/images/products/fantastic-pink-edp-women.jpg', price: 3000, quantity: 8 },
+              { name: 'Fleur De Paris 3.4 oz Edp For Women', image: '/images/products/fleur-de-paris-edp-women.jpg', price: 5000, quantity: 5 },
+              { name: 'Lazell Night Bloom For Women Edp 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.jpg', price: 5000, quantity: 6 },
+              { name: 'Lazell Spring For Women Edp 3.4 oz', image: '/images/products/lazell-spring-edp-women.jpg', price: 6000, quantity: 4 },
+              { name: 'Miss Coco 3.4 oz Edp For Women', image: '/images/products/miss-coco-edp-women.jpg', price: 3000, quantity: 7 }
+            ]
+          }
         ]
       },
       {
