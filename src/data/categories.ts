@@ -246,12 +246,12 @@ export const categories: Category[] = [
           {
             name: 'Men',
             items: [
-              { name: 'Paris Night Just for Men', image: '/images/products/paris-night-just-for-men.jpeg', price: 5000, quantity: 10 },
-              { name: 'Infinity 3.3 oz Edt For Men', image: '/images/products/infinity-edt-men.jpg', price: 3000, quantity: 12 },
-              { name: 'Platinum 3.4 oz Edp For Men', image: '/images/products/platinum-edp-men.jpg', price: 3000, quantity: 3 },
-              { name: 'Savage 3.4 oz Edp For Men', image: '/images/products/savage-edp-men.jpg', price: 3000, quantity: 9 },
-              { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.jpg', price: 6000, quantity: 5 },
-              { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.jpg', price: 6000, quantity: 4 },
+              { name: 'Paris Night Just for Men', image: '/images/products/paris-night-just-for-men.jpeg', price: 5000, quantity: 6 },
+              { name: 'Infinity 3.3 oz Edt For Men', image: '/images/products/infinity-edt-men.jpg', price: 3000, quantity: 6 },
+              { name: 'Platinum 3.4 oz Edp For Men', image: '/images/products/platinum-edp-men.jpg', price: 3000, quantity: 6 },
+              { name: 'Savage 3.4 oz Edp For Men', image: '/images/products/savage-edp-men.jpg', price: 3000, quantity: 6 },
+              { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.jpg', price: 6000, quantity: 6 },
+              { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.jpg', price: 6000, quantity: 6 },
               { name: 'Victory 3.3 oz Edt For Men', image: '/images/products/victory-edt-men.jpg', price: 3500, quantity: 3 },
               { name: 'Hercules Paris 3.4 oz Edp For Men', image: '/images/products/hercules-paris-edp-men.jpg', price: 3000, quantity: 6 },
               { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.jpg', price: 3000, quantity: 15 }
