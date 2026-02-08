@@ -202,6 +202,11 @@
   }
 
   function viewProduct(itemName) {
+    // Close mobile cart overlay if open
+    if (isOpen) {
+      isOpen = false;
+      updateBodyClass();
+    }
     // Mark that we came from cart so we can return
     sessionStorage.setItem('cameFromCart', 'true');
     // Navigate to shop page with search query for this product
