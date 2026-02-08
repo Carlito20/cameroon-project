@@ -404,10 +404,6 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Sanitizers & Masks',
-        items: []
-      },
-      {
         name: 'Wellness Devices (thermometers, BP monitors)',
         items: []
       }
