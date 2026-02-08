@@ -285,11 +285,7 @@ export const categories: Category[] = [
     description: 'Everything for your little ones',
     items: [
       {
-        name: 'Baby Diapers',
-        items: []
-      },
-      {
-        name: 'Baby Wipes',
+        name: 'Baby Diapers & Wipes',
         items: []
       },
       {
