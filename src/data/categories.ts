@@ -64,7 +64,7 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Kitchen Appliances',
+        name: 'Kitchen Appliance, Tools & Gadgets',
         items: []
       },
       {
