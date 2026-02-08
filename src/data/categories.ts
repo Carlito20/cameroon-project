@@ -371,7 +371,7 @@ export const categories: Category[] = [
         ]
       },
       {
-        name: 'Tech Accessories',
+        name: 'Home & Tech Accessories',
         items: []
       },
       {
