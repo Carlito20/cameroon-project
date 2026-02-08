@@ -68,10 +68,6 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Cleaning Tools (sponges, mops, brushes)',
-        items: []
-      },
-      {
         name: 'Dining & Entertaining',
         items: []
       }
@@ -345,6 +341,10 @@ export const categories: Category[] = [
       },
       {
         name: 'Trash Bags & Storage Bags',
+        items: []
+      },
+      {
+        name: 'Cleaning Tools (sponges, mops, brushes)',
         items: []
       }
     ]
