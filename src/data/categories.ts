@@ -342,10 +342,6 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Paper Towels & Tissues',
-        items: []
-      },
-      {
         name: 'Trash Bags & Storage Bags',
         items: []
       }
