@@ -600,6 +600,84 @@
                 <p class="no-products">Products coming soon...</p>
               {/if}
               {#each item.items as subItem}
+                {#if isSubCategory(subItem)}
+                  <!-- Nested sub-category (e.g., Men/Women under Deodorants) -->
+                  <div class="nested-subcategory" class:expanded={expandedSubCategories.has(subItem.name)}>
+                    <button class="nested-subcategory-header" on:click={() => toggleSubCategory(subItem.name)}>
+                      <h4>{subItem.name}</h4>
+                      <span class="subcategory-toggle">{expandedSubCategories.has(subItem.name) ? '−' : '+'}</span>
+                    </button>
+                    {#if expandedSubCategories.has(subItem.name)}
+                      <div class="nested-subcategory-products">
+                        {#each subItem.items as nestedProduct}
+                          <div class="product-item" class:has-image={getProductImages(nestedProduct)}>
+                            {#if getProductImages(nestedProduct)}
+                              <div class="product-images">
+                                <button class="product-image" on:click={() => openLightbox(getProductImages(nestedProduct), getProductName(nestedProduct))}>
+                                  <img src={getProductImages(nestedProduct)[0]} alt={getProductName(nestedProduct)} />
+                                </button>
+                              </div>
+                            {/if}
+                            <div class="product-info">
+                              <h4>{getProductName(nestedProduct)}</h4>
+                              {#if getProductPrice(nestedProduct)}
+                                <p class="product-price">{formatPrice(getProductPrice(nestedProduct))}</p>
+                              {/if}
+                              {#if getProductQuantity(nestedProduct) !== null && getProductQuantity(nestedProduct) !== undefined}
+                                <p class="product-quantity">
+                                  {#if getProductQuantity(nestedProduct) > 0}
+                                    <span class="in-stock">In Stock: {getProductQuantity(nestedProduct)}</span>
+                                  {:else}
+                                    <span class="out-of-stock">Out of Stock</span>
+                                  {/if}
+                                </p>
+                              {:else}
+                                <p class="product-note">Available - Imported from USA/Canada</p>
+                              {/if}
+                            </div>
+                            <div class="product-actions-wrapper">
+                              <div class="quantity-selector">
+                                <button class="qty-btn" on:click={() => decrementQty(getProductName(nestedProduct))} disabled={(displayQuantities[getProductName(nestedProduct)] || 1) <= 1}>−</button>
+                                <span class="qty-value">{displayQuantities[getProductName(nestedProduct)] || 1}</span>
+                                <button class="qty-btn" on:click={() => incrementQty(getProductName(nestedProduct), getProductQuantity(nestedProduct))} disabled={getProductQuantity(nestedProduct) && (displayQuantities[getProductName(nestedProduct)] || 1) >= getProductQuantity(nestedProduct)}>+</button>
+                              </div>
+                              <div class="product-actions">
+                                <button
+                                  class="btn btn-small btn-inquiry"
+                                  class:added={addedItems[getProductName(nestedProduct)]}
+                                  on:click={() => handleInquiryClick(nestedProduct, subItem.name, getProductQuantity(nestedProduct), getProductPrice(nestedProduct))}
+                                >
+                                  {addedItems[getProductName(nestedProduct)] ? `✓ Added (${addedItems[getProductName(nestedProduct)]})` : 'Add to Cart'}
+                                </button>
+                                <a
+                                  href={getWhatsAppLink(nestedProduct)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  class="btn btn-small btn-whatsapp"
+                                >
+                                  WhatsApp
+                                </a>
+                              </div>
+                              {#if confirmingItem === getProductName(nestedProduct)}
+                                <div class="confirm-popup">
+                                  <div class="confirm-message">Already in your list ({addedItems[getProductName(nestedProduct)]})</div>
+                                  <div class="confirm-actions">
+                                    <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(nestedProduct)}>
+                                      Remove
+                                    </button>
+                                    <button class="confirm-btn keep-btn" on:click={keepItem}>
+                                      Keep
+                                    </button>
+                                  </div>
+                                </div>
+                              {/if}
+                            </div>
+                          </div>
+                        {/each}
+                      </div>
+                    {/if}
+                  </div>
+                {:else}
                 <div class="product-item" class:has-image={getProductImages(subItem)}>
                   {#if getProductImages(subItem)}
                     <div class="product-images">
@@ -663,6 +741,7 @@
                     {/if}
                   </div>
                 </div>
+                {/if}
               {/each}
             </div>
             {/if}
@@ -1181,6 +1260,49 @@
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid #d0d0d0;
+  }
+
+  /* Nested sub-category styles (e.g., Men/Women under Deodorants) */
+  .nested-subcategory {
+    grid-column: 1 / -1;
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border: 1px solid #e0e0e0;
+  }
+
+  .nested-subcategory-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #e8f4fc;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: all 0.2s ease;
+  }
+
+  .nested-subcategory-header:hover {
+    background: #d4ebf7;
+  }
+
+  .nested-subcategory-header h4 {
+    margin: 0;
+    color: #3498db;
+    font-size: 1rem;
+  }
+
+  .nested-subcategory-products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
   }
 
   .no-products {
