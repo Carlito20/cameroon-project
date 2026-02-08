@@ -44,7 +44,7 @@ export function getProductImage(item: string | Product): string | undefined {
 export const categories: Category[] = [
   {
     id: 'home-kitchen',
-    name: 'Home & Kitchen',
+    name: 'Kitchen & Dining',
     icon: '',
     description: 'Cookware, bakeware, storage, and kitchen essentials',
     items: [
