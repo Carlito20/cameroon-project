@@ -332,7 +332,7 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Surface Cleaners & Disinfectants',
+        name: 'Cleaning Supplies',
         items: []
       },
       {
