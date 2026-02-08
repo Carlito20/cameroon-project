@@ -106,13 +106,19 @@
   }
 
   onMount(() => {
-    // Read category from URL parameter
+    // Read category and search from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const categoryParam = urlParams.get('category');
+    const searchParam = urlParams.get('search');
 
     if (categoryParam && categories.find(c => c.id === categoryParam)) {
       selectedCategory = categoryParam;
       filterCategories();
+    }
+
+    // If search parameter exists, populate the search field
+    if (searchParam) {
+      searchQuery = decodeURIComponent(searchParam);
     }
 
     // Listen for cart loaded from localStorage (on page refresh)

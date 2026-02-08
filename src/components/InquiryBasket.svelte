@@ -201,6 +201,12 @@
     updateBodyClass();
   }
 
+  function viewProduct(itemName) {
+    // Navigate to shop page with search query for this product
+    const searchQuery = encodeURIComponent(itemName);
+    window.location.href = `/shop?search=${searchQuery}`;
+  }
+
   function updateBodyClass() {
     if (typeof document !== 'undefined') {
       if (isOpen) {
@@ -229,16 +235,16 @@
         {#each inquiryItems as item (item.name)}
           <div class="basket-item-with-image">
             {#if item.image}
-              <div class="item-image item-image-small">
+              <button class="item-image item-image-small item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
                 <img src={item.image} alt={item.name} />
-              </div>
+              </button>
             {:else}
-              <div class="item-image item-image-small item-image-placeholder">
+              <button class="item-image item-image-small item-image-placeholder item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
                 <span>📦</span>
-              </div>
+              </button>
             {/if}
             <div class="item-details">
-              <span class="item-name">{item.name}</span>
+              <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.name}</button>
               {#if item.price}
                 <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
               {/if}
@@ -305,16 +311,16 @@
             {#each inquiryItems as item (item.name)}
               <div class="basket-item-with-image">
                 {#if item.image}
-                  <div class="item-image">
+                  <button class="item-image item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
                     <img src={item.image} alt={item.name} />
-                  </div>
+                  </button>
                 {:else}
-                  <div class="item-image item-image-placeholder">
+                  <button class="item-image item-image-placeholder item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
                     <span>📦</span>
-                  </div>
+                  </button>
                 {/if}
                 <div class="item-details">
-                  <span class="item-name">{item.name}</span>
+                  <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.name}</button>
                   {#if item.price}
                     <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
                   {/if}
@@ -822,6 +828,32 @@
     font-size: 1rem;
     font-weight: 500;
     color: #2c3e50;
+  }
+
+  .item-name-clickable {
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .item-name-clickable:hover {
+    color: #3498db;
+    text-decoration: underline;
+  }
+
+  .item-clickable {
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .item-clickable:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .item-category {
