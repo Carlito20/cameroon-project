@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
 
   export let whatsappNumber = "237670358551";
+  export let formspreeEndpoint = "https://formspree.io/f/xqedaepd";
 
   // Cart expiration time: 1 hour in milliseconds
   const CART_EXPIRY_MS = 60 * 60 * 1000;
@@ -170,7 +171,7 @@
     updateBodyClass();
   }
 
-  function sendViaWhatsApp() {
+  async function sendViaWhatsApp() {
     if (inquiryItems.length === 0) return;
 
     const itemList = inquiryItems.map(item => {
@@ -180,6 +181,24 @@
     }).join('\n');
 
     const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nEstimated Total: ${formatPrice(totalPrice)} FCFA\n\nPlease confirm availability and final price.`;
+
+    // Send to Formspree for email notification
+    try {
+      const formData = new FormData();
+      formData.append('order_type', 'WhatsApp Order Request');
+      formData.append('total_items', totalItems.toString());
+      formData.append('estimated_total', `${formatPrice(totalPrice)} FCFA`);
+      formData.append('order_details', itemList);
+      formData.append('full_message', message);
+
+      fetch(formspreeEndpoint, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+    } catch (e) {
+      // Silently fail - WhatsApp is the primary method
+    }
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;

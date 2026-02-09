@@ -7,6 +7,7 @@ import InquiryBasket from '../components/InquiryBasket.svelte';
 import '../styles/shop.css';
 
 const whatsappNumber = "237670358551";
+const formspreeEndpoint = "https://formspree.io/f/xqedaepd";
 ---
 
 <BaseLayout title="Shop - American Select">
@@ -35,6 +36,7 @@ const whatsappNumber = "237670358551";
       <InquiryBasket
         client:load
         whatsappNumber={whatsappNumber}
+        formspreeEndpoint={formspreeEndpoint}
       />
     </div>
   </section>
