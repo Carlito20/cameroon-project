@@ -363,14 +363,14 @@ export const categories: Category[] = [
     description: 'Essential electronics and accessories',
     items: [
       {
-        name: 'Small Electronics (chargers, power banks)',
+        name: 'Mobile & Accessories',
         items: []
       },
       {
         name: 'Home Electronics',
         items: [
           {
-            name: 'Rechargeable LED Flashlight With High Power Lamp',
+            name: 'Rechargeable LED Torch/Flashlight With High Power Lamp',
             images: ['/images/products/torch1.jpeg', '/images/products/torch.jpeg', '/images/products/torch2.jpeg', '/images/products/torch3.jpeg'],
             quantity: 15,
             price: 2500
@@ -378,11 +378,15 @@ export const categories: Category[] = [
         ]
       },
       {
-        name: 'Tech Accessories',
+        name: 'Audio & Entertainment',
         items: []
       },
       {
-        name: 'Home Accessories',
+        name: 'Computers & Tablets',
+        items: []
+      },
+      {
+        name: 'Cables & Adapters',
         items: []
       }
     ]
@@ -406,7 +410,7 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Wellness Devices (thermometers, BP monitors)',
+        name: 'Wellness Devices',
         items: [
           {
             name: 'Non Contact Forehead Digital Thermometer',
@@ -461,7 +465,7 @@ export const categories: Category[] = [
         items: []
       },
       {
-        name: 'Beverages (powders, drink mixes)',
+        name: 'Beverages',
         items: []
       }
     ]

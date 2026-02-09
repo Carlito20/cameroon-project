@@ -50,5 +50,75 @@ const whatsappNumber = "237670358551";
       </div>
     </div>
   </section>
+
+  <!-- Suggestion Box -->
+  <section class="suggestion-box section">
+    <div class="container">
+      <div class="suggestion-content">
+        <h2>We'd Love Your Feedback</h2>
+        <p class="suggestion-intro">Help us improve your shopping experience. Share your ideas, product requests, or suggestions below. We review every submission and use your input to guide future updates.</p>
+
+        <form class="suggestion-form" id="suggestionForm">
+          <div class="form-group">
+            <label for="name">Name <span class="optional">(optional)</span></label>
+            <input type="text" id="name" name="name" placeholder="Your name">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email <span class="optional">(optional)</span></label>
+            <input type="email" id="email" name="email" placeholder="your@email.com">
+          </div>
+
+          <div class="form-group">
+            <label for="suggestion">Your Suggestion <span class="required">*</span></label>
+            <textarea id="suggestion" name="suggestion" rows="4" placeholder="Share your ideas, product requests, or feedback..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-submit">Submit Suggestion</button>
+        </form>
+        <div class="thank-you-message" id="thankYouMessage" style="display: none;">
+          <div class="thank-you-icon">✓</div>
+          <h3>Thank You for Your Feedback!</h3>
+          <p>Your suggestion has been received and will be reviewed by our team.</p>
+          <button class="btn btn-another" id="submitAnother">Submit Another Suggestion</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script define:vars={{ whatsappNumber }}>
+    const form = document.getElementById('suggestionForm');
+    const thankYouMessage = document.getElementById('thankYouMessage');
+    const submitAnotherBtn = document.getElementById('submitAnother');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value || 'Anonymous';
+      const email = document.getElementById('email').value || 'Not provided';
+      const suggestion = document.getElementById('suggestion').value;
+
+      if (!suggestion.trim()) {
+        alert('Please enter your suggestion');
+        return;
+      }
+
+      const message = `*New Suggestion*\n\nName: ${name}\nEmail: ${email}\n\nSuggestion:\n${suggestion}`;
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+      window.open(whatsappUrl, '_blank');
+
+      // Clear form and show thank you message
+      form.reset();
+      form.style.display = 'none';
+      thankYouMessage.style.display = 'block';
+    });
+
+    submitAnotherBtn.addEventListener('click', function() {
+      thankYouMessage.style.display = 'none';
+      form.style.display = 'block';
+    });
+  </script>
 </BaseLayout>
 

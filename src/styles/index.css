@@ -292,5 +292,184 @@
   }
 }
 
+/* Suggestion Box Section */
+.suggestion-box {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
 
+.suggestion-content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
 
+.suggestion-content h2 {
+  color: var(--secondary-color);
+  margin-bottom: 0.75rem;
+  font-size: 1.8rem;
+}
+
+.suggestion-intro {
+  color: var(--text-light);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.suggestion-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+
+.suggestion-form .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.suggestion-form label {
+  display: block;
+  font-weight: 600;
+  color: var(--secondary-color);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.suggestion-form .optional {
+  font-weight: 400;
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+
+.suggestion-form .required {
+  color: #e74c3c;
+}
+
+.suggestion-form input,
+.suggestion-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.suggestion-form input:focus,
+.suggestion-form textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
+.suggestion-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.suggestion-form .btn-submit {
+  width: 100%;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.suggestion-form .btn-submit:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+}
+
+.suggestion-form .btn-submit:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .suggestion-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .suggestion-intro {
+    font-size: 0.95rem;
+  }
+
+  .suggestion-form {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .suggestion-form {
+    padding: 1.25rem;
+  }
+
+  .suggestion-form input,
+  .suggestion-form textarea {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+
+  .suggestion-form .btn-submit {
+    padding: 12px 20px;
+  }
+}
+
+/* Thank You Message */
+.thank-you-message {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.thank-you-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.thank-you-message h3 {
+  color: var(--secondary-color);
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.thank-you-message p {
+  color: var(--text-light);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.btn-another {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-another:hover {
+  background: #2980b9;
+}
