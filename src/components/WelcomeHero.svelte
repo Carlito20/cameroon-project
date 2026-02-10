@@ -38,7 +38,7 @@
     {
       url: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&h=800&fit=crop",
       title: "Cook Like a Pro",
-      subtitle: "Home & Kitchen",
+      subtitle: "Kitchen & Dining",
       description: "Cookware, appliances, and kitchen tools for every meal."
     },
     {
@@ -57,13 +57,42 @@
 
   let currentSlide = 0;
   let interval;
+  let touchStartX = 0;
+  let touchEndX = 0;
 
   function nextSlide() {
     currentSlide = (currentSlide + 1) % slides.length;
   }
 
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+  }
+
   function goToSlide(index) {
     currentSlide = index;
+  }
+
+  function handleTouchStart(e) {
+    touchStartX = e.touches[0].clientX;
+  }
+
+  function handleTouchMove(e) {
+    touchEndX = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        nextSlide(); // Swipe left - go to next
+      } else {
+        prevSlide(); // Swipe right - go to previous
+      }
+    }
+    touchStartX = 0;
+    touchEndX = 0;
   }
 
   onMount(() => {
@@ -75,7 +104,12 @@
   });
 </script>
 
-<section class="welcome-hero">
+<section
+  class="welcome-hero"
+  on:touchstart={handleTouchStart}
+  on:touchmove={handleTouchMove}
+  on:touchend={handleTouchEnd}
+>
   <!-- Background Images -->
   <div class="background-slideshow">
     {#each slides as slide, index}

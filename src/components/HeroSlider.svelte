@@ -50,8 +50,8 @@
     },
     {
       id: 6,
-      title: "Home &",
-      subtitle: "Kitchen",
+      title: "Kitchen &",
+      subtitle: "Dining",
       description: "Cookware, bakeware, food storage, kitchen appliances and tools for your home.",
       image: "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=1400&h=600&fit=crop&crop=center",
       color: "#fcf0e8",
@@ -79,6 +79,8 @@
 
   let currentSlide = 0;
   let interval;
+  let touchStartX = 0;
+  let touchEndX = 0;
 
   function nextSlide() {
     currentSlide = (currentSlide + 1) % slides.length;
@@ -100,6 +102,31 @@
     if (interval) clearInterval(interval);
   }
 
+  function handleTouchStart(e) {
+    touchStartX = e.touches[0].clientX;
+    stopAutoPlay();
+  }
+
+  function handleTouchMove(e) {
+    touchEndX = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        nextSlide(); // Swipe left - go to next
+      } else {
+        prevSlide(); // Swipe right - go to previous
+      }
+    }
+    touchStartX = 0;
+    touchEndX = 0;
+    startAutoPlay();
+  }
+
   onMount(() => {
     startAutoPlay();
   });
@@ -113,6 +140,9 @@
   class="hero-slider"
   on:mouseenter={stopAutoPlay}
   on:mouseleave={startAutoPlay}
+  on:touchstart={handleTouchStart}
+  on:touchmove={handleTouchMove}
+  on:touchend={handleTouchEnd}
 >
   {#each slides as slide, index}
     <div
