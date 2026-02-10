@@ -68,9 +68,9 @@ export const categories: Category[] = [
         items: [
           {
             name: 'Manual Food Chopper, Pull String Vegetable and Meat Mincer with Clear Container, Hand-Powered Kitchen Processor',
-            image: '/images/products/manual-food-chopper.jpeg',
+            images: ['/images/products/manual-food-chopper.jpeg', '/images/products/manual-food-chopper-2.jpeg'],
             quantity: 11,
-            price: 8000
+            price: 5000
           }
         ]
       },
@@ -466,6 +466,10 @@ export const categories: Category[] = [
       },
       {
         name: 'Beverages',
+        items: []
+      },
+      {
+        name: 'Dry Goods',
         items: []
       }
     ]
