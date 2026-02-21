@@ -4,6 +4,7 @@ export interface Product {
   images?: string[];
   price?: number;
   quantity?: number;
+  colors?: string[];
 }
 
 export interface SubCategory {
@@ -362,7 +363,8 @@ export const categories: Category[] = [
               '/images/products/spin-mop-bucket-2.jpeg',
               '/images/products/spin-mop-bucket-3.jpeg',
               '/images/products/spin-mop-bucket-4.jpeg',
-              '/images/products/spin-mop-bucket-5.jpeg'
+              '/images/products/spin-mop-bucket-5.jpeg',
+              '/images/products/spin-mop-bucket-6.jpeg'
             ]
           }
         ]
@@ -392,7 +394,32 @@ export const categories: Category[] = [
       },
       {
         name: 'Audio & Entertainment',
-        items: []
+        items: [
+          {
+            name: 'TG537 Portable Wireless Speaker - TWS Technology',
+            price: 8000,
+            quantity: 6,
+            colors: ['#808080', '#e74c3c', '#2c2c2c'],
+            images: [
+              '/images/products/tg537-speaker-1.jpeg',
+              '/images/products/tg537-speaker-2.jpeg',
+              '/images/products/tg537-speaker-3.jpeg',
+              '/images/products/tg537-speaker-4.jpeg',
+              '/images/products/tg537-speaker-5.jpeg'
+            ]
+          },
+          {
+            name: 'TG667 Compact And Portable Wireless Speaker. It Supports USB, TF Cards, And FM Radio, And Can Connect to Mobile Phones, Tablets',
+            price: 8000,
+            quantity: 8,
+            colors: ['#e74c3c', '#2980b9', '#2c2c2c', '#800080'],
+            images: [
+              '/images/products/tg667-speaker-1.jpeg',
+              '/images/products/tg667-speaker-2.jpeg',
+              '/images/products/tg667-speaker-3.jpeg'
+            ]
+          }
+        ]
       },
       {
         name: 'Computers & Tablets',

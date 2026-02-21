@@ -33,6 +33,10 @@
     return typeof item === 'string' ? null : item.quantity;
   }
 
+  function getProductColors(item) {
+    return typeof item === 'string' ? null : item.colors;
+  }
+
   function formatPrice(price) {
     return price ? `${price.toLocaleString()} XAF` : null;
   }
@@ -75,7 +79,8 @@
                 subCategoryName: item.name,
                 price: getProductPrice(subItem),
                 quantity: getProductQuantity(subItem),
-                images: getProductImages(subItem)
+                images: getProductImages(subItem),
+                colors: getProductColors(subItem)
               });
             }
           });
@@ -90,7 +95,8 @@
               subCategoryName: null,
               price: getProductPrice(item),
               quantity: getProductQuantity(item),
-              images: getProductImages(item)
+              images: getProductImages(item),
+              colors: getProductColors(item)
             });
           }
         }
@@ -575,6 +581,13 @@
                 <p class="product-quantity">
                   {#if result.quantity > 0}
                     <span class="in-stock">In Stock: {result.quantity}</span>
+                    {#if result.colors}
+                      <span class="color-dots">
+                        {#each result.colors as color}
+                          <span class="color-dot" style="background: {color};" title={color}></span>
+                        {/each}
+                      </span>
+                    {/if}
                   {:else}
                     <span class="out-of-stock">Out of Stock</span>
                   {/if}
@@ -677,6 +690,13 @@
                                 <p class="product-quantity">
                                   {#if getProductQuantity(nestedProduct) > 0}
                                     <span class="in-stock">In Stock: {getProductQuantity(nestedProduct)}</span>
+                                    {#if getProductColors(nestedProduct)}
+                                      <span class="color-dots">
+                                        {#each getProductColors(nestedProduct) as color}
+                                          <span class="color-dot" style="background: {color};" title={color}></span>
+                                        {/each}
+                                      </span>
+                                    {/if}
                                   {:else}
                                     <span class="out-of-stock">Out of Stock</span>
                                   {/if}
@@ -745,6 +765,13 @@
                       <p class="product-quantity">
                         {#if getProductQuantity(subItem) > 0}
                           <span class="in-stock">In Stock: {getProductQuantity(subItem)}</span>
+                          {#if getProductColors(subItem)}
+                            <span class="color-dots">
+                              {#each getProductColors(subItem) as color}
+                                <span class="color-dot" style="background: {color};" title={color}></span>
+                              {/each}
+                            </span>
+                          {/if}
                         {:else}
                           <span class="out-of-stock">Out of Stock</span>
                         {/if}
@@ -815,6 +842,13 @@
                 <p class="product-quantity">
                   {#if getProductQuantity(item) > 0}
                     <span class="in-stock">In Stock: {getProductQuantity(item)}</span>
+                    {#if getProductColors(item)}
+                      <span class="color-dots">
+                        {#each getProductColors(item) as color}
+                          <span class="color-dot" style="background: {color};" title={color}></span>
+                        {/each}
+                      </span>
+                    {/if}
                   {:else}
                     <span class="out-of-stock">Out of Stock</span>
                   {/if}
@@ -1636,6 +1670,22 @@
   .in-stock {
     color: #27ae60;
     font-weight: 600;
+  }
+
+  .color-dots {
+    display: inline-flex;
+    gap: 5px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .color-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   }
 
   .out-of-stock {
