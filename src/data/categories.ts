@@ -352,7 +352,20 @@ export const categories: Category[] = [
       },
       {
         name: 'Cleaning Tools (sponges, mops, brushes)',
-        items: []
+        items: [
+          {
+            name: 'Mop and Bucket Set, 360° Spin Mop and Bucket Set and 4 Microfiber Mop Refills',
+            price: 15000,
+            quantity: 3,
+            images: [
+              '/images/products/spin-mop-bucket-1.jpeg',
+              '/images/products/spin-mop-bucket-2.jpeg',
+              '/images/products/spin-mop-bucket-3.jpeg',
+              '/images/products/spin-mop-bucket-4.jpeg',
+              '/images/products/spin-mop-bucket-5.jpeg'
+            ]
+          }
+        ]
       }
     ]
   },
