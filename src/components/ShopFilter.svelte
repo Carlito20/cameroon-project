@@ -48,6 +48,9 @@
   let searchQuery = '';
   let searchResults = [];
 
+  // Sort functionality
+  let sortBy = 'default';
+
   // Search through all products
   function performSearch(query) {
     if (!query || query.trim().length < 2) {
@@ -99,6 +102,41 @@
 
   // Reactive search - triggers when searchQuery changes
   $: performSearch(searchQuery);
+
+  // Sort helper for product items
+  function sortProducts(items, sort) {
+    if (sort === 'default') return items;
+    return [...items].sort((a, b) => {
+      const nameA = (a.productName || getProductName(a)).toLowerCase();
+      const nameB = (b.productName || getProductName(b)).toLowerCase();
+      const priceA = a.price || getProductPrice(a) || 0;
+      const priceB = b.price || getProductPrice(b) || 0;
+      if (sort === 'name-asc') return nameA.localeCompare(nameB);
+      if (sort === 'name-desc') return nameB.localeCompare(nameA);
+      if (sort === 'price-low') return priceA - priceB;
+      if (sort === 'price-high') return priceB - priceA;
+      return 0;
+    });
+  }
+
+  // Reactive sorted search results
+  $: sortedSearchResults = sortProducts(searchResults, sortBy);
+
+  // Sort regular product items (for category/subcategory views)
+  function sortItems(items, sort) {
+    if (sort === 'default') return items;
+    return [...items].sort((a, b) => {
+      const nameA = getProductName(a).toLowerCase();
+      const nameB = getProductName(b).toLowerCase();
+      const priceA = getProductPrice(a) || 0;
+      const priceB = getProductPrice(b) || 0;
+      if (sort === 'name-asc') return nameA.localeCompare(nameB);
+      if (sort === 'name-desc') return nameB.localeCompare(nameA);
+      if (sort === 'price-low') return priceA - priceB;
+      if (sort === 'price-high') return priceB - priceA;
+      return 0;
+    });
+  }
 
   function clearSearch() {
     // Check if we came from cart and should return to previous page
@@ -469,6 +507,18 @@
         <button class="search-clear" on:click={clearSearch} aria-label="Clear search">✕</button>
       {/if}
     </div>
+    {#if expandedSubCategories.size > 0 || (searchQuery && searchQuery.trim().length >= 2)}
+      <div class="sort-wrapper">
+        <label class="sort-label" for="sort-select">Sort by:</label>
+        <select id="sort-select" class="sort-select" bind:value={sortBy}>
+          <option value="default">Default</option>
+          <option value="name-asc">Name (A-Z)</option>
+          <option value="name-desc">Name (Z-A)</option>
+          <option value="price-low">Price (Low-High)</option>
+          <option value="price-high">Price (High-Low)</option>
+        </select>
+      </div>
+    {/if}
   </div>
 </div>
 
@@ -496,7 +546,7 @@
 <!-- Search Results -->
 {#if searchQuery && searchQuery.trim().length >= 2}
   <div class="search-results-section">
-    {#if searchResults.length === 0}
+    {#if sortedSearchResults.length === 0}
       <div class="no-results">
         <span class="no-results-icon">🔍</span>
         <p>No products found matching "<strong>{searchQuery}</strong>"</p>
@@ -504,7 +554,7 @@
       </div>
     {:else}
       <div class="products-grid">
-        {#each searchResults as result (result.productName)}
+        {#each sortedSearchResults as result (result.productName)}
           <div class="product-item" class:has-image={result.images}>
             {#if result.images}
               <div class="product-images">
@@ -599,7 +649,7 @@
               {#if item.items.length === 0}
                 <p class="no-products">Products coming soon...</p>
               {/if}
-              {#each item.items as subItem}
+              {#each sortItems(item.items, sortBy) as subItem}
                 {#if isSubCategory(subItem)}
                   <!-- Nested sub-category (e.g., Men/Women under Deodorants) -->
                   <div class="nested-subcategory" class:expanded={expandedSubCategories.has(subItem.name)}>
@@ -609,7 +659,7 @@
                     </button>
                     {#if expandedSubCategories.has(subItem.name)}
                       <div class="nested-subcategory-products">
-                        {#each subItem.items as nestedProduct}
+                        {#each sortItems(subItem.items, sortBy) as nestedProduct}
                           <div class="product-item" class:has-image={getProductImages(nestedProduct)}>
                             {#if getProductImages(nestedProduct)}
                               <div class="product-images">
@@ -894,6 +944,7 @@
   .search-group {
     display: flex;
     align-items: center;
+    gap: 0.75rem;
   }
 
   
@@ -1719,6 +1770,41 @@
     background: #a7f3d0;
   }
 
+  /* Sort Styles */
+  .sort-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .sort-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2c3e50;
+    white-space: nowrap;
+  }
+
+  .sort-select {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .sort-select:hover {
+    border-color: #3498db;
+  }
+
+  .sort-select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+  }
+
   @media (max-width: 768px) {
     .filter-container {
       flex-direction: column;
@@ -1742,10 +1828,23 @@
 
     .search-group {
       width: 100%;
+      flex-direction: column;
+    }
+
+    .sort-wrapper {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .sort-select {
+      flex: 1;
+      min-height: 48px;
+      font-size: 1rem;
     }
 
     .search-input-wrapper {
       max-width: none;
+      width: 100%;
     }
 
     .search-input {
