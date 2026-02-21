@@ -7,6 +7,7 @@ import '../styles/contact.css';
 // 2. Create a new form for "Contact Form"
 // 3. Copy the form ID and replace 'YOUR_FORMSPREE_ID' below
 const formspreeEndpoint = "https://formspree.io/f/xwvnreqa";
+const suggestionEndpoint = "https://formspree.io/f/xqedaepd";
 ---
 
 <BaseLayout title="Contact Us - Get in Touch">
@@ -113,6 +114,33 @@ const formspreeEndpoint = "https://formspree.io/f/xwvnreqa";
         </div>
       </div>
 
+      <!-- Suggestion Box -->
+      <div class="suggestion-box" style="margin-top: 4rem; background: #f9f9f9; border-radius: 12px; padding: 2.5rem;">
+        <h2 style="text-align: center; margin-bottom: 0.5rem;">We'd Love Your Feedback</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 2rem;">Help us improve your shopping experience. Share your ideas, product requests, or suggestions below. We review every submission and use your input to guide future updates.</p>
+
+        <form class="contact-form" id="suggestionForm" action={suggestionEndpoint} method="POST">
+          <div class="form-group">
+            <label for="sug-name">Name (optional)</label>
+            <input type="text" id="sug-name" name="name" placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label for="sug-email">Email (optional)</label>
+            <input type="email" id="sug-email" name="email" placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="suggestion">Your Suggestion *</label>
+            <textarea id="suggestion" name="suggestion" rows="4" placeholder="Share your ideas, product requests, or feedback..." required></textarea>
+          </div>
+          <button type="submit" class="btn" id="suggestion-submit-btn">Submit Suggestion</button>
+        </form>
+        <div id="suggestion-success" style="display:none; text-align:center; padding: 2rem 1rem;">
+          <h3 style="color: #28a745; margin-bottom: 1rem;">Thank You for Your Feedback!</h3>
+          <p>Your suggestion has been received and will be reviewed by our team.</p>
+          <button class="btn" id="suggestion-another-btn" style="margin-top: 1.5rem;">Submit Another Suggestion</button>
+        </div>
+      </div>
+
       <div id="faq" class="faq-section" style="margin-top: 4rem;">
         <h2 style="text-align: center; margin-bottom: 2rem;">Frequently Asked Questions</h2>
         <div class="faq-accordion">
@@ -191,6 +219,47 @@ const formspreeEndpoint = "https://formspree.io/f/xwvnreqa";
       alert('Something went wrong. Please try again.');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send Message';
+    }
+  });
+
+  // Suggestion form
+  const sugForm = document.getElementById('suggestionForm');
+  const sugSuccess = document.getElementById('suggestion-success');
+  const sugSubmitBtn = document.getElementById('suggestion-submit-btn');
+  const sugAnotherBtn = document.getElementById('suggestion-another-btn');
+
+  sugAnotherBtn?.addEventListener('click', () => {
+    sugForm.reset();
+    sugSuccess.style.display = 'none';
+    sugForm.style.display = '';
+    sugSubmitBtn.disabled = false;
+    sugSubmitBtn.textContent = 'Submit Suggestion';
+  });
+
+  sugForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    sugSubmitBtn.disabled = true;
+    sugSubmitBtn.textContent = 'Sending...';
+
+    try {
+      const res = await fetch(sugForm.action, {
+        method: 'POST',
+        body: new FormData(sugForm),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        sugForm.style.display = 'none';
+        sugSuccess.style.display = 'block';
+      } else {
+        alert('Something went wrong. Please try again.');
+        sugSubmitBtn.disabled = false;
+        sugSubmitBtn.textContent = 'Submit Suggestion';
+      }
+    } catch {
+      alert('Something went wrong. Please try again.');
+      sugSubmitBtn.disabled = false;
+      sugSubmitBtn.textContent = 'Submit Suggestion';
     }
   });
 </script>
