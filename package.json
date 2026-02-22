@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "watermark": "node scripts/add-watermark-all.mjs",
+    "build": "node scripts/add-watermark-all.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
