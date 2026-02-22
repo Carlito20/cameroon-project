@@ -416,7 +416,94 @@ export const categories: Category[] = [
             images: [
               '/images/products/tg667-speaker-1.jpeg',
               '/images/products/tg667-speaker-2.jpeg',
-              '/images/products/tg667-speaker-3.jpeg'
+              '/images/products/tg667-speaker-3.jpeg',
+              '/images/products/tg667-speaker-4.jpeg'
+            ]
+          },
+          {
+            name: 'Hyundai LP5t Wireless Headphone with Surround Sound and Noise Cancellation',
+            price: 5000,
+            quantity: 4,
+            colors: ['#808080', '#ffffff'],
+            images: [
+              '/images/products/hyundai-lp5t-1.jpeg',
+              '/images/products/hyundai-lp5t-2.jpeg',
+              '/images/products/hyundai-lp5t-3.jpeg',
+              '/images/products/hyundai-lp5t-4.jpeg'
+            ]
+          },
+          {
+            name: 'Wireless Headphones, 5.4 Headphones with 4 ENC Noise-cancelling Microphones, HiFi Stereo Deep Bass, 50 Hours Of Playback Time, USB-C',
+            price: 2500,
+            quantity: 2,
+            colors: ['#2c2c2c'],
+            images: [
+              '/images/products/wireless-headphones-enc-1.jpeg',
+              '/images/products/wireless-headphones-enc-2.jpeg'
+            ]
+          },
+          {
+            name: 'Wireless Headphones with Touch Control And Charging Case',
+            price: 2500,
+            quantity: 3,
+            images: [
+              '/images/products/wireless-touch-headphones-1.jpeg',
+              '/images/products/wireless-touch-headphones-2.jpeg',
+              '/images/products/wireless-touch-headphones-3.jpeg'
+            ]
+          },
+          {
+            name: 'Acer TWS Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation',
+            price: 3500,
+            quantity: 4,
+            colors: ['#ff8c00', '#f5f5dc'],
+            images: [
+              '/images/products/acer-tws-headset-1.jpeg',
+              '/images/products/acer-tws-headset-2.jpeg',
+              '/images/products/acer-tws-headset-3.jpeg',
+              '/images/products/acer-tws-headset-4.jpeg'
+            ]
+          },
+          {
+            name: 'Acer Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control',
+            price: 3500,
+            quantity: 6,
+            colors: ['#f5f5dc', '#2c2c2c', '#800080'],
+            images: [
+              '/images/products/acer-wireless-stereo-1.jpeg',
+              '/images/products/acer-wireless-stereo-2.jpeg'
+            ]
+          },
+          {
+            name: 'Nokia Go Earbuds+ TWS-201',
+            price: 6000,
+            quantity: 2,
+            colors: ['#ffffff', '#2c2c2c'],
+            images: [
+              '/images/products/nokia-earbuds-1.jpeg',
+              '/images/products/nokia-earbuds-2.jpeg',
+              '/images/products/nokia-earbuds-3.jpeg',
+              '/images/products/nokia-earbuds-4.jpeg'
+            ]
+          },
+          {
+            name: 'Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology',
+            price: 6000,
+            quantity: 4,
+            colors: ['#ffffff'],
+            images: [
+              '/images/products/wireless-earbuds-tws-1.jpeg',
+              '/images/products/wireless-earbuds-tws-2.jpeg',
+              '/images/products/wireless-earbuds-tws-3.jpeg'
+            ]
+          },
+          {
+            name: 'Portable Wireless Speaker, 15W Stereo, RGB Lighting, Suitable for Both Indoor And Outdoor Use',
+            price: 6500,
+            quantity: 3,
+            images: [
+              '/images/products/portable-speaker-rgb-1.jpeg',
+              '/images/products/portable-speaker-rgb-2.jpeg'
             ]
           }
         ]
