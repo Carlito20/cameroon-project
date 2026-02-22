@@ -21,7 +21,7 @@
       url: "/images/food-pantry-hero.jpg",
       title: "Taste the American Favorites",
       subtitle: "Food & Pantry",
-      description: "Authentic snacks, cereals, canned goods and pantry essentials."
+      description: "Authentic snacks, cereals, canned goods, and pantry essentials."
     },
     {
       url: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=1920&h=800&fit=crop",
@@ -45,7 +45,7 @@
       url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&h=800&fit=crop",
       title: "Your Wellness Matters",
       subtitle: "Health & Wellness",
-      description: "Vitamins, supplements, and health products for your wellbeing."
+      description: "Vitamins, supplements, and health products for your well-being."
     },
     {
       url: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=1920&h=800&fit=crop",

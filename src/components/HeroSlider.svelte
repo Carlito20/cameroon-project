@@ -16,7 +16,7 @@
       id: 2,
       title: "Body, Bath &",
       subtitle: "Personal Care",
-      description: "Bath soaps, body lotions, oral care, hair care and grooming products from top North American brands.",
+      description: "Bath soaps, body lotions, oral care, hair care, and grooming products from top North American brands.",
       image: "/images/body-bath-personal-care-home.jpg",
       color: "#fce8f4",
       link: "/shop?category=body-bath"
@@ -25,7 +25,7 @@
       id: 3,
       title: "Food &",
       subtitle: "Pantry",
-      description: "Authentic American snacks, breakfast items, canned foods, beverages and spices delivered to Cameroon.",
+      description: "Authentic American snacks, breakfast items, canned foods, beverages, and spices delivered to Cameroon.",
       image: "/images/food-pantry-slider.jpg",
       color: "#fcf4e8",
       link: "/shop?category=food-pantry"
@@ -34,7 +34,7 @@
       id: 4,
       title: "Electronics &",
       subtitle: "Accessories",
-      description: "Chargers, power banks, kitchen electronics, cables and smart home accessories from the USA.",
+      description: "Chargers, power banks, kitchen electronics, cables, and smart home accessories from the USA.",
       image: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1400&h=600&fit=crop&crop=center",
       color: "#e8ecfc",
       link: "/shop?category=electronics"
@@ -43,7 +43,7 @@
       id: 5,
       title: "Household Cleaning",
       subtitle: "& Supplies",
-      description: "Laundry detergents, dishwashing supplies, surface cleaners, air fresheners and more.",
+      description: "Laundry detergents, dishwashing supplies, surface cleaners, air fresheners, and more.",
       image: "/images/household-cleaning-slider.jpg",
       color: "#e8fcf4",
       link: "/shop?category=household-cleaning"
@@ -52,7 +52,7 @@
       id: 6,
       title: "Kitchen &",
       subtitle: "Dining",
-      description: "Cookware, bakeware, food storage, kitchen appliances and tools for your home.",
+      description: "Cookware, bakeware, food storage, kitchen appliances, and tools for your home.",
       image: "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=1400&h=600&fit=crop&crop=center",
       color: "#fcf0e8",
       link: "/shop?category=home-kitchen"
@@ -61,7 +61,7 @@
       id: 7,
       title: "Health &",
       subtitle: "Wellness",
-      description: "Vitamins, supplements, first aid supplies, pain relief and wellness devices for your wellbeing.",
+      description: "Vitamins, supplements, first aid supplies, pain relief, and wellness devices for your well-being.",
       image: "/images/health-wellness-slider.jpg",
       color: "#f0e8fc",
       link: "/shop?category=health-wellness"
@@ -70,7 +70,7 @@
       id: 8,
       title: "Home",
       subtitle: "Essentials",
-      description: "Storage, organization, bedding, linens, towels and home décor to make your house a home.",
+      description: "Storage, organization, bedding, linens, towels, and home décor to make your house a home.",
       image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1400&h=600&fit=crop&crop=center",
       color: "#e8f0fc",
       link: "/shop?category=home-essentials"

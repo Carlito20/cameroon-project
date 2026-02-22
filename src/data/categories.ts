@@ -248,24 +248,24 @@ export const categories: Category[] = [
             name: 'Men',
             items: [
               { name: 'Paris Night Just for Men', image: '/images/products/paris-night-just-for-men.jpeg', price: 5000, quantity: 6 },
-              { name: 'Infinity 3.3 oz Edt For Men', image: '/images/products/infinity-edt-men.jpg', price: 3000, quantity: 6 },
-              { name: 'Platinum 3.4 oz Edp For Men', image: '/images/products/platinum-edp-men.jpg', price: 3000, quantity: 6 },
-              { name: 'Savage 3.4 oz Edp For Men', image: '/images/products/savage-edp-men.jpg', price: 3000, quantity: 6 },
+              { name: 'Infinity 3.3 oz EDT For Men', image: '/images/products/infinity-edt-men.jpg', price: 3000, quantity: 6 },
+              { name: 'Platinum 3.4 oz EDP For Men', image: '/images/products/platinum-edp-men.jpg', price: 3000, quantity: 6 },
+              { name: 'Savage 3.4 oz EDP For Men', image: '/images/products/savage-edp-men.jpg', price: 3000, quantity: 6 },
               { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.jpg', price: 6000, quantity: 6 },
               { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.jpg', price: 6000, quantity: 6 },
-              { name: 'Victory 3.3 oz Edt For Men', image: '/images/products/victory-edt-men.jpg', price: 3500, quantity: 3 },
-              { name: 'Hercules Paris 3.4 oz Edp For Men', image: '/images/products/hercules-paris-edp-men.jpg', price: 3000, quantity: 6 },
+              { name: 'Victory 3.3 oz EDT For Men', image: '/images/products/victory-edt-men.jpg', price: 3500, quantity: 3 },
+              { name: 'Hercules Paris 3.4 oz EDP For Men', image: '/images/products/hercules-paris-edp-men.jpg', price: 3000, quantity: 6 },
               { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.jpg', price: 3000, quantity: 15 }
             ]
           },
           {
             name: 'Women',
             items: [
-              { name: 'Fantastic Pink 3.4 oz Edp Women', image: '/images/products/fantastic-pink-edp-women.jpg', price: 3000, quantity: 6 },
-              { name: 'Fleur De Paris 3.4 oz Edp For Women', image: '/images/products/fleur-de-paris-edp-women.jpg', price: 5000, quantity: 6 },
-              { name: 'Lazell Night Bloom For Women Edp 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.jpg', price: 5000, quantity: 6 },
-              { name: 'Lazell Spring For Women Edp 3.4 oz', image: '/images/products/lazell-spring-edp-women.jpg', price: 6000, quantity: 6 },
-              { name: 'Miss Coco 3.4 oz Edp For Women', image: '/images/products/miss-coco-edp-women.jpg', price: 3000, quantity: 6 }
+              { name: 'Fantastic Pink 3.4 oz EDP For Women', image: '/images/products/fantastic-pink-edp-women.jpg', price: 3000, quantity: 6 },
+              { name: 'Fleur De Paris 3.4 oz EDP For Women', image: '/images/products/fleur-de-paris-edp-women.jpg', price: 5000, quantity: 6 },
+              { name: 'Lazell Night Bloom For Women EDP 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.jpg', price: 5000, quantity: 6 },
+              { name: 'Lazell Spring For Women EDP 3.4 oz', image: '/images/products/lazell-spring-edp-women.jpg', price: 6000, quantity: 6 },
+              { name: 'Miss Coco 3.4 oz EDP For Women', image: '/images/products/miss-coco-edp-women.jpg', price: 3000, quantity: 6 }
             ]
           }
         ]
@@ -282,7 +282,7 @@ export const categories: Category[] = [
         name: "Men's Grooming",
         items: [
           {
-            name: "Men's Electric Shaver 3 in 1 - Portable USB Rechargeable Shaver Featuring 3D Floating Blades And a Digital Display Suitable for Both Wet And Dry Shaving",
+            name: "Men's Electric Shaver 3 in 1 - Portable USB Rechargeable Shaver Featuring 3D Floating Blades and a Digital Display Suitable for Both Wet and Dry Shaving",
             price: 15000,
             quantity: 3,
             images: [
@@ -474,7 +474,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'TG667 Compact And Portable Wireless Speaker. It Supports USB, TF Cards, And FM Radio, And Can Connect to Mobile Phones, Tablets',
+            name: 'TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets',
             price: 8000,
             quantity: 8,
             colors: ['#e74c3c', '#2980b9', '#2c2c2c', '#800080'],
@@ -486,7 +486,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'Hyundai LP5t Wireless Headphone with Surround Sound and Noise Cancellation',
+            name: 'Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation',
             price: 5000,
             quantity: 4,
             colors: ['#808080', '#ffffff'],
@@ -498,7 +498,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'Wireless Headphones, 5.4 Headphones with 4 ENC Noise-cancelling Microphones, HiFi Stereo Deep Bass, 50 Hours Of Playback Time, USB-C',
+            name: 'Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo Deep Bass, 50 Hours of Playback Time, USB-C',
             price: 2500,
             quantity: 2,
             colors: ['#2c2c2c'],
@@ -508,7 +508,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'Wireless Headphones with Touch Control And Charging Case',
+            name: 'Wireless Headphones with Touch Control and Charging Case',
             price: 2500,
             quantity: 3,
             images: [
@@ -563,7 +563,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'Portable Wireless Speaker, 15W Stereo, RGB Lighting, Suitable for Both Indoor And Outdoor Use',
+            name: 'Portable Wireless Speaker, 15W Stereo, RGB Lighting, Suitable for Both Indoor and Outdoor Use',
             price: 6500,
             quantity: 3,
             images: [
@@ -599,7 +599,7 @@ export const categories: Category[] = [
     id: 'health-wellness',
     name: 'Health & Wellness',
     icon: '',
-    description: 'Support your health and wellbeing',
+    description: 'Support your health and well-being',
     items: [
       {
         name: 'Vitamins & Supplements',
@@ -617,13 +617,13 @@ export const categories: Category[] = [
         name: 'Wellness Devices',
         items: [
           {
-            name: 'Non Contact Forehead Digital Thermometer',
+            name: 'Non-Contact Forehead Digital Thermometer',
             images: ['/images/products/therm2.jpeg', '/images/products/therm.jpeg', '/images/products/therm1.jpeg'],
             quantity: 10,
             price: 3000
           },
           {
-            name: 'Rechargeable/Battery Powered(Optional) Digital Wrist Blood Pressure Monitor with Large LCD, Voice Broadcast/(Optional)',
+            name: 'Rechargeable/Battery Powered (Optional) Digital Wrist Blood Pressure Monitor with Large LCD, Voice Broadcast (Optional)',
             price: 15000,
             quantity: 3,
             images: [
