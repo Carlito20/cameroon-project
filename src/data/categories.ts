@@ -280,7 +280,27 @@ export const categories: Category[] = [
       },
       {
         name: "Men's Grooming",
-        items: []
+        items: [
+          {
+            name: "Men's Electric Shaver 3 in 1 - Portable USB Rechargeable Shaver Featuring 3D Floating Blades And a Digital Display Suitable for Both Wet And Dry Shaving",
+            price: 15000,
+            quantity: 3,
+            images: [
+              '/images/products/mens-electric-shaver-1.jpeg',
+              '/images/products/mens-electric-shaver-2.jpeg',
+              '/images/products/mens-electric-shaver-3.jpeg'
+            ]
+          },
+          {
+            name: "Men's Electric Shaver | Exquisite Packaging Box, USB Charging, Lithium Battery, Matte Texture, Essential for Men, Beard Trimming",
+            price: 12000,
+            quantity: 2,
+            images: [
+              '/images/products/mens-shaver-matte-1.jpeg',
+              '/images/products/mens-shaver-matte-2.jpeg'
+            ]
+          }
+        ]
       },
       {
         name: 'Hair Care (shampoo, conditioner, oils)',
@@ -379,7 +399,52 @@ export const categories: Category[] = [
     items: [
       {
         name: 'Mobile & Accessories',
-        items: []
+        items: [
+          {
+            name: 'Smart Watch Compatible with iPhone & Android Devices',
+            price: 5000,
+            quantity: 1,
+            colors: ['#ff69b4'],
+            images: [
+              '/images/products/smart-watch-1.jpeg',
+              '/images/products/smart-watch-2.jpeg'
+            ]
+          },
+          {
+            name: 'Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking',
+            price: 8000,
+            quantity: 6,
+            colors: ['#2c2c2c', '#d4af37', '#ff69b4'],
+            images: [
+              '/images/products/smartwatch-multi-1.jpeg',
+              '/images/products/smartwatch-multi-2.jpeg',
+              '/images/products/smartwatch-multi-3.jpeg',
+              '/images/products/smartwatch-multi-4.jpeg'
+            ]
+          },
+          {
+            name: 'Unisex Smartwatch Compatible with Both iPhone and Android',
+            price: 8000,
+            quantity: 2,
+            colors: ['#2c2c2c'],
+            images: [
+              '/images/products/unisex-smartwatch-1.jpeg',
+              '/images/products/unisex-smartwatch-2.jpeg',
+              '/images/products/unisex-smartwatch-3.jpeg'
+            ]
+          },
+          {
+            name: 'New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone',
+            price: 8000,
+            quantity: 1,
+            colors: ['#2c2c2c'],
+            images: [
+              '/images/products/smartwatch-led-1.jpeg',
+              '/images/products/smartwatch-led-2.jpeg',
+              '/images/products/smartwatch-led-3.jpeg'
+            ]
+          }
+        ]
       },
       {
         name: 'Home Electronics',
@@ -514,7 +579,19 @@ export const categories: Category[] = [
       },
       {
         name: 'Cables & Adapters',
-        items: []
+        items: [
+          {
+            name: 'Data Cable, USB C to USB C Charging Cable, Type C to Type C Fast Charging',
+            price: 300,
+            quantity: 15,
+            images: [
+              '/images/products/usb-c-cable-1.jpeg',
+              '/images/products/usb-c-cable-2.jpeg',
+              '/images/products/usb-c-cable-3.jpeg',
+              '/images/products/usb-c-cable-4.jpeg'
+            ]
+          }
+        ]
       }
     ]
   },
@@ -544,6 +621,27 @@ export const categories: Category[] = [
             images: ['/images/products/therm2.jpeg', '/images/products/therm.jpeg', '/images/products/therm1.jpeg'],
             quantity: 10,
             price: 3000
+          },
+          {
+            name: 'Rechargeable/Battery Powered(Optional) Digital Wrist Blood Pressure Monitor with Large LCD, Voice Broadcast/(Optional)',
+            price: 15000,
+            quantity: 3,
+            images: [
+              '/images/products/blood-pressure-monitor-3.jpeg',
+              '/images/products/blood-pressure-monitor-4.jpeg'
+            ]
+          },
+          {
+            name: 'Rechargeable Arm Blood Pressure Monitor with Large LED Screen, Digital Blood Pressure Machine',
+            price: 15000,
+            quantity: 3,
+            images: [
+              '/images/products/arm-bp-monitor-1.jpeg',
+              '/images/products/arm-bp-monitor-2.jpeg',
+              '/images/products/arm-bp-monitor-3.jpeg',
+              '/images/products/arm-bp-monitor-4.jpeg',
+              '/images/products/arm-bp-monitor-5.jpeg'
+            ]
           }
         ]
       }
