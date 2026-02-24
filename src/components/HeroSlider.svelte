@@ -92,6 +92,9 @@
 
   function goToSlide(index) {
     currentSlide = index;
+    // Reset autoplay so the new slide gets a full 5 seconds
+    stopAutoPlay();
+    startAutoPlay();
   }
 
   function startAutoPlay() {
@@ -104,6 +107,7 @@
 
   function handleTouchStart(e) {
     touchStartX = e.touches[0].clientX;
+    touchEndX = touchStartX; // initialise so a tap with no move = diff of 0
     stopAutoPlay();
   }
 
