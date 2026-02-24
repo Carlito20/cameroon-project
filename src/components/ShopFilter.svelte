@@ -1412,7 +1412,7 @@
   }
 
   .product-item {
-    background: #f8f9fa;
+    background: transparent;
     padding: 1rem;
     border-radius: 8px;
     display: flex;
@@ -1425,7 +1425,6 @@
 
   .product-item:hover {
     border-color: #3498db;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .product-item.has-image {
@@ -1460,10 +1459,10 @@
   .product-image img {
     width: 100%;
     height: auto;
-    border-radius: 8px;
-    object-fit: cover;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    object-fit: contain;
     display: block;
+    mix-blend-mode: multiply;
   }
 
 
