@@ -2049,6 +2049,57 @@
       width: 100%;
     }
 
+    /* Search results: 2-column compact grid so more items are visible */
+    .search-results-section .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+    }
+
+    .search-results-section .product-item {
+      padding: 0.65rem;
+    }
+
+    .search-results-section .product-image {
+      max-width: 80px;
+    }
+
+    .search-results-section .product-info h4 {
+      font-size: 0.9rem;
+    }
+
+    .search-results-section .product-price {
+      font-size: 1rem;
+    }
+
+    .search-results-section .product-note,
+    .search-results-section .product-category-tag,
+    .search-results-section .product-quantity {
+      font-size: 0.75rem;
+    }
+
+    .search-results-section .qty-btn {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      min-height: 44px;
+      font-size: 1.1rem;
+    }
+
+    .search-results-section .qty-value {
+      min-width: 22px;
+      font-size: 0.9rem;
+    }
+
+    .search-results-section .quantity-selector {
+      gap: 0.2rem;
+    }
+
+    .search-results-section .product-actions .btn {
+      padding: 10px 6px;
+      font-size: 0.85rem;
+      min-height: 44px;
+    }
+
     .confirm-popup {
       left: 50%;
       right: auto;
@@ -2205,6 +2256,29 @@
     .confirm-btn {
       padding: 10px 8px;
       font-size: 0.8rem;
+    }
+
+    /* Keep 2-column search results on small phones, but more compact */
+    .search-results-section .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .search-results-section .product-item {
+      padding: 0.5rem;
+    }
+
+    .search-results-section .product-image {
+      max-width: 70px;
+    }
+
+    .search-results-section .product-info h4 {
+      font-size: 0.8rem;
+    }
+
+    .search-results-section .product-actions .btn {
+      padding: 9px 4px;
+      font-size: 0.78rem;
     }
   }
 </style>
