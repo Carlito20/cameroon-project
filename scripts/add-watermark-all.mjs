@@ -3,11 +3,21 @@ import fs from 'fs';
 import path from 'path';
 
 const imagesDir = './public/images';
-const logoPath = 'c:/Cameroon Project/Images/Pages/AS Logo new.jpeg';
+const logoPath = 'C:/Users/Administrator/cameroon-project/Images/Pages/AS Logo new.jpeg';
 const watermarkSize = 60;
 
-// Files/folders to exclude from watermarking
-const excludeFiles = ['as-logo.jpeg'];
+// Files/folders to exclude from watermarking (hero/slider images should not have watermarks)
+const excludeFiles = [
+  'as-logo.jpeg',
+  'kids-hero.jpg',
+  'kids-products-slider.jpg',
+  'kitchen-hero.jpg',
+  'food-pantry-slider.jpg',
+  'food-pantry-hero.jpg',
+  'health-wellness-slider.jpg',
+  'household-cleaning-slider.jpg',
+  'body-bath-personal-care-home.jpg',
+];
 const markerFile = '.watermarked';
 
 // Get all image files recursively
