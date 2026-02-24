@@ -8,7 +8,7 @@
       title: "Kids",
       subtitle: "",
       description: "Quality diapers, wipes, baby care essentials and everything for your little ones from trusted American brands.",
-      image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=1400&h=600&fit=crop&crop=center",
+      image: "/images/kids-products-slider.jpg",
       color: "#e8f4fc",
       link: "/shop?category=kids"
     },
