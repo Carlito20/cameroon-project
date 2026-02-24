@@ -20,13 +20,16 @@ const excludeFiles = [
 ];
 const markerFile = '.watermarked';
 
+// Subdirectories to skip entirely (product images should not be watermarked)
+const excludeDirs = ['temp', 'products'];
+
 // Get all image files recursively
 function getImageFiles(dir) {
   let results = [];
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory() && entry.name !== 'temp') {
+    if (entry.isDirectory() && !excludeDirs.includes(entry.name)) {
       results = results.concat(getImageFiles(fullPath));
     } else if (entry.isFile() && /\.(jpg|jpeg|png)$/i.test(entry.name) && !excludeFiles.includes(entry.name)) {
       results.push(fullPath);
