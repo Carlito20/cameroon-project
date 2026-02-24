@@ -36,7 +36,7 @@
       description: "Laundry, dishwashing, and cleaning supplies for a fresh home."
     },
     {
-      url: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&h=800&fit=crop",
+      url: "/images/kitchen-hero.jpg",
       title: "Cook Like a Pro",
       subtitle: "Kitchen & Dining",
       description: "Cookware, appliances, and kitchen tools for every meal."
