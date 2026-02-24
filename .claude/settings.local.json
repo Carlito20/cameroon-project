@@ -5,7 +5,21 @@
       "Bash(git push)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(where:*)",
+      "Bash(node scripts/add-watermark.mjs:*)",
+      "Bash(git checkout:*)",
+      "Bash(node -e:*)",
+      "Bash(copy \"c:\\\\Cameroon Project\\\\Images\\\\Chopper edit.jpeg\" \"C:\\\\Users\\\\Administrator\\\\cameroon-project\\\\public\\\\images\\\\products\\\\manual-food-chopper-2.jpeg\")",
+      "Bash(cd:*)",
+      "Bash(node:*)",
+      "Bash(tail:*)",
+      "Bash(cd /c/Users/Administrator/cameroon-project && npm run remove-bg 2>&1)",
+      "Bash(cd /c/Users/Administrator/cameroon-project && git push origin main 2>&1)",
+      "Bash(taskkill:*)",
+      "Bash(cd /c/Users/Administrator/cameroon-project && npm run reprocess-bg 2>&1)",
+      "Bash(head:*)"
     ]
   }
 }

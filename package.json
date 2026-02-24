@@ -7,6 +7,7 @@
     "start": "astro dev",
     "watermark": "node scripts/add-watermark-all.mjs",
     "remove-bg": "node scripts/remove-backgrounds.mjs",
+    "reprocess-bg": "node scripts/reprocess-backgrounds.mjs",
     "update-refs": "node scripts/update-image-refs.mjs",
     "build": "node scripts/add-watermark-all.mjs && astro build",
     "preview": "astro preview",
@@ -17,6 +18,8 @@
     "@imgly/background-removal-node": "^1.4.5",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.8",
+    "pngjs": "^7.0.0",
+    "sharp": "^0.34.5",
     "svelte": "^5.46.1",
     "tailwindcss": "^4.1.18"
   },
