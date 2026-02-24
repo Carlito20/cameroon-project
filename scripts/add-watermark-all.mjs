@@ -53,6 +53,9 @@ function saveWatermarkedSet(set) {
 }
 
 async function addWatermark() {
+  // Watermarking disabled — no watermarks on any images
+  console.log('Watermarking disabled.');
+  return;
   try {
     const watermarked = getWatermarkedSet();
     const allImages = getImageFiles(imagesDir);
