@@ -343,12 +343,26 @@
   .dot {
     width: 12px;
     height: 12px;
+    min-width: 12px;
+    min-height: 12px;
     border-radius: 50%;
     border: 2px solid #3498db;
     background: transparent;
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 0;
+    position: relative;
+  }
+
+  /* Invisible touch target expansion (44px minimum) */
+  .dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .dot:hover {

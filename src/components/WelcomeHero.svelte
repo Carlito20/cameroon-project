@@ -341,6 +341,8 @@
   .indicator {
     width: 12px;
     height: 12px;
+    min-width: 12px;
+    min-height: 12px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.7);
     background: transparent;
