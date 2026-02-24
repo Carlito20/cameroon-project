@@ -411,7 +411,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking',
+            name: 'Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking',
             price: 8000,
             quantity: 6,
             colors: ['#2c2c2c', '#d4af37', '#ff69b4'],
@@ -423,7 +423,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'Unisex Smartwatch Compatible with Both iPhone and Android',
+            name: 'LAXASFIT Unisex Smartwatch Compatible with Both iPhone and Android',
             price: 8000,
             quantity: 2,
             colors: ['#2c2c2c'],
@@ -434,7 +434,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone',
+            name: 'PLEIVO New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone',
             price: 8000,
             quantity: 1,
             colors: ['#2c2c2c'],
@@ -498,7 +498,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo Deep Bass, 50 Hours of Playback Time, USB-C',
+            name: 'JS59 Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo, 50 Hours of Playback Time, USB-C',
             price: 2500,
             quantity: 2,
             colors: ['#2c2c2c'],
