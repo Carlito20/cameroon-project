@@ -269,6 +269,56 @@ h3 {
   }
 }
 
+/* Safe area CSS variables for notch/Dynamic Island support */
+:root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+}
+
+/* Extra small phones: iPhone SE, budget Androids (375px and below) */
+@media (max-width: 375px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+  }
+
+  .section {
+    padding: 24px 0;
+  }
+
+  .section-title {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title h2 {
+    font-size: 1.45rem;
+  }
+}
+
+/* Landscape mode on short phones (e.g. phone rotated sideways) */
+@media (orientation: landscape) and (max-height: 500px) {
+  .section {
+    padding: 20px 0;
+  }
+
+  .welcome-section {
+    padding: 1rem 0;
+  }
+}
+
 /* Hide Google Translate Banner & UI */
 .goog-te-banner-frame,
 .skiptranslate,

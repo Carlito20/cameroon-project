@@ -347,6 +347,19 @@
     cursor: pointer;
     padding: 0;
     transition: all 0.3s ease;
+    /* Expand touch target without changing visual size */
+    position: relative;
+  }
+
+  /* Invisible touch target extension (44px minimum) */
+  .indicator::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .indicator:hover {
@@ -392,7 +405,7 @@
 
   @media (max-width: 480px) {
     .welcome-hero {
-      min-height: 420px;
+      min-height: 380px;
     }
 
     .welcome-intro {
@@ -418,6 +431,75 @@
 
     .indicators {
       bottom: 15px;
+    }
+  }
+
+  /* Extra small phones */
+  @media (max-width: 375px) {
+    .welcome-hero {
+      min-height: 300px;
+    }
+
+    .welcome-content {
+      padding: 1.25rem;
+    }
+
+    .welcome-intro {
+      font-size: 0.85rem;
+    }
+
+    .brand-name {
+      font-size: 1rem;
+    }
+
+    .slide-text h1 {
+      font-size: 1.35rem;
+    }
+
+    .slide-text .subtitle {
+      font-size: 0.9rem;
+    }
+
+    .slide-text .description {
+      font-size: 0.82rem;
+    }
+
+    .btn {
+      padding: 11px 20px;
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Landscape mode on short phones */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .welcome-hero {
+      min-height: 260px;
+    }
+
+    .welcome-content {
+      padding: 0.75rem 2rem;
+    }
+
+    .slide-text h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .slide-text .subtitle {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .slide-text .description {
+      display: none;
+    }
+
+    .welcome-cta {
+      margin-top: 0.75rem;
+    }
+
+    .indicators {
+      bottom: 8px;
     }
   }
 </style>

@@ -574,7 +574,7 @@
 
   .inquiry-basket-float {
     position: fixed;
-    bottom: 80px;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     right: 20px;
     z-index: 999;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -682,8 +682,10 @@
   .collapse-cart-btn {
     background: #e9ecef;
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -906,6 +908,8 @@
   .item-qty-btn {
     width: 24px;
     height: 24px;
+    min-width: 44px;
+    min-height: 44px;
     border: 1px solid #3498db;
     background: white;
     color: #3498db;
@@ -1027,7 +1031,7 @@
   /* Mobile adjustments */
   @media (max-width: 768px) {
     .inquiry-basket-float {
-      bottom: 75px;
+      bottom: calc(75px + env(safe-area-inset-bottom, 0px));
       right: 15px;
     }
 
@@ -1089,9 +1093,10 @@
     }
 
     .item-qty-btn {
-      width: 32px;
-      height: 32px;
-      min-width: 32px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
       font-size: 1.1rem;
     }
 
@@ -1118,8 +1123,10 @@
     }
 
     .close-btn {
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
       font-size: 1.4rem;
       display: flex;
       align-items: center;
@@ -1157,8 +1164,10 @@
     }
 
     .basket-item-with-image .item-qty-btn {
-      width: 34px;
-      height: 34px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
       font-size: 1.1rem;
     }
 
@@ -1174,7 +1183,7 @@
 
   @media (max-width: 400px) {
     .inquiry-basket-float {
-      bottom: 70px;
+      bottom: calc(70px + env(safe-area-inset-bottom, 0px));
       right: 10px;
     }
 
@@ -1242,9 +1251,10 @@
     }
 
     .item-qty-btn {
-      width: 36px;
-      height: 36px;
-      min-width: 36px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
       font-size: 1.2rem;
     }
 

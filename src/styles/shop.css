@@ -346,5 +346,28 @@
   }
 }
 
+/* Extra small phones */
+@media (max-width: 375px) {
+  .shop-header {
+    min-height: 160px;
+    padding: 1.75rem 0;
+  }
+
+  .shop-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .shop-header p {
+    font-size: 0.95rem;
+  }
+
+  .category-section {
+    padding: 1rem;
+  }
+
+  .category-header h2 {
+    font-size: 1.3rem;
+  }
+}
 
 

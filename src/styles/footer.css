@@ -2,6 +2,8 @@
   background: var(--secondary-color);
   color: white;
   padding: 3rem 0 1rem;
+  /* Reserve space for iPhone home bar */
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   margin-top: 4rem;
 }
 
@@ -122,6 +124,7 @@
 @media (max-width: 480px) {
   .footer {
     padding: 2rem 0 1rem;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
     margin-top: 2rem;
   }
 
@@ -162,5 +165,26 @@
   }
 }
 
+/* Extra small phones */
+@media (max-width: 375px) {
+  .footer {
+    padding: 1.5rem 0;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    margin-top: 1.5rem;
+  }
+
+  .footer-section h3 {
+    font-size: 1.1rem;
+  }
+
+  .footer-section h4 {
+    font-size: 0.95rem;
+  }
+
+  .footer-section p,
+  .footer-intl {
+    font-size: 0.8rem;
+  }
+}
 
 

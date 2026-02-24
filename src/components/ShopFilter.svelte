@@ -1036,6 +1036,19 @@
     font-size: 0.75rem;
     color: #666;
     transition: all 0.2s ease;
+    /* Extend touch target without changing visual layout */
+    position: absolute;
+  }
+
+  /* Invisible touch-target extension for search-clear */
+  .search-clear::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .search-clear:hover {
@@ -1635,6 +1648,8 @@
   .qty-btn {
     width: 32px;
     height: 32px;
+    min-width: 44px;
+    min-height: 44px;
     border: 2px solid #3498db;
     background: white;
     color: #3498db;
@@ -1900,7 +1915,8 @@
     .search-input {
       padding: 0.75rem 2.5rem;
       min-height: 48px;
-      font-size: 1rem;
+      /* Explicitly 16px to prevent iOS auto-zoom on focus */
+      font-size: 16px;
     }
 
     .search-clear {
@@ -2009,8 +2025,10 @@
     }
 
     .qty-btn {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
       font-size: 1.3rem;
     }
 
@@ -2164,8 +2182,10 @@
     }
 
     .qty-btn {
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
     }
 
     .qty-value {

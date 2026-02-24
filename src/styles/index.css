@@ -414,11 +414,36 @@
   .suggestion-form input,
   .suggestion-form textarea {
     padding: 10px 12px;
-    font-size: 0.95rem;
+    /* 16px minimum prevents iOS auto-zoom on focus */
+    font-size: 16px;
   }
 
   .suggestion-form .btn-submit {
     padding: 12px 20px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+  .welcome-section {
+    padding: 1rem 0;
+  }
+
+  .welcome-content h1 {
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+
+  .welcome-text {
+    font-size: 0.85rem;
+  }
+
+  .suggestion-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .suggestion-form {
+    padding: 1rem;
   }
 }
 
