@@ -332,24 +332,29 @@
   /* Dots Navigation */
   .dots {
     position: absolute;
-    bottom: 25px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 10px;
+    align-items: center;
+    gap: 8px;
     z-index: 10;
+    background: rgba(255, 255, 255, 0.35);
+    padding: 8px 12px;
+    border-radius: 50px;
+    backdrop-filter: blur(4px);
   }
 
   .dot {
-    width: 12px;
-    height: 12px;
-    min-width: 12px;
-    min-height: 12px;
-    border-radius: 50%;
-    border: 2px solid #3498db;
-    background: transparent;
+    width: 10px;
+    height: 10px;
+    min-width: 10px;
+    min-height: 10px;
+    border-radius: 50px;
+    border: none;
+    background: rgba(52, 152, 219, 0.4);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: width 0.3s ease, background 0.3s ease, transform 0.2s ease;
     padding: 0;
     position: relative;
   }
@@ -366,12 +371,15 @@
   }
 
   .dot:hover {
-    background: rgba(52, 152, 219, 0.5);
+    background: rgba(52, 152, 219, 0.8);
+    transform: scale(1.2);
   }
 
   .dot.active {
+    width: 28px;
+    min-width: 28px;
     background: #3498db;
-    transform: scale(1.2);
+    transform: scale(1);
   }
 
   /* Mobile Responsive */

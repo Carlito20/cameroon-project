@@ -334,22 +334,26 @@
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 10px;
+    align-items: center;
+    gap: 8px;
     z-index: 4;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 8px 12px;
+    border-radius: 50px;
+    backdrop-filter: blur(4px);
   }
 
   .indicator {
-    width: 12px;
-    height: 12px;
-    min-width: 12px;
-    min-height: 12px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.7);
-    background: transparent;
+    width: 10px;
+    height: 10px;
+    min-width: 10px;
+    min-height: 10px;
+    border-radius: 50px;
+    border: none;
+    background: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     padding: 0;
-    transition: all 0.3s ease;
-    /* Expand touch target without changing visual size */
+    transition: width 0.3s ease, background 0.3s ease, transform 0.2s ease;
     position: relative;
   }
 
@@ -365,14 +369,15 @@
   }
 
   .indicator:hover {
-    border-color: white;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
   }
 
   .indicator.active {
+    width: 28px;
+    min-width: 28px;
     background: #f1c40f;
-    border-color: #f1c40f;
-    transform: scale(1.3);
+    transform: scale(1);
   }
 
   /* Mobile Responsive */
