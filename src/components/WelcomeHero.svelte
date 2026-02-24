@@ -6,7 +6,7 @@
   // Slides with background images and unique messages for each category
   const slides = [
     {
-      url: "https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=1920&h=800&fit=crop",
+      url: "/images/kids-hero.jpg",
       title: "Everything for Your Little Ones",
       subtitle: "Kids Products",
       description: "Quality diapers, wipes, baby care essentials from trusted American brands."
