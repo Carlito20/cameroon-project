@@ -37,6 +37,39 @@
     return typeof item === 'string' ? null : item.colors;
   }
 
+  const colorNames = {
+    '#ff69b4': 'Pink',
+    '#2c2c2c': 'Black',
+    '#d4af37': 'Gold',
+    '#808080': 'Gray',
+    '#e74c3c': 'Red',
+    '#2980b9': 'Blue',
+    '#800080': 'Purple',
+    '#ffffff': 'White',
+    '#ff8c00': 'Orange',
+    '#f5f5dc': 'Beige',
+    '#c0c0c0': 'Silver',
+    '#008000': 'Green',
+    '#00008b': 'Dark Blue',
+    '#8b0000': 'Dark Red',
+    '#ffd700': 'Yellow',
+  };
+
+  function getColorName(hex) {
+    return colorNames[hex.toLowerCase()] || hex;
+  }
+
+  let selectedColors = {};
+
+  function selectColor(productName, color) {
+    if (selectedColors[productName] === color) {
+      delete selectedColors[productName];
+    } else {
+      selectedColors[productName] = color;
+    }
+    selectedColors = selectedColors;
+  }
+
   function formatPrice(price) {
     return price ? `${price.toLocaleString()} XAF` : null;
   }
@@ -584,8 +617,11 @@
                     {#if result.colors}
                       <span class="color-dots">
                         {#each result.colors as color}
-                          <span class="color-dot" style="background: {color};" title={color}></span>
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} on:click|stopPropagation={() => selectColor(result.productName, color)}></button>
                         {/each}
+                        {#if selectedColors[result.productName]}
+                          <span class="color-label">{getColorName(selectedColors[result.productName])}</span>
+                        {/if}
                       </span>
                     {/if}
                   {:else}
@@ -693,8 +729,11 @@
                                     {#if getProductColors(nestedProduct)}
                                       <span class="color-dots">
                                         {#each getProductColors(nestedProduct) as color}
-                                          <span class="color-dot" style="background: {color};" title={color}></span>
+                                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(nestedProduct)] === color} on:click|stopPropagation={() => selectColor(getProductName(nestedProduct), color)}></button>
                                         {/each}
+                                        {#if selectedColors[getProductName(nestedProduct)]}
+                                          <span class="color-label">{getColorName(selectedColors[getProductName(nestedProduct)])}</span>
+                                        {/if}
                                       </span>
                                     {/if}
                                   {:else}
@@ -768,8 +807,11 @@
                           {#if getProductColors(subItem)}
                             <span class="color-dots">
                               {#each getProductColors(subItem) as color}
-                                <span class="color-dot" style="background: {color};" title={color}></span>
+                                <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(subItem)] === color} on:click|stopPropagation={() => selectColor(getProductName(subItem), color)}></button>
                               {/each}
+                              {#if selectedColors[getProductName(subItem)]}
+                                <span class="color-label">{getColorName(selectedColors[getProductName(subItem)])}</span>
+                              {/if}
                             </span>
                           {/if}
                         {:else}
@@ -845,8 +887,11 @@
                     {#if getProductColors(item)}
                       <span class="color-dots">
                         {#each getProductColors(item) as color}
-                          <span class="color-dot" style="background: {color};" title={color}></span>
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(item)] === color} on:click|stopPropagation={() => selectColor(getProductName(item), color)}></button>
                         {/each}
+                        {#if selectedColors[getProductName(item)]}
+                          <span class="color-label">{getColorName(selectedColors[getProductName(item)])}</span>
+                        {/if}
                       </span>
                     {/if}
                   {:else}
@@ -1253,8 +1298,8 @@
 
   /* Category section styles */
   .category-section {
-    margin-bottom: 3rem;
-    padding: 1.5rem;
+    margin-bottom: 0.625rem;
+    padding: 0.625rem;
     background: white;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
@@ -1264,21 +1309,21 @@
   .category-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.375rem;
     border-bottom: 2px solid #e0e0e0;
   }
 
   .category-icon-large {
-    font-size: 3rem;
+    font-size: 1.5rem;
   }
 
   .category-icon-image {
-    width: 150px;
-    height: 150px;
+    width: 56px;
+    height: 56px;
     object-fit: contain;
-    border-radius: 12px;
+    border-radius: 6px;
   }
 
   .category-header h2 {
@@ -1295,7 +1340,7 @@
   .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
   /* Sub-category styles */
@@ -1303,21 +1348,21 @@
     grid-column: 1 / -1;
     background: white;
     border-radius: 0;
-    padding: 1.5rem;
-    margin: 0.5rem -1.6rem;
+    padding: 0.625rem;
+    margin: 0.25rem -0.75rem;
     border: none;
     border-top: 2px solid #e0e0e0;
     border-bottom: 2px solid #e0e0e0;
-    width: calc(100% + 3.2rem);
+    width: calc(100% + 1.5rem);
     box-sizing: border-box;
   }
 
   .subcategory-header {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.6rem;
-    margin: -1.5rem -1.6rem 0 -1.6rem;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    margin: -0.625rem -0.75rem 0 -0.75rem;
     border: none;
     background: #3498db;
     color: white;
@@ -1334,8 +1379,8 @@
 
   .subcategory-section:not(.expanded) .subcategory-header {
     border-radius: 0;
-    margin-bottom: -1.6rem;
-    padding-bottom: 1.6rem;
+    margin-bottom: -0.75rem;
+    padding-bottom: 0.75rem;
   }
 
   .subcategory-icon {
@@ -1364,9 +1409,9 @@
   .subcategory-products {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
     border-top: 1px solid #d0d0d0;
   }
 
@@ -1374,9 +1419,9 @@
   .nested-subcategory {
     grid-column: 1 / -1;
     background: white;
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 0.5rem 0;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin: 0.25rem 0;
     border: 1px solid #e0e0e0;
   }
 
@@ -1384,7 +1429,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
     background: #e8f4fc;
     border: none;
     border-radius: 6px;
@@ -1407,9 +1452,9 @@
   .nested-subcategory-products {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
     border-top: 1px solid #e9ecef;
   }
 
@@ -1699,6 +1744,7 @@
 
   .color-dots {
     display: inline-flex;
+    align-items: center;
     gap: 5px;
     margin-left: 8px;
     vertical-align: middle;
@@ -1706,11 +1752,37 @@
 
   .color-dot {
     display: inline-block;
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     border: 2px solid #e0e0e0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+
+  .color-dot:hover {
+    transform: scale(1.2);
+    border-color: #999;
+  }
+
+  .color-dot.selected {
+    border: 2.5px solid #2c3e50;
+    box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.35);
+    transform: scale(1.15);
+  }
+
+  .color-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #2c3e50;
+    background: #f0f4f8;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-left: 2px;
+    white-space: nowrap;
   }
 
   .out-of-stock {
@@ -1960,34 +2032,34 @@
     }
 
     .category-section {
-      padding: 1rem;
-      margin-bottom: 1.5rem;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
       overflow: hidden;
     }
 
     .subcategory-section {
-      padding: 1rem;
-      margin: 0.5rem -1.1rem;
-      width: calc(100% + 2.2rem);
+      padding: 0.5rem;
+      margin: 0.25rem -0.625rem;
+      width: calc(100% + 1.25rem);
     }
 
     .subcategory-header {
-      margin: -1rem -1.1rem 0 -1.1rem;
-      padding: 1rem 1.1rem;
-      width: calc(100% + 2.2rem);
+      margin: -0.5rem -0.625rem 0 -0.625rem;
+      padding: 0.45rem 0.625rem;
+      width: calc(100% + 1.25rem);
     }
 
     .subcategory-section:not(.expanded) .subcategory-header {
-      margin-bottom: -1.1rem;
-      padding-bottom: 1.1rem;
+      margin-bottom: -0.625rem;
+      padding-bottom: 0.625rem;
     }
 
     .category-header {
-      flex-direction: column;
-      text-align: center;
-      gap: 0.75rem;
-      padding-bottom: 0.75rem;
-      margin-bottom: 1rem;
+      flex-direction: row;
+      text-align: left;
+      gap: 0.375rem;
+      padding-bottom: 0.375rem;
+      margin-bottom: 0.375rem;
     }
 
     .category-header h2 {
@@ -1999,17 +2071,17 @@
     }
 
     .category-icon-large {
-      font-size: 2.5rem;
+      font-size: 1.25rem;
     }
 
     .category-icon-image {
-      width: 100px;
-      height: 100px;
+      width: 40px;
+      height: 40px;
     }
 
     .products-grid {
       grid-template-columns: 1fr;
-      gap: 0.75rem;
+      gap: 0.375rem;
     }
 
     .subcategory-products {
@@ -2019,7 +2091,7 @@
     .product-item {
       flex-direction: column;
       text-align: center;
-      padding: 1rem;
+      padding: 0.5rem;
     }
 
     .product-info h4 {
@@ -2165,7 +2237,7 @@
   @media (max-width: 480px) {
     .filter-container {
       padding: 0.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     .filter-label {
@@ -2173,57 +2245,57 @@
     }
 
     .category-section {
-      padding: 0.75rem;
+      padding: 0.375rem;
       border-radius: 8px;
       overflow: hidden;
     }
 
     .subcategory-section {
-      padding: 0.75rem;
-      margin: 0.5rem -0.85rem;
-      width: calc(100% + 1.7rem);
+      padding: 0.375rem;
+      margin: 0.125rem -0.5rem;
+      width: calc(100% + 1rem);
     }
 
     .subcategory-header {
-      margin: -0.75rem -0.85rem 0 -0.85rem;
-      padding: 0.75rem 0.85rem;
-      width: calc(100% + 1.7rem);
+      margin: -0.375rem -0.5rem 0 -0.5rem;
+      padding: 0.375rem 0.5rem;
+      width: calc(100% + 1rem);
     }
 
     .subcategory-section:not(.expanded) .subcategory-header {
-      margin-bottom: -0.85rem;
-      padding-bottom: 0.85rem;
+      margin-bottom: -0.5rem;
+      padding-bottom: 0.5rem;
     }
 
     .category-header h2 {
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
 
     .category-header p {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .category-icon-large {
-      font-size: 2rem;
+      font-size: 1.125rem;
     }
 
     .category-icon-image {
-      width: 80px;
-      height: 80px;
+      width: 36px;
+      height: 36px;
     }
 
     .subcategory-icon {
-      font-size: 1.25rem;
+      font-size: 1rem;
     }
 
     .subcategory-toggle {
-      width: 28px;
-      height: 28px;
-      font-size: 1.25rem;
+      width: 24px;
+      height: 24px;
+      font-size: 1rem;
     }
 
     .product-item {
-      padding: 0.75rem;
+      padding: 0.375rem;
     }
 
     .product-info h4 {

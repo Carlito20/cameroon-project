@@ -118,6 +118,26 @@ const mappings = [
   ["Images/Torch.png", 'torch.webp'],
   ["Images/torch1.png", 'torch1.webp'],
   ["Images/torch2.png", 'torch2.webp'],
+
+  // 2025 Round Watch
+  ["Images/Electronics/A 2025 Hot-selling Round Watch with A Metal Frame, Ceramic Base, And A 2.01.png", 'smartwatch-round-1.webp'],
+  ["Images/Electronics/A 2025 Hot-selling Round Watch with A Metal Frame, Ceramic Base, And A 2.01 2.png", 'smartwatch-round-2.webp'],
+  ["Images/Electronics/A 2025 Hot-selling Round Watch with A Metal Frame, Ceramic Base, And A 2.01 1.png", 'smartwatch-round-3.webp'],
+
+  // PLEIVO Smartwatch
+  ["Images/Electronics/New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch,.png", 'smartwatch-led-1.webp'],
+  ["Images/Electronics/New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, (2).png", 'smartwatch-led-2.webp'],
+
+  // Versatile Smartwatch
+  ["Images/Electronics/A Versatile Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications.png", 'smartwatch-versatile-1.webp'],
+  ["Images/Electronics/A Versatile Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications 2.png", 'smartwatch-versatile-2.webp'],
+  ["Images/Electronics/A Versatile Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications 1.png", 'smartwatch-versatile-3.webp'],
+
+  // Z68 Smartwatch
+  ["Images/Electronics/Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone AnsweringDialing, Remote Photography, Music Playback, Spor.png", 'smartwatch-multi-1.webp'],
+  ["Images/Electronics/Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone AnsweringDialing, Remote Photography, Music Playback, Sp.png", 'smartwatch-multi-2.webp'],
+  ["Images/Electronics/Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone AnsweringDialing, Remote Photography, Music Playback, Sp (2).png", 'smartwatch-multi-3.webp'],
+  ["Images/Electronics/Z68.png", 'smartwatch-multi-4.webp'],
 ];
 
 let converted = 0;

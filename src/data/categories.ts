@@ -402,8 +402,8 @@ export const categories: Category[] = [
           {
             name: 'Smart Watch Compatible with iPhone & Android Devices',
             price: 5000,
-            quantity: 1,
-            colors: ['#ff69b4'],
+            quantity: 4,
+            colors: ['#ff69b4', '#2c2c2c'],
             images: [
               '/images/products/smart-watch-1.webp',
               '/images/products/smart-watch-2.webp'
@@ -417,7 +417,8 @@ export const categories: Category[] = [
             images: [
               '/images/products/smartwatch-multi-1.webp',
               '/images/products/smartwatch-multi-2.webp',
-              '/images/products/smartwatch-multi-3.webp'
+              '/images/products/smartwatch-multi-3.webp',
+              '/images/products/smartwatch-multi-4.webp'
             ]
           },
           {
@@ -438,8 +439,29 @@ export const categories: Category[] = [
             colors: ['#2c2c2c'],
             images: [
               '/images/products/smartwatch-led-1.webp',
-              '/images/products/smartwatch-led-2.webp',
-              '/images/products/smartwatch-led-3.webp'
+              '/images/products/smartwatch-led-2.webp'
+            ]
+          },
+          {
+            name: 'A 2025 Hot-selling Round Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen',
+            price: 9000,
+            quantity: 1,
+            colors: ['#2c2c2c'],
+            images: [
+              '/images/products/smartwatch-round-1.webp',
+              '/images/products/smartwatch-round-2.webp',
+              '/images/products/smartwatch-round-3.webp'
+            ]
+          },
+          {
+            name: 'A Versatile Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications',
+            price: 8000,
+            quantity: 2,
+            colors: ['#2c2c2c'],
+            images: [
+              '/images/products/smartwatch-versatile-1.webp',
+              '/images/products/smartwatch-versatile-2.webp',
+              '/images/products/smartwatch-versatile-3.webp'
             ]
           }
         ]
@@ -540,7 +562,7 @@ export const categories: Category[] = [
           {
             name: 'Nokia Go Earbuds+ TWS-201',
             price: 6000,
-            quantity: 2,
+            quantity: 4,
             colors: ['#ffffff', '#2c2c2c'],
             images: [
               '/images/products/nokia-earbuds-1.webp',
