@@ -8,6 +8,12 @@
   box-sizing: border-box;
 }
 
+*:focus,
+*:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* Prevent horizontal overflow on all elements */
 *,
 *::before,

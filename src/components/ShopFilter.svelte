@@ -939,6 +939,16 @@
 {/if}
 
 <style>
+  :global(button:focus),
+  :global(button:focus-visible),
+  :global(a:focus),
+  :global(a:focus-visible),
+  :global(*:focus),
+  :global(*:focus-visible) {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   .filter-container {
     display: flex;
     align-items: center;
@@ -1424,7 +1434,7 @@
   }
 
   .product-item:hover {
-    border-color: #3498db;
+    border-color: transparent;
   }
 
   .product-item.has-image {
