@@ -1291,7 +1291,7 @@
   /* Sub-category styles */
   .subcategory-section {
     grid-column: 1 / -1;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: white;
     border-radius: 0;
     padding: 1.5rem;
     margin: 0.5rem -1.6rem;
@@ -1447,9 +1447,11 @@
     border: none;
     background: none;
     padding: 0;
+    border-radius: 0;
     cursor: zoom-in;
     transition: transform 0.2s ease;
     display: inline-block;
+    outline: none;
   }
 
   .product-image:hover {
@@ -1462,7 +1464,6 @@
     border-radius: 0;
     object-fit: contain;
     display: block;
-    mix-blend-mode: multiply;
   }
 
 

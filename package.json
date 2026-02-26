@@ -9,7 +9,8 @@
     "remove-bg": "node scripts/remove-backgrounds.mjs",
     "reprocess-bg": "node scripts/reprocess-backgrounds.mjs",
     "update-refs": "node scripts/update-image-refs.mjs",
-    "build": "node scripts/add-watermark-all.mjs && astro build",
+    "convert-webp": "node scripts/convert-png-to-webp.mjs",
+    "build": "node scripts/add-watermark-all.mjs && node scripts/convert-png-to-webp.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

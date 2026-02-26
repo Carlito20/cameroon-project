@@ -54,7 +54,7 @@ export const categories: Category[] = [
         items: [
           {
             name: 'Manual Pasta Maker Machine, 9 Adjustable Thickness Settings',
-            images: ['/images/products/manual-pasta-maker-1.jpg', '/images/products/manual-pasta-maker-2.jpg'],
+            images: ['/images/products/manual-pasta-maker-1.webp', '/images/products/manual-pasta-maker-2.webp'],
             price: 20000,
             quantity: 2
           }
@@ -69,7 +69,7 @@ export const categories: Category[] = [
         items: [
           {
             name: 'Manual Food Chopper, Pull String Vegetable and Meat Mincer with Clear Container, Hand-Powered Kitchen Processor',
-            images: ['/images/products/manual-food-chopper.jpeg', '/images/products/manual-food-chopper-2.jpeg'],
+            images: ['/images/products/manual-food-chopper.webp', '/images/products/manual-food-chopper-2.webp'],
             quantity: 11,
             price: 5000
           }
@@ -92,31 +92,31 @@ export const categories: Category[] = [
         items: [
           {
             name: "Dr Teal's Body Wash with Prebiotic Lemon Balm and Essential Oil Blend",
-            images: ['/images/products/dr-teals-lemon-balm1.jpg', '/images/products/dr-teals-lemon-balm2.jpg'],
+            images: ['/images/products/dr-teals-lemon-balm1.webp', '/images/products/dr-teals-lemon-balm2.webp'],
             quantity: 10,
             price: 3500
           },
           {
             name: "Dr Teal's Body Wash Relax and Relief with Eucalyptus Spearmint",
-            images: ['/images/products/dr-teals-eucalyptus1.jpg', '/images/products/dr-teals-eucalyptus2.jpg'],
+            images: ['/images/products/dr-teals-eucalyptus1.webp', '/images/products/dr-teals-eucalyptus2.webp'],
             quantity: 10,
             price: 3500
           },
           {
             name: 'Olay Essential Botanicals Body Wash, Spiced Chai & Pear',
-            images: ['/images/products/olay-spiced-chai.jpg', '/images/products/olay-back1.jpg', '/images/products/olay-back2.jpg'],
+            images: ['/images/products/olay-spiced-chai.webp', '/images/products/olay-back1.webp', '/images/products/olay-back2.webp'],
             quantity: 11,
             price: 3000
           },
           {
             name: 'Olay Essential Botanicals Body Wash, White Tea & Cucumber',
-            images: ['/images/products/olay-white-tea.jpeg', '/images/products/olay-back1.jpg', '/images/products/olay-back2.jpg'],
+            images: ['/images/products/olay-white-tea.webp', '/images/products/olay-back1.webp', '/images/products/olay-back2.webp'],
             quantity: 11,
             price: 3000
           },
           {
             name: 'Olay Essential Botanicals Body Wash, Lavender Milk & Sandalwood',
-            images: ['/images/products/olay-lavender.jpg', '/images/products/olay-back1.jpg', '/images/products/olay-back2.jpg'],
+            images: ['/images/products/olay-lavender.webp', '/images/products/olay-back1.webp', '/images/products/olay-back2.webp'],
             quantity: 11,
             price: 3000
           }
@@ -127,115 +127,115 @@ export const categories: Category[] = [
         items: [
           {
             name: 'CeraVe Daily Moisturizing Lotion For Normal to Dry Skin',
-            image: '/images/products/cerave-lotion.jpg',
+            image: '/images/products/cerave-lotion.webp',
             quantity: 12,
             price: 8500
           },
           {
             name: 'Cetaphil Moisturizing Cream',
-            images: ['/images/products/cetaphil-moisturizer1.jpg', '/images/products/cetaphil-moisturizer2.jpg'],
+            images: ['/images/products/cetaphil-moisturizer1.webp', '/images/products/cetaphil-moisturizer2.webp'],
             quantity: 12,
             price: 10000
           },
           {
             name: 'Aveeno Daily Moisturizing Body Lotion 18oz',
-            image: '/images/products/aveeno-lotion.jpg',
+            image: '/images/products/aveeno-lotion.webp',
             quantity: 12,
             price: 6000
           },
           {
             name: 'Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil',
-            images: ['/images/products/jergens-coconut1.jpg', '/images/products/jergens-coconut2.jpg', '/images/products/jergens-coconut3.jpg', '/images/products/jergens-coconut4.jpg'],
+            images: ['/images/products/jergens-coconut1.webp', '/images/products/jergens-coconut2.webp', '/images/products/jergens-coconut3.webp', '/images/products/jergens-coconut4.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: 'Jergens Original Scent Dry Skin Body Lotion, Hand and Body Moisturizer, Cherry Almond Essence',
-            images: ['/images/products/jergens-cherry1.jpg', '/images/products/jergens-cherry3.jpg'],
+            images: ['/images/products/jergens-cherry1.webp', '/images/products/jergens-cherry3.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: 'Jergens Shea Butter Hand and Body Lotion, Deep Conditioning Moisturizer',
-            images: ['/images/products/jergens-shea1.jpg', '/images/products/jergens-shea2.jpg', '/images/products/jergens-common.jpg'],
+            images: ['/images/products/jergens-shea1.webp', '/images/products/jergens-shea2.webp', '/images/products/jergens-common.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: 'Jergens Soothing Aloe Body Lotion, Aloe Vera Body and Hand Moisturizer',
-            images: ['/images/products/jergens-aloe1.jpg', '/images/products/jergens-aloe2.png', '/images/products/jergens-aloe3.jpg'],
+            images: ['/images/products/jergens-aloe1.webp', '/images/products/jergens-aloe2.webp', '/images/products/jergens-aloe3.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: 'Jergens Ultra Healing Dry Skin Lotion, Hand and Body Moisturizer',
-            images: ['/images/products/jergens-ultra1.jpg', '/images/products/jergens-ultra2.jpg', '/images/products/jergens-ultra3.jpg'],
+            images: ['/images/products/jergens-ultra1.webp', '/images/products/jergens-ultra2.webp', '/images/products/jergens-ultra3.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Prebiotic Lemon Balm & Essential Oils",
-            images: ['/images/products/dr-teals-lotion-lemon1.jpg', '/images/products/dr-teals-lotion-lemon2.jpg', '/images/products/dr-teals-lotion-lemon3.jpg'],
+            images: ['/images/products/dr-teals-lotion-lemon1.webp', '/images/products/dr-teals-lotion-lemon2.webp', '/images/products/dr-teals-lotion-lemon3.webp'],
             quantity: 6,
             price: 5000
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Eucalyptus & Spearmint",
-            images: ['/images/products/dr-teals-lotion-eucalyptus1.jpg', '/images/products/dr-teals-lotion-eucalyptus2.jpg'],
+            images: ['/images/products/dr-teals-lotion-eucalyptus1.webp', '/images/products/dr-teals-lotion-eucalyptus2.webp'],
             quantity: 6,
             price: 5000
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Coconut Oil & Essential Oils",
-            images: ['/images/products/dr-teals-lotion-coconut1.jpg', '/images/products/dr-teals-lotion-coconut2.jpg'],
+            images: ['/images/products/dr-teals-lotion-coconut1.webp', '/images/products/dr-teals-lotion-coconut2.webp'],
             quantity: 6,
             price: 5000
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Shea Butter & Almond",
-            images: ['/images/products/dr-teals-lotion-shea1.jpg', '/images/products/dr-teals-lotion-shea2.jpg', '/images/products/dr-teals-lotion-shea3.jpg'],
+            images: ['/images/products/dr-teals-lotion-shea1.webp', '/images/products/dr-teals-lotion-shea2.webp', '/images/products/dr-teals-lotion-shea3.webp'],
             quantity: 6,
             price: 5000
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Lavender Essential Oil",
-            images: ['/images/products/dr-teals-lotion-lavender1.jpg', '/images/products/dr-teals-lotion-lavender2.jpg'],
+            images: ['/images/products/dr-teals-lotion-lavender1.webp', '/images/products/dr-teals-lotion-lavender2.webp'],
             quantity: 6,
             price: 5000
           },
           {
             name: 'Vaseline Men Cooling Hydration 3-in-1 Face, Hands & Body Lotion with Menthol',
-            images: ['/images/products/vaseline-men-cooling1.jpg', '/images/products/vaseline-men-cooling2.jpg', '/images/products/vaseline-men-cooling3.jpg'],
+            images: ['/images/products/vaseline-men-cooling1.webp', '/images/products/vaseline-men-cooling2.webp', '/images/products/vaseline-men-cooling3.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: 'Vaseline Intensive Care Body Lotion Cocoa Radiant with Pure Cocoa Butter',
-            images: ['/images/products/vaseline-cocoa1.jpg', '/images/products/vaseline-cocoa2.jpg', '/images/products/vaseline-cocoa3.jpg'],
+            images: ['/images/products/vaseline-cocoa1.webp', '/images/products/vaseline-cocoa2.webp', '/images/products/vaseline-cocoa3.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: 'Vaseline Intensive Care Soothing Hydration Body Lotion with Aloe Vera',
-            images: ['/images/products/vaseline-aloe1.jpg', '/images/products/vaseline-aloe2.jpg'],
+            images: ['/images/products/vaseline-aloe1.webp', '/images/products/vaseline-aloe2.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: 'Vaseline Intensive Care Sensitive Skin Relief Body Lotion with Colloidal Oatmeal',
-            images: ['/images/products/vaseline-sensitive1.jpg', '/images/products/vaseline-sensitive3.jpg'],
+            images: ['/images/products/vaseline-sensitive1.webp', '/images/products/vaseline-sensitive3.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: 'Vaseline Intensive Care Calm Healing Body Lotion with Lavender Extract',
-            images: ['/images/products/vaseline-lavender1.jpg', '/images/products/vaseline-lavender2.jpg'],
+            images: ['/images/products/vaseline-lavender1.webp', '/images/products/vaseline-lavender2.webp'],
             quantity: 6,
             price: 6000
           },
           {
             name: 'Vaseline Intensive Care Nourishing Moisture Body Lotion with Pure Oat Extract',
-            images: ['/images/products/vaseline-oat1.jpg', '/images/products/vaseline-oat2.jpg'],
+            images: ['/images/products/vaseline-oat1.webp', '/images/products/vaseline-oat2.webp'],
             quantity: 6,
             price: 6000
           }
@@ -247,25 +247,25 @@ export const categories: Category[] = [
           {
             name: 'Men',
             items: [
-              { name: 'Paris Night Just for Men', image: '/images/products/paris-night-just-for-men.jpeg', price: 5000, quantity: 6 },
-              { name: 'Infinity 3.3 oz EDT For Men', image: '/images/products/infinity-edt-men.jpg', price: 3000, quantity: 6 },
-              { name: 'Platinum 3.4 oz EDP For Men', image: '/images/products/platinum-edp-men.jpg', price: 3000, quantity: 6 },
-              { name: 'Savage 3.4 oz EDP For Men', image: '/images/products/savage-edp-men.jpg', price: 3000, quantity: 6 },
-              { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.jpg', price: 6000, quantity: 6 },
-              { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.jpg', price: 6000, quantity: 6 },
-              { name: 'Victory 3.3 oz EDT For Men', image: '/images/products/victory-edt-men.jpg', price: 3500, quantity: 3 },
-              { name: 'Hercules Paris 3.4 oz EDP For Men', image: '/images/products/hercules-paris-edp-men.jpg', price: 3000, quantity: 6 },
-              { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.jpg', price: 3000, quantity: 15 }
+              { name: 'Paris Night Just for Men', image: '/images/products/paris-night-just-for-men.webp', price: 5000, quantity: 6 },
+              { name: 'Infinity 3.3 oz EDT For Men', image: '/images/products/infinity-edt-men.webp', price: 3000, quantity: 6 },
+              { name: 'Platinum 3.4 oz EDP For Men', image: '/images/products/platinum-edp-men.webp', price: 3000, quantity: 6 },
+              { name: 'Savage 3.4 oz EDP For Men', image: '/images/products/savage-edp-men.webp', price: 3000, quantity: 6 },
+              { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.webp', price: 6000, quantity: 6 },
+              { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.webp', price: 6000, quantity: 6 },
+              { name: 'Victory 3.3 oz EDT For Men', image: '/images/products/victory-edt-men.webp', price: 3500, quantity: 3 },
+              { name: 'Hercules Paris 3.4 oz EDP For Men', image: '/images/products/hercules-paris-edp-men.webp', price: 3000, quantity: 6 },
+              { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.webp', price: 3000, quantity: 15 }
             ]
           },
           {
             name: 'Women',
             items: [
-              { name: 'Fantastic Pink 3.4 oz EDP For Women', image: '/images/products/fantastic-pink-edp-women.jpg', price: 3000, quantity: 6 },
-              { name: 'Fleur De Paris 3.4 oz EDP For Women', image: '/images/products/fleur-de-paris-edp-women.jpg', price: 5000, quantity: 6 },
-              { name: 'Lazell Night Bloom For Women EDP 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.jpg', price: 5000, quantity: 6 },
-              { name: 'Lazell Spring For Women EDP 3.4 oz', image: '/images/products/lazell-spring-edp-women.jpg', price: 6000, quantity: 6 },
-              { name: 'Miss Coco 3.4 oz EDP For Women', image: '/images/products/miss-coco-edp-women.jpg', price: 3000, quantity: 6 }
+              { name: 'Fantastic Pink 3.4 oz EDP For Women', image: '/images/products/fantastic-pink-edp-women.webp', price: 3000, quantity: 6 },
+              { name: 'Fleur De Paris 3.4 oz EDP For Women', image: '/images/products/fleur-de-paris-edp-women.webp', price: 5000, quantity: 6 },
+              { name: 'Lazell Night Bloom For Women EDP 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.webp', price: 5000, quantity: 6 },
+              { name: 'Lazell Spring For Women EDP 3.4 oz', image: '/images/products/lazell-spring-edp-women.webp', price: 6000, quantity: 6 },
+              { name: 'Miss Coco 3.4 oz EDP For Women', image: '/images/products/miss-coco-edp-women.webp', price: 3000, quantity: 6 }
             ]
           }
         ]
@@ -286,9 +286,9 @@ export const categories: Category[] = [
             price: 15000,
             quantity: 3,
             images: [
-              '/images/products/mens-electric-shaver-1.jpeg',
-              '/images/products/mens-electric-shaver-2.jpeg',
-              '/images/products/mens-electric-shaver-3.jpeg'
+              '/images/products/mens-electric-shaver-1.webp',
+              '/images/products/mens-electric-shaver-2.webp',
+              '/images/products/mens-electric-shaver-3.webp'
             ]
           },
           {
@@ -296,8 +296,8 @@ export const categories: Category[] = [
             price: 12000,
             quantity: 2,
             images: [
-              '/images/products/mens-shaver-matte-1.jpeg',
-              '/images/products/mens-shaver-matte-2.jpeg'
+              '/images/products/mens-shaver-matte-1.webp',
+              '/images/products/mens-shaver-matte-2.webp'
             ]
           }
         ]
@@ -323,13 +323,13 @@ export const categories: Category[] = [
         items: [
           {
             name: "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",
-            images: ['/images/products/dr-teals-kids.jpg', '/images/products/dr-teals-kids1.jpg', '/images/products/dr-teals-kids2.jpg'],
+            images: ['/images/products/dr-teals-kids.webp', '/images/products/dr-teals-kids1.webp', '/images/products/dr-teals-kids2.webp'],
             quantity: 12,
             price: 3000
           },
           {
             name: 'Cetaphil Moisturizing Cream',
-            images: ['/images/products/cetaphil-moisturizer1.jpg', '/images/products/cetaphil-moisturizer2.jpg'],
+            images: ['/images/products/cetaphil-moisturizer1.webp', '/images/products/cetaphil-moisturizer2.webp'],
             quantity: 12,
             price: 10000
           }
@@ -379,12 +379,11 @@ export const categories: Category[] = [
             price: 15000,
             quantity: 3,
             images: [
-              '/images/products/spin-mop-bucket-1.jpeg',
-              '/images/products/spin-mop-bucket-2.jpeg',
-              '/images/products/spin-mop-bucket-3.jpeg',
-              '/images/products/spin-mop-bucket-4.jpeg',
-              '/images/products/spin-mop-bucket-5.jpeg',
-              '/images/products/spin-mop-bucket-6.jpeg'
+              '/images/products/spin-mop-bucket-1.webp',
+              '/images/products/spin-mop-bucket-2.webp',
+              '/images/products/spin-mop-bucket-3.webp',
+              '/images/products/spin-mop-bucket-4.webp',
+              '/images/products/spin-mop-bucket-5.webp'
             ]
           }
         ]
@@ -406,8 +405,8 @@ export const categories: Category[] = [
             quantity: 1,
             colors: ['#ff69b4'],
             images: [
-              '/images/products/smart-watch-1.jpeg',
-              '/images/products/smart-watch-2.jpeg'
+              '/images/products/smart-watch-1.webp',
+              '/images/products/smart-watch-2.webp'
             ]
           },
           {
@@ -416,10 +415,9 @@ export const categories: Category[] = [
             quantity: 6,
             colors: ['#2c2c2c', '#d4af37', '#ff69b4'],
             images: [
-              '/images/products/smartwatch-multi-1.jpeg',
-              '/images/products/smartwatch-multi-2.jpeg',
-              '/images/products/smartwatch-multi-3.jpeg',
-              '/images/products/smartwatch-multi-4.jpeg'
+              '/images/products/smartwatch-multi-1.webp',
+              '/images/products/smartwatch-multi-2.webp',
+              '/images/products/smartwatch-multi-3.webp'
             ]
           },
           {
@@ -428,9 +426,9 @@ export const categories: Category[] = [
             quantity: 2,
             colors: ['#2c2c2c'],
             images: [
-              '/images/products/unisex-smartwatch-1.jpeg',
-              '/images/products/unisex-smartwatch-2.jpeg',
-              '/images/products/unisex-smartwatch-3.jpeg'
+              '/images/products/unisex-smartwatch-1.webp',
+              '/images/products/unisex-smartwatch-2.webp',
+              '/images/products/unisex-smartwatch-3.webp'
             ]
           },
           {
@@ -439,9 +437,9 @@ export const categories: Category[] = [
             quantity: 1,
             colors: ['#2c2c2c'],
             images: [
-              '/images/products/smartwatch-led-1.jpeg',
-              '/images/products/smartwatch-led-2.jpeg',
-              '/images/products/smartwatch-led-3.jpeg'
+              '/images/products/smartwatch-led-1.webp',
+              '/images/products/smartwatch-led-2.webp',
+              '/images/products/smartwatch-led-3.webp'
             ]
           }
         ]
@@ -451,7 +449,7 @@ export const categories: Category[] = [
         items: [
           {
             name: 'Rechargeable LED Torch/Flashlight With High Power Lamp',
-            images: ['/images/products/torch1.jpeg', '/images/products/torch.jpeg', '/images/products/torch2.jpeg', '/images/products/torch3.jpeg'],
+            images: ['/images/products/torch1.webp', '/images/products/torch.webp', '/images/products/torch2.webp'],
             quantity: 15,
             price: 2500
           }
@@ -466,11 +464,11 @@ export const categories: Category[] = [
             quantity: 6,
             colors: ['#808080', '#e74c3c', '#2c2c2c'],
             images: [
-              '/images/products/tg537-speaker-1.jpeg',
-              '/images/products/tg537-speaker-2.jpeg',
-              '/images/products/tg537-speaker-3.jpeg',
-              '/images/products/tg537-speaker-4.jpeg',
-              '/images/products/tg537-speaker-5.jpeg'
+              '/images/products/tg537-speaker-1.webp',
+              '/images/products/tg537-speaker-2.webp',
+              '/images/products/tg537-speaker-3.webp',
+              '/images/products/tg537-speaker-4.webp',
+              '/images/products/tg537-speaker-5.webp'
             ]
           },
           {
@@ -479,10 +477,10 @@ export const categories: Category[] = [
             quantity: 8,
             colors: ['#e74c3c', '#2980b9', '#2c2c2c', '#800080'],
             images: [
-              '/images/products/tg667-speaker-1.jpeg',
-              '/images/products/tg667-speaker-2.jpeg',
-              '/images/products/tg667-speaker-3.jpeg',
-              '/images/products/tg667-speaker-4.jpeg'
+              '/images/products/tg667-speaker-1.webp',
+              '/images/products/tg667-speaker-2.webp',
+              '/images/products/tg667-speaker-3.webp',
+              '/images/products/tg667-speaker-4.webp'
             ]
           },
           {
@@ -491,10 +489,9 @@ export const categories: Category[] = [
             quantity: 4,
             colors: ['#808080', '#ffffff'],
             images: [
-              '/images/products/hyundai-lp5t-1.jpeg',
-              '/images/products/hyundai-lp5t-2.jpeg',
-              '/images/products/hyundai-lp5t-3.jpeg',
-              '/images/products/hyundai-lp5t-4.jpeg'
+              '/images/products/hyundai-lp5t-1.webp',
+              '/images/products/hyundai-lp5t-2.webp',
+              '/images/products/hyundai-lp5t-3.webp'
             ]
           },
           {
@@ -503,40 +500,41 @@ export const categories: Category[] = [
             quantity: 2,
             colors: ['#2c2c2c'],
             images: [
-              '/images/products/wireless-headphones-enc-1.jpeg',
-              '/images/products/wireless-headphones-enc-2.jpeg'
+              '/images/products/wireless-headphones-enc-1.webp',
+              '/images/products/wireless-headphones-enc-2.webp'
             ]
           },
           {
-            name: 'Wireless Headphones with Touch Control and Charging Case',
+            name: 'YD03 Wireless Earbuds',
             price: 2500,
             quantity: 3,
             images: [
-              '/images/products/wireless-touch-headphones-1.jpeg',
-              '/images/products/wireless-touch-headphones-2.jpeg',
-              '/images/products/wireless-touch-headphones-3.jpeg'
+              '/images/products/wireless-earbuds-tws-1.webp',
+              '/images/products/wireless-earbuds-tws-2.webp',
+              '/images/products/wireless-earbuds-tws-3.webp'
             ]
           },
           {
-            name: 'Acer TWS Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation',
+            name: 'Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation',
             price: 3500,
             quantity: 4,
             colors: ['#ff8c00', '#f5f5dc'],
             images: [
-              '/images/products/acer-tws-headset-1.jpeg',
-              '/images/products/acer-tws-headset-2.jpeg',
-              '/images/products/acer-tws-headset-3.jpeg',
-              '/images/products/acer-tws-headset-4.jpeg'
+              '/images/products/acer-tws-headset-1.webp',
+              '/images/products/acer-tws-headset-2.webp',
+              '/images/products/acer-tws-headset-3.webp',
+              '/images/products/acer-tws-headset-4.webp'
             ]
           },
           {
-            name: 'Acer Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control',
+            name: 'Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control',
             price: 3500,
             quantity: 6,
             colors: ['#f5f5dc', '#2c2c2c', '#800080'],
             images: [
-              '/images/products/acer-wireless-stereo-1.jpeg',
-              '/images/products/acer-wireless-stereo-2.jpeg'
+              '/images/products/acer-wireless-stereo-1.webp',
+              '/images/products/acer-wireless-stereo-2.webp',
+              '/images/products/acer-wireless-stereo-3.webp'
             ]
           },
           {
@@ -545,10 +543,11 @@ export const categories: Category[] = [
             quantity: 2,
             colors: ['#ffffff', '#2c2c2c'],
             images: [
-              '/images/products/nokia-earbuds-1.jpeg',
-              '/images/products/nokia-earbuds-2.jpeg',
-              '/images/products/nokia-earbuds-3.jpeg',
-              '/images/products/nokia-earbuds-4.jpeg'
+              '/images/products/nokia-earbuds-1.webp',
+              '/images/products/nokia-earbuds-2.webp',
+              '/images/products/nokia-earbuds-3.webp',
+              '/images/products/nokia-earbuds-4.webp',
+              '/images/products/nokia-earbuds-5.webp'
             ]
           },
           {
@@ -557,9 +556,8 @@ export const categories: Category[] = [
             quantity: 4,
             colors: ['#ffffff'],
             images: [
-              '/images/products/wireless-earbuds-tws-1.jpeg',
-              '/images/products/wireless-earbuds-tws-2.jpeg',
-              '/images/products/wireless-earbuds-tws-3.jpeg'
+              '/images/products/usb-tws-earbuds-1.webp',
+              '/images/products/usb-tws-earbuds-2.webp'
             ]
           },
           {
@@ -567,8 +565,8 @@ export const categories: Category[] = [
             price: 6500,
             quantity: 3,
             images: [
-              '/images/products/portable-speaker-rgb-1.jpeg',
-              '/images/products/portable-speaker-rgb-2.jpeg'
+              '/images/products/portable-speaker-rgb-1.webp',
+              '/images/products/portable-speaker-rgb-2.webp'
             ]
           }
         ]
@@ -585,10 +583,10 @@ export const categories: Category[] = [
             price: 300,
             quantity: 15,
             images: [
-              '/images/products/usb-c-cable-1.jpeg',
-              '/images/products/usb-c-cable-2.jpeg',
-              '/images/products/usb-c-cable-3.jpeg',
-              '/images/products/usb-c-cable-4.jpeg'
+              '/images/products/usb-c-cable-1.webp',
+              '/images/products/usb-c-cable-2.webp',
+              '/images/products/usb-c-cable-3.webp',
+              '/images/products/usb-c-cable-4.webp'
             ]
           }
         ]
@@ -618,7 +616,7 @@ export const categories: Category[] = [
         items: [
           {
             name: 'Non-Contact Forehead Digital Thermometer',
-            images: ['/images/products/therm2.jpeg', '/images/products/therm.jpeg', '/images/products/therm1.jpeg'],
+            images: ['/images/products/therm2.webp', '/images/products/therm.webp', '/images/products/therm1.webp'],
             quantity: 10,
             price: 3000
           },
@@ -627,8 +625,8 @@ export const categories: Category[] = [
             price: 15000,
             quantity: 3,
             images: [
-              '/images/products/blood-pressure-monitor-3.jpeg',
-              '/images/products/blood-pressure-monitor-4.jpeg'
+              '/images/products/blood-pressure-monitor-3.webp',
+              '/images/products/blood-pressure-monitor-4.webp'
             ]
           },
           {
@@ -636,11 +634,10 @@ export const categories: Category[] = [
             price: 15000,
             quantity: 3,
             images: [
-              '/images/products/arm-bp-monitor-1.jpeg',
-              '/images/products/arm-bp-monitor-2.jpeg',
-              '/images/products/arm-bp-monitor-3.jpeg',
-              '/images/products/arm-bp-monitor-4.jpeg',
-              '/images/products/arm-bp-monitor-5.jpeg'
+              '/images/products/arm-bp-monitor-1.webp',
+              '/images/products/arm-bp-monitor-2.webp',
+              '/images/products/arm-bp-monitor-3.webp',
+              '/images/products/arm-bp-monitor-4.webp'
             ]
           }
         ]
