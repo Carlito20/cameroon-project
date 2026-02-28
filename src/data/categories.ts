@@ -263,9 +263,13 @@ export const categories: Category[] = [
             items: [
               { name: 'Fantastic Pink 3.4 oz EDP For Women', image: '/images/products/fantastic-pink-edp-women.webp', price: 3000, quantity: 6 },
               { name: 'Fleur De Paris 3.4 oz EDP For Women', image: '/images/products/fleur-de-paris-edp-women.webp', price: 5000, quantity: 6 },
-              { name: 'Lazell Night Bloom For Women EDP 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.webp', price: 5000, quantity: 6 },
+              { name: 'Lazell Night Bloom For Women EDP 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.webp', price: 6000, quantity: 6 },
               { name: 'Lazell Spring For Women EDP 3.4 oz', image: '/images/products/lazell-spring-edp-women.webp', price: 6000, quantity: 6 },
-              { name: 'Miss Coco 3.4 oz EDP For Women', image: '/images/products/miss-coco-edp-women.webp', price: 3000, quantity: 6 }
+              { name: 'Miss Coco 3.4 oz EDP For Women', image: '/images/products/miss-coco-edp-women.webp', price: 3000, quantity: 6 },
+              { name: 'Island Coconut Body Mist', image: '/images/products/island-coconut-body-mist.webp', price: 3500, quantity: 8 },
+              { name: 'Passion Fruit Body Mist', image: '/images/products/passion-fruit-body-mist.webp', price: 3500, quantity: 8 },
+              { name: 'Watermelon Sugar Body Mist', image: '/images/products/watermelon-sugar-body-mist.webp', price: 3500, quantity: 4 },
+              { name: 'Pineapple Dream Body Mist', image: '/images/products/pineapple-dream-body-mist.webp', price: 3500, quantity: 4 }
             ]
           }
         ]
@@ -443,7 +447,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'A 2025 Hot-selling Round Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen',
+            name: 'Smart Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen',
             price: 9000,
             quantity: 1,
             colors: ['#2c2c2c'],
@@ -454,7 +458,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'A Versatile Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications',
+            name: 'GT4 PRO Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications',
             price: 8000,
             quantity: 2,
             colors: ['#2c2c2c'],
