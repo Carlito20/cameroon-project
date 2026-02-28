@@ -566,7 +566,7 @@ export const categories: Category[] = [
           {
             name: 'Nokia Go Earbuds+ TWS-201',
             price: 6000,
-            quantity: 4,
+            quantity: 10,
             colors: ['#ffffff', '#2c2c2c'],
             images: [
               '/images/products/nokia-earbuds-1.webp',
@@ -579,7 +579,7 @@ export const categories: Category[] = [
           {
             name: 'Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology',
             price: 6000,
-            quantity: 4,
+            quantity: 6,
             colors: ['#ffffff'],
             images: [
               '/images/products/usb-tws-earbuds-1.webp',
