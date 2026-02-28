@@ -1347,13 +1347,11 @@
   .subcategory-section {
     grid-column: 1 / -1;
     background: white;
-    border-radius: 0;
-    padding: 0.625rem;
-    margin: 0.25rem -0.75rem;
-    border: none;
-    border-top: 2px solid #e0e0e0;
-    border-bottom: 2px solid #e0e0e0;
-    width: calc(100% + 1.5rem);
+    border-radius: 10px;
+    padding: 0;
+    margin: 0.35rem 0;
+    border: 1px solid #d0d0d0;
+    overflow: hidden;
     box-sizing: border-box;
   }
 
@@ -1361,13 +1359,12 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    margin: -0.625rem -0.75rem 0 -0.75rem;
+    padding: 0.55rem 1rem;
     border: none;
     background: #3498db;
     color: white;
     cursor: pointer;
-    width: calc(100% + 3.2rem);
+    width: 100%;
     text-align: left;
     border-radius: 0;
     transition: all 0.2s ease;
@@ -1379,8 +1376,6 @@
 
   .subcategory-section:not(.expanded) .subcategory-header {
     border-radius: 0;
-    margin-bottom: -0.75rem;
-    padding-bottom: 0.75rem;
   }
 
   .subcategory-icon {
@@ -1410,9 +1405,8 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 0.5rem;
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #d0d0d0;
+    padding: 0.75rem;
+    border-top: 1px solid #e0e0e0;
   }
 
   /* Nested sub-category styles (e.g., Men/Women under Deodorants) */
@@ -2038,20 +2032,11 @@
     }
 
     .subcategory-section {
-      padding: 0.5rem;
-      margin: 0.25rem -0.625rem;
-      width: calc(100% + 1.25rem);
+      margin: 0.25rem 0;
     }
 
     .subcategory-header {
-      margin: -0.5rem -0.625rem 0 -0.625rem;
-      padding: 0.45rem 0.625rem;
-      width: calc(100% + 1.25rem);
-    }
-
-    .subcategory-section:not(.expanded) .subcategory-header {
-      margin-bottom: -0.625rem;
-      padding-bottom: 0.625rem;
+      padding: 0.45rem 0.75rem;
     }
 
     .category-header {
@@ -2251,20 +2236,11 @@
     }
 
     .subcategory-section {
-      padding: 0.375rem;
-      margin: 0.125rem -0.5rem;
-      width: calc(100% + 1rem);
+      margin: 0.125rem 0;
     }
 
     .subcategory-header {
-      margin: -0.375rem -0.5rem 0 -0.5rem;
-      padding: 0.375rem 0.5rem;
-      width: calc(100% + 1rem);
-    }
-
-    .subcategory-section:not(.expanded) .subcategory-header {
-      margin-bottom: -0.5rem;
-      padding-bottom: 0.5rem;
+      padding: 0.375rem 0.625rem;
     }
 
     .category-header h2 {
