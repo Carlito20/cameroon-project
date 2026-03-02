@@ -428,22 +428,22 @@
     right: 20px;
     width: 60px;
     height: 60px;
-    background: #3498db;
+    background: #111111;
     border: none;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     z-index: 998;
     transition: all 0.3s ease;
   }
 
   .cart-collapsed:hover {
-    background: #2980b9;
+    background: #f0a500;
     transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5);
+    box-shadow: 0 6px 20px rgba(240, 165, 0, 0.4);
   }
 
   .cart-collapsed-icon {
@@ -542,7 +542,7 @@
   .mobile-total-price {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #3498db;
+    color: #f0a500;
   }
 
   .mobile-order-btn {
@@ -584,7 +584,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #3498db;
+    background: #111111;
     color: white;
     border: none;
     width: 50px;
@@ -592,17 +592,18 @@
     padding: 0;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     font-size: 0.95rem;
     font-weight: 600;
     position: relative;
   }
 
-  .basket-toggle:hover {
-    background: #2980b9;
+  .basket-toggle:hover,
+  .basket-toggle:active {
+    background: #f0a500;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5);
+    box-shadow: 0 6px 20px rgba(240, 165, 0, 0.4);
   }
 
   .basket-icon {
@@ -868,7 +869,7 @@
   }
 
   .item-name-clickable:hover {
-    color: #3498db;
+    color: #f0a500;
     text-decoration: underline;
   }
 
@@ -896,7 +897,7 @@
   .item-price {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #3498db;
+    color: #f0a500;
   }
 
   .item-qty-controls {
@@ -910,9 +911,9 @@
     height: 24px;
     min-width: 44px;
     min-height: 44px;
-    border: 1px solid #3498db;
+    border: 1px solid #111111;
     background: white;
-    color: #3498db;
+    color: #111111;
     font-size: 1rem;
     font-weight: bold;
     border-radius: 4px;
@@ -923,9 +924,11 @@
     transition: all 0.2s ease;
   }
 
-  .item-qty-btn:hover:not(:disabled) {
-    background: #3498db;
-    color: white;
+  .item-qty-btn:hover:not(:disabled),
+  .item-qty-btn:active:not(:disabled) {
+    background: #f0a500;
+    border-color: #f0a500;
+    color: #111111;
   }
 
   .item-qty-btn:disabled {
@@ -975,7 +978,7 @@
   .total-price {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #3498db;
+    color: #f0a500;
   }
 
   .basket-actions {

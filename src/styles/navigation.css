@@ -41,7 +41,7 @@
 }
 
 .logo:hover {
-  color: var(--primary-color);
+  color: var(--gold-color);
 }
 
 .logo-icon {
@@ -71,8 +71,9 @@
 }
 
 .nav-links a:hover,
+.nav-links a:active,
 .nav-links a.active {
-  color: var(--primary-color);
+  color: var(--gold-color);
 }
 
 .nav-links a.active::after {
@@ -82,7 +83,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--primary-color);
+  background: var(--gold-color);
 }
 
 /* Dropdown Menu Styles */
@@ -109,7 +110,7 @@
 }
 
 .dropdown-toggle:hover {
-  color: var(--primary-color);
+  color: var(--gold-color);
 }
 
 .dropdown-arrow {
@@ -165,12 +166,12 @@
 
 .dropdown-item:hover {
   background: var(--bg-light);
-  color: var(--primary-color);
+  color: var(--gold-color);
 }
 
 .dropdown-all {
   font-weight: 600;
-  color: var(--primary-color);
+  color: var(--gold-color);
 }
 
 .dropdown-icon {
@@ -288,9 +289,10 @@
   }
 
   .nav-links > li > a:not(.shop-link):not(.dropdown-item):hover,
-  .nav-links > li > a:not(.shop-link):not(.dropdown-item):active {
+  .nav-links > li > a:not(.shop-link):not(.dropdown-item):active,
+  .nav-links > li > a:not(.shop-link):not(.dropdown-item).active {
     background: transparent;
-    color: var(--primary-color);
+    color: var(--gold-color);
   }
 
   /* Mobile dropdown styles */
@@ -324,7 +326,7 @@
   .dropdown-trigger .shop-link:hover,
   .dropdown-trigger .shop-link:active {
     background: transparent;
-    color: var(--primary-color);
+    color: var(--gold-color);
   }
 
   .dropdown-toggle {

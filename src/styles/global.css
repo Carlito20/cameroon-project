@@ -32,9 +32,10 @@ section {
 }
 
 :root {
-  --primary-color: #3498db;
+  --primary-color: #111111;
   --secondary-color: #2c3e50;
   --accent-color: #e74c3c;
+  --gold-color: #f0a500;
   --text-color: #333;
   --text-light: #666;
   --bg-light: #f8f9fa;
@@ -70,8 +71,9 @@ a {
   transition: color 0.3s ease;
 }
 
-a:hover {
-  color: var(--secondary-color);
+a:hover,
+a:active {
+  color: var(--gold-color);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -112,8 +114,10 @@ h3 {
   text-decoration: none;
 }
 
-.btn:hover {
-  background: var(--secondary-color);
+.btn:hover,
+.btn:active {
+  background: var(--gold-color);
+  color: #111111;
   transform: translateY(-2px);
   box-shadow: var(--shadow);
 }
@@ -123,7 +127,8 @@ h3 {
 }
 
 .btn-secondary:hover {
-  background: var(--primary-color);
+  background: var(--gold-color);
+  color: #111111;
 }
 
 .section {

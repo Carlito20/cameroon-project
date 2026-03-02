@@ -384,7 +384,8 @@
 }
 
 .suggestion-form .btn-submit:hover {
-  background: #2980b9;
+  background: var(--gold-color);
+  color: #111111;
   transform: translateY(-2px);
 }
 
@@ -496,5 +497,6 @@
 }
 
 .btn-another:hover {
-  background: #2980b9;
+  background: var(--gold-color);
+  color: #111111;
 }

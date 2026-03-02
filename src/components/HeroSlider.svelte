@@ -252,7 +252,7 @@
 
   .slide-text .highlight {
     display: block;
-    color: #3498db;
+    color: #f0a500;
   }
 
   .slide-text p {
@@ -266,7 +266,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: #3498db;
+    background: #111111;
     color: white;
     padding: 14px 28px;
     border-radius: 50px;
@@ -274,13 +274,15 @@
     font-size: 1rem;
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   }
 
-  .slide-btn:hover {
-    background: #2980b9;
+  .slide-btn:hover,
+  .slide-btn:active {
+    background: #f0a500;
+    color: #111111;
     transform: translateX(5px);
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 6px 20px rgba(240, 165, 0, 0.4);
   }
 
   .slide-image {
@@ -319,9 +321,10 @@
     color: #2c3e50;
   }
 
-  .nav-btn:hover {
-    background: #3498db;
-    color: white;
+  .nav-btn:hover,
+  .nav-btn:active {
+    background: #f0a500;
+    color: #111111;
     transform: translateY(-50%) scale(1.1);
   }
 
@@ -382,7 +385,7 @@
   .dot.active {
     width: 28px;
     min-width: 28px;
-    background: #3498db;
+    background: #f0a500;
     transform: scale(1);
   }
 
