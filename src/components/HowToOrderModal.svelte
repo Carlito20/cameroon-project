@@ -139,7 +139,7 @@
 <style>
   /* CSS Variables matching site theme */
   :root {
-    --modal-primary: #3498db;
+    --modal-primary: #111111;
     --modal-secondary: #2c3e50;
     --modal-text: #333;
     --modal-text-light: #666;
@@ -170,10 +170,11 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
 
-  .trigger-btn:hover {
-    color: #3498db;
-    border-color: #3498db;
-    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+  .trigger-btn:hover,
+  .trigger-btn:active {
+    color: #f0a500;
+    border-color: #f0a500;
+    box-shadow: 0 2px 8px rgba(240, 165, 0, 0.2);
   }
 
   .trigger-icon {
@@ -222,7 +223,7 @@
   /* Modal Header - Centered */
   .modal-header {
     position: relative;
-    background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+    background: linear-gradient(135deg, #111111 0%, #2c3e50 100%);
     padding: 1.5rem 2rem;
     text-align: center;
   }
@@ -374,18 +375,18 @@
   }
 
   .step-card:hover {
-    background: #eef6fc;
+    background: #fff8e6;
   }
 
   .step-highlight {
-    background: #eef6fc;
-    border: 2px solid #3498db;
+    background: #fff8e6;
+    border: 2px solid #f0a500;
   }
 
   .step-number {
     width: 2.5rem;
     height: 2.5rem;
-    background: #3498db;
+    background: #111111;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -400,7 +401,7 @@
     width: 2rem;
     height: 2rem;
     margin: 0 auto 0.5rem;
-    color: #3498db;
+    color: #f0a500;
   }
 
   .step-icon svg {
