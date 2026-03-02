@@ -483,6 +483,26 @@ export const categories: Category[] = [
               '/images/products/smartwatch-versatile-2.webp',
               '/images/products/smartwatch-versatile-3.webp'
             ]
+          },
+          {
+            name: '20000mAh Large-Capacity Mobile Power Bank',
+            price: 7000,
+            quantity: 5,
+            images: [
+              '/images/products/power-bank-20000mah-1.webp',
+              '/images/products/power-bank-20000mah-2.webp',
+              '/images/products/power-bank-20000mah-3.webp'
+            ]
+          },
+          {
+            name: '10000mAh Large-Capacity Mobile Power Bank',
+            price: 5000,
+            quantity: 5,
+            images: [
+              '/images/products/power-bank-10000mah-1.webp',
+              '/images/products/power-bank-10000mah-2.webp',
+              '/images/products/power-bank-10000mah-3.webp'
+            ]
           }
         ]
       },
@@ -494,6 +514,28 @@ export const categories: Category[] = [
             images: ['/images/products/torch1.webp', '/images/products/torch.webp', '/images/products/torch2.webp'],
             quantity: 15,
             price: 2500
+          },
+          {
+            name: 'Rechargeable Portable Fan',
+            price: 2500,
+            quantity: 9,
+            colors: ['#800080', '#ff69b4', '#2c2c2c'],
+            images: [
+              '/images/products/rechargeable-fan1.webp',
+              '/images/products/rechargeable-fan2.webp',
+              '/images/products/rechargeable-fan3.webp',
+              '/images/products/rechargeable-fan4.webp'
+            ]
+          },
+          {
+            name: 'Dark Grey USB Rechargeable Fan',
+            price: 2500,
+            quantity: 4,
+            colors: ['#2c2c2c'],
+            images: [
+              '/images/products/dark-grey-usb-fan1.webp',
+              '/images/products/dark-grey-usb-fan2.webp'
+            ]
           }
         ]
       },
@@ -622,7 +664,7 @@ export const categories: Category[] = [
         items: [
           {
             name: 'Data Cable, USB C to USB C Charging Cable, Type C to Type C Fast Charging',
-            price: 300,
+            price: 1000,
             quantity: 15,
             images: [
               '/images/products/usb-c-cable-1.webp',
@@ -630,6 +672,34 @@ export const categories: Category[] = [
               '/images/products/usb-c-cable-3.webp',
               '/images/products/usb-c-cable-4.webp'
             ]
+          },
+          {
+            name: '7-in-1 USB Extender Hub',
+            price: 5000,
+            quantity: 10,
+            images: [
+              '/images/products/usb-extender-7in1-1.webp',
+              '/images/products/usb-extender-7in1-2.webp',
+              '/images/products/usb-extender-7in1-3.webp',
+              '/images/products/usb-extender-7in1-4.webp',
+              '/images/products/usb-extender-7in1-5.webp'
+            ]
+          },
+          {
+            name: 'USB to USB C Charging Cable',
+            price: 1000,
+            quantity: 15,
+            images: [
+              '/images/products/usb-to-usbc-cable1.webp',
+              '/images/products/usb-to-usbc-cable2.webp',
+              '/images/products/usb-to-usbc-cable3.webp'
+            ]
+          },
+          {
+            name: 'USB iPhone Charging Cable',
+            price: 1000,
+            quantity: 10,
+            image: '/images/products/usb-iphone-cable1.webp'
           }
         ]
       }
