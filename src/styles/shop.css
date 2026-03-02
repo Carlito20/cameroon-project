@@ -91,12 +91,14 @@
 }
 
 .link-how {
-  color: var(--primary-color);
+  color: #111111;
   font-weight: 600;
   text-decoration: none;
 }
 
-.link-how:hover {
+.link-how:hover,
+.link-how:active {
+  color: #f0a500;
   text-decoration: underline;
 }
 
