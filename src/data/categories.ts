@@ -238,6 +238,12 @@ export const categories: Category[] = [
             images: ['/images/products/vaseline-oat1.webp', '/images/products/vaseline-oat2.webp'],
             quantity: 6,
             price: 6000
+          },
+          {
+            name: 'Lubriderm Fragrance Free Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Face, Hand & Body Lotion for Sensitive Skin, Hydrating Lotion for Healthier-Looking Skin',
+            images: ['/images/products/lubriderm-pro-ceramide1.webp', '/images/products/lubriderm-pro-ceramide2.webp', '/images/products/lubriderm-pro-ceramide3.webp'],
+            quantity: 8,
+            price: 10000
           }
         ]
       },
@@ -269,7 +275,17 @@ export const categories: Category[] = [
               { name: 'Island Coconut Body Mist', image: '/images/products/island-coconut-body-mist.webp', price: 3500, quantity: 8 },
               { name: 'Passion Fruit Body Mist', image: '/images/products/passion-fruit-body-mist.webp', price: 3500, quantity: 8 },
               { name: 'Watermelon Sugar Body Mist', image: '/images/products/watermelon-sugar-body-mist.webp', price: 3500, quantity: 4 },
-              { name: 'Pineapple Dream Body Mist', image: '/images/products/pineapple-dream-body-mist.webp', price: 3500, quantity: 4 }
+              { name: 'Pineapple Dream Body Mist', image: '/images/products/pineapple-dream-body-mist.webp', price: 3500, quantity: 4 },
+              { name: 'Charm Spray Perfume Eau De Parfum For Women', images: ['/images/products/charm-spray-perfume1.webp', '/images/products/charm-spray-perfume2.webp', '/images/products/charm-spray-perfume3.webp'], price: 6000, quantity: 3 },
+              { name: 'Daicy Blue Spray Perfume Eau De Parfum', images: ['/images/products/daicy-blue-spray1.webp', '/images/products/daicy-blue-spray2.webp', '/images/products/daicy-blue-spray3.webp'], price: 6000, quantity: 3 },
+              { name: 'Flower Eau De Parfum For Women', images: ['/images/products/flower-edp-women1.webp', '/images/products/flower-edp-women2.webp'], price: 6000, quantity: 3 },
+              { name: 'Flower Pink Spray Perfume Eau De Parfum', images: ['/images/products/flower-pink-spray1.webp', '/images/products/flower-pink-spray2.webp', '/images/products/flower-pink-spray3.webp'], price: 6000, quantity: 3 },
+              { name: 'Gorgeous Flower Spray Perfume Eau De Parfum', images: ['/images/products/gorgeous-flower-spray1.webp', '/images/products/gorgeous-flower-spray2.webp', '/images/products/gorgeous-flower-spray3.webp'], price: 6000, quantity: 3 },
+              { name: 'Honey Bear Pink Spray Perfume Eau De Parfum', images: ['/images/products/honey-bear-pink-spray1.webp', '/images/products/honey-bear-pink-spray2.webp', '/images/products/honey-bear-pink-spray3.webp'], price: 6000, quantity: 3 },
+              { name: 'Love Is Forever Spray Perfume Eau De Parfum', images: ['/images/products/love-is-forever-spray1.webp', '/images/products/love-is-forever-spray2.webp'], price: 6000, quantity: 3 },
+              { name: 'Nice Girl Spray Perfume Eau De Parfum For Women', images: ['/images/products/nice-girl-spray1.webp', '/images/products/nice-girl-spray2.webp', '/images/products/nice-girl-spray3.webp'], price: 6000, quantity: 3 },
+              { name: 'Princess High Heels Pink Spray Perfume Eau De Parfum', images: ['/images/products/princess-high-heels1.webp', '/images/products/princess-high-heels2.webp', '/images/products/princess-high-heels3.webp', '/images/products/princess-high-heels4.webp'], price: 6000, quantity: 3 },
+              { name: 'Sexy Rose Pink Spray Perfume Eau De Parfum', images: ['/images/products/sexy-rose-pink-spray1.webp', '/images/products/sexy-rose-pink-spray2.webp', '/images/products/sexy-rose-pink-spray3.webp'], price: 6000, quantity: 3 }
             ]
           }
         ]
