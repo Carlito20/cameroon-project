@@ -26,9 +26,11 @@ img, video, iframe {
   height: auto;
 }
 
-/* Fix for sections that might overflow */
+/* Fix for sections that might overflow.
+   overflow-x: clip prevents horizontal overflow WITHOUT creating a scroll
+   container — so position: sticky works inside sections. */
 section {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 :root {
@@ -62,7 +64,7 @@ body {
 
 main {
   min-height: calc(100vh - 200px);
-  overflow-x: hidden;
+  overflow-x: clip; /* clip not hidden — preserves position: sticky in children */
 }
 
 a {
