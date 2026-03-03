@@ -244,6 +244,12 @@ export const categories: Category[] = [
             images: ['/images/products/lubriderm-pro-ceramide1.webp', '/images/products/lubriderm-pro-ceramide2.webp', '/images/products/lubriderm-pro-ceramide3.webp'],
             quantity: 8,
             price: 10000
+          },
+          {
+            name: 'Lubriderm Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Hydrating Face, Hand & Body Lotion, 24-hour Moisturizer for Dry Skin, 6 Fl Oz',
+            images: ['/images/products/lubriderm-daily-6oz-1.webp', '/images/products/lubriderm-daily-6oz-2.webp'],
+            quantity: 4,
+            price: 3500
           }
         ]
       },
@@ -750,6 +756,16 @@ export const categories: Category[] = [
               '/images/products/arm-bp-monitor-2.webp',
               '/images/products/arm-bp-monitor-3.webp',
               '/images/products/arm-bp-monitor-4.webp'
+            ]
+          },
+          {
+            name: 'Rechargeable Digital Scale with USB Charging',
+            price: 10000,
+            quantity: 4,
+            images: [
+              '/images/products/digital-bathroom-scale1.webp',
+              '/images/products/digital-bathroom-scale2.webp',
+              '/images/products/digital-bathroom-scale3.webp'
             ]
           }
         ]
