@@ -1681,6 +1681,10 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .qty-btn:hover:not(:disabled),
@@ -1766,6 +1770,10 @@
     border-radius: 6px;
     transition: all 0.2s ease;
     white-space: nowrap;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .btn-whatsapp {
@@ -1788,6 +1796,8 @@
     color: white;
     border: none;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .btn-inquiry:hover,
