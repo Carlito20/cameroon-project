@@ -1491,6 +1491,7 @@
     padding: env(safe-area-inset-top, 1rem) env(safe-area-inset-right, 1rem) env(safe-area-inset-bottom, 1rem) env(safe-area-inset-left, 1rem);
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
+    will-change: transform;
   }
 
   .lightbox-content {
@@ -1579,6 +1580,18 @@
     cursor: pointer;
     padding: 0;
     transition: background 0.2s ease;
+    position: relative;
+  }
+
+  /* Extend touch target to 44px without changing visual dot size */
+  .lightbox-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .lightbox-dot:hover,
@@ -1600,6 +1613,7 @@
     max-width: 95vw;
     max-height: 85vh;
     cursor: zoom-out;
+    touch-action: pan-x pan-y;
   }
 
   .lightbox-content img {
@@ -2270,6 +2284,17 @@
       width: 24px;
       height: 24px;
       font-size: 1rem;
+      position: relative;
+    }
+
+    .subcategory-toggle::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 44px;
+      min-height: 44px;
     }
 
     .product-item {

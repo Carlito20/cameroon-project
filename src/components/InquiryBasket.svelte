@@ -220,17 +220,17 @@
     updateBodyClass();
   }
 
+  let previewItem = null;
+
   function viewProduct(itemName) {
-    // Close mobile cart overlay if open
-    if (isOpen) {
-      isOpen = false;
-      updateBodyClass();
+    const item = inquiryItems.find(i => i.name === itemName);
+    if (item && item.image) {
+      previewItem = item;
     }
-    // Mark that we came from cart so we can return
-    sessionStorage.setItem('cameFromCart', 'true');
-    // Navigate to shop page with search query for this product
-    const searchQuery = encodeURIComponent(itemName);
-    window.location.href = `/shop?search=${searchQuery}`;
+  }
+
+  function closePreview() {
+    previewItem = null;
   }
 
   function updateBodyClass() {
@@ -381,12 +381,27 @@
   </div>
 {/if}
 
+<!-- Item Image Preview Lightbox -->
+{#if previewItem}
+  <div class="cart-preview-overlay" on:click={closePreview} role="dialog" aria-modal="true">
+    <div class="cart-preview-content" on:click|stopPropagation>
+      <button class="cart-preview-close" on:click={closePreview} aria-label="Close">×</button>
+      <img src={previewItem.image} alt={previewItem.name} />
+      <p class="cart-preview-name">{previewItem.name}</p>
+      {#if previewItem.price}
+        <p class="cart-preview-price">{formatPrice(previewItem.price)} FCFA</p>
+      {/if}
+    </div>
+  </div>
+{/if}
+
 <style>
   /* Desktop Sidebar Cart */
   .cart-sidebar {
     position: fixed;
     top: 100px;
     right: 20px;
+    right: calc(20px + env(safe-area-inset-right, 0px));
     width: 300px;
     background: white;
     border-radius: 12px;
@@ -396,6 +411,9 @@
     max-height: calc(100vh - 140px);
     display: flex;
     flex-direction: column;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   .cart-sidebar .basket-header {
@@ -424,8 +442,8 @@
   /* Collapsed cart button */
   .cart-collapsed {
     position: fixed;
-    bottom: 100px;
-    right: 20px;
+    bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+    right: calc(20px + env(safe-area-inset-right, 0px));
     width: 60px;
     height: 60px;
     background: #111111;
@@ -437,7 +455,10 @@
     justify-content: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     z-index: 998;
-    transition: all 0.3s ease;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   .cart-collapsed:hover {
@@ -575,9 +596,12 @@
   .inquiry-basket-float {
     position: fixed;
     bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-    right: 20px;
+    right: calc(20px + env(safe-area-inset-right, 0px));
     z-index: 999;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   .basket-toggle {
@@ -649,6 +673,12 @@
     display: flex;
     align-items: flex-end;
     animation: fadeIn 0.2s ease;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
   }
 
   @keyframes fadeIn {
@@ -726,7 +756,7 @@
   .item-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .item-image-placeholder {
@@ -862,10 +892,15 @@
   .item-name-clickable {
     background: none;
     border: none;
-    padding: 0;
+    padding: 4px 0;
     text-align: left;
     cursor: pointer;
     transition: color 0.2s ease;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .item-name-clickable:hover {
@@ -883,6 +918,88 @@
   .item-clickable:hover {
     transform: scale(1.05);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Cart item image preview lightbox */
+  .cart-preview-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    padding: calc(1rem + env(safe-area-inset-top, 0px)) calc(1rem + env(safe-area-inset-right, 0px)) calc(1rem + env(safe-area-inset-bottom, 0px)) calc(1rem + env(safe-area-inset-left, 0px));
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .cart-preview-content {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .cart-preview-content img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  .cart-preview-name {
+    font-size: 0.95rem;
+    color: #333;
+    text-align: center;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .cart-preview-price {
+    font-size: 1.1rem;
+    color: #f0a500;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+  }
+
+  .cart-preview-close {
+    position: absolute;
+    top: -22px;
+    right: -22px;
+    background: #111111;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cart-preview-close:hover {
+    background: #f0a500;
+    color: #111111;
   }
 
   .item-category {
@@ -951,9 +1068,16 @@
     color: #dc3545;
     cursor: pointer;
     font-size: 0.9rem;
-    padding: 2px 6px;
+    padding: 0;
     border-radius: 4px;
     transition: background 0.2s;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .remove-btn:hover {

@@ -273,10 +273,44 @@ h3 {
   }
 }
 
+/* Prevent double-tap zoom on all interactive elements */
+a, button, input, select, textarea, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Remove default iOS/Android styling from inputs and selects */
+input, select, textarea, button {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+
+/* Prevent accidental text selection on interactive elements */
+button, a, [role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* iOS smooth scrolling and safe area support */
 @supports (-webkit-touch-callout: none) {
   body {
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fix position:fixed/sticky flickering on iOS Safari */
+  .cart-sidebar,
+  .cart-collapsed,
+  .basket-toggle,
+  .mobile-cart-overlay,
+  .lightbox-overlay,
+  .cart-preview-overlay,
+  .navbar,
+  .nav-links,
+  .whatsapp-float,
+  .inquiry-basket-float {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
   }
 }
 

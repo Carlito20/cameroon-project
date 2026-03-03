@@ -7,6 +7,9 @@
   transition: transform 0.3s ease, opacity 0.3s ease;
   /* Clear iPhone notch / Dynamic Island */
   padding-top: env(safe-area-inset-top, 0px);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 /* Hide navbar on scroll */
@@ -249,8 +252,12 @@
     gap: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     align-items: center;
     justify-content: flex-start;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   .nav-links.active {
