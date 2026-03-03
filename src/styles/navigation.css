@@ -315,8 +315,7 @@
     align-items: center;
     justify-content: center;
     min-height: 56px;
-    padding: 16px;
-    padding-right: 48px;
+    padding: 16px 20px;
     font-size: 1.1rem;
     border-radius: 0;
     background: transparent;
