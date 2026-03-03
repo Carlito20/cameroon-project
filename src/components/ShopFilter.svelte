@@ -1249,7 +1249,6 @@
     background: white;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
   }
 
   .category-header {
@@ -2061,7 +2060,6 @@
     .category-section {
       padding: 0.5rem;
       margin-bottom: 0.5rem;
-      overflow: hidden;
     }
 
     .subcategory-section {
@@ -2282,7 +2280,6 @@
     .category-section {
       padding: 0.375rem;
       border-radius: 8px;
-      overflow: hidden;
     }
 
     .subcategory-section {
