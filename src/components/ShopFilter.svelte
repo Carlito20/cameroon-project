@@ -1297,8 +1297,17 @@
     padding: 0;
     margin: 0.35rem 0;
     border: 1px solid #d0d0d0;
-    overflow: hidden;
     box-sizing: border-box;
+  }
+
+  /* Collapsed: clip content so border-radius looks right */
+  .subcategory-section:not(.expanded) {
+    overflow: hidden;
+  }
+
+  /* Expanded: must be visible so sticky header can escape the section */
+  .subcategory-section.expanded {
+    overflow: visible;
   }
 
   .subcategory-header {
@@ -1331,6 +1340,26 @@
   .subcategory-section.expanded .subcategory-header {
     background: #f0a500;
     color: #111111;
+    border-radius: 9px 9px 0 0;
+    position: sticky;
+    /* Below desktop navbar (~112px) + safe area for iPhone notch */
+    top: calc(112px + env(safe-area-inset-top, 0px));
+    z-index: 50;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+  }
+
+  .subcategory-section.expanded .subcategory-header h3 {
+    color: #111111;
+  }
+
+  /* Round the bottom of the products container since section overflow is now visible */
+  .subcategory-section.expanded .subcategory-products {
+    border-radius: 0 0 9px 9px;
+    border: 1px solid #d0d0d0;
+    border-top: none;
   }
 
   .subcategory-icon {
@@ -2043,6 +2072,11 @@
       padding: 0.45rem 0.75rem;
     }
 
+    /* Mobile navbar is shorter (~104px) */
+    .subcategory-section.expanded .subcategory-header {
+      top: calc(104px + env(safe-area-inset-top, 0px));
+    }
+
     .category-header {
       flex-direction: row;
       text-align: left;
@@ -2257,6 +2291,11 @@
 
     .subcategory-header {
       padding: 0.375rem 0.625rem;
+    }
+
+    /* Extra-small navbar is shorter (~66px) */
+    .subcategory-section.expanded .subcategory-header {
+      top: calc(66px + env(safe-area-inset-top, 0px));
     }
 
     .category-header h2 {
