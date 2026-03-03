@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
 
   // Props passed from Astro
   export let categories = [];
@@ -246,11 +246,17 @@
     };
     document.addEventListener('click', handleClickOutside);
 
+    // Sticky subcategory header scroll handler
+    window.addEventListener('scroll', updateStickyHeaders, { passive: true });
+    window.addEventListener('resize', updateStickyHeaders, { passive: true });
+
     return () => {
       document.removeEventListener('click', handleClickOutside);
       window.removeEventListener('cart-loaded', handleCartLoaded);
       window.removeEventListener('cart-qty-updated', handleCartQtyUpdated);
       window.removeEventListener('item-removed-from-cart', handleItemRemoved);
+      window.removeEventListener('scroll', updateStickyHeaders);
+      window.removeEventListener('resize', updateStickyHeaders);
     };
   });
 
@@ -441,13 +447,129 @@
     }
   }
 
-  function toggleSubCategory(name) {
-    if (expandedSubCategories.has(name)) {
+  // JS-based sticky: applies position:fixed to subcategory headers as user scrolls.
+  // CSS position:sticky is unreliable when ancestors have overflow constraints.
+  function applyFixed(header, section, top, zIndex) {
+    // Always derive left/width from the SECTION (always in flow, never stale)
+    // rather than the header itself (which may already be position:fixed).
+    const sectionRect = section.getBoundingClientRect();
+    const styles = getComputedStyle(section);
+    const borderL = parseFloat(styles.borderLeftWidth) || 0;
+    const borderR = parseFloat(styles.borderRightWidth) || 0;
+    const padL    = parseFloat(styles.paddingLeft) || 0;
+    const padR    = parseFloat(styles.paddingRight) || 0;
+    const left  = sectionRect.left + borderL + padL;
+    const width = section.offsetWidth - borderL - borderR - padL - padR;
+
+    header.setAttribute('data-is-fixed', '1');
+    header.style.position = 'fixed';
+    header.style.top = top + 'px';
+    header.style.left = left + 'px';
+    header.style.width = width + 'px';
+    header.style.zIndex = zIndex;
+
+    if (!section.querySelector(':scope > .js-sticky-spacer')) {
+      const spacer = document.createElement('div');
+      spacer.className = 'js-sticky-spacer';
+      spacer.style.height = header.offsetHeight + 'px';
+      header.after(spacer);
+    }
+  }
+
+  function removeFixed(header, section) {
+    header.removeAttribute('data-is-fixed');
+    header.style.position = '';
+    header.style.top = '';
+    header.style.left = '';
+    header.style.width = '';
+    header.style.zIndex = '';
+    const spacer = section.querySelector(':scope > .js-sticky-spacer');
+    if (spacer) spacer.remove();
+  }
+
+  function updateStickyHeaders() {
+    const navbar = document.querySelector('.navbar');
+    const navbarBottom = navbar ? Math.max(0, navbar.getBoundingClientRect().bottom) : 0;
+
+    // Top-level subcategory headers (e.g. Deodorants, Perfumes)
+    document.querySelectorAll('.subcategory-section.expanded').forEach(section => {
+      const header = section.querySelector(':scope > .subcategory-header');
+      if (!header) return;
+
+      const sectionRect = section.getBoundingClientRect();
+      const headerHeight = header.offsetHeight;
+      const shouldFix = sectionRect.top < navbarBottom &&
+                        sectionRect.bottom > navbarBottom + headerHeight;
+
+      if (shouldFix) {
+        applyFixed(header, section, navbarBottom, '200');
+      } else if (header.hasAttribute('data-is-fixed')) {
+        removeFixed(header, section);
+      }
+    });
+
+    // Nested subcategory headers (Men / Women) — stack below the parent floating bar
+    document.querySelectorAll('.nested-subcategory.expanded').forEach(section => {
+      const header = section.querySelector(':scope > .nested-subcategory-header');
+      if (!header) return;
+
+      const parentHeader = section.closest('.subcategory-section')
+        ?.querySelector(':scope > .subcategory-header');
+      const nestedTop = parentHeader?.hasAttribute('data-is-fixed')
+        ? parentHeader.getBoundingClientRect().bottom
+        : navbarBottom;
+
+      const sectionRect = section.getBoundingClientRect();
+      const headerHeight = header.offsetHeight;
+      const shouldFix = sectionRect.top < nestedTop &&
+                        sectionRect.bottom > nestedTop + headerHeight;
+
+      if (shouldFix) {
+        applyFixed(header, section, nestedTop, '199');
+      } else if (header.hasAttribute('data-is-fixed')) {
+        removeFixed(header, section);
+      }
+    });
+
+    // Clean up any fixed headers inside now-collapsed sections
+    const collapsedFixed = '.subcategory-section:not(.expanded) .subcategory-header[data-is-fixed],'
+      + '.nested-subcategory:not(.expanded) .nested-subcategory-header[data-is-fixed]';
+    document.querySelectorAll(collapsedFixed).forEach(header => {
+      const section = header.closest('.subcategory-section, .nested-subcategory');
+      if (section) removeFixed(header, section);
+    });
+  }
+
+  async function toggleSubCategory(name) {
+    const isCollapsing = expandedSubCategories.has(name);
+
+    if (isCollapsing) {
+      // Find the section by its data-name before collapsing
+      let targetSection = null;
+      document.querySelectorAll('[data-name]').forEach(s => {
+        if (s.dataset.name === name) targetSection = s;
+      });
+      const header = targetSection?.querySelector(':scope > .subcategory-header, :scope > .nested-subcategory-header');
+      const wasFixed = header?.hasAttribute('data-is-fixed') ?? false;
+
       expandedSubCategories.delete(name);
+      expandedSubCategories = expandedSubCategories;
+      await tick();
+      updateStickyHeaders();
+
+      // Scroll back so the collapsed header lands just below the navbar
+      if (wasFixed && targetSection) {
+        const navEl = document.querySelector('.navbar');
+        const navbarBottom = navEl ? Math.max(0, navEl.getBoundingClientRect().bottom) : 0;
+        const sectionTop = targetSection.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: sectionTop - navbarBottom - 8, behavior: 'smooth' });
+      }
     } else {
       expandedSubCategories.add(name);
+      expandedSubCategories = expandedSubCategories;
+      await tick();
+      updateStickyHeaders();
     }
-    expandedSubCategories = expandedSubCategories; // Trigger reactivity
   }
 
   function handleInquiryClick(productItem, categoryName, stockQty, itemPrice) {
@@ -668,7 +790,7 @@
       {#each category.items as item}
         {#if isSubCategory(item)}
           <!-- Sub-category -->
-          <div class="subcategory-section" class:expanded={expandedSubCategories.has(item.name)}>
+          <div class="subcategory-section" class:expanded={expandedSubCategories.has(item.name)} data-name={item.name}>
             <button class="subcategory-header" on:click={() => toggleSubCategory(item.name)}>
               <h3>{item.name}</h3>
               <span class="subcategory-toggle">{expandedSubCategories.has(item.name) ? '−' : '+'}</span>
@@ -681,7 +803,7 @@
               {#each sortItems(item.items, sortBy) as subItem}
                 {#if isSubCategory(subItem)}
                   <!-- Nested sub-category (e.g., Men/Women under Deodorants) -->
-                  <div class="nested-subcategory" class:expanded={expandedSubCategories.has(subItem.name)}>
+                  <div class="nested-subcategory" class:expanded={expandedSubCategories.has(subItem.name)} data-name={subItem.name}>
                     <button class="nested-subcategory-header" on:click={() => toggleSubCategory(subItem.name)}>
                       <h4>{subItem.name}</h4>
                       <span class="subcategory-toggle">{expandedSubCategories.has(subItem.name) ? '−' : '+'}</span>
@@ -1340,11 +1462,6 @@
     background: #f0a500;
     color: #111111;
     border-radius: 9px 9px 0 0;
-    position: -webkit-sticky; /* iOS Safari */
-    position: sticky;
-    /* Below desktop navbar (~112px) + safe area for iPhone notch */
-    top: calc(112px + env(safe-area-inset-top, 0px));
-    z-index: 50;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
   }
 
@@ -1420,6 +1537,17 @@
     background: #f0a500;
     color: #111111;
     outline: none;
+  }
+
+  .nested-subcategory.expanded .nested-subcategory-header {
+    background: #c8890a;
+    color: #111111;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    overflow: visible; /* allow ::before touch target to extend beyond button bounds */
+  }
+
+  .nested-subcategory.expanded .nested-subcategory-header h4 {
+    color: #111111;
   }
 
   .nested-subcategory-header h4 {
@@ -2068,13 +2196,6 @@
       padding: 0.45rem 0.75rem;
     }
 
-    /* Mobile navbar is shorter (~104px) */
-    .subcategory-section.expanded .subcategory-header {
-      position: -webkit-sticky;
-      position: sticky;
-      top: calc(104px + env(safe-area-inset-top, 0px));
-    }
-
     .category-header {
       flex-direction: row;
       text-align: left;
@@ -2288,13 +2409,6 @@
 
     .subcategory-header {
       padding: 0.375rem 0.625rem;
-    }
-
-    /* Extra-small navbar is shorter (~66px) */
-    .subcategory-section.expanded .subcategory-header {
-      position: -webkit-sticky;
-      position: sticky;
-      top: calc(66px + env(safe-area-inset-top, 0px));
     }
 
     .category-header h2 {
