@@ -1340,13 +1340,11 @@
     background: #f0a500;
     color: #111111;
     border-radius: 9px 9px 0 0;
+    position: -webkit-sticky; /* iOS Safari */
     position: sticky;
     /* Below desktop navbar (~112px) + safe area for iPhone notch */
     top: calc(112px + env(safe-area-inset-top, 0px));
     z-index: 50;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
   }
 
@@ -2072,6 +2070,8 @@
 
     /* Mobile navbar is shorter (~104px) */
     .subcategory-section.expanded .subcategory-header {
+      position: -webkit-sticky;
+      position: sticky;
       top: calc(104px + env(safe-area-inset-top, 0px));
     }
 
@@ -2292,6 +2292,8 @@
 
     /* Extra-small navbar is shorter (~66px) */
     .subcategory-section.expanded .subcategory-header {
+      position: -webkit-sticky;
+      position: sticky;
       top: calc(66px + env(safe-area-inset-top, 0px));
     }
 
