@@ -451,14 +451,7 @@
   }
 
   function handleInquiryClick(productItem, categoryName, stockQty, itemPrice) {
-    const itemName = getProductName(productItem);
-    if (addedItems[itemName]) {
-      // Item already added - show confirmation popup
-      confirmingItem = confirmingItem === itemName ? null : itemName;
-    } else {
-      // Add new item with selected quantity
-      addToInquiry(productItem, categoryName, stockQty, itemPrice);
-    }
+    addToInquiry(productItem, categoryName, stockQty, itemPrice);
   }
 
   function addToInquiry(productItem, categoryName, stockQty, itemPrice) {
@@ -655,19 +648,6 @@
                   WhatsApp
                 </a>
               </div>
-              {#if confirmingItem === result.productName}
-                <div class="confirm-popup">
-                  <div class="confirm-message">Already in your list ({addedItems[result.productName]})</div>
-                  <div class="confirm-actions">
-                    <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(result.product)}>
-                      Remove
-                    </button>
-                    <button class="confirm-btn keep-btn" on:click={keepItem}>
-                      Keep
-                    </button>
-                  </div>
-                </div>
-              {/if}
             </div>
           </div>
         {/each}
@@ -767,19 +747,6 @@
                                   WhatsApp
                                 </a>
                               </div>
-                              {#if confirmingItem === getProductName(nestedProduct)}
-                                <div class="confirm-popup">
-                                  <div class="confirm-message">Already in your list ({addedItems[getProductName(nestedProduct)]})</div>
-                                  <div class="confirm-actions">
-                                    <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(nestedProduct)}>
-                                      Remove
-                                    </button>
-                                    <button class="confirm-btn keep-btn" on:click={keepItem}>
-                                      Keep
-                                    </button>
-                                  </div>
-                                </div>
-                              {/if}
                             </div>
                           </div>
                         {/each}
@@ -845,19 +812,6 @@
                         WhatsApp
                       </a>
                     </div>
-                    {#if confirmingItem === getProductName(subItem)}
-                      <div class="confirm-popup">
-                        <div class="confirm-message">Already in your list ({addedItems[getProductName(subItem)]})</div>
-                        <div class="confirm-actions">
-                          <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(subItem)}>
-                            Remove
-                          </button>
-                          <button class="confirm-btn keep-btn" on:click={keepItem}>
-                            Keep
-                          </button>
-                        </div>
-                      </div>
-                    {/if}
                   </div>
                 </div>
                 {/if}
@@ -926,20 +880,6 @@
                 </a>
               </div>
 
-              <!-- Confirmation Popup -->
-              {#if confirmingItem === getProductName(item)}
-                <div class="confirm-popup">
-                  <div class="confirm-message">Already in your list ({addedItems[getProductName(item)]})</div>
-                  <div class="confirm-actions">
-                    <button class="confirm-btn remove-btn" on:click={() => removeFromInquiry(item)}>
-                      Remove
-                    </button>
-                    <button class="confirm-btn keep-btn" on:click={keepItem}>
-                      Keep
-                    </button>
-                  </div>
-                </div>
-              {/if}
             </div>
           </div>
         {/if}
@@ -1059,7 +999,9 @@
     border-radius: 8px;
     background: white;
     color: #333;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .search-input:hover {
@@ -1209,6 +1151,8 @@
     z-index: 100;
     max-height: 300px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .dropdown-option {
@@ -1544,7 +1488,9 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    padding: 1rem;
+    padding: env(safe-area-inset-top, 1rem) env(safe-area-inset-right, 1rem) env(safe-area-inset-bottom, 1rem) env(safe-area-inset-left, 1rem);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 
   .lightbox-content {
@@ -1563,15 +1509,21 @@
 
   .lightbox-close {
     position: absolute;
-    top: -40px;
+    top: -44px;
     right: 0;
-    background: none;
+    background: rgba(0, 0, 0, 0.6);
     border: none;
     color: white;
     font-size: 2.5rem;
     cursor: pointer;
-    padding: 0;
+    padding: 0 8px;
     line-height: 1;
+    border-radius: 8px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .lightbox-close:hover {
@@ -1588,7 +1540,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.6);
     border: none;
     color: white;
     font-size: 3rem;
@@ -1596,10 +1548,11 @@
     padding: 0.5rem 1rem;
     border-radius: 8px;
     transition: background 0.2s ease;
+    z-index: 10;
   }
 
   .lightbox-nav:hover {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.85);
   }
 
   .lightbox-prev {
@@ -1642,6 +1595,8 @@
 
   .lightbox-image-container.zoomed {
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     max-width: 95vw;
     max-height: 85vh;
     cursor: zoom-out;
@@ -1692,12 +1647,13 @@
     margin: 0.25rem 0;
     font-size: 1.1rem;
     font-weight: 700;
-    color: #27ae60;
+    color: #f0a500;
   }
 
   .product-quantity {
     margin: 0.25rem 0;
     font-size: 0.85rem;
+    color: #f0a500;
   }
 
   /* Quantity Selector */
@@ -1749,7 +1705,7 @@
   }
 
   .in-stock {
-    color: #27ae60;
+    color: #f0a500;
     font-weight: 600;
   }
 
@@ -1841,11 +1797,14 @@
   }
 
   .btn-inquiry.added {
-    background: #27ae60;
+    background: #f0a500;
+    color: #111111;
   }
 
-  .btn-inquiry.added:hover {
-    background: #219a52;
+  .btn-inquiry.added:hover,
+  .btn-inquiry.added:active {
+    background: #d4940a;
+    color: #111111;
   }
 
   .product-actions-wrapper {
@@ -1952,7 +1911,9 @@
     background: white;
     color: #333;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .sort-select:hover {
@@ -2084,12 +2045,16 @@
     }
 
     .products-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: 0.375rem;
     }
 
     .subcategory-products {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .nested-subcategory-products {
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .product-item {
@@ -2099,11 +2064,19 @@
     }
 
     .product-info h4 {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
     }
 
     .product-note {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+    }
+
+    .product-price {
+      font-size: 1rem;
+    }
+
+    .in-stock {
+      font-size: 0.8rem;
     }
 
     .quantity-selector {
@@ -2111,11 +2084,11 @@
     }
 
     .qty-btn {
-      width: 44px;
-      height: 44px;
-      min-width: 44px;
-      min-height: 44px;
-      font-size: 1.3rem;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      min-height: 36px;
+      font-size: 1.1rem;
     }
 
     .product-actions {
