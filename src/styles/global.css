@@ -309,7 +309,9 @@ button, a, [role="button"] {
   .navbar,
   .nav-links,
   .whatsapp-float,
-  .inquiry-basket-float {
+  .inquiry-basket-float,
+  .product-modal-overlay,
+  .product-modal {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     will-change: transform;

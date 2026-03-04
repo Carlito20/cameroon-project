@@ -2967,6 +2967,9 @@
     overscroll-behavior: contain;
     position: relative;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   .product-modal-close {
@@ -3042,6 +3045,8 @@
     justify-content: center;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .modal-nav:hover {
@@ -3069,6 +3074,10 @@
     cursor: pointer;
     padding: 0;
     position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .modal-dot::before {
@@ -3092,6 +3101,7 @@
     gap: 0.5rem;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .product-modal-category {
@@ -3158,6 +3168,12 @@
     text-decoration: none;
     font-weight: 600;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 
   .product-modal-view-all:hover {
@@ -3180,6 +3196,7 @@
 
     .product-modal-info {
       padding: 1.25rem 1rem;
+      padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
     }
 
     .product-modal-name {
@@ -3188,6 +3205,15 @@
 
     .product-modal-price {
       font-size: 1.2rem;
+    }
+
+    .product-modal-actions {
+      flex-direction: column;
+    }
+
+    .product-modal-actions .btn {
+      width: 100%;
+      min-height: 48px;
     }
   }
 </style>
