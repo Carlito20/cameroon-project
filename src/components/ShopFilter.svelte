@@ -395,8 +395,8 @@
     isDropdownOpen = false;
 
     if (categoryId === 'all') {
-      showcaseActive = false; // force restart/reshuffle
-      showcaseOffset = 0;
+      stopShowcase();
+      startShowcase(); // start immediately, no reactive delay
     }
 
     // Update URL without reload
