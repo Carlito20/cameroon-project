@@ -251,13 +251,34 @@
     window.addEventListener('scroll', updateStickyHeaders, { passive: true });
     window.addEventListener('resize', updateStickyHeaders, { passive: true });
 
+    // Reset to All Categories when Shop nav link is clicked while already on the page
+    const handleShopNavClick = () => {
+      selectedCategory = 'all';
+      filterCategories();
+      searchQuery = '';
+      showcaseActive = false; // force restart
+      window.history.pushState({}, '', '/shop');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    window.addEventListener('shop-nav-clicked', handleShopNavClick);
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (productModal) closeProductModal();
+        else if (lightboxImages.length > 0) closeLightbox();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+
     return () => {
+      document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('click', handleClickOutside);
       window.removeEventListener('cart-loaded', handleCartLoaded);
       window.removeEventListener('cart-qty-updated', handleCartQtyUpdated);
       window.removeEventListener('item-removed-from-cart', handleItemRemoved);
       window.removeEventListener('scroll', updateStickyHeaders);
       window.removeEventListener('resize', updateStickyHeaders);
+      window.removeEventListener('shop-nav-clicked', handleShopNavClick);
     };
   });
 
@@ -722,6 +743,39 @@
   }
 
   onDestroy(() => stopShowcase());
+
+  // ── Product Detail Modal ─────────────────────────────────────────────────
+  let productModal = null;
+  let modalImageIndex = 0;
+
+  function openProductModal(sp) {
+    productModal = sp;
+    modalImageIndex = 0;
+  }
+
+  function closeProductModal() {
+    productModal = null;
+    modalImageIndex = 0;
+  }
+
+  function modalNextImage() {
+    if (!productModal) return;
+    modalImageIndex = (modalImageIndex + 1) % productModal.images.length;
+  }
+
+  function modalPrevImage() {
+    if (!productModal) return;
+    modalImageIndex = (modalImageIndex - 1 + productModal.images.length) % productModal.images.length;
+  }
+
+  function handleModalTouchEnd(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) modalNextImage();
+      else modalPrevImage();
+    }
+  }
 </script>
 
 <!-- Category Filter and Search -->
@@ -889,7 +943,7 @@
       <div class="showcase-grid" in:fade={{ duration: 200 }}>
         {#each showcaseVisible as sp (sp.productName)}
           <div class="product-item has-image">
-            <a href="/shop?category={sp.categoryId}" class="showcase-item-link">
+            <a href="/shop?category={sp.categoryId}" class="showcase-item-link" on:click|preventDefault={() => openProductModal(sp)}>
               <div class="product-images">
                 <img src={sp.images[0]} alt={sp.productName} class="showcase-thumb" />
               </div>
@@ -1180,6 +1234,83 @@
     </div>
   </div>
 {/each}
+{/if}
+
+<!-- Product Detail Modal -->
+{#if productModal}
+  <div class="product-modal-overlay" on:click={closeProductModal} role="dialog" aria-modal="true">
+    <div class="product-modal" on:click|stopPropagation>
+      <button class="product-modal-close" on:click={closeProductModal} aria-label="Close">×</button>
+      <div class="product-modal-body">
+        <!-- Image Gallery -->
+        <div class="product-modal-gallery">
+          <img
+            src={productModal.images[modalImageIndex]}
+            alt={productModal.productName}
+            class="product-modal-img"
+            on:touchstart={handleTouchStart}
+            on:touchend={handleModalTouchEnd}
+          />
+          {#if productModal.images.length > 1}
+            <button class="modal-nav modal-prev" on:click={modalPrevImage} aria-label="Previous image">‹</button>
+            <button class="modal-nav modal-next" on:click={modalNextImage} aria-label="Next image">›</button>
+            <div class="modal-dots">
+              {#each productModal.images as _, i}
+                <button class="modal-dot" class:active={i === modalImageIndex} on:click={() => modalImageIndex = i} aria-label="Image {i + 1}"></button>
+              {/each}
+            </div>
+          {/if}
+        </div>
+        <!-- Product Info -->
+        <div class="product-modal-info">
+          <p class="product-modal-category">{productModal.categoryName}{productModal.subCategoryName ? ` › ${productModal.subCategoryName}` : ''}</p>
+          <h2 class="product-modal-name">{productModal.productName}</h2>
+          {#if productModal.price}
+            <p class="product-modal-price">{formatPrice(productModal.price)}</p>
+          {/if}
+          {#if productModal.quantity !== null && productModal.quantity !== undefined}
+            <p class="product-modal-stock">
+              {#if productModal.quantity > 0}
+                <span class="in-stock">In Stock: {productModal.quantity}</span>
+              {:else}
+                <span class="out-of-stock">Out of Stock</span>
+              {/if}
+            </p>
+          {:else}
+            <p class="product-modal-note">Available · Imported from USA/Canada</p>
+          {/if}
+          {#if productModal.colors && productModal.quantity > 0}
+            <div class="product-modal-colors">
+              <span class="color-dots">
+                {#each productModal.colors as color}
+                  <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} on:click|stopPropagation={() => selectColor(productModal.productName, color)}></button>
+                {/each}
+                {#if selectedColors[productModal.productName]}
+                  <span class="color-label">{getColorName(selectedColors[productModal.productName])}</span>
+                {/if}
+              </span>
+            </div>
+          {/if}
+          <div class="quantity-selector" style="justify-content: flex-start; margin-top: 1rem;">
+            <button class="qty-btn" on:click={() => decrementQty(productModal.productName)} disabled={(displayQuantities[productModal.productName] || 1) <= 1}>−</button>
+            <span class="qty-value">{displayQuantities[productModal.productName] || 1}</span>
+            <button class="qty-btn" on:click={() => incrementQty(productModal.productName, productModal.quantity)} disabled={productModal.quantity && (displayQuantities[productModal.productName] || 1) >= productModal.quantity}>+</button>
+          </div>
+          <div class="product-modal-actions">
+            <button
+              class="btn btn-inquiry"
+              class:added={addedItems[productModal.productName]}
+              on:click={() => handleInquiryClick(productModal.product, productModal.subCategoryName || productModal.categoryName, productModal.quantity, productModal.price)}
+            >
+              {addedItems[productModal.productName] ? `✓ Added (${addedItems[productModal.productName]})` : 'Add to Cart'}
+            </button>
+            <a href={getWhatsAppLink(productModal.product)} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">WhatsApp</a>
+          </div>
+          <a href="/shop?category={productModal.categoryId}" class="product-modal-view-all">View all in {productModal.categoryName} →</a>
+        </div>
+      </div>
+    </div>
+  </div>
 {/if}
 
 <!-- Image Lightbox with Gallery -->
@@ -2805,6 +2936,256 @@
   @media (min-width: 900px) {
     .showcase-grid {
       grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ── Product Detail Modal ─────────────────────────────────────────────── */
+  .product-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: env(safe-area-inset-top, 1rem) env(safe-area-inset-right, 1rem) env(safe-area-inset-bottom, 1rem) env(safe-area-inset-left, 1rem);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .product-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 860px;
+    width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+
+  .product-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.08);
+    color: #333;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .product-modal-close:hover {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .product-modal-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 400px;
+  }
+
+  .product-modal-gallery {
+    position: relative;
+    background: #f8f8f8;
+    border-radius: 12px 0 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 320px;
+  }
+
+  .product-modal-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-height: 420px;
+    padding: 1rem;
+    display: block;
+  }
+
+  .modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.45);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    z-index: 5;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .modal-nav:hover {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .modal-prev { left: 6px; }
+  .modal-next { right: 6px; }
+
+  .modal-dots {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+  }
+
+  .modal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+  }
+
+  .modal-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .modal-dot.active {
+    background: white;
+  }
+
+  .product-modal-info {
+    padding: 2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .product-modal-category {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .product-modal-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .product-modal-price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #f0a500;
+    margin: 0;
+  }
+
+  .product-modal-stock {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .product-modal-note {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .product-modal-colors {
+    margin-top: 0.25rem;
+  }
+
+  .product-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .product-modal-actions .btn {
+    flex: 1;
+    min-width: 110px;
+    text-align: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+  }
+
+  .product-modal-view-all {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: #f0a500;
+    text-decoration: none;
+    font-weight: 600;
+    touch-action: manipulation;
+  }
+
+  .product-modal-view-all:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 600px) {
+    .product-modal-body {
+      grid-template-columns: 1fr;
+    }
+
+    .product-modal-gallery {
+      border-radius: 12px 12px 0 0;
+      min-height: 220px;
+    }
+
+    .product-modal-img {
+      max-height: 260px;
+    }
+
+    .product-modal-info {
+      padding: 1.25rem 1rem;
+    }
+
+    .product-modal-name {
+      font-size: 1.05rem;
+    }
+
+    .product-modal-price {
+      font-size: 1.2rem;
     }
   }
 </style>
