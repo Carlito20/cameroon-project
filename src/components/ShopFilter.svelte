@@ -1,5 +1,6 @@
 <script>
-  import { onMount, tick } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
+  import { fade } from 'svelte/transition';
 
   // Props passed from Astro
   export let categories = [];
@@ -369,6 +370,11 @@
     filterCategories();
     isDropdownOpen = false;
 
+    if (categoryId === 'all') {
+      showcaseActive = false; // force restart/reshuffle
+      showcaseOffset = 0;
+    }
+
     // Update URL without reload
     const url = new URL(window.location.href);
     if (selectedCategory === 'all') {
@@ -621,6 +627,101 @@
   function keepItem() {
     confirmingItem = null;
   }
+
+  // ── Random Product Showcase ──────────────────────────────────────────────
+  const SHOWCASE_DURATION = 10000;
+  const SHOWCASE_STEP = 4;
+  const SHOWCASE_SHOW = 12;
+  let showcaseProducts = [];
+  let showcaseOffset = 0;
+  let showcaseTimer = null;
+  let showcaseActive = false;
+
+  function getAllProductsFlat() {
+    const all = [];
+    function collect(items, catId, catName, subCatName) {
+      items.forEach(item => {
+        if (isSubCategory(item)) {
+          collect(item.items, catId, catName, item.name);
+        } else {
+          const imgs = getProductImages(item);
+          if (imgs && imgs.length > 0) {
+            all.push({
+              product: item,
+              productName: getProductName(item),
+              categoryId: catId,
+              categoryName: catName,
+              subCategoryName: subCatName,
+              price: getProductPrice(item),
+              quantity: getProductQuantity(item),
+              images: imgs,
+              colors: getProductColors(item)
+            });
+          }
+        }
+      });
+    }
+    categories.forEach(cat => collect(cat.items, cat.id, cat.name, null));
+    return all;
+  }
+
+  function shuffleArr(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  $: showcaseVisible = showcaseProducts.length > 0
+    ? Array.from({ length: SHOWCASE_SHOW }, (_, i) =>
+        showcaseProducts[(showcaseOffset + i) % showcaseProducts.length]
+      )
+    : [];
+
+  function runShowcaseCycle() {
+    clearTimeout(showcaseTimer);
+    showcaseTimer = setTimeout(() => {
+      showcaseOffset = (showcaseOffset + SHOWCASE_STEP) % showcaseProducts.length;
+      runShowcaseCycle();
+    }, SHOWCASE_DURATION);
+  }
+
+  function startShowcase() {
+    if (showcaseActive) return;
+    showcaseProducts = shuffleArr(getAllProductsFlat());
+    showcaseOffset = Math.floor(Math.random() * Math.max(showcaseProducts.length, 1));
+    showcaseActive = true;
+    runShowcaseCycle();
+  }
+
+  function stopShowcase() {
+    showcaseActive = false;
+    clearTimeout(showcaseTimer);
+    showcaseTimer = null;
+  }
+
+  function nextShowcaseProduct() {
+    showcaseOffset = (showcaseOffset + SHOWCASE_STEP) % showcaseProducts.length;
+    runShowcaseCycle();
+  }
+
+  function prevShowcaseProduct() {
+    showcaseOffset = (showcaseOffset - SHOWCASE_STEP + showcaseProducts.length) % showcaseProducts.length;
+    runShowcaseCycle();
+  }
+
+  // Start/stop showcase based on view state
+  $: {
+    if (selectedCategory === 'all' && (!searchQuery || searchQuery.trim().length < 2)) {
+      if (!showcaseActive) startShowcase();
+    } else {
+      if (showcaseActive) stopShowcase();
+    }
+  }
+
+  onDestroy(() => stopShowcase());
 </script>
 
 <!-- Category Filter and Search -->
@@ -776,8 +877,78 @@
       </div>
     {/if}
   </div>
+{:else if selectedCategory === 'all'}
+<!-- Random Product Showcase -->
+{#if showcaseVisible.length > 0}
+  <div class="showcase-wrapper">
+    <div class="showcase-nav">
+      <button class="showcase-nav-btn" on:click={prevShowcaseProduct} aria-label="Previous products">&#8249;</button>
+      <button class="showcase-nav-btn" on:click={nextShowcaseProduct} aria-label="Next products">&#8250;</button>
+    </div>
+    {#key showcaseOffset}
+      <div class="showcase-grid" in:fade={{ duration: 200 }}>
+        {#each showcaseVisible as sp (sp.productName)}
+          <div class="product-item has-image">
+            <a href="/shop?category={sp.categoryId}" class="showcase-item-link">
+              <div class="product-images">
+                <img src={sp.images[0]} alt={sp.productName} class="showcase-thumb" />
+              </div>
+              <div class="product-info">
+                <p class="product-category-tag">{sp.categoryName}{sp.subCategoryName ? ` › ${sp.subCategoryName}` : ''}</p>
+                <h4>{sp.productName}</h4>
+                {#if sp.price}
+                  <p class="product-price">{formatPrice(sp.price)}</p>
+                {/if}
+                {#if sp.quantity !== null && sp.quantity !== undefined}
+                  <p class="product-quantity">
+                    {#if sp.quantity > 0}
+                      <span class="in-stock">In Stock: {sp.quantity}</span>
+                    {:else}
+                      <span class="out-of-stock">Out of Stock</span>
+                    {/if}
+                  </p>
+                {:else}
+                  <p class="product-note">Available &bull; Imported from USA/Canada</p>
+                {/if}
+              </div>
+            </a>
+            {#if sp.colors && sp.quantity > 0}
+              <p class="product-quantity" style="padding: 0 0.5rem;">
+                <span class="color-dots">
+                  {#each sp.colors as color}
+                    <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} on:click|stopPropagation={() => selectColor(sp.productName, color)}></button>
+                  {/each}
+                  {#if selectedColors[sp.productName]}
+                    <span class="color-label">{getColorName(selectedColors[sp.productName])}</span>
+                  {/if}
+                </span>
+              </p>
+            {/if}
+            <div class="product-actions-wrapper">
+              <div class="quantity-selector">
+                <button class="qty-btn" on:click={() => decrementQty(sp.productName)} disabled={(displayQuantities[sp.productName] || 1) <= 1}>−</button>
+                <span class="qty-value">{displayQuantities[sp.productName] || 1}</span>
+                <button class="qty-btn" on:click={() => incrementQty(sp.productName, sp.quantity)} disabled={sp.quantity && (displayQuantities[sp.productName] || 1) >= sp.quantity}>+</button>
+              </div>
+              <div class="product-actions">
+                <button
+                  class="btn btn-small btn-inquiry"
+                  class:added={addedItems[sp.productName]}
+                  on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}
+                >
+                  {addedItems[sp.productName] ? `✓ Added (${addedItems[sp.productName]})` : 'Add to Cart'}
+                </button>
+                <a href={getWhatsAppLink(sp.product)} target="_blank" rel="noopener noreferrer" class="btn btn-small btn-whatsapp">WhatsApp</a>
+              </div>
+            </div>
+          </div>
+        {/each}
+      </div>
+    {/key}
+  </div>
+{/if}
 {:else}
-<!-- Categories Grid -->
+<!-- Specific Category Grid -->
 {#each filteredCategories as category (category.id)}
   <div class="category-section" id={category.id}>
     <div class="category-header">
@@ -2549,6 +2720,91 @@
     .search-results-section .product-actions .btn {
       padding: 9px 4px;
       font-size: 0.78rem;
+    }
+  }
+
+  /* ── Random Product Showcase ─────────────────────────────────────────── */
+  .showcase-wrapper {
+    margin-bottom: 1rem;
+  }
+
+  .showcase-nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .showcase-nav-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #111111;
+    background: white;
+    color: #111111;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .showcase-nav-btn:hover,
+  .showcase-nav-btn:active {
+    background: #f0a500;
+    border-color: #f0a500;
+    color: white;
+  }
+
+  .showcase-item-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .showcase-item-link:hover .showcase-thumb {
+    transform: scale(1.04);
+  }
+
+  .showcase-item-link:hover h4 {
+    color: #f0a500;
+  }
+
+  .showcase-thumb {
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.2s ease;
+  }
+
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 600px) {
+    .showcase-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .showcase-grid {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 </style>
