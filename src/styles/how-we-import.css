@@ -119,17 +119,127 @@
 }
 
 @media (max-width: 768px) {
+  .import-hero {
+    padding: 3rem 0;
+    min-height: 220px;
+  }
+
   .import-hero h1 {
     font-size: 2rem;
+  }
+
+  .lead {
+    font-size: 1.1rem;
+    padding: 0 1rem;
   }
 
   .process-step {
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .step-number {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
   }
 
   .step-content {
     text-align: center;
+    padding: 1.5rem;
+  }
+
+  .compliance-grid,
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .compliance-item,
+  .info-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .import-hero {
+    min-height: 160px;
+    padding: 2rem 0;
+  }
+
+  .import-hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+  }
+
+  .step-number {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+
+  .step-content {
+    padding: 1.25rem;
+  }
+
+  .step-content h3 {
+    font-size: 1.1rem;
+  }
+
+  .step-content p {
+    font-size: 0.95rem;
+  }
+
+  .compliance-item {
+    padding: 1.25rem;
+  }
+
+  .compliance-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .info-card {
+    padding: 1.25rem;
+  }
+
+  .info-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .info-card p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+  .import-hero {
+    min-height: 130px;
+    padding: 1.5rem 0;
+  }
+
+  .import-hero h1 {
+    font-size: 1.4rem;
+  }
+
+  .step-content {
+    padding: 1rem;
+  }
+
+  .step-content h3 {
+    font-size: 1rem;
+  }
+
+  .compliance-item,
+  .info-card {
+    padding: 1rem;
   }
 }
 

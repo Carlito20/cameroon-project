@@ -39,16 +39,15 @@ const formspreeEndpoint = "https://formspree.io/f/xqedaepd";
     </div>
   </section>
 
-  <section class="shop-cta section" style="background: var(--primary-color); color: white;">
-    <div class="container" style="text-align: center;">
-      <h2 style="color: white; margin-bottom: 1rem;">Can't Find What You're Looking For?</h2>
-      <p style="margin-bottom: 2rem; font-size: 1.1rem;">Contact us and we'll help you find it or add it to our next shipment</p>
+  <section class="shop-cta section">
+    <div class="container shop-cta-inner">
+      <h2>Can't Find What You're Looking For?</h2>
+      <p class="shop-cta-text">Contact us and we'll help you find it or add it to our next shipment</p>
       <a
         href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi, I'm looking for a product that's not on your website. Can you help me?")}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="btn"
-        style="background: white; color: var(--primary-color);">
+        class="btn shop-cta-btn">
         Request a Product
       </a>
     </div>

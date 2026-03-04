@@ -128,5 +128,39 @@
   }
 }
 
+/* Extra small phones */
+@media (max-width: 375px) {
+  .category-card {
+    padding: 1rem;
+  }
+
+  .category-icon {
+    font-size: 1.75rem;
+  }
+
+  .category-icon-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .category-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .category-card > p {
+    font-size: 0.9rem;
+  }
+
+  .category-items li {
+    font-size: 0.85rem;
+    padding: 0.4rem 0;
+  }
+
+  .category-card .btn {
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+}
+
 
 

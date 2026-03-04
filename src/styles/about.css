@@ -67,8 +67,8 @@
 }
 
 .value-icon-image {
-  width: 120px;
-  height: 120px;
+  width: clamp(80px, 20vw, 120px);
+  height: clamp(80px, 20vw, 120px);
   object-fit: cover;
   border-radius: 50%;
   margin-bottom: 1rem;
@@ -112,8 +112,8 @@
 }
 
 .member-icon-image {
-  width: 140px;
-  height: 140px;
+  width: clamp(90px, 22vw, 140px);
+  height: clamp(90px, 22vw, 140px);
   object-fit: cover;
   border-radius: 50%;
   margin-bottom: 1rem;
