@@ -1598,8 +1598,8 @@
 
   @media (min-width: 769px) {
     .dropdown-option {
-      justify-content: center;
-      text-align: center;
+      justify-content: flex-start;
+      text-align: left;
     }
   }
 
