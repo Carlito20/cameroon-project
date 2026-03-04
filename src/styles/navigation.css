@@ -152,8 +152,8 @@
   }
 
   .dropdown-item {
-    justify-content: center;
-    text-align: center;
+    justify-content: flex-start;
+    text-align: left;
   }
 }
 
@@ -386,7 +386,8 @@
   }
 
   .dropdown-item {
-    justify-content: center;
+    justify-content: flex-start;
+    text-align: left;
     padding: 12px 16px;
     font-size: 1rem;
     min-height: 44px;
