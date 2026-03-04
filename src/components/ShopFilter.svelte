@@ -1,6 +1,5 @@
 <script>
   import { onMount, onDestroy, tick } from 'svelte';
-  import { fade } from 'svelte/transition';
 
   // Props passed from Astro
   export let categories = [];
@@ -204,6 +203,9 @@
     if (categoryParam && categories.find(c => c.id === categoryParam)) {
       selectedCategory = categoryParam;
       filterCategories();
+    } else if (!searchParam) {
+      // No category or search param — start showcase immediately on mount
+      startShowcase();
     }
 
     // If search parameter exists, populate the search field
@@ -256,7 +258,8 @@
       selectedCategory = 'all';
       filterCategories();
       searchQuery = '';
-      showcaseActive = false; // force restart
+      stopShowcase();
+      startShowcase(); // start immediately, no reactive delay
       window.history.pushState({}, '', '/shop');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -942,7 +945,7 @@
       <button class="showcase-nav-btn" on:click={nextShowcaseProduct} aria-label="Next products">&#8250;</button>
     </div>
     {#key showcaseOffset + sortBy}
-      <div class="showcase-grid" in:fade={{ duration: 200 }}>
+      <div class="showcase-grid">
         {#each showcaseVisibleSorted as sp (sp.productName)}
           <div class="product-item has-image">
             <a href="/shop?category={sp.categoryId}" class="showcase-item-link" on:click|preventDefault={() => openProductModal(sp)}>
