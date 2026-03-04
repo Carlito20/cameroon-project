@@ -3105,13 +3105,10 @@
   }
 
   .product-modal-info {
-    padding: 2rem 1.75rem;
+    padding: 2rem 1.75rem 2.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
   }
 
   .product-modal-category {
@@ -3205,8 +3202,7 @@
     }
 
     .product-modal-info {
-      padding: 1.25rem 1rem;
-      padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+      padding: 1.25rem 1rem calc(2rem + env(safe-area-inset-bottom, 0px));
     }
 
     .product-modal-name {
