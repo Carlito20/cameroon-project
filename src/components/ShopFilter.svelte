@@ -701,6 +701,8 @@
       )
     : [];
 
+  $: showcaseVisibleSorted = sortBy === 'default' ? showcaseVisible : sortProducts(showcaseVisible, sortBy);
+
   function runShowcaseCycle() {
     clearTimeout(showcaseTimer);
     showcaseTimer = setTimeout(() => {
@@ -816,7 +818,7 @@
         <button class="search-clear" on:click={clearSearch} aria-label="Clear search">✕</button>
       {/if}
     </div>
-    {#if expandedSubCategories.size > 0 || (searchQuery && searchQuery.trim().length >= 2)}
+    {#if expandedSubCategories.size > 0 || (searchQuery && searchQuery.trim().length >= 2) || selectedCategory === 'all'}
       <div class="sort-wrapper">
         <label class="sort-label" for="sort-select">Sort by:</label>
         <select id="sort-select" class="sort-select" bind:value={sortBy}>
@@ -939,9 +941,9 @@
       <button class="showcase-nav-btn" on:click={prevShowcaseProduct} aria-label="Previous products">&#8249;</button>
       <button class="showcase-nav-btn" on:click={nextShowcaseProduct} aria-label="Next products">&#8250;</button>
     </div>
-    {#key showcaseOffset}
+    {#key showcaseOffset + sortBy}
       <div class="showcase-grid" in:fade={{ duration: 200 }}>
-        {#each showcaseVisible as sp (sp.productName)}
+        {#each showcaseVisibleSorted as sp (sp.productName)}
           <div class="product-item has-image">
             <a href="/shop?category={sp.categoryId}" class="showcase-item-link" on:click|preventDefault={() => openProductModal(sp)}>
               <div class="product-images">
