@@ -319,66 +319,66 @@
         {/key}
       </button>
     {/if}
+  </div>
 
-    <!-- Expanded Full-Screen Cart -->
-    {#if isOpen}
-      <div class="mobile-cart-overlay">
-        <div class="mobile-cart-expanded">
-          <div class="basket-header">
-            <h3>🛒 Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
-            <button class="collapse-cart-btn" on:click={closeBasket} aria-label="Collapse cart">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
+  <!-- Expanded Full-Screen Cart — outside float div so parent transform doesn't trap position:fixed -->
+  {#if isOpen}
+    <div class="mobile-cart-overlay mobile-only">
+      <div class="mobile-cart-expanded">
+        <div class="basket-header">
+          <h3>🛒 Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h3>
+          <button class="collapse-cart-btn" on:click={closeBasket} aria-label="Collapse cart">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
 
-          <div class="basket-items">
-            {#each inquiryItems as item (item.name)}
-              <div class="basket-item-with-image">
-                {#if item.image}
-                  <button class="item-image item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
-                    <img src={item.image} alt={item.name} />
-                  </button>
-                {:else}
-                  <button class="item-image item-image-placeholder item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
-                    <span>📦</span>
-                  </button>
+        <div class="basket-items">
+          {#each inquiryItems as item (item.name)}
+            <div class="basket-item-with-image">
+              {#if item.image}
+                <button class="item-image item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
+                  <img src={item.image} alt={item.name} />
+                </button>
+              {:else}
+                <button class="item-image item-image-placeholder item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
+                  <span>📦</span>
+                </button>
+              {/if}
+              <div class="item-details">
+                <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.name}</button>
+                {#if item.price}
+                  <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
                 {/if}
-                <div class="item-details">
-                  <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.name}</button>
-                  {#if item.price}
-                    <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
-                  {/if}
-                  <div class="item-qty-controls">
-                    <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
-                    <span class="item-qty">{item.quantity || 1}</span>
-                    <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
-                  </div>
+                <div class="item-qty-controls">
+                  <button class="item-qty-btn" on:click={() => updateItemQty(item.name, -1)} disabled={(item.quantity || 1) <= 1}>−</button>
+                  <span class="item-qty">{item.quantity || 1}</span>
+                  <button class="item-qty-btn" on:click={() => updateItemQty(item.name, 1)} disabled={isAtMaxStock(item)}>+</button>
                 </div>
-                <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
               </div>
-            {/each}
+              <button class="remove-btn" on:click={() => removeItem(item.name)}>✕</button>
+            </div>
+          {/each}
+        </div>
+
+        <div class="basket-footer">
+          <div class="basket-total">
+            <span class="total-label">Total:</span>
+            <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
           </div>
 
-          <div class="basket-footer">
-            <div class="basket-total">
-              <span class="total-label">Total:</span>
-              <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
-            </div>
-
-            <div class="basket-actions">
-              <button class="clear-btn" on:click={clearAll}>Clear All</button>
-              <button class="send-btn" on:click={sendViaWhatsApp}>
-                <span class="whatsapp-icon">💬</span>
-                Order Via WhatsApp
-              </button>
-            </div>
+          <div class="basket-actions">
+            <button class="clear-btn" on:click={clearAll}>Clear All</button>
+            <button class="send-btn" on:click={sendViaWhatsApp}>
+              <span class="whatsapp-icon">💬</span>
+              Order Via WhatsApp
+            </button>
           </div>
         </div>
       </div>
-    {/if}
-  </div>
+    </div>
+  {/if}
 {/if}
 
 <!-- Item Image Preview Lightbox -->

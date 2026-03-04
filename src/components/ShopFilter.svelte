@@ -1604,7 +1604,7 @@
 
   .product-image {
     width: 100%;
-    max-width: 120px;
+    max-width: 180px;
     position: relative;
     border: none;
     background: none;
@@ -2237,48 +2237,77 @@
     .product-item {
       flex-direction: column;
       text-align: center;
-      padding: 0.5rem;
+      padding: 0.4rem;
+    }
+
+    .product-images {
+      margin-bottom: 0.3rem;
+    }
+
+    /* Cap image height so it doesn't fill the full column width */
+    .product-image img {
+      max-height: 130px;
+      object-fit: contain;
     }
 
     .product-info h4 {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
+      margin: 0 0 0.1rem 0;
+    }
+
+    .product-category-tag {
+      font-size: 0.7rem;
     }
 
     .product-note {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
 
     .product-price {
-      font-size: 1rem;
+      font-size: 0.92rem;
+      margin: 0.1rem 0;
+    }
+
+    .product-quantity {
+      font-size: 0.75rem;
+      margin: 0.1rem 0;
     }
 
     .in-stock {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
 
     .quantity-selector {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.3rem;
+      gap: 0.3rem;
     }
 
+    /* Keep 44px min touch target but reduce visual size */
     .qty-btn {
-      width: 36px;
-      height: 36px;
-      min-width: 36px;
-      min-height: 36px;
-      font-size: 1.1rem;
+      width: 28px;
+      height: 28px;
+      min-width: 44px;
+      min-height: 44px;
+      font-size: 1rem;
+    }
+
+    .qty-value {
+      font-size: 0.9rem;
+      min-width: 24px;
     }
 
     .product-actions {
       flex-direction: column;
       width: 100%;
+      gap: 0.25rem;
     }
 
     .product-actions .btn {
       width: 100%;
       justify-content: center;
-      min-height: 48px;
-      padding: 14px 18px;
-      font-size: 1.05rem;
+      min-height: 44px;
+      padding: 9px 8px;
+      font-size: 0.88rem;
     }
 
     .product-actions-wrapper {
@@ -2466,19 +2495,23 @@
     }
 
     .product-image {
-      max-width: 100px;
+      max-width: 140px;
+    }
+
+    .product-image img {
+      max-height: 115px;
     }
 
     .qty-btn {
-      width: 44px;
-      height: 44px;
+      width: 26px;
+      height: 26px;
       min-width: 44px;
       min-height: 44px;
     }
 
     .qty-value {
-      min-width: 32px;
-      font-size: 1rem;
+      min-width: 20px;
+      font-size: 0.85rem;
     }
 
     .confirm-popup {
