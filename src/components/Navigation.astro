@@ -65,6 +65,21 @@ import { categories } from '../data/categories';
       });
     }
 
+    // Shop nav link — reset to All Categories if already on the shop page
+    const shopNavLink = document.querySelector('.shop-link');
+    if (shopNavLink) {
+      shopNavLink.addEventListener('click', (e) => {
+        if (window.location.pathname.startsWith('/shop')) {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('shop-nav-clicked'));
+          // Close mobile menu if open
+          if (navLinks) navLinks.classList.remove('active');
+          // Close categories dropdown if open
+          if (navDropdown) navDropdown.classList.remove('dropdown-open');
+        }
+      });
+    }
+
     // Mobile dropdown toggle for Shop categories
     const dropdownToggle = document.querySelector('.dropdown-toggle');
     const navDropdown = document.querySelector('.nav-dropdown');
