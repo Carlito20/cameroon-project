@@ -2920,11 +2920,17 @@
 
   .showcase-thumb {
     width: 100%;
-    height: auto;
+    height: 200px;
     border-radius: 0;
     object-fit: contain;
     display: block;
     transition: transform 0.2s ease;
+  }
+
+  @media (max-width: 600px) {
+    .showcase-thumb {
+      height: 150px;
+    }
   }
 
   .showcase-grid {
