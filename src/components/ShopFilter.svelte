@@ -656,7 +656,8 @@
   const SHOWCASE_DURATION = 10000;
   const SHOWCASE_STEP = 4;
   const SHOWCASE_SHOW = 12;
-  let showcaseProducts = [];
+  // Eagerly populate so products show immediately without waiting for onMount
+  let showcaseProducts = getAllProductsFlat();
   let showcaseOffset = 0;
   let showcaseTimer = null;
   let showcaseActive = false;
