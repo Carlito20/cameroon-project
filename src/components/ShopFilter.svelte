@@ -1363,7 +1363,7 @@
   .filter-container {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1rem;
     margin-bottom: 1.5rem;
     padding: 1rem;
@@ -2422,7 +2422,7 @@
     }
 
     .filter-label {
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .custom-dropdown {
