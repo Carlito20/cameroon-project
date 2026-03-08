@@ -29,8 +29,13 @@
     return typeof item === 'string' ? null : item.price;
   }
 
+  let apiStock = {};
+
   function getProductQuantity(item) {
-    return typeof item === 'string' ? null : item.quantity;
+    if (typeof item === 'string') return null;
+    const name = item.name;
+    if (apiStock[name] !== undefined) return apiStock[name];
+    return item.quantity;
   }
 
   function getProductColors(item) {
@@ -68,6 +73,19 @@
       selectedColors[productName] = color;
     }
     selectedColors = selectedColors;
+  }
+
+  function needsColor(productItem) {
+    const colors = getProductColors(productItem);
+    if (!colors || colors.length <= 1) return false;
+    const name = getProductName(productItem);
+    return !selectedColors[name];
+  }
+
+  function getDisplayName(productItem) {
+    const name = getProductName(productItem);
+    const color = selectedColors[name];
+    return color ? `${name} (${getColorName(color)})` : name;
   }
 
   function formatPrice(price) {
@@ -213,19 +231,27 @@
       searchQuery = decodeURIComponent(searchParam);
     }
 
+    // Fetch live stock from API — overrides categories.ts quantities
+    fetch('/api/stock.php?action=all')
+      .then(r => r.json())
+      .then(data => { apiStock = data; })
+      .catch(() => {}); // silently fall back to categories.ts values
+
     // Listen for cart loaded from localStorage (on page refresh)
     const handleCartLoaded = (e) => {
       const { items } = e.detail;
+      cartItems = items.map(i => ({ ...i }));
       items.forEach(item => {
         addedItems[item.name] = item.quantity || 1;
       });
-      addedItems = addedItems; // Trigger reactivity
+      addedItems = addedItems;
     };
     window.addEventListener('cart-loaded', handleCartLoaded);
 
     // Listen for item removed from cart
     const handleItemRemoved = (e) => {
       const { name } = e.detail;
+      cartItems = cartItems.filter(i => i.name !== name);
       delete addedItems[name];
       addedItems = addedItems;
     };
@@ -234,9 +260,10 @@
     // Listen for cart quantity updates from cart sidebar
     const handleCartQtyUpdated = (e) => {
       const { name, quantity } = e.detail;
+      cartItems = cartItems.map(i => i.name === name ? { ...i, quantity } : i);
       if (addedItems[name]) {
         addedItems[name] = quantity;
-        addedItems = addedItems; // Trigger reactivity
+        addedItems = addedItems;
       }
     };
     window.addEventListener('cart-qty-updated', handleCartQtyUpdated);
@@ -314,7 +341,22 @@
   }
 
   // Track which items have been added to inquiry with their quantities
-  let addedItems = {};  // { productName: quantity }
+  let addedItems = {};  // { displayName: quantity }
+
+  // Mirror of cart contents for live stock calculation
+  let cartItems = [];
+  $: cartTotals = cartItems.reduce((acc, item) => {
+    const baseName = item.name.replace(/\s\([^)]+\)$/, '');
+    acc[baseName] = (acc[baseName] || 0) + (item.quantity || 1);
+    return acc;
+  }, {});
+
+  function getRemainingStock(productItem) {
+    const qty = getProductQuantity(productItem);
+    if (qty == null) return qty;
+    const baseName = getProductName(productItem);
+    return Math.max(0, qty - (cartTotals[baseName] || 0));
+  }
 
   // Track selected quantities before adding (default 1)
   let selectedQuantities = {};
@@ -603,6 +645,7 @@
   }
 
   function handleInquiryClick(productItem, categoryName, stockQty, itemPrice) {
+    if (needsColor(productItem)) return;
     addToInquiry(productItem, categoryName, stockQty, itemPrice);
   }
 
@@ -610,11 +653,13 @@
     const itemName = getProductName(productItem);
     const qty = getSelectedQty(itemName);
     const itemImage = getProductImage(productItem);
+    const selectedColor = selectedColors[itemName];
+    const displayName = selectedColor ? `${itemName} (${getColorName(selectedColor)})` : itemName;
 
     // Dispatch custom event for InquiryBasket to listen to
     const event = new CustomEvent('add-to-inquiry', {
       detail: {
-        name: itemName,
+        name: displayName,
         category: categoryName,
         quantity: qty,
         maxStock: stockQty || 99,
@@ -624,9 +669,22 @@
     });
     window.dispatchEvent(event);
 
-    // Mark as added with quantity for visual feedback
-    addedItems[itemName] = qty;
-    addedItems = addedItems; // Trigger reactivity
+    // Update cartItems mirror for live stock calculation
+    const existing = cartItems.find(i => i.name === displayName);
+    if (existing) {
+      cartItems = cartItems.map(i => i.name === displayName ? { ...i, quantity: Math.min((i.quantity || 1) + qty, stockQty || 99) } : i);
+    } else {
+      cartItems = [...cartItems, { name: displayName, quantity: qty, maxStock: stockQty || 99 }];
+    }
+
+    // Mark as added with quantity for visual feedback (keyed by color-specific name)
+    addedItems[displayName] = qty;
+    addedItems = addedItems;
+    // Reset after 1.5s so user can add more of the same color
+    setTimeout(() => {
+      delete addedItems[displayName];
+      addedItems = addedItems;
+    }, 1500);
   }
 
   function removeFromInquiry(productItem) {
@@ -888,8 +946,8 @@
               {/if}
               {#if result.quantity !== null && result.quantity !== undefined}
                 <p class="product-quantity">
-                  {#if result.quantity > 0}
-                    <span class="in-stock">In Stock: {result.quantity}</span>
+                  {#if getRemainingStock(result.product) > 0}
+                    <span class="in-stock">In Stock: {getRemainingStock(result.product)}</span>
                     {#if result.colors}
                       <span class="color-dots">
                         {#each result.colors as color}
@@ -912,15 +970,16 @@
               <div class="quantity-selector">
                 <button class="qty-btn" on:click={() => decrementQty(result.productName)} disabled={(displayQuantities[result.productName] || 1) <= 1}>−</button>
                 <span class="qty-value">{displayQuantities[result.productName] || 1}</span>
-                <button class="qty-btn" on:click={() => incrementQty(result.productName, result.quantity)} disabled={result.quantity && (displayQuantities[result.productName] || 1) >= result.quantity}>+</button>
+                <button class="qty-btn" on:click={() => incrementQty(result.productName, getRemainingStock(result.product))} disabled={getRemainingStock(result.product) != null && (displayQuantities[result.productName] || 1) >= getRemainingStock(result.product)}>+</button>
               </div>
               <div class="product-actions">
                 <button
                   class="btn btn-small btn-inquiry"
-                  class:added={addedItems[result.productName]}
+                  class:added={addedItems[getDisplayName(result.product)]}
+                  class:needs-color={!addedItems[getDisplayName(result.product)] && needsColor(result.product)}
                   on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, result.price)}
                 >
-                  {addedItems[result.productName] ? `✓ Added (${addedItems[result.productName]})` : 'Add to Cart'}
+                  {addedItems[getDisplayName(result.product)] ? `✓ Added (${addedItems[getDisplayName(result.product)]})` : needsColor(result.product) ? '↑ Select a Color' : 'Add to Cart'}
                 </button>
                 <a
                   href={getWhatsAppLink(result.product)}
@@ -961,8 +1020,8 @@
                 {/if}
                 {#if sp.quantity !== null && sp.quantity !== undefined}
                   <p class="product-quantity">
-                    {#if sp.quantity > 0}
-                      <span class="in-stock">In Stock: {sp.quantity}</span>
+                    {#if getRemainingStock(sp.product) > 0}
+                      <span class="in-stock">In Stock: {getRemainingStock(sp.product)}</span>
                     {:else}
                       <span class="out-of-stock">Out of Stock</span>
                     {/if}
@@ -988,15 +1047,16 @@
               <div class="quantity-selector">
                 <button class="qty-btn" on:click={() => decrementQty(sp.productName)} disabled={(displayQuantities[sp.productName] || 1) <= 1}>−</button>
                 <span class="qty-value">{displayQuantities[sp.productName] || 1}</span>
-                <button class="qty-btn" on:click={() => incrementQty(sp.productName, sp.quantity)} disabled={sp.quantity && (displayQuantities[sp.productName] || 1) >= sp.quantity}>+</button>
+                <button class="qty-btn" on:click={() => incrementQty(sp.productName, getRemainingStock(sp.product))} disabled={getRemainingStock(sp.product) != null && (displayQuantities[sp.productName] || 1) >= getRemainingStock(sp.product)}>+</button>
               </div>
               <div class="product-actions">
                 <button
                   class="btn btn-small btn-inquiry"
-                  class:added={addedItems[sp.productName]}
+                  class:added={addedItems[getDisplayName(sp.product)]}
+                  class:needs-color={!addedItems[getDisplayName(sp.product)] && needsColor(sp.product)}
                   on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}
                 >
-                  {addedItems[sp.productName] ? `✓ Added (${addedItems[sp.productName]})` : 'Add to Cart'}
+                  {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : needsColor(sp.product) ? '↑ Select a Color' : 'Add to Cart'}
                 </button>
                 <a href={getWhatsAppLink(sp.product)} target="_blank" rel="noopener noreferrer" class="btn btn-small btn-whatsapp">WhatsApp</a>
               </div>
@@ -1057,8 +1117,8 @@
                               {/if}
                               {#if getProductQuantity(nestedProduct) !== null && getProductQuantity(nestedProduct) !== undefined}
                                 <p class="product-quantity">
-                                  {#if getProductQuantity(nestedProduct) > 0}
-                                    <span class="in-stock">In Stock: {getProductQuantity(nestedProduct)}</span>
+                                  {#if getRemainingStock(nestedProduct) > 0}
+                                    <span class="in-stock">In Stock: {getRemainingStock(nestedProduct)}</span>
                                     {#if getProductColors(nestedProduct)}
                                       <span class="color-dots">
                                         {#each getProductColors(nestedProduct) as color}
@@ -1081,15 +1141,16 @@
                               <div class="quantity-selector">
                                 <button class="qty-btn" on:click={() => decrementQty(getProductName(nestedProduct))} disabled={(displayQuantities[getProductName(nestedProduct)] || 1) <= 1}>−</button>
                                 <span class="qty-value">{displayQuantities[getProductName(nestedProduct)] || 1}</span>
-                                <button class="qty-btn" on:click={() => incrementQty(getProductName(nestedProduct), getProductQuantity(nestedProduct))} disabled={getProductQuantity(nestedProduct) && (displayQuantities[getProductName(nestedProduct)] || 1) >= getProductQuantity(nestedProduct)}>+</button>
+                                <button class="qty-btn" on:click={() => incrementQty(getProductName(nestedProduct), getRemainingStock(nestedProduct))} disabled={getRemainingStock(nestedProduct) != null && (displayQuantities[getProductName(nestedProduct)] || 1) >= getRemainingStock(nestedProduct)}>+</button>
                               </div>
                               <div class="product-actions">
                                 <button
                                   class="btn btn-small btn-inquiry"
-                                  class:added={addedItems[getProductName(nestedProduct)]}
+                                  class:added={addedItems[getDisplayName(nestedProduct)]}
+                                  class:needs-color={!addedItems[getDisplayName(nestedProduct)] && needsColor(nestedProduct)}
                                   on:click={() => handleInquiryClick(nestedProduct, subItem.name, getProductQuantity(nestedProduct), getProductPrice(nestedProduct))}
                                 >
-                                  {addedItems[getProductName(nestedProduct)] ? `✓ Added (${addedItems[getProductName(nestedProduct)]})` : 'Add to Cart'}
+                                  {addedItems[getDisplayName(nestedProduct)] ? `✓ Added (${addedItems[getDisplayName(nestedProduct)]})` : needsColor(nestedProduct) ? '↑ Select a Color' : 'Add to Cart'}
                                 </button>
                                 <a
                                   href={getWhatsAppLink(nestedProduct)}
@@ -1122,8 +1183,8 @@
                     {/if}
                     {#if getProductQuantity(subItem) !== null && getProductQuantity(subItem) !== undefined}
                       <p class="product-quantity">
-                        {#if getProductQuantity(subItem) > 0}
-                          <span class="in-stock">In Stock: {getProductQuantity(subItem)}</span>
+                        {#if getRemainingStock(subItem) > 0}
+                          <span class="in-stock">In Stock: {getRemainingStock(subItem)}</span>
                           {#if getProductColors(subItem)}
                             <span class="color-dots">
                               {#each getProductColors(subItem) as color}
@@ -1146,15 +1207,16 @@
                     <div class="quantity-selector">
                       <button class="qty-btn" on:click={() => decrementQty(getProductName(subItem))} disabled={(displayQuantities[getProductName(subItem)] || 1) <= 1}>−</button>
                       <span class="qty-value">{displayQuantities[getProductName(subItem)] || 1}</span>
-                      <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getProductQuantity(subItem))} disabled={getProductQuantity(subItem) && (displayQuantities[getProductName(subItem)] || 1) >= getProductQuantity(subItem)}>+</button>
+                      <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getRemainingStock(subItem))} disabled={getRemainingStock(subItem) != null && (displayQuantities[getProductName(subItem)] || 1) >= getRemainingStock(subItem)}>+</button>
                     </div>
                     <div class="product-actions">
                       <button
                         class="btn btn-small btn-inquiry"
-                        class:added={addedItems[getProductName(subItem)]}
+                        class:added={addedItems[getDisplayName(subItem)]}
+                        class:needs-color={!addedItems[getDisplayName(subItem)] && needsColor(subItem)}
                         on:click={() => handleInquiryClick(subItem, item.name, getProductQuantity(subItem), getProductPrice(subItem))}
                       >
-                        {addedItems[getProductName(subItem)] ? `✓ Added (${addedItems[getProductName(subItem)]})` : 'Add to Cart'}
+                        {addedItems[getDisplayName(subItem)] ? `✓ Added (${addedItems[getDisplayName(subItem)]})` : needsColor(subItem) ? '↑ Select a Color' : 'Add to Cart'}
                       </button>
                       <a
                         href={getWhatsAppLink(subItem)}
@@ -1189,8 +1251,8 @@
               {/if}
               {#if getProductQuantity(item) !== null && getProductQuantity(item) !== undefined}
                 <p class="product-quantity">
-                  {#if getProductQuantity(item) > 0}
-                    <span class="in-stock">In Stock: {getProductQuantity(item)}</span>
+                  {#if getRemainingStock(item) > 0}
+                    <span class="in-stock">In Stock: {getRemainingStock(item)}</span>
                     {#if getProductColors(item)}
                       <span class="color-dots">
                         {#each getProductColors(item) as color}
@@ -1213,15 +1275,16 @@
               <div class="quantity-selector">
                 <button class="qty-btn" on:click={() => decrementQty(getProductName(item))} disabled={(displayQuantities[getProductName(item)] || 1) <= 1}>−</button>
                 <span class="qty-value">{displayQuantities[getProductName(item)] || 1}</span>
-                <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getProductQuantity(item))} disabled={getProductQuantity(item) && (displayQuantities[getProductName(item)] || 1) >= getProductQuantity(item)}>+</button>
+                <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getRemainingStock(item))} disabled={getRemainingStock(item) != null && (displayQuantities[getProductName(item)] || 1) >= getRemainingStock(item)}>+</button>
               </div>
               <div class="product-actions">
                 <button
                   class="btn btn-small btn-inquiry"
-                  class:added={addedItems[getProductName(item)]}
+                  class:added={addedItems[getDisplayName(item)]}
+                  class:needs-color={!addedItems[getDisplayName(item)] && needsColor(item)}
                   on:click={() => handleInquiryClick(item, category.name, getProductQuantity(item), getProductPrice(item))}
                 >
-                  {addedItems[getProductName(item)] ? `✓ Added (${addedItems[getProductName(item)]})` : 'Add to Cart'}
+                  {addedItems[getDisplayName(item)] ? `✓ Added (${addedItems[getDisplayName(item)]})` : needsColor(item) ? '↑ Select a Color' : 'Add to Cart'}
                 </button>
                 <a
                   href={getWhatsAppLink(item)}
@@ -1276,8 +1339,8 @@
           {/if}
           {#if productModal.quantity !== null && productModal.quantity !== undefined}
             <p class="product-modal-stock">
-              {#if productModal.quantity > 0}
-                <span class="in-stock">In Stock: {productModal.quantity}</span>
+              {#if getRemainingStock(productModal.product) > 0}
+                <span class="in-stock">In Stock: {getRemainingStock(productModal.product)}</span>
               {:else}
                 <span class="out-of-stock">Out of Stock</span>
               {/if}
@@ -1285,7 +1348,7 @@
           {:else}
             <p class="product-modal-note">Available · Imported from USA/Canada</p>
           {/if}
-          {#if productModal.colors && productModal.quantity > 0}
+          {#if productModal.colors && getRemainingStock(productModal.product) > 0}
             <div class="product-modal-colors">
               <span class="color-dots">
                 {#each productModal.colors as color}
@@ -1300,15 +1363,16 @@
           <div class="quantity-selector" style="justify-content: flex-start; margin-top: 1rem;">
             <button class="qty-btn" on:click={() => decrementQty(productModal.productName)} disabled={(displayQuantities[productModal.productName] || 1) <= 1}>−</button>
             <span class="qty-value">{displayQuantities[productModal.productName] || 1}</span>
-            <button class="qty-btn" on:click={() => incrementQty(productModal.productName, productModal.quantity)} disabled={productModal.quantity && (displayQuantities[productModal.productName] || 1) >= productModal.quantity}>+</button>
+            <button class="qty-btn" on:click={() => incrementQty(productModal.productName, getRemainingStock(productModal.product))} disabled={getRemainingStock(productModal.product) != null && (displayQuantities[productModal.productName] || 1) >= getRemainingStock(productModal.product)}>+</button>
           </div>
           <div class="product-modal-actions">
             <button
               class="btn btn-inquiry"
-              class:added={addedItems[productModal.productName]}
+              class:added={addedItems[getDisplayName(productModal.product)]}
+              class:needs-color={!addedItems[getDisplayName(productModal.product)] && needsColor(productModal.product)}
               on:click={() => handleInquiryClick(productModal.product, productModal.subCategoryName || productModal.categoryName, productModal.quantity, productModal.price)}
             >
-              {addedItems[productModal.productName] ? `✓ Added (${addedItems[productModal.productName]})` : 'Add to Cart'}
+              {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : needsColor(productModal.product) ? '↑ Select a Color' : 'Add to Cart'}
             </button>
             <a href={getWhatsAppLink(productModal.product)} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">WhatsApp</a>
           </div>
@@ -2213,6 +2277,20 @@
     padding: 0;
     flex-shrink: 0;
     transition: transform 0.15s ease, border-color 0.15s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+  }
+
+  /* Expand touch target to 44px for iOS/Android without changing visual size */
+  .color-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .color-dot:hover {
@@ -2224,6 +2302,25 @@
     border: 2.5px solid #2c3e50;
     box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.35);
     transform: scale(1.15);
+  }
+
+  .btn-inquiry.needs-color {
+    background: #e0e0e0;
+    color: #777;
+    border-color: #ccc;
+    cursor: default;
+    opacity: 0.9;
+    font-size: 0.78rem;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-inquiry.needs-color:hover,
+  .btn-inquiry.needs-color:active {
+    background: #e0e0e0;
+    color: #777;
+    transform: none;
   }
 
   .color-label {
