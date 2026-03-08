@@ -2111,6 +2111,11 @@
     margin: 0 0 0.25rem 0;
     color: #2c3e50;
     font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
   }
 
   .product-note {
@@ -2561,6 +2566,10 @@
     .product-info h4 {
       font-size: 0.85rem;
       margin: 0 0 0.1rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .product-category-tag {
@@ -2792,6 +2801,10 @@
 
     .product-info h4 {
       font-size: 0.95rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .product-note {

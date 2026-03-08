@@ -62,7 +62,27 @@ export const categories: Category[] = [
       },
       {
         name: 'Food Storage & Containers',
-        items: []
+        items: [
+          {
+            name: 'Reusable Stretchable Storage Lids for Round Pots, Bowls, and Cups – Air-Tight, Food-Safe',
+            price: 6000,
+            quantity: 15,
+            images: [
+              '/images/products/storage-lids-1.webp',
+              '/images/products/storage-lids-2.webp',
+              '/images/products/storage-lids-3.webp'
+            ]
+          },
+          {
+            name: '1000 Reusable Stretchable Storage Lids for Round Pots, Bowls, and Cups – Air-Tight, Food-Safe',
+            price: 10000,
+            quantity: 5,
+            images: [
+              '/images/products/storage-lids-1000-1.webp',
+              '/images/products/storage-lids-2.webp'
+            ]
+          }
+        ]
       },
       {
         name: 'Small Kitchen Appliances, Tools & Gadgets',
@@ -71,7 +91,28 @@ export const categories: Category[] = [
             name: 'Manual Food Chopper, Pull String Vegetable and Meat Mincer with Clear Container, Hand-Powered Kitchen Processor',
             images: ['/images/products/manual-food-chopper.webp', '/images/products/manual-food-chopper-2.webp'],
             quantity: 11,
+            price: 8000
+          },
+          {
+            name: '8.45oz RZSYZH USB Rechargeable Electric Blender with Stainless Steel Blades for Automatic Chopping',
+            images: [
+              '/images/products/usb-electric-blender-1.webp',
+              '/images/products/usb-electric-blender-2.webp',
+              '/images/products/usb-electric-blender-3.webp',
+              '/images/products/usb-electric-blender-4.webp'
+            ],
+            quantity: 5,
             price: 5000
+          },
+          {
+            name: 'Manual Chopper. No Need for Electricity',
+            images: [
+              '/images/products/manual-chopper-no-electricity-1.webp',
+              '/images/products/manual-chopper-no-electricity-2.webp',
+              '/images/products/manual-chopper-no-electricity-3.webp'
+            ],
+            quantity: 2,
+            price: 10000
           }
         ]
       },
@@ -491,23 +532,33 @@ export const categories: Category[] = [
             ]
           },
           {
+            name: '1.83-inch Touch Screen, Unisex, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones',
+            price: 5000,
+            quantity: 2,
+            colors: ['#ff69b4'],
+            images: [
+              '/images/products/smart-bracelet-183-1.webp',
+              '/images/products/smart-bracelet-183-2.webp'
+            ]
+          },
+          {
+            name: '256 GB Memory Card with Adapter - Enough Storage for your data',
+            price: 4000,
+            quantity: 5,
+            images: [
+              '/images/products/memory-card-256gb-1.webp',
+              '/images/products/memory-card-256gb-2.webp',
+              '/images/products/memory-card-256gb-3.webp'
+            ]
+          },
+          {
             name: '20000mAh Large-Capacity Mobile Power Bank',
             price: 7000,
-            quantity: 5,
+            quantity: 15,
             images: [
               '/images/products/power-bank-20000mah-1.webp',
               '/images/products/power-bank-20000mah-2.webp',
               '/images/products/power-bank-20000mah-3.webp'
-            ]
-          },
-          {
-            name: '10000mAh Large-Capacity Mobile Power Bank',
-            price: 5000,
-            quantity: 5,
-            images: [
-              '/images/products/power-bank-10000mah-1.webp',
-              '/images/products/power-bank-10000mah-2.webp',
-              '/images/products/power-bank-10000mah-3.webp'
             ]
           }
         ]
@@ -523,7 +574,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Rechargeable Portable Fan',
-            price: 2500,
+            price: 3000,
             quantity: 9,
             colors: ['#800080', '#ff69b4', '#2c2c2c'],
             images: [
@@ -535,7 +586,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Dark Grey USB Rechargeable Fan',
-            price: 2500,
+            price: 3000,
             quantity: 4,
             colors: ['#2c2c2c'],
             images: [
@@ -596,8 +647,8 @@ export const categories: Category[] = [
           },
           {
             name: 'YD03 Wireless Earbuds',
-            price: 2500,
-            quantity: 3,
+            price: 4000,
+            quantity: 5,
             images: [
               '/images/products/wireless-earbuds-tws-1.webp',
               '/images/products/wireless-earbuds-tws-2.webp',
@@ -605,8 +656,27 @@ export const categories: Category[] = [
             ]
           },
           {
+            name: 'Airpod Pro',
+            price: 15000,
+            quantity: 10,
+            images: [
+              '/images/products/airpod-pro-1.webp',
+              '/images/products/airpod-pro-2.webp'
+            ]
+          },
+          {
+            name: 'Monster Wireless Earbuds with CVC 8.0 Noise Reduction',
+            price: 500,
+            quantity: 1,
+            images: [
+              '/images/products/monster-earbuds-1.webp',
+              '/images/products/monster-earbuds-2.webp',
+              '/images/products/monster-earbuds-3.webp'
+            ]
+          },
+          {
             name: 'Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation',
-            price: 3500,
+            price: 5500,
             quantity: 4,
             colors: ['#ff8c00', '#f5f5dc'],
             images: [
@@ -618,7 +688,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control',
-            price: 3500,
+            price: 5500,
             quantity: 6,
             colors: ['#f5f5dc', '#2c2c2c', '#800080'],
             images: [
@@ -629,7 +699,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Nokia Go Earbuds+ TWS-201',
-            price: 6000,
+            price: 8000,
             quantity: 10,
             colors: ['#ffffff', '#2c2c2c'],
             images: [
@@ -706,6 +776,18 @@ export const categories: Category[] = [
             price: 1000,
             quantity: 10,
             image: '/images/products/usb-iphone-cable1.webp'
+          },
+          {
+            name: '45W High Quality Type-C Charger - Super Fast Charging',
+            price: 3500,
+            quantity: 40,
+            colors: ['#2c2c2c', '#ffffff'],
+            images: [
+              '/images/products/45w-type-c-charger-4.webp',
+              '/images/products/45w-type-c-charger-1.webp',
+              '/images/products/45w-type-c-charger-2.webp',
+              '/images/products/45w-type-c-charger-3.webp'
+            ]
           }
         ]
       }

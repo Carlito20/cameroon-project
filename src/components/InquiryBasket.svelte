@@ -887,6 +887,11 @@
     font-size: 1rem;
     font-weight: 500;
     color: #2c3e50;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
   }
 
   .item-name-clickable {
