@@ -2268,18 +2268,21 @@
 
   .color-dot {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    border: 2px solid #e0e0e0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    border: 2.5px solid #e0e0e0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     padding: 0;
     flex-shrink: 0;
-    transition: transform 0.15s ease, border-color 0.15s ease;
+    transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
     position: relative;
+    will-change: transform;
   }
 
   /* Expand touch target to 44px for iOS/Android without changing visual size */
@@ -2294,14 +2297,20 @@
   }
 
   .color-dot:hover {
-    transform: scale(1.2);
-    border-color: #999;
+    transform: scale(1.25);
+    border-color: #aaa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  .color-dot:active {
+    transform: scale(0.9);
+    transition: transform 0.08s ease;
   }
 
   .color-dot.selected {
-    border: 2.5px solid #2c3e50;
-    box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.35);
-    transform: scale(1.15);
+    border: 3px solid #2c3e50;
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.4);
+    transform: scale(1.2);
   }
 
   .btn-inquiry.needs-color {
