@@ -34,7 +34,7 @@ try {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Stock Management — American Select</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -43,17 +43,27 @@ try {
       color: #e0e0e0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       min-height: 100vh;
+      min-height: -webkit-fill-available;
+      -webkit-overflow-scrolling: touch;
+      overflow-x: hidden;
     }
     header {
       background: #111;
       border-bottom: 1px solid #222;
       padding: 16px 24px;
+      padding-top: calc(16px + env(safe-area-inset-top, 0px));
+      padding-left: calc(24px + env(safe-area-inset-left, 0px));
+      padding-right: calc(24px + env(safe-area-inset-right, 0px));
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 100;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      will-change: transform;
+      -webkit-tap-highlight-color: transparent;
     }
     header h1 {
       color: #d4af37;
@@ -81,7 +91,12 @@ try {
       -webkit-user-select: none;
       user-select: none;
       text-decoration: none;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn-gold {
       background: #d4af37;
@@ -104,6 +119,15 @@ try {
       max-width: 900px;
       margin: 0 auto;
       padding: 24px 16px;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      padding-left: calc(16px + env(safe-area-inset-left, 0px));
+      padding-right: calc(16px + env(safe-area-inset-right, 0px));
+    }
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
     .toolbar {
       display: flex;
@@ -120,10 +144,12 @@ try {
       border: 1px solid #2a2a2a;
       border-radius: 8px;
       color: #e0e0e0;
-      font-size: 14px;
+      font-size: 16px; /* 16px prevents iOS auto-zoom */
       outline: none;
       -webkit-appearance: none;
       appearance: none;
+      touch-action: manipulation;
+      min-height: 44px;
     }
     .search-box:focus { border-color: #d4af37; }
     .db-error {
@@ -186,11 +212,13 @@ try {
       border: 1px solid #2a2a2a;
       border-radius: 6px;
       color: #e0e0e0;
-      font-size: 14px;
+      font-size: 16px; /* 16px prevents iOS auto-zoom */
       text-align: center;
       outline: none;
       -webkit-appearance: none;
       appearance: none;
+      touch-action: manipulation;
+      min-height: 44px;
     }
     .qty-input:focus { border-color: #d4af37; }
     .save-btn {
@@ -205,6 +233,9 @@ try {
       touch-action: manipulation;
       -webkit-user-select: none;
       user-select: none;
+      min-height: 44px;
+      min-width: 44px;
+      -webkit-tap-highlight-color: transparent;
     }
     .save-btn:hover { background: #1e361e; }
     .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -269,6 +300,7 @@ try {
     <span class="count-badge" id="row-count"><?= count($products) ?> products</span>
   </div>
 
+  <div class="table-scroll">
   <table id="products-table">
     <thead>
       <tr>
@@ -314,6 +346,7 @@ try {
       <?php endforeach; ?>
     </tbody>
   </table>
+  </div>
 </div>
 
 <script>

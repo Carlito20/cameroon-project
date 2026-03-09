@@ -23,17 +23,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Admin Login — American Select</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       min-height: 100vh;
+      min-height: -webkit-fill-available;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #0a0a0a;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-overflow-scrolling: touch;
+      overflow-x: hidden;
+      padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
     }
     .card {
       background: #111;
@@ -43,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       width: 100%;
       max-width: 380px;
       box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+      margin: 16px;
     }
     .logo {
       text-align: center;
@@ -74,11 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       border: 1px solid #333;
       border-radius: 8px;
       color: #fff;
-      font-size: 15px;
+      font-size: 16px; /* 16px prevents iOS auto-zoom */
       outline: none;
       transition: border-color 0.2s;
       -webkit-appearance: none;
       appearance: none;
+      touch-action: manipulation;
+      min-height: 44px;
     }
     input[type="password"]:focus {
       border-color: #d4af37;
@@ -99,6 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       touch-action: manipulation;
       -webkit-user-select: none;
       user-select: none;
+      min-height: 44px;
+      -webkit-tap-highlight-color: transparent;
     }
     button[type="submit"]:hover {
       background: #e8c547;
