@@ -150,6 +150,42 @@ export const categories: Category[] = [
             price: 5000
           },
           {
+            name: "Dr Teal's Restorative Minerals Body Wash, Magnesium, Potassium & Zinc",
+            images: ['/images/products/dr-teals-restorative-minerals-wash1.webp', '/images/products/dr-teals-restorative-minerals-wash2.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
+            name: "Dr Teal's Hawaiian Bliss Body Wash with Alaea Red Sea Salt, Hibiscus & Papaya, 24 fl oz",
+            images: ['/images/products/dr-teals-hawaiian-bliss-wash1.webp', '/images/products/dr-teals-hawaiian-bliss-wash2.webp', '/images/products/dr-teals-hawaiian-bliss-wash3.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
+            name: "Dr Teal's Body Wash with Pure Epsom Salt, with Prebiotic Lemon Balm & Sage",
+            images: ['/images/products/dr-teals-lemon-balm-sage-wash1.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
+            name: "Dr Teal's Body Wash with Pure Epsom Salt, Soothe & Sleep with Lavender",
+            images: ['/images/products/dr-teals-soothe-sleep-lavender-wash1.webp', '/images/products/dr-teals-soothe-sleep-lavender-wash2.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
+            name: "Dr Teal's Body Wash, Nourish & Protect with Coconut Oil",
+            images: ['/images/products/dr-teals-nourish-protect-coconut-wash1.webp', '/images/products/dr-teals-nourish-protect-coconut-wash2.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
+            name: "Dr Teal's Body Wash with Pure Epsom Salt, Shea Butter & Almond",
+            images: ['/images/products/dr-teals-shea-almond-wash1.webp', '/images/products/dr-teals-shea-almond-wash2.webp', '/images/products/dr-teals-shea-almond-wash3.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
             name: 'Olay Essential Botanicals Body Wash, Spiced Chai & Pear',
             images: ['/images/products/olay-spiced-chai.webp', '/images/products/olay-back1.webp', '/images/products/olay-back2.webp'],
             quantity: 11,
