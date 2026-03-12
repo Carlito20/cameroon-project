@@ -275,6 +275,10 @@
     text-decoration: none;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .slide-btn:hover,
@@ -310,6 +314,8 @@
     border: none;
     width: 50px;
     height: 50px;
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -319,6 +325,10 @@
     transition: all 0.3s ease;
     z-index: 10;
     color: #2c3e50;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .nav-btn:hover,
@@ -349,6 +359,7 @@
     background: rgba(255, 255, 255, 0.35);
     padding: 8px 12px;
     border-radius: 50px;
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
   }
 
@@ -364,6 +375,10 @@
     transition: width 0.3s ease, background 0.3s ease, transform 0.2s ease;
     padding: 0;
     position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   /* Invisible touch target expansion (44px minimum) */

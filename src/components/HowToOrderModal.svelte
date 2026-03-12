@@ -171,6 +171,8 @@
     min-height: 44px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .trigger-btn:hover,
@@ -257,6 +259,8 @@
     transition: background 0.2s;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .close-btn:hover {
@@ -491,6 +495,8 @@
     min-height: 44px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .btn-secondary-modal:hover {
@@ -516,6 +522,8 @@
     min-height: 44px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .btn-primary-modal:hover {

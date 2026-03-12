@@ -303,6 +303,10 @@
     border-radius: 50px;
     transition: all 0.3s ease;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .btn-primary {
@@ -325,6 +329,7 @@
     background: rgba(255, 255, 255, 0.1);
     color: white;
     border: 2px solid white;
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
   }
 
@@ -346,6 +351,7 @@
     background: rgba(0, 0, 0, 0.25);
     padding: 8px 12px;
     border-radius: 50px;
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
   }
 
@@ -361,6 +367,10 @@
     padding: 0;
     transition: width 0.3s ease, background 0.3s ease, transform 0.2s ease;
     position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   /* Invisible touch target extension (44px minimum) */

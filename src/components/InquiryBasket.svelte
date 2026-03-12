@@ -474,6 +474,10 @@
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     will-change: transform;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .cart-collapsed:hover {
@@ -628,6 +632,8 @@
     border: none;
     width: 50px;
     height: 50px;
+    min-width: 44px;
+    min-height: 44px;
     padding: 0;
     border-radius: 50%;
     cursor: pointer;
@@ -636,6 +642,10 @@
     font-size: 0.95rem;
     font-weight: 600;
     position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .basket-toggle:hover,
@@ -925,6 +935,8 @@
     align-items: center;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .item-name-clickable:hover {
@@ -1067,6 +1079,10 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .item-qty-btn:hover:not(:disabled),
@@ -1106,6 +1122,8 @@
     justify-content: center;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .remove-btn:hover {
