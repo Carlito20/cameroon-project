@@ -438,8 +438,14 @@ export const categories: Category[] = [
           {
             name: "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",
             images: ['/images/products/dr-teals-kids.webp', '/images/products/dr-teals-kids1.webp', '/images/products/dr-teals-kids2.webp'],
-            quantity: 12,
-            price: 3000
+            quantity: 3,
+            price: 4500
+          },
+          {
+            name: "Dr Teal's Kids 3-in-1 Bubble Bath, Body Wash & Shampoo with Ashwagandha",
+            images: ['/images/products/dr-teals-kids-ashwagandha1.webp', '/images/products/dr-teals-kids-ashwagandha2.webp', '/images/products/dr-teals-kids-ashwagandha3.webp'],
+            quantity: 3,
+            price: 4500
           },
           {
             name: 'Cetaphil Moisturizing Cream',
