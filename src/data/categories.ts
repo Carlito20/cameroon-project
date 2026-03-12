@@ -723,7 +723,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Monster Wireless Earbuds with CVC 8.0 Noise Reduction',
-            price: 500,
+            price: 4000,
             quantity: 1,
             images: [
               '/images/products/monster-earbuds-1.webp',
