@@ -96,7 +96,16 @@
     // Add item to inquiry
     window.addEventListener('add-to-inquiry', (e) => {
       const item = e.detail;
-      if (!inquiryItems.find(i => i.name === item.name)) {
+      const existing = inquiryItems.find(i => i.name === item.name);
+      if (existing) {
+        // Already in cart — add the new qty on top, capped at maxStock
+        inquiryItems = inquiryItems.map(i => {
+          if (i.name !== item.name) return i;
+          const max = i.maxStock || 99;
+          const newQty = Math.min((i.quantity || 1) + (item.quantity || 1), max);
+          return { ...i, quantity: newQty };
+        });
+      } else {
         inquiryItems = [...inquiryItems, {
           ...item,
           quantity: item.quantity || 1,
@@ -432,6 +441,12 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .collapse-btn:hover {
@@ -724,6 +739,10 @@
     justify-content: center;
     color: #6c757d;
     transition: all 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .collapse-cart-btn:hover {
@@ -918,6 +937,10 @@
     border: none;
     padding: 0;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .item-clickable:hover {

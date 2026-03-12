@@ -875,6 +875,10 @@
         class="search-input"
         placeholder="Search products..."
         bind:value={searchQuery}
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
       />
       {#if searchQuery}
         <button class="search-clear" on:click={clearSearch} aria-label="Clear search">✕</button>
@@ -1606,6 +1610,10 @@
     color: #333;
     cursor: pointer;
     transition: all 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .dropdown-trigger:hover {
