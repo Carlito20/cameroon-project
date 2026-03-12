@@ -181,37 +181,37 @@ export const categories: Category[] = [
           {
             name: 'Aveeno Daily Moisturizing Body Lotion 18oz',
             image: '/images/products/aveeno-lotion.webp',
-            quantity: 12,
+            quantity: 5,
             price: 6000
           },
           {
             name: 'Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil',
             images: ['/images/products/jergens-coconut1.webp', '/images/products/jergens-coconut2.webp', '/images/products/jergens-coconut3.webp', '/images/products/jergens-coconut4.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 6000
           },
           {
             name: 'Jergens Original Scent Dry Skin Body Lotion, Hand and Body Moisturizer, Cherry Almond Essence',
             images: ['/images/products/jergens-cherry1.webp', '/images/products/jergens-cherry3.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 6000
           },
           {
             name: 'Jergens Shea Butter Hand and Body Lotion, Deep Conditioning Moisturizer',
             images: ['/images/products/jergens-shea1.webp', '/images/products/jergens-shea2.webp', '/images/products/jergens-common.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 6000
           },
           {
             name: 'Jergens Soothing Aloe Body Lotion, Aloe Vera Body and Hand Moisturizer',
             images: ['/images/products/jergens-aloe1.webp', '/images/products/jergens-aloe2.webp', '/images/products/jergens-aloe3.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 6000
           },
           {
             name: 'Jergens Ultra Healing Dry Skin Lotion, Hand and Body Moisturizer',
             images: ['/images/products/jergens-ultra1.webp', '/images/products/jergens-ultra2.webp', '/images/products/jergens-ultra3.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 6000
           },
           {
