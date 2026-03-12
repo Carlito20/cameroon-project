@@ -209,7 +209,7 @@
         }
       });
     } catch (e) {
-      // Silently fail - WhatsApp is the primary method
+      console.error('Formspree error:', e);
     }
 
     const encodedMessage = encodeURIComponent(message);
