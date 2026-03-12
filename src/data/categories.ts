@@ -135,13 +135,13 @@ export const categories: Category[] = [
             name: "Dr Teal's Body Wash with Prebiotic Lemon Balm and Essential Oil Blend",
             images: ['/images/products/dr-teals-lemon-balm1.webp', '/images/products/dr-teals-lemon-balm2.webp'],
             quantity: 10,
-            price: 3500
+            price: 5000
           },
           {
             name: "Dr Teal's Body Wash Relax and Relief with Eucalyptus Spearmint",
             images: ['/images/products/dr-teals-eucalyptus1.webp', '/images/products/dr-teals-eucalyptus2.webp'],
             quantity: 10,
-            price: 3500
+            price: 5000
           },
           {
             name: "Dr Teal's Vanilla Comfort Body Wash with Pure Epsom Salt",
