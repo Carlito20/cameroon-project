@@ -194,6 +194,7 @@
     // Send to Formspree for email notification
     try {
       const formData = new FormData();
+      formData.append('_subject', `New Order - ${totalItems} item${totalItems === 1 ? '' : 's'} - ${formatPrice(totalPrice)} FCFA`);
       formData.append('order_type', 'WhatsApp Order Request');
       formData.append('total_items', totalItems.toString());
       formData.append('estimated_total', `${formatPrice(totalPrice)} FCFA`);
