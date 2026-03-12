@@ -193,18 +193,20 @@
 
     // Send to Formspree for email notification
     try {
-      const formData = new FormData();
-      formData.append('_subject', `New Order - ${totalItems} item${totalItems === 1 ? '' : 's'} - ${formatPrice(totalPrice)} FCFA`);
-      formData.append('order_type', 'WhatsApp Order Request');
-      formData.append('total_items', totalItems.toString());
-      formData.append('estimated_total', `${formatPrice(totalPrice)} FCFA`);
-      formData.append('order_details', itemList);
-      formData.append('full_message', message);
-
-      fetch(formspreeEndpoint, {
+      await fetch(formspreeEndpoint, {
         method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
+        body: JSON.stringify({
+          _subject: `New Order - ${totalItems} item${totalItems === 1 ? '' : 's'} - ${formatPrice(totalPrice)} FCFA`,
+          order_type: 'WhatsApp Order Request',
+          total_items: totalItems,
+          estimated_total: `${formatPrice(totalPrice)} FCFA`,
+          order_details: itemList,
+          full_message: message
+        }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
       });
     } catch (e) {
       // Silently fail - WhatsApp is the primary method
