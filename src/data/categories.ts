@@ -437,7 +437,7 @@ export const categories: Category[] = [
         items: [
           {
             name: "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",
-            images: ['/images/products/dr-teals-kids.webp', '/images/products/dr-teals-kids1.webp', '/images/products/dr-teals-kids2.webp'],
+            images: ['/images/products/dr-teals-kids-melatonin1.webp', '/images/products/dr-teals-kids-melatonin2.webp', '/images/products/dr-teals-kids-melatonin3.webp'],
             quantity: 3,
             price: 4500
           },
