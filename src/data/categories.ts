@@ -327,6 +327,17 @@ export const categories: Category[] = [
             images: ['/images/products/lubriderm-daily-6oz-1.webp', '/images/products/lubriderm-daily-6oz-2.webp'],
             quantity: 4,
             price: 3500
+          },
+          {
+            name: "Dr Teal's Restorative Minerals Body Lotion with Magnesium, Potassium & Zinc",
+            images: [
+              '/images/products/dr-teals-restorative-minerals-lotion1.webp',
+              '/images/products/dr-teals-restorative-minerals-lotion2.webp',
+              '/images/products/dr-teals-restorative-minerals-lotion3.webp',
+              '/images/products/dr-teals-restorative-minerals-lotion4.webp'
+            ],
+            quantity: 3,
+            price: 5000
           }
         ]
       },
