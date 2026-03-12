@@ -593,6 +593,16 @@ export const categories: Category[] = [
               '/images/products/dark-grey-usb-fan1.webp',
               '/images/products/dark-grey-usb-fan2.webp'
             ]
+          },
+          {
+            name: 'YISSVIC Rechargeable Electric Fly Swatter Foldable Bug Zapper',
+            price: 10000,
+            quantity: 6,
+            images: [
+              '/images/products/yissvic-fly-swatter-1.webp',
+              '/images/products/yissvic-fly-swatter-2.webp',
+              '/images/products/yissvic-fly-swatter-3.webp'
+            ]
           }
         ]
       },
