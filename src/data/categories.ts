@@ -684,7 +684,7 @@ export const categories: Category[] = [
           {
             name: 'Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation',
             price: 5000,
-            quantity: 4,
+            quantity: 10,
             colors: ['#808080', '#ffffff'],
             images: [
               '/images/products/hyundai-lp5t-1.webp',
