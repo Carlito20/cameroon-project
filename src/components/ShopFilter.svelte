@@ -2047,6 +2047,9 @@
     flex-shrink: 1;
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    filter: contrast(1.08) brightness(1.01);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
   }
 
   .lightbox-close {
