@@ -144,6 +144,12 @@ export const categories: Category[] = [
             price: 3500
           },
           {
+            name: "Dr Teal's Vanilla Comfort Body Wash with Pure Epsom Salt",
+            images: ['/images/products/dr-teals-vanilla-comfort-wash1.webp', '/images/products/dr-teals-vanilla-comfort-wash2.webp', '/images/products/dr-teals-vanilla-comfort-wash3.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
             name: 'Olay Essential Botanicals Body Wash, Spiced Chai & Pear',
             images: ['/images/products/olay-spiced-chai.webp', '/images/products/olay-back1.webp', '/images/products/olay-back2.webp'],
             quantity: 11,
