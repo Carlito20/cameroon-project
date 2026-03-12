@@ -189,19 +189,19 @@ export const categories: Category[] = [
             name: 'Olay Essential Botanicals Body Wash, Spiced Chai & Pear',
             images: ['/images/products/olay-spiced-chai.webp', '/images/products/olay-back1.webp', '/images/products/olay-back2.webp'],
             quantity: 11,
-            price: 3000
+            price: 3500
           },
           {
             name: 'Olay Essential Botanicals Body Wash, White Tea & Cucumber',
             images: ['/images/products/olay-white-tea.webp', '/images/products/olay-back1.webp', '/images/products/olay-back2.webp'],
             quantity: 11,
-            price: 3000
+            price: 3500
           },
           {
             name: 'Olay Essential Botanicals Body Wash, Lavender Milk & Sandalwood',
             images: ['/images/products/olay-lavender.webp', '/images/products/olay-back1.webp', '/images/products/olay-back2.webp'],
             quantity: 11,
-            price: 3000
+            price: 3500
           }
         ]
       },
