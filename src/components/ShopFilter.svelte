@@ -2036,11 +2036,15 @@
     max-width: 90vw;
     max-height: 90vh;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .lightbox-content img {
     max-width: 100%;
-    max-height: 80vh;
+    max-height: 75vh;
+    flex-shrink: 1;
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
@@ -2070,8 +2074,12 @@
 
   .lightbox-caption {
     color: white;
-    margin-top: 1rem;
-    font-size: 1.1rem;
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    flex-shrink: 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    padding: 0 0.5rem;
+    max-width: 90vw;
   }
 
   .lightbox-nav {
