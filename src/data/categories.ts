@@ -139,7 +139,7 @@ export const categories: Category[] = [
           },
           {
             name: "Dr Teal's Body Wash Relax and Relief with Eucalyptus Spearmint",
-            images: ['/images/products/dr-teals-eucalyptus1.webp', '/images/products/dr-teals-eucalyptus2.webp'],
+            images: ['/images/products/dr-teals-eucalyptus-wash1.webp', '/images/products/dr-teals-eucalyptus-wash2.webp', '/images/products/dr-teals-eucalyptus-wash3.webp'],
             quantity: 3,
             price: 5000
           },
