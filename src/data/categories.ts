@@ -196,6 +196,12 @@ export const categories: Category[] = [
             images: ['/images/products/olay-lavender.webp', '/images/products/olay-back1.webp', '/images/products/olay-back2.webp'],
             quantity: 11,
             price: 3500
+          },
+          {
+            name: 'Irish Spring Original Clean Deodorant Bar Soap',
+            images: ['/images/products/irish-spring-soap-1.webp', '/images/products/irish-spring-soap-2.webp', '/images/products/irish-spring-soap-3.webp'],
+            quantity: 40,
+            price: 1000
           }
         ]
       },
@@ -386,7 +392,14 @@ export const categories: Category[] = [
       },
       {
         name: 'Oral Care (toothpaste, brushes, mouthwash)',
-        items: []
+        items: [
+          {
+            name: 'Crest Pro-Health Advanced Mouthwash',
+            images: ['/images/products/crest-mouthwash-1.webp', '/images/products/crest-mouthwash-2.webp'],
+            quantity: 9,
+            price: 4000
+          }
+        ]
       },
       {
         name: 'Feminine Care',
@@ -485,7 +498,32 @@ export const categories: Category[] = [
       },
       {
         name: 'Air Fresheners',
-        items: []
+        items: [
+          {
+            name: 'Febreze Air Freshener Spray, Odor-Fighting Room Spray, Linen & Sky',
+            images: ['/images/products/febreze-linen-sky-1.webp', '/images/products/febreze-linen-sky-2.webp', '/images/products/febreze-linen-sky-3.webp'],
+            quantity: 4,
+            price: 2000
+          },
+          {
+            name: 'Febreze Air Mist Air Freshener Spray, Heavy Duty Crisp Clean',
+            images: ['/images/products/febreze-crisp-clean-1.webp', '/images/products/febreze-crisp-clean-2.webp', '/images/products/febreze-crisp-clean-3.webp'],
+            quantity: 4,
+            price: 2000
+          },
+          {
+            name: 'Febreze Air Mist Air Freshener Spray Hawaiian Aloha',
+            images: ['/images/products/febreze-hawaiian-aloha-1.webp', '/images/products/febreze-hawaiian-aloha-2.webp', '/images/products/febreze-hawaiian-aloha-3.webp'],
+            quantity: 4,
+            price: 2000
+          },
+          {
+            name: 'Febreze Air Effects Air Freshener - Mountain Scent',
+            images: ['/images/products/febreze-mountain-scent-1.webp', '/images/products/febreze-mountain-scent-2.webp'],
+            quantity: 4,
+            price: 2000
+          }
+        ]
       },
       {
         name: 'Trash Bags & Storage Bags',
