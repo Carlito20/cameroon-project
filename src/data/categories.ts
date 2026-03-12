@@ -133,7 +133,7 @@ export const categories: Category[] = [
         items: [
           {
             name: "Dr Teal's Body Wash with Prebiotic Lemon Balm and Essential Oil Blend",
-            images: ['/images/products/dr-teals-lemon-balm1.webp', '/images/products/dr-teals-lemon-balm2.webp'],
+            images: ['/images/products/dr-teals-lemon-balm-sage-wash1.webp', '/images/products/dr-teals-lemon-balm1.webp', '/images/products/dr-teals-lemon-balm2.webp'],
             quantity: 3,
             price: 5000
           },
@@ -158,12 +158,6 @@ export const categories: Category[] = [
           {
             name: "Dr Teal's Hawaiian Bliss Body Wash with Alaea Red Sea Salt, Hibiscus & Papaya, 24 fl oz",
             images: ['/images/products/dr-teals-hawaiian-bliss-wash1.webp', '/images/products/dr-teals-hawaiian-bliss-wash2.webp', '/images/products/dr-teals-hawaiian-bliss-wash3.webp'],
-            quantity: 3,
-            price: 5000
-          },
-          {
-            name: "Dr Teal's Body Wash with Pure Epsom Salt, with Prebiotic Lemon Balm & Sage",
-            images: ['/images/products/dr-teals-lemon-balm-sage-wash1.webp'],
             quantity: 3,
             price: 5000
           },
