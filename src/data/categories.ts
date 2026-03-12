@@ -133,7 +133,7 @@ export const categories: Category[] = [
         items: [
           {
             name: "Dr Teal's Body Wash with Prebiotic Lemon Balm and Essential Oil Blend",
-            images: ['/images/products/dr-teals-lemon-balm-sage-wash1.webp', '/images/products/dr-teals-lemon-balm1.webp', '/images/products/dr-teals-lemon-balm2.webp'],
+            images: ['/images/products/dr-teals-lemon-balm-sage-wash1.webp', '/images/products/dr-teals-lemon-balm-blend2.webp'],
             quantity: 3,
             price: 5000
           },
