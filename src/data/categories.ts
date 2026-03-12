@@ -265,7 +265,7 @@ export const categories: Category[] = [
           {
             name: 'Vaseline Intensive Care Sensitive Skin Relief Body Lotion with Colloidal Oatmeal',
             images: ['/images/products/vaseline-sensitive1.webp', '/images/products/vaseline-sensitive3.webp'],
-            quantity: 6,
+            quantity: 4,
             price: 6000
           },
           {
