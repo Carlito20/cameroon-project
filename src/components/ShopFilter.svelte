@@ -1977,6 +1977,7 @@
   .product-image {
     width: 100%;
     max-width: 180px;
+    height: 180px;
     position: relative;
     border: none;
     background: none;
@@ -1984,7 +1985,9 @@
     border-radius: 0;
     cursor: zoom-in;
     transition: transform 0.2s ease;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     outline: none;
   }
 
@@ -1994,7 +1997,7 @@
 
   .product-image img {
     width: 100%;
-    height: auto;
+    height: 100%;
     border-radius: 0;
     object-fit: contain;
     display: block;
@@ -2663,9 +2666,13 @@
       margin-bottom: 0.3rem;
     }
 
-    /* Cap image height so it doesn't fill the full column width */
+    /* Fixed image height on tablet */
+    .product-image {
+      height: 130px;
+    }
+
     .product-image img {
-      max-height: 130px;
+      height: 100%;
       object-fit: contain;
     }
 
@@ -2749,6 +2756,7 @@
 
     .search-results-section .product-image {
       max-width: 80px;
+      height: 80px;
     }
 
     .search-results-section .product-info h4 {
@@ -2923,10 +2931,12 @@
 
     .product-image {
       max-width: 140px;
+      height: 115px;
     }
 
     .product-image img {
-      max-height: 115px;
+      height: 100%;
+      object-fit: contain;
     }
 
     .qty-btn {
