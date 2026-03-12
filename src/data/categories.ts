@@ -217,31 +217,31 @@ export const categories: Category[] = [
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Prebiotic Lemon Balm & Essential Oils",
             images: ['/images/products/dr-teals-lotion-lemon1.webp', '/images/products/dr-teals-lotion-lemon2.webp', '/images/products/dr-teals-lotion-lemon3.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 5000
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Eucalyptus & Spearmint",
             images: ['/images/products/dr-teals-lotion-eucalyptus1.webp', '/images/products/dr-teals-lotion-eucalyptus2.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 5000
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Coconut Oil & Essential Oils",
             images: ['/images/products/dr-teals-lotion-coconut1.webp', '/images/products/dr-teals-lotion-coconut2.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 5000
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Shea Butter & Almond",
             images: ['/images/products/dr-teals-lotion-shea1.webp', '/images/products/dr-teals-lotion-shea2.webp', '/images/products/dr-teals-lotion-shea3.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 5000
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Lavender Essential Oil",
             images: ['/images/products/dr-teals-lotion-lavender1.webp', '/images/products/dr-teals-lotion-lavender2.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 5000
           },
           {
