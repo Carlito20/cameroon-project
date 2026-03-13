@@ -422,7 +422,25 @@
   let lightboxAlt = '';
   let touchStartX = 0;
   let touchEndX = 0;
-  let isZoomed = false;
+
+  // Zoom & pan state
+  let zoomScale = 1;
+  let panX = 0;
+  let panY = 0;
+  $: isZoomed = zoomScale > 1.05;
+
+  // Pinch state
+  let lastPinchDist = 0;
+  let isPanning = false;
+  let panTouchStartX = 0, panTouchStartY = 0;
+  let panStartXZ = 0, panStartYZ = 0;
+
+  // Mouse drag state
+  let isMouseDragging = false;
+  let mouseDragStartX = 0, mouseDragStartY = 0;
+  let panMouseStartX = 0, panMouseStartY = 0;
+
+  function resetZoom() { zoomScale = 1; panX = 0; panY = 0; }
 
   // Custom dropdown state
   let isDropdownOpen = false;
@@ -473,15 +491,15 @@
     lightboxImages = [];
     lightboxIndex = 0;
     lightboxAlt = '';
-    isZoomed = false;
+    resetZoom();
   }
 
   function toggleZoom() {
-    isZoomed = !isZoomed;
+    if (isZoomed) { resetZoom(); } else { zoomScale = 2; }
   }
 
   function nextImage() {
-    isZoomed = false;
+    resetZoom();
     if (lightboxIndex < lightboxImages.length - 1) {
       lightboxIndex++;
     } else {
@@ -490,7 +508,7 @@
   }
 
   function prevImage() {
-    isZoomed = false;
+    resetZoom();
     if (lightboxIndex > 0) {
       lightboxIndex--;
     } else {
@@ -499,12 +517,76 @@
   }
 
   function handleTouchStart(e) {
-    touchStartX = e.changedTouches[0].screenX;
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastPinchDist = Math.sqrt(dx * dx + dy * dy);
+    } else if (e.touches.length === 1) {
+      if (isZoomed) {
+        isPanning = true;
+        panTouchStartX = e.touches[0].clientX;
+        panTouchStartY = e.touches[0].clientY;
+        panStartXZ = panX;
+        panStartYZ = panY;
+      } else {
+        touchStartX = e.touches[0].clientX;
+        touchEndX = touchStartX;
+      }
+    }
+  }
+
+  function handleTouchMove(e) {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (lastPinchDist > 0) {
+        zoomScale = Math.min(4, Math.max(1, zoomScale * (dist / lastPinchDist)));
+        if (zoomScale <= 1) { panX = 0; panY = 0; }
+      }
+      lastPinchDist = dist;
+    } else if (e.touches.length === 1 && isPanning && isZoomed) {
+      e.preventDefault();
+      panX = panStartXZ + (e.touches[0].clientX - panTouchStartX);
+      panY = panStartYZ + (e.touches[0].clientY - panTouchStartY);
+    } else if (e.touches.length === 1 && !isZoomed) {
+      touchEndX = e.touches[0].clientX;
+    }
   }
 
   function handleTouchEnd(e) {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
+    isPanning = false;
+    lastPinchDist = 0;
+    if (zoomScale < 1.1) { zoomScale = 1; panX = 0; panY = 0; }
+    if (!isZoomed) handleSwipe();
+  }
+
+  function handleLightboxWheel(e) {
+    e.preventDefault();
+    const factor = e.deltaY < 0 ? 1.12 : 0.88;
+    zoomScale = Math.min(4, Math.max(1, zoomScale * factor));
+    if (zoomScale <= 1) { panX = 0; panY = 0; }
+  }
+
+  function handleLightboxMouseDown(e) {
+    if (!isZoomed) return;
+    isMouseDragging = true;
+    mouseDragStartX = e.clientX;
+    mouseDragStartY = e.clientY;
+    panMouseStartX = panX;
+    panMouseStartY = panY;
+    e.preventDefault();
+  }
+
+  function handleLightboxMouseMove(e) {
+    if (!isMouseDragging) return;
+    panX = panMouseStartX + (e.clientX - mouseDragStartX);
+    panY = panMouseStartY + (e.clientY - mouseDragStartY);
+  }
+
+  function handleLightboxMouseUp() {
+    isMouseDragging = false;
   }
 
   function handleSwipe() {
@@ -1390,16 +1472,30 @@
 <!-- Image Lightbox with Gallery -->
 {#if lightboxImages.length > 0}
   <div class="lightbox-overlay" class:zoomed={isZoomed} on:click={closeLightbox} role="dialog" aria-modal="true">
-    <div class="lightbox-content" class:zoomed={isZoomed} on:click|stopPropagation on:touchstart={handleTouchStart} on:touchend={handleTouchEnd}>
+    <div
+      class="lightbox-content"
+      class:zoomed={isZoomed}
+      on:click|stopPropagation
+      on:touchstart|nonpassive={handleTouchStart}
+      on:touchmove|nonpassive={handleTouchMove}
+      on:touchend={handleTouchEnd}
+      on:wheel|nonpassive={handleLightboxWheel}
+      on:mousedown={handleLightboxMouseDown}
+      on:mousemove={handleLightboxMouseMove}
+      on:mouseup={handleLightboxMouseUp}
+      on:mouseleave={handleLightboxMouseUp}
+      style="cursor: {isZoomed ? (isMouseDragging ? 'grabbing' : 'grab') : 'default'}"
+    >
       <button class="lightbox-close" on:click={closeLightbox} aria-label="Close">×</button>
       {#if lightboxImages.length > 1 && !isZoomed}
         <button class="lightbox-nav lightbox-prev" on:click={prevImage} aria-label="Previous image">‹</button>
       {/if}
-      <div class="lightbox-image-container" class:zoomed={isZoomed}>
+      <div class="lightbox-image-container">
         <img
           src={lightboxImages[lightboxIndex]}
           alt={lightboxAlt}
-          class:zoomed={isZoomed}
+          style="transform: translate({panX}px, {panY}px) scale({zoomScale}); transform-origin: center center; transition: {isPanning || isMouseDragging ? 'none' : 'transform 0.2s ease'};"
+          draggable="false"
           on:click={toggleZoom}
         />
       </div>
@@ -1407,7 +1503,7 @@
         <button class="lightbox-nav lightbox-next" on:click={nextImage} aria-label="Next image">›</button>
         <div class="lightbox-dots">
           {#each lightboxImages as _, i}
-            <button class="lightbox-dot" class:active={i === lightboxIndex} on:click={() => lightboxIndex = i} aria-label="Go to image {i + 1}"></button>
+            <button class="lightbox-dot" class:active={i === lightboxIndex} on:click={() => { resetZoom(); lightboxIndex = i; }} aria-label="Go to image {i + 1}"></button>
           {/each}
         </div>
       {/if}
@@ -1415,7 +1511,7 @@
         <p class="lightbox-caption">{lightboxAlt} {lightboxImages.length > 1 ? `(${lightboxIndex + 1}/${lightboxImages.length})` : ''}</p>
       {/if}
       <button class="lightbox-zoom-hint" on:click={toggleZoom}>
-        {isZoomed ? '🔍- Tap to zoom out' : '🔍+ Tap image to zoom'}
+        {isZoomed ? '🔍− Pinch out or scroll to zoom more' : '🔍+ Pinch / scroll to zoom'}
       </button>
     </div>
   </div>
@@ -2139,12 +2235,14 @@
   .lightbox-image-container {
     overflow: hidden;
     display: flex;
+    user-select: none;
+    -webkit-user-select: none;
     align-items: center;
     justify-content: center;
   }
 
   .lightbox-image-container.zoomed {
-    overflow: auto;
+    overflow: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     max-width: 95vw;
@@ -2155,12 +2253,14 @@
 
   .lightbox-content img {
     cursor: zoom-in;
-    transition: transform 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: auto;
   }
 
-  .lightbox-content img.zoomed {
-    transform: scale(2);
-    cursor: zoom-out;
+  .lightbox-content.zoomed img {
+    cursor: grab;
   }
 
   .lightbox-zoom-hint {
