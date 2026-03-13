@@ -271,6 +271,7 @@ try {
     <span>Stock Management</span>
   </div>
   <div class="header-actions">
+    <a href="scan.php" class="btn btn-outline">📷 Scan</a>
     <button class="btn btn-gold" onclick="initializeAll()">Initialize All</button>
     <span id="init-status"></span>
     <a href="logout.php" class="btn btn-danger">Logout</a>
