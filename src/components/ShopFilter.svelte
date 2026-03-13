@@ -915,7 +915,7 @@
   }
 
   function handleModalTouchEnd(e) {
-    touchEndX = e.changedTouches[0].screenX;
+    touchEndX = e.changedTouches[0].clientX;
     const diff = touchStartX - touchEndX;
     if (Math.abs(diff) > 50) {
       if (diff > 0) modalNextImage();
@@ -2248,7 +2248,7 @@
     max-width: 95vw;
     max-height: 85vh;
     cursor: zoom-out;
-    touch-action: pan-x pan-y;
+    touch-action: none;
   }
 
   .lightbox-content img {
@@ -2256,6 +2256,8 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
     pointer-events: auto;
   }
 

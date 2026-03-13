@@ -66,7 +66,7 @@ $actionColors = [
     body {
       background: #0a0a0a; color: #e0e0e0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      min-height: 100vh; -webkit-overflow-scrolling: touch; overflow-x: hidden;
+      min-height: 100vh; min-height: -webkit-fill-available; -webkit-overflow-scrolling: touch; overflow-x: hidden;
     }
     header {
       background: #111; border-bottom: 1px solid #222;
@@ -118,7 +118,7 @@ $actionColors = [
     .db-error { background:#2a0a0a;border:1px solid #5c1a1a;color:#ff6b6b;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px; }
     .empty-state { text-align: center; padding: 60px 20px; color: #444; font-size: 15px; }
 
-    .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-x; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     thead tr { background: #1a1a1a; }
     th { padding: 12px 14px; text-align: left; color: #888; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #222; }

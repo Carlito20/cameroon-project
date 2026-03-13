@@ -280,7 +280,7 @@ try {
     .scanner-actions { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
     .tx-btn {
       padding: 8px 16px; border-radius: 8px; border: 1px solid; font-size: 13px;
-      font-weight: 700; cursor: pointer; min-height: 40px; display: flex; align-items: center; gap: 6px;
+      font-weight: 700; cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 6px;
       touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
     }
     .tx-btn.received { background:#0d1a0d;color:#6dbf6d;border-color:#1a3a1a; }
