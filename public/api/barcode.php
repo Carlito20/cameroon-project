@@ -16,88 +16,103 @@ function getPdo() {
         DB_USER, DB_PASS,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
+    // Barcode map
     $pdo->exec("CREATE TABLE IF NOT EXISTS barcode_map (
         barcode VARCHAR(100) PRIMARY KEY,
         product_name VARCHAR(500) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
+    // Transaction log
+    $pdo->exec("CREATE TABLE IF NOT EXISTS stock_transactions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        product_name VARCHAR(500) NOT NULL,
+        action ENUM('received','sold','damaged','returned') NOT NULL,
+        quantity INT NOT NULL,
+        stock_before INT NOT NULL,
+        stock_after INT NOT NULL,
+        note VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
     return $pdo;
+}
+
+function getCurrentStock($pdo, $productName) {
+    $stmt = $pdo->prepare('SELECT quantity FROM product_stock WHERE product_name = ?');
+    $stmt->execute([$productName]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $row ? (int)$row['quantity'] : 0;
 }
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// GET: look up a barcode
+// GET: look up barcode
 if ($method === 'GET') {
     $barcode = trim($_GET['barcode'] ?? '');
-    if (!$barcode) {
-        echo json_encode(['error' => 'No barcode provided']);
-        exit;
-    }
+    if (!$barcode) { echo json_encode(['error' => 'No barcode']); exit; }
     try {
         $pdo = getPdo();
         $stmt = $pdo->prepare('SELECT product_name FROM barcode_map WHERE barcode = ?');
         $stmt->execute([$barcode]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            $stmt2 = $pdo->prepare('SELECT quantity FROM product_stock WHERE product_name = ?');
-            $stmt2->execute([$row['product_name']]);
-            $stock = $stmt2->fetch(PDO::FETCH_ASSOC);
-            echo json_encode([
-                'found' => true,
-                'product_name' => $row['product_name'],
-                'quantity' => $stock ? (int)$stock['quantity'] : 0
-            ]);
+            $qty = getCurrentStock($pdo, $row['product_name']);
+            echo json_encode(['found' => true, 'product_name' => $row['product_name'], 'quantity' => $qty]);
         } else {
             echo json_encode(['found' => false]);
         }
-    } catch (Exception $e) {
-        echo json_encode(['error' => $e->getMessage()]);
-    }
+    } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
     exit;
 }
 
-// POST: assign barcode or update stock
 if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $action = $data['action'] ?? '';
 
+    // Assign barcode to product
     if ($action === 'assign') {
         $barcode = trim($data['barcode'] ?? '');
         $productName = trim($data['product_name'] ?? '');
-        if (!$barcode || !$productName) {
-            echo json_encode(['error' => 'Missing barcode or product name']);
-            exit;
-        }
+        if (!$barcode || !$productName) { echo json_encode(['error' => 'Missing data']); exit; }
         try {
             $pdo = getPdo();
             $stmt = $pdo->prepare('INSERT INTO barcode_map (barcode, product_name) VALUES (?, ?) ON DUPLICATE KEY UPDATE product_name = VALUES(product_name)');
             $stmt->execute([$barcode, $productName]);
-            // Also get current stock
-            $stmt2 = $pdo->prepare('SELECT quantity FROM product_stock WHERE product_name = ?');
-            $stmt2->execute([$productName]);
-            $stock = $stmt2->fetch(PDO::FETCH_ASSOC);
-            echo json_encode(['success' => true, 'quantity' => $stock ? (int)$stock['quantity'] : 0]);
-        } catch (Exception $e) {
-            echo json_encode(['error' => $e->getMessage()]);
-        }
+            $qty = getCurrentStock($pdo, $productName);
+            echo json_encode(['success' => true, 'quantity' => $qty]);
+        } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
         exit;
     }
 
-    if ($action === 'stock') {
+    // Log a stock transaction (received, sold, damaged, returned)
+    if ($action === 'transaction') {
         $productName = trim($data['product_name'] ?? '');
-        $quantity = isset($data['quantity']) ? (int)$data['quantity'] : -1;
-        if (!$productName || $quantity < 0) {
-            echo json_encode(['error' => 'Invalid data']);
-            exit;
+        $txAction    = $data['tx_action'] ?? '';
+        $qty         = (int)($data['quantity'] ?? 0);
+        $note        = substr(trim($data['note'] ?? ''), 0, 255);
+
+        if (!$productName || !in_array($txAction, ['received','sold','damaged','returned']) || $qty <= 0) {
+            echo json_encode(['error' => 'Invalid data']); exit;
         }
         try {
             $pdo = getPdo();
-            $stmt = $pdo->prepare('INSERT INTO product_stock (product_name, quantity) VALUES (?, ?) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)');
-            $stmt->execute([$productName, $quantity]);
-            echo json_encode(['success' => true]);
-        } catch (Exception $e) {
-            echo json_encode(['error' => $e->getMessage()]);
-        }
+            $stockBefore = getCurrentStock($pdo, $productName);
+
+            if ($txAction === 'received' || $txAction === 'returned') {
+                $stockAfter = $stockBefore + $qty;
+            } else {
+                $stockAfter = max(0, $stockBefore - $qty);
+            }
+
+            // Update stock
+            $pdo->prepare('INSERT INTO product_stock (product_name, quantity) VALUES (?, ?) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)')
+                ->execute([$productName, $stockAfter]);
+
+            // Log transaction
+            $pdo->prepare('INSERT INTO stock_transactions (product_name, action, quantity, stock_before, stock_after, note) VALUES (?, ?, ?, ?, ?, ?)')
+                ->execute([$productName, $txAction, $qty, $stockBefore, $stockAfter, $note ?: null]);
+
+            echo json_encode(['success' => true, 'stock_before' => $stockBefore, 'stock_after' => $stockAfter]);
+        } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
         exit;
     }
 

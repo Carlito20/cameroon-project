@@ -257,6 +257,43 @@ try {
       font-size: 13px;
       margin-left: 8px;
     }
+    /* Desktop scanner */
+    .scanner-section {
+      background: #111; border: 1px solid #222; border-radius: 10px;
+      margin-bottom: 20px; overflow: hidden;
+    }
+    .scanner-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 18px; cursor: pointer; user-select: none; -webkit-user-select: none;
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+      font-size: 14px; font-weight: 600; color: #aaa;
+    }
+    .scanner-header:hover { background: #161616; }
+    .scanner-body { padding: 0 18px 18px; }
+    .scanner-input-row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .scanner-input-row .search-box { flex: 1; min-width: 200px; }
+    .scanner-result { background: #161616; border-radius: 8px; padding: 16px; }
+    .scanner-unknown { background: #161616; border-radius: 8px; padding: 16px; }
+    .scanner-product-name { font-size: 15px; font-weight: 600; color: #e0e0e0; margin-bottom: 4px; line-height: 1.4; }
+    .scanner-stock { font-size: 13px; color: #888; margin-bottom: 14px; }
+    .scanner-stock span { color: #d4af37; font-weight: 700; font-size: 15px; }
+    .scanner-actions { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .tx-btn {
+      padding: 8px 16px; border-radius: 8px; border: 1px solid; font-size: 13px;
+      font-weight: 700; cursor: pointer; min-height: 40px; display: flex; align-items: center; gap: 6px;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+    }
+    .tx-btn.received { background:#0d1a0d;color:#6dbf6d;border-color:#1a3a1a; }
+    .tx-btn.sold     { background:#0d1020;color:#7b9fd4;border-color:#1a2a40; }
+    .tx-btn.damaged  { background:#2a1a0a;color:#d4884a;border-color:#3a2a1a; }
+    .tx-btn.returned { background:#1a0d1a;color:#b47bd4;border-color:#2a1a3a; }
+    .tx-btn.selected.received { border-color:#6dbf6d;background:#1e361e; }
+    .tx-btn.selected.sold     { border-color:#7b9fd4;background:#1a2a40; }
+    .tx-btn.selected.damaged  { border-color:#d4884a;background:#3a2a1a; }
+    .tx-btn.selected.returned { border-color:#b47bd4;background:#2a1a3a; }
+    .scanner-qty-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .scanner-qty-row .qty-input { width: 80px; }
+
     @media (max-width: 600px) {
       .product-name { max-width: 180px; font-size: 13px; }
       .qty-input { width: 64px; }
@@ -271,6 +308,7 @@ try {
     <span>Stock Management</span>
   </div>
   <div class="header-actions">
+    <a href="history.php" class="btn btn-outline">📋 History</a>
     <a href="scan.php" class="btn btn-outline">📷 Scan</a>
     <button class="btn btn-gold" onclick="initializeAll()">Initialize All</button>
     <span id="init-status"></span>
@@ -295,6 +333,49 @@ try {
       <strong>products-list.json not found.</strong> Run <code>npm run build</code> first to generate it.
     </div>
   <?php endif; ?>
+
+  <!-- Desktop Barcode Scanner -->
+  <div class="scanner-section" id="scanner-section">
+    <div class="scanner-header" onclick="toggleScanner()">
+      <span>🔍 Barcode Scanner <small style="color:#555;font-size:12px;">(USB / Bluetooth scanner or type manually)</small></span>
+      <span id="scanner-toggle-icon">▼</span>
+    </div>
+    <div class="scanner-body" id="scanner-body" style="display:none;">
+      <div class="scanner-input-row">
+        <input type="text" id="barcode-input" class="search-box" placeholder="Scan or type barcode then press Enter..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button class="btn btn-gold" onclick="lookupBarcode()">Look Up</button>
+      </div>
+      <div class="scanner-result" id="scanner-result" style="display:none;">
+        <div class="scanner-product-name" id="scanner-product-name"></div>
+        <div class="scanner-stock">Current Stock: <span id="scanner-stock"></span></div>
+        <div class="scanner-actions">
+          <button class="tx-btn received"  onclick="selectTx('received')"><span>📦</span> Received</button>
+          <button class="tx-btn sold"      onclick="selectTx('sold')"><span>✅</span> Sold</button>
+          <button class="tx-btn damaged"   onclick="selectTx('damaged')"><span>⚠️</span> Damaged</button>
+          <button class="tx-btn returned"  onclick="selectTx('returned')"><span>↩️</span> Returned</button>
+        </div>
+        <div class="scanner-qty-row">
+          <label style="color:#888;font-size:13px;">Qty:</label>
+          <input type="number" id="scanner-qty" value="1" min="1" class="qty-input">
+          <input type="text" id="scanner-note" class="search-box" style="flex:1;" placeholder="Note (optional)">
+          <button class="btn btn-gold" id="scanner-confirm-btn" onclick="confirmDesktopTx()" disabled>Confirm</button>
+        </div>
+        <div id="scanner-status" style="font-size:13px;margin-top:8px;"></div>
+      </div>
+      <div class="scanner-unknown" id="scanner-unknown" style="display:none;">
+        <div style="color:#c8b84a;font-size:13px;margin-bottom:10px;">Unknown barcode — assign to a product:</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <select id="scanner-assign-select" class="search-box" style="flex:1;min-width:200px;">
+            <option value="">— Select product —</option>
+            <?php foreach ($products as $p): ?>
+              <option value="<?= htmlspecialchars($p['name']) ?>"><?= htmlspecialchars($p['name']) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <button class="btn btn-gold" onclick="desktopAssign()">Assign</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="toolbar">
     <input type="text" class="search-box" id="search" placeholder="Search products..." oninput="filterTable(this.value)">
@@ -425,6 +506,137 @@ function initializeAll() {
     statusEl.style.color = '#ff6b6b';
   });
 }
+
+// ── Desktop barcode scanner ──────────────────────────
+let desktopSelectedAction = '', desktopCurrentProduct = '', desktopCurrentBarcode = '';
+
+function toggleScanner() {
+  const body = document.getElementById('scanner-body');
+  const icon = document.getElementById('scanner-toggle-icon');
+  const open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  icon.textContent = open ? '▲' : '▼';
+  if (open) setTimeout(() => document.getElementById('barcode-input').focus(), 50);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('barcode-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); lookupBarcode(); }
+  });
+});
+
+function lookupBarcode() {
+  const barcode = document.getElementById('barcode-input').value.trim();
+  if (!barcode) return;
+  resetScannerResult();
+  fetch('/api/barcode.php?barcode=' + encodeURIComponent(barcode))
+    .then(r => r.json())
+    .then(data => {
+      desktopCurrentBarcode = barcode;
+      if (data.found) {
+        desktopCurrentProduct = data.product_name;
+        document.getElementById('scanner-product-name').textContent = data.product_name;
+        document.getElementById('scanner-stock').textContent = data.quantity;
+        document.getElementById('scanner-result').style.display = 'block';
+        document.getElementById('scanner-unknown').style.display = 'none';
+      } else {
+        desktopCurrentProduct = '';
+        document.getElementById('scanner-result').style.display = 'none';
+        document.getElementById('scanner-unknown').style.display = 'block';
+        document.getElementById('scanner-assign-select').value = '';
+      }
+    })
+    .catch(() => setScannerStatus('Network error', false));
+}
+
+function selectTx(action) {
+  desktopSelectedAction = action;
+  document.querySelectorAll('.tx-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector('.tx-btn.' + action).classList.add('selected');
+  document.getElementById('scanner-confirm-btn').disabled = false;
+}
+
+function confirmDesktopTx() {
+  if (!desktopSelectedAction || !desktopCurrentProduct) return;
+  const qty = parseInt(document.getElementById('scanner-qty').value, 10);
+  if (isNaN(qty) || qty <= 0) { setScannerStatus('Enter a valid quantity', false); return; }
+  const note = document.getElementById('scanner-note').value;
+  const btn = document.getElementById('scanner-confirm-btn');
+  btn.disabled = true; btn.textContent = '...';
+
+  fetch('/api/barcode.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action:'transaction', product_name:desktopCurrentProduct, tx_action:desktopSelectedAction, quantity:qty, note })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById('scanner-stock').textContent = data.stock_after;
+      setScannerStatus('✓ Done — stock now ' + data.stock_after, true);
+      // Update the table row if visible
+      const rows = document.querySelectorAll('#products-table tbody tr');
+      rows.forEach(row => {
+        if ((row.dataset.name || '') === desktopCurrentProduct.toLowerCase()) {
+          const input = row.querySelector('.qty-input');
+          if (input) { input.value = data.stock_after; input.dataset.original = data.stock_after; }
+          const srcEl = row.querySelector('.qty-source');
+          if (srcEl) { srcEl.textContent = 'Live (DB)'; srcEl.className = 'qty-source qty-live'; }
+        }
+      });
+      desktopSelectedAction = '';
+      document.querySelectorAll('.tx-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('barcode-input').value = '';
+      document.getElementById('barcode-input').focus();
+    } else {
+      setScannerStatus('Error: ' + (data.error || 'Failed'), false);
+    }
+  })
+  .catch(() => setScannerStatus('Network error', false))
+  .finally(() => { btn.disabled = false; btn.textContent = 'Confirm'; });
+}
+
+function desktopAssign() {
+  const productName = document.getElementById('scanner-assign-select').value;
+  if (!productName) { setScannerStatus('Select a product first', false); return; }
+  fetch('/api/barcode.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action:'assign', barcode:desktopCurrentBarcode, product_name:productName })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      desktopCurrentProduct = productName;
+      document.getElementById('scanner-product-name').textContent = productName;
+      document.getElementById('scanner-stock').textContent = data.quantity;
+      document.getElementById('scanner-result').style.display = 'block';
+      document.getElementById('scanner-unknown').style.display = 'none';
+      setScannerStatus('✓ Barcode assigned', true);
+    } else {
+      setScannerStatus('Error: ' + (data.error || 'Failed'), false);
+    }
+  })
+  .catch(() => setScannerStatus('Network error', false));
+}
+
+function setScannerStatus(msg, ok) {
+  const el = document.getElementById('scanner-status');
+  el.textContent = msg;
+  el.style.color = ok ? '#6dbf6d' : '#ff6b6b';
+  setTimeout(() => { el.textContent = ''; }, 4000);
+}
+
+function resetScannerResult() {
+  desktopSelectedAction = ''; desktopCurrentProduct = ''; desktopCurrentBarcode = '';
+  document.getElementById('scanner-result').style.display = 'none';
+  document.getElementById('scanner-unknown').style.display = 'none';
+  document.getElementById('scanner-status').textContent = '';
+  document.getElementById('scanner-confirm-btn').disabled = true;
+  document.getElementById('scanner-confirm-btn').textContent = 'Confirm';
+  document.querySelectorAll('.tx-btn').forEach(b => b.classList.remove('selected'));
+}
+// ── End desktop scanner ──────────────────────────────
 
 function filterTable(query) {
   const lower = query.toLowerCase();
