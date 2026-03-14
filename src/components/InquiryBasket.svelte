@@ -71,9 +71,45 @@
   }
 
   // Listen for custom events from ShopFilter
+  // Generate a shareable cart link encoding current items
+  function generateCartLink() {
+    const data = inquiryItems.map(i => ({ n: i.name, p: i.price || 0, q: i.quantity || 1, img: i.image || '' }));
+    try {
+      const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+      return `https://americanselect.net/shop/?cart=${encoded}`;
+    } catch { return ''; }
+  }
+
+  // Load cart items from URL ?cart= param on mount
+  function loadCartFromUrl() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const cartParam = params.get('cart');
+      if (!cartParam) return false;
+      const data = JSON.parse(decodeURIComponent(escape(atob(cartParam))));
+      if (!Array.isArray(data) || !data.length) return false;
+      const items = data.map(d => ({
+        name: d.n, price: d.p || 0, quantity: d.q || 1,
+        image: d.img || '', maxStock: 99, addedAt: Date.now()
+      }));
+      inquiryItems = items;
+      // Clean URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('cart');
+      window.history.replaceState({}, '', url.toString());
+      // Open basket so customer sees their items
+      isOpen = true;
+      updateBodyClass();
+      return true;
+    } catch { return false; }
+  }
+
   onMount(() => {
-    // Load saved cart on mount
-    const savedItems = loadCart();
+    // Check URL for pre-loaded cart first
+    const loadedFromUrl = loadCartFromUrl();
+
+    // Load saved cart on mount (skip if URL cart was loaded)
+    const savedItems = loadedFromUrl ? [] : loadCart();
     if (savedItems.length > 0) {
       inquiryItems = savedItems;
       // Remove any expired items immediately
@@ -189,7 +225,8 @@
       return `• ${item.name} (${qty})${itemTotal}`;
     }).join('\n');
 
-    const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nEstimated Total: ${formatPrice(totalPrice)} FCFA\n\nPlease confirm availability and final price.`;
+    const cartLink = generateCartLink();
+    const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nEstimated Total: ${formatPrice(totalPrice)} FCFA\n\nPlease confirm availability and final price.\n\n🔗 My cart: ${cartLink}`;
 
     // Send to Formspree for email notification
     try {
@@ -201,6 +238,7 @@
           total_items: totalItems,
           estimated_total: `${formatPrice(totalPrice)} FCFA`,
           order_details: itemList,
+          cart_link: cartLink,
           full_message: message
         }),
         headers: {
