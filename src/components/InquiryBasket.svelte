@@ -93,6 +93,7 @@
         image: d.img || '', maxStock: 99, addedAt: Date.now()
       }));
       inquiryItems = items;
+      isConfirmationMode = true;
       // Clean URL
       const url = new URL(window.location.href);
       url.searchParams.delete('cart');
@@ -273,9 +274,53 @@
   }
 
   let selectedPayment = '';
+  let isConfirmationMode = false; // true when cart was loaded from admin's reply link
 
   function selectPayment(method) {
     selectedPayment = selectedPayment === method ? '' : method;
+  }
+
+  async function confirmOrder() {
+    if (inquiryItems.length === 0) return;
+
+    const itemList = inquiryItems.map(item => {
+      const qty = item.quantity || 1;
+      const itemTotal = item.price ? ` — ${formatPrice(item.price * qty)} FCFA` : '';
+      return `• ${item.name} (×${qty})${itemTotal}`;
+    }).join('\n');
+
+    const message = `✅ ORDER CONFIRMED\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA\n💳 Payment: ${selectedPayment || 'To be confirmed'}\n\nPlease process my order. Thank you!`;
+
+    // Save order for thank-you page
+    localStorage.setItem('confirmedOrder', JSON.stringify({
+      items: inquiryItems.map(i => ({ name: i.name, price: i.price || 0, quantity: i.quantity || 1, image: i.image || '' })),
+      total: totalPrice,
+      paymentMethod: selectedPayment || 'To be confirmed',
+      timestamp: Date.now()
+    }));
+
+    // Notify via Formspree
+    try {
+      await fetch(formspreeEndpoint, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          _subject: `✅ ORDER CONFIRMED — ${totalItems} item${totalItems === 1 ? '' : 's'} — ${formatPrice(totalPrice)} FCFA`,
+          order_type: 'Confirmed Order',
+          total_items: totalItems,
+          estimated_total: `${formatPrice(totalPrice)} FCFA`,
+          payment_method: selectedPayment || 'Not specified',
+          order_details: itemList
+        })
+      });
+    } catch (e) { console.error('Formspree error:', e); }
+
+    // Open WhatsApp with confirmation
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+
+    // Clear cart and go to confirmation page
+    localStorage.removeItem(STORAGE_KEY);
+    window.location.href = '/thank-you/?order=confirmed';
   }
 
   let previewItem = null;
@@ -362,9 +407,17 @@
         <button class="clear-btn" on:click={clearAll}>Clear All</button>
         <button class="send-btn" on:click={sendViaWhatsApp}>
           <span class="whatsapp-icon">💬</span>
-          Order Via WhatsApp
+          {isConfirmationMode ? 'Message Us' : 'Order Via WhatsApp'}
         </button>
       </div>
+      {#if isConfirmationMode}
+        <div class="confirm-order-section">
+          <button class="confirm-order-btn" on:click={confirmOrder}>
+            ✅ Confirm My Order
+          </button>
+          <p class="confirm-hint">Tap to finalise and send your order confirmation</p>
+        </div>
+      {/if}
     </div>
   {:else}
     <button class="cart-collapsed desktop-only" on:click={toggleDesktopCart} aria-label="Expand cart">
@@ -450,9 +503,17 @@
             <button class="clear-btn" on:click={clearAll}>Clear All</button>
             <button class="send-btn" on:click={sendViaWhatsApp}>
               <span class="whatsapp-icon">💬</span>
-              Order Via WhatsApp
+              {isConfirmationMode ? 'Message Us' : 'Order Via WhatsApp'}
             </button>
           </div>
+          {#if isConfirmationMode}
+            <div class="confirm-order-section">
+              <button class="confirm-order-btn" on:click={confirmOrder}>
+                ✅ Confirm My Order
+              </button>
+              <p class="confirm-hint">Tap to finalise and send your order confirmation</p>
+            </div>
+          {/if}
         </div>
       </div>
     </div>
@@ -1259,6 +1320,36 @@
     border-color: #25a244;
     background: #f0fff4;
     color: #1a7a32;
+  }
+
+  .confirm-order-section {
+    padding: 12px 20px 16px;
+  }
+  .confirm-order-btn {
+    width: 100%;
+    padding: 14px;
+    background: #25a244;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    min-height: 50px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .confirm-order-btn:hover { background: #1e8a38; }
+  .confirm-hint {
+    text-align: center;
+    font-size: 11px;
+    color: #999;
+    margin-top: 6px;
+    margin-bottom: 0;
   }
 
   .basket-actions {
