@@ -271,7 +271,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <?php endif; ?>
       <div class="pr-actions">
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
-        <button class="btn-preview" onclick="previewBarcode('<?= htmlspecialchars(addslashes($bc)) ?>', '<?= htmlspecialchars(addslashes($p['name'])) ?>', <?= (int)($p['price'] ?? 0) ?>)">👁 Preview</button>
+        <button class="btn-preview" onclick="previewBarcode('<?= htmlspecialchars(addslashes($bc)) ?>', '<?= htmlspecialchars(addslashes($p['name'])) ?>')">👁 Preview</button>
       </div>
     </div>
     <?php endforeach; ?>
@@ -325,7 +325,7 @@ async function generateBarcode(btn, productName) {
 }
 
 // ── Preview single barcode in modal ─────────────────────
-function previewBarcode(barcode, name, price) {
+function previewBarcode(barcode, name) {
   const overlay = document.createElement('div');
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);';
   overlay.onclick = () => overlay.remove();
@@ -333,7 +333,6 @@ function previewBarcode(barcode, name, price) {
   card.style.cssText = 'background:white;border-radius:12px;padding:24px;text-align:center;max-width:320px;width:100%;';
   card.innerHTML = `<svg id="preview-svg"></svg>
     <div style="font-size:13px;color:#333;margin-top:10px;line-height:1.4;">${esc(name)}</div>
-    ${price ? `<div style="font-size:14px;font-weight:700;color:#25a244;margin-top:4px;">${Number(price).toLocaleString()} FCFA</div>` : ''}
     <div style="font-size:11px;color:#999;margin-top:4px;">${esc(barcode)}</div>`;
   card.onclick = e => e.stopPropagation();
   overlay.appendChild(card);
@@ -355,8 +354,7 @@ function printSelected() {
     let barcode = cb.dataset.barcode;
     if (!barcode) { showToast('Generate barcodes first for all selected items', 'err'); return; }
     const product = products.find(p => p.name === name);
-    const price = product ? product.price : 0;
-    for (let i = 0; i < qty; i++) labels.push({ barcode, name, price });
+    for (let i = 0; i < qty; i++) labels.push({ barcode, name });
   });
 
   if (!labels.length) { showToast('No valid labels — generate barcodes first', 'err'); return; }
@@ -391,7 +389,6 @@ function printSelected() {
         max-height: 2.6em;
         overflow: hidden;
       }
-      .label-price { font-size: 9pt; font-weight: bold; color: #000; margin-top: 2px; }
       .label-brand { font-size: 7pt; color: #888; margin-bottom: 2px; }
     </style>
     <div class="label-grid" id="label-grid"></div>`;
@@ -403,9 +400,7 @@ function printSelected() {
     div.innerHTML = `
       <div class="label-brand">AMERICAN SELECT</div>
       <svg id="lbl-svg-${i}"></svg>
-      <div class="label-name">${esc(lbl.name)}</div>
-      ${lbl.price ? `<div class="label-price">${Number(lbl.price).toLocaleString()} FCFA</div>` : ''}`;
-    grid.appendChild(div);
+      <div class="label-name">${esc(lbl.name)}</div>`;    grid.appendChild(div);
     JsBarcode(`#lbl-svg-${i}`, lbl.barcode, {
       format: 'CODE128', width: 1.5, height: 45,
       displayValue: true, fontSize: 8, margin: 2
