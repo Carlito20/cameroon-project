@@ -99,8 +99,10 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     .result-card.visible { display: block; }
     .result-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
     .result-product-name { font-size: 15px; font-weight: 600; color: #e0e0e0; line-height: 1.4; margin-bottom: 6px; }
-    .result-stock { font-size: 13px; color: #888; margin-bottom: 16px; }
+    .result-stock { font-size: 13px; color: #888; margin-bottom: 4px; }
     .result-stock span { color: #d4af37; font-weight: 700; font-size: 16px; }
+    .result-price { font-size: 13px; color: #888; margin-bottom: 16px; }
+    .result-price span { color: #6dbf6d; font-weight: 700; font-size: 16px; }
     .result-barcode { font-size: 11px; color: #444; margin-bottom: 16px; font-family: monospace; }
 
     /* Action buttons */
@@ -209,7 +211,8 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
   <div class="result-card" id="result-card">
     <div class="result-label">Product</div>
     <div class="result-product-name" id="result-name"></div>
-    <div class="result-stock">Current Stock: <span id="result-stock">0</span></div>
+    <div class="result-stock">Stock: <span id="result-stock">0</span></div>
+    <div class="result-price">Price: <span id="result-price">—</span></div>
     <div class="result-barcode" id="result-barcode"></div>
 
     <div class="action-grid">
@@ -297,16 +300,17 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
       .then(r => r.json())
       .then(data => {
         if (data.error) { setStatus('Error: ' + data.error, 'error'); scanning = false; return; }
-        if (data.found) showProductCard(barcode, data.product_name, data.quantity);
+        if (data.found) showProductCard(barcode, data.product_name, data.quantity, data.price);
         else showAssignCard(barcode);
       })
       .catch(() => { setStatus('Network error', 'error'); scanning = false; });
   }
 
-  function showProductCard(barcode, productName, quantity) {
+  function showProductCard(barcode, productName, quantity, price) {
     currentProductName = productName; selectedAction = '';
     document.getElementById('result-name').textContent = productName;
     document.getElementById('result-stock').textContent = quantity;
+    document.getElementById('result-price').textContent = price ? price.toLocaleString() + ' FCFA' : '—';
     document.getElementById('result-barcode').textContent = 'Barcode: ' + barcode;
     document.getElementById('qty-input').value = 1;
     document.getElementById('note-input').value = '';

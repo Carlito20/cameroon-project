@@ -43,6 +43,16 @@ function getCurrentStock($pdo, $productName) {
     return $row ? (int)$row['quantity'] : 0;
 }
 
+function getProductPrice($productName) {
+    $jsonPath = __DIR__ . '/products-list.json';
+    if (!file_exists($jsonPath)) return 0;
+    $products = json_decode(file_get_contents($jsonPath), true) ?? [];
+    foreach ($products as $p) {
+        if ($p['name'] === $productName) return (int)($p['price'] ?? 0);
+    }
+    return 0;
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 // GET: look up barcode
@@ -56,7 +66,8 @@ if ($method === 'GET') {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             $qty = getCurrentStock($pdo, $row['product_name']);
-            echo json_encode(['found' => true, 'product_name' => $row['product_name'], 'quantity' => $qty]);
+            $price = getProductPrice($row['product_name']);
+            echo json_encode(['found' => true, 'product_name' => $row['product_name'], 'quantity' => $qty, 'price' => $price]);
         } else {
             echo json_encode(['found' => false]);
         }

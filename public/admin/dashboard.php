@@ -275,8 +275,10 @@ try {
     .scanner-result { background: #161616; border-radius: 8px; padding: 16px; }
     .scanner-unknown { background: #161616; border-radius: 8px; padding: 16px; }
     .scanner-product-name { font-size: 15px; font-weight: 600; color: #e0e0e0; margin-bottom: 4px; line-height: 1.4; }
-    .scanner-stock { font-size: 13px; color: #888; margin-bottom: 14px; }
+    .scanner-stock { font-size: 13px; color: #888; margin-bottom: 4px; }
     .scanner-stock span { color: #d4af37; font-weight: 700; font-size: 15px; }
+    .scanner-price { font-size: 13px; color: #888; margin-bottom: 14px; }
+    .scanner-price span { color: #6dbf6d; font-weight: 700; font-size: 15px; }
     .scanner-actions { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
     .tx-btn {
       padding: 8px 16px; border-radius: 8px; border: 1px solid; font-size: 13px;
@@ -347,7 +349,8 @@ try {
       </div>
       <div class="scanner-result" id="scanner-result" style="display:none;">
         <div class="scanner-product-name" id="scanner-product-name"></div>
-        <div class="scanner-stock">Current Stock: <span id="scanner-stock"></span></div>
+        <div class="scanner-stock">Stock: <span id="scanner-stock"></span></div>
+        <div class="scanner-price">Price: <span id="scanner-price"></span></div>
         <div class="scanner-actions">
           <button class="tx-btn received"  onclick="selectTx('received')"><span>📦</span> Received</button>
           <button class="tx-btn sold"      onclick="selectTx('sold')"><span>✅</span> Sold</button>
@@ -537,6 +540,7 @@ function lookupBarcode() {
         desktopCurrentProduct = data.product_name;
         document.getElementById('scanner-product-name').textContent = data.product_name;
         document.getElementById('scanner-stock').textContent = data.quantity;
+        document.getElementById('scanner-price').textContent = data.price ? data.price.toLocaleString() + ' FCFA' : '—';
         document.getElementById('scanner-result').style.display = 'block';
         document.getElementById('scanner-unknown').style.display = 'none';
       } else {
@@ -610,6 +614,7 @@ function desktopAssign() {
       desktopCurrentProduct = productName;
       document.getElementById('scanner-product-name').textContent = productName;
       document.getElementById('scanner-stock').textContent = data.quantity;
+      document.getElementById('scanner-price').textContent = '—';
       document.getElementById('scanner-result').style.display = 'block';
       document.getElementById('scanner-unknown').style.display = 'none';
       setScannerStatus('✓ Barcode assigned', true);

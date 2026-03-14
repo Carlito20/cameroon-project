@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { categories, isSubCategory } from '../../data/categories';
 
 export const GET: APIRoute = () => {
-  const products: { name: string; quantity: number }[] = [];
+  const products: { name: string; quantity: number; price: number }[] = [];
 
   function collectProducts(items: any[]) {
     for (const item of items) {
@@ -11,7 +11,8 @@ export const GET: APIRoute = () => {
       } else if (typeof item === 'object' && item !== null && 'name' in item) {
         products.push({
           name: item.name,
-          quantity: item.quantity ?? 0
+          quantity: item.quantity ?? 0,
+          price: item.price ?? 0
         });
       }
     }
