@@ -195,6 +195,17 @@ if (file_exists($jsonPath)) {
     .checkout-msg { font-size: 12px; text-align: center; margin-top: 10px; min-height: 16px; color: #555; }
     .checkout-msg.err { color: #e05c5c; }
     .checkout-msg.warn { color: #d4884a; }
+    .pay-label { font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .pay-methods { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .pay-btn {
+      flex: 1; min-width: calc(50% - 4px); padding: 10px 8px; border-radius: 8px;
+      border: 1px solid #2a2a2a; background: #1a1a1a; color: #888;
+      font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; min-height: 44px;
+    }
+    .pay-btn.selected { border-color: #d4af37; background: #1a1500; color: #d4af37; }
+    .pay-btn:active { background: #222; }
 
     /* ── Receipt overlay ── */
     .receipt-overlay {
@@ -309,6 +320,13 @@ if (file_exists($jsonPath)) {
         </div>
         <div class="total-price" id="total-price">0 FCFA</div>
       </div>
+      <div class="pay-label">Payment Method</div>
+      <div class="pay-methods">
+        <button class="pay-btn" data-method="Cash" onclick="selectPayment(this)">💵 Cash</button>
+        <button class="pay-btn" data-method="MTN Mobile Money" onclick="selectPayment(this)">🟡 MTN MoMo</button>
+        <button class="pay-btn" data-method="Orange Money" onclick="selectPayment(this)">🟠 Orange Money</button>
+        <button class="pay-btn" data-method="Other" onclick="selectPayment(this)">💳 Other</button>
+      </div>
       <button class="btn-checkout" id="btn-checkout" onclick="doCheckout()" disabled>
         ✓&nbsp; Checkout
       </button>
@@ -331,6 +349,7 @@ if (file_exists($jsonPath)) {
       <span class="receipt-total-lbl">TOTAL</span>
       <span class="receipt-total-amt" id="receipt-total"></span>
     </div>
+    <div style="margin-top:10px;font-size:12px;color:#555;">Paid via: <span id="receipt-payment" style="color:#d4af37;font-weight:700;"></span></div>
     <div class="receipt-btns">
       <button class="btn-print" onclick="printReceipt()">🖨 Print</button>
       <a class="btn-whatsapp" id="btn-whatsapp" href="#" target="_blank" rel="noopener">
@@ -354,6 +373,7 @@ let cart = []; // [{name, price, qty, stock}]
 let busy = false;
 let cameraOn = false;
 let codeReader = null;
+let selectedPayment = '';
 
 // Auto-focus
 document.getElementById('barcode-input').focus();
@@ -447,14 +467,24 @@ function renderCart() {
   const hasOverStock = cart.some(i => i.qty > i.stock);
   const btn = document.getElementById('btn-checkout');
   const msg = document.getElementById('checkout-msg');
-  btn.disabled = busy || hasOverStock;
+  btn.disabled = busy || hasOverStock || !selectedPayment;
   if (hasOverStock) {
     msg.textContent = '⚠ Reduce quantity for items exceeding stock';
     msg.className = 'checkout-msg warn';
+  } else if (!selectedPayment) {
+    msg.textContent = 'Select a payment method above';
+    msg.className = 'checkout-msg';
   } else {
     msg.textContent = '';
     msg.className = 'checkout-msg';
   }
+}
+
+function selectPayment(el) {
+  document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPayment = el.dataset.method;
+  renderCart();
 }
 
 // ── Checkout ─────────────────────────────────────────────
@@ -483,7 +513,7 @@ async function doCheckout() {
           product_name: item.name,
           tx_action: 'sold',
           quantity: item.qty,
-          note: 'POS Checkout'
+          note: 'POS Checkout — ' + selectedPayment
         })
       });
       const d = await res.json();
@@ -528,6 +558,7 @@ function showReceipt(items) {
 
   document.getElementById('receipt-lines').innerHTML = html;
   document.getElementById('receipt-total').textContent = total.toLocaleString() + ' FCFA';
+  document.getElementById('receipt-payment').textContent = selectedPayment;
 
   // Build WhatsApp message
   const dateStr = document.getElementById('receipt-date').textContent;
@@ -537,7 +568,7 @@ function showReceipt(items) {
     waMsg += '• ' + item.name + '\n';
     waMsg += '  ×' + item.qty + '  ·  ' + (item.price ? line.toLocaleString() + ' FCFA' : '—') + '\n';
   });
-  waMsg += '\n*TOTAL: ' + total.toLocaleString() + ' FCFA*\n\nThank you for shopping with American Select!';
+  waMsg += '\n*TOTAL: ' + total.toLocaleString() + ' FCFA*\n💳 Paid via: ' + selectedPayment + '\n\nThank you for shopping with American Select!';
   document.getElementById('btn-whatsapp').href = 'https://wa.me/?text=' + encodeURIComponent(waMsg);
 
   document.getElementById('receipt-overlay').classList.add('open');
@@ -559,7 +590,8 @@ function showReceipt(items) {
     `<hr style="border:1px dashed #ccc;margin:12px 0;">
      <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:bold;">
        <span>TOTAL</span><span>${total.toLocaleString()} FCFA</span>
-     </div>`;
+     </div>
+     <p style="margin-top:8px;font-size:12px;color:#888;">Paid via: ${selectedPayment}</p>`;
 }
 
 function printReceipt() {
@@ -572,6 +604,8 @@ function printReceipt() {
 function newSale() {
   cart = [];
   busy = false;
+  selectedPayment = '';
+  document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
   renderCart();
   document.getElementById('receipt-overlay').classList.remove('open');
   document.getElementById('btn-checkout').textContent = '✓  Checkout';
