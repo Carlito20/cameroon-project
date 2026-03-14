@@ -842,6 +842,8 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
     z-index: 1001;
     display: flex;
     align-items: flex-end;
@@ -1116,6 +1118,8 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.85);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
     display: flex;
     align-items: center;
     justify-content: center;
