@@ -226,7 +226,8 @@
     }).join('\n');
 
     const cartLink = generateCartLink();
-    const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nEstimated Total: ${formatPrice(totalPrice)} FCFA\n\nPlease confirm availability and final price.\n\n🔗 My cart: ${cartLink}`;
+    const paymentLine = selectedPayment ? `\n💳 Preferred Payment: ${selectedPayment}` : '';
+    const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nEstimated Total: ${formatPrice(totalPrice)} FCFA${paymentLine}\n\nPlease confirm availability and final price.\n\n🔗 My cart: ${cartLink}`;
 
     // Send to Formspree for email notification
     try {
@@ -238,6 +239,7 @@
           total_items: totalItems,
           estimated_total: `${formatPrice(totalPrice)} FCFA`,
           order_details: itemList,
+          payment_method: selectedPayment || 'Not specified',
           cart_link: cartLink,
           full_message: message
         }),
@@ -268,6 +270,12 @@
   function closeBasket() {
     isOpen = false;
     updateBodyClass();
+  }
+
+  let selectedPayment = '';
+
+  function selectPayment(method) {
+    selectedPayment = selectedPayment === method ? '' : method;
   }
 
   let previewItem = null;
@@ -338,6 +346,16 @@
       <div class="basket-total">
         <span class="total-label">Total:</span>
         <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
+      </div>
+
+      <div class="pay-method-section">
+        <div class="pay-method-label">How would you like to pay?</div>
+        <div class="pay-method-grid">
+          <button class="pay-method-btn" class:selected={selectedPayment === 'Cash'} on:click={() => selectPayment('Cash')}>💵 Cash</button>
+          <button class="pay-method-btn" class:selected={selectedPayment === 'MTN MoMo'} on:click={() => selectPayment('MTN MoMo')}>🟡 MTN MoMo</button>
+          <button class="pay-method-btn" class:selected={selectedPayment === 'Orange Money'} on:click={() => selectPayment('Orange Money')}>🟠 Orange Money</button>
+          <button class="pay-method-btn" class:selected={selectedPayment === 'Not sure yet'} on:click={() => selectPayment('Not sure yet')}>🤔 Not sure yet</button>
+        </div>
       </div>
 
       <div class="basket-actions">
@@ -416,6 +434,16 @@
           <div class="basket-total">
             <span class="total-label">Total:</span>
             <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
+          </div>
+
+          <div class="pay-method-section">
+            <div class="pay-method-label">How would you like to pay?</div>
+            <div class="pay-method-grid">
+              <button class="pay-method-btn" class:selected={selectedPayment === 'Cash'} on:click={() => selectPayment('Cash')}>💵 Cash</button>
+              <button class="pay-method-btn" class:selected={selectedPayment === 'MTN MoMo'} on:click={() => selectPayment('MTN MoMo')}>🟡 MTN MoMo</button>
+              <button class="pay-method-btn" class:selected={selectedPayment === 'Orange Money'} on:click={() => selectPayment('Orange Money')}>🟠 Orange Money</button>
+              <button class="pay-method-btn" class:selected={selectedPayment === 'Not sure yet'} on:click={() => selectPayment('Not sure yet')}>🤔 Not sure yet</button>
+            </div>
           </div>
 
           <div class="basket-actions">
@@ -1190,6 +1218,47 @@
     font-size: 1.25rem;
     font-weight: 700;
     color: #f0a500;
+  }
+
+  .pay-method-section {
+    padding: 12px 20px 0;
+  }
+  .pay-method-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .pay-method-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .pay-method-btn {
+    padding: 8px 6px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+    color: #555;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: all 0.15s;
+  }
+  .pay-method-btn:hover { border-color: #aaa; color: #333; }
+  .pay-method-btn.selected {
+    border-color: #25a244;
+    background: #f0fff4;
+    color: #1a7a32;
   }
 
   .basket-actions {
