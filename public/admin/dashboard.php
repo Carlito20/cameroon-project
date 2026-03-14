@@ -310,6 +310,7 @@ try {
     <span>Stock Management</span>
   </div>
   <div class="header-actions">
+    <a href="orders.php" class="btn btn-outline" style="color:#d4af37;border-color:#3a3010;" id="orders-link">📦 Orders</a>
     <a href="history.php" class="btn btn-outline">📋 History</a>
     <a href="scan.php" class="btn btn-outline">📷 Scan</a>
     <a href="checkout.php" class="btn btn-outline" style="color:#6dbf6d;border-color:#1a3a1a;">🛒 Checkout</a>
@@ -643,6 +644,21 @@ function resetScannerResult() {
   document.querySelectorAll('.tx-btn').forEach(b => b.classList.remove('selected'));
 }
 // ── End desktop scanner ──────────────────────────────
+
+// Show pending order count on Orders link
+(function checkPendingOrders() {
+  fetch('/api/orders.php?status=pending')
+    .then(r => r.json())
+    .then(data => {
+      const count = (data.orders || []).length;
+      const link = document.getElementById('orders-link');
+      if (link && count > 0) {
+        link.textContent = '📦 Orders (' + count + ')';
+        link.style.color = '#d4af37';
+        link.style.fontWeight = '800';
+      }
+    }).catch(() => {});
+})();
 
 function filterTable(query) {
   const lower = query.toLowerCase();

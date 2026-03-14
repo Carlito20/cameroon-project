@@ -26,6 +26,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="oc-header">
         <div class="oc-check">✅</div>
         <h1>Order Confirmed!</h1>
+        <p class="oc-ref" id="oc-ref" style="display:none;"></p>
         <p class="oc-sub">Your confirmation has been sent to us on WhatsApp. We'll be in touch shortly.</p>
       </div>
 
@@ -124,6 +125,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     document.getElementById('generic-section').style.display = 'none';
     document.getElementById('order-section').style.display = 'block';
 
+    // Show order ref if available
+    if (order.orderRef) {
+      const refEl = document.getElementById('oc-ref');
+      refEl.textContent = 'Order Ref: ' + order.orderRef;
+      refEl.style.display = 'block';
+    }
+
     // Fill items
     let itemsHtml = '';
     order.items.forEach(item => {
@@ -178,6 +186,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .oc-header { text-align: center; padding: 2rem 0 1.5rem; }
   .oc-check { font-size: 56px; margin-bottom: 12px; }
   .oc-header h1 { color: #1a5c2e; font-size: 2rem; margin-bottom: 8px; }
+  .oc-ref { font-size: 13px; font-weight: 700; color: #25a244; letter-spacing: 1px; margin: 6px 0 4px; }
   .oc-sub { color: #4a7c5a; font-size: 1rem; max-width: 380px; margin: 0 auto; }
 
   .oc-card {

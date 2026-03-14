@@ -291,11 +291,29 @@
 
     const message = `✅ ORDER CONFIRMED\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA\n💳 Payment: ${selectedPayment || 'To be confirmed'}\n\nPlease process my order. Thank you!`;
 
+    // Create pending order in database
+    let orderRef = '';
+    try {
+      const orderRes = await fetch('/api/orders.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'create',
+          items: inquiryItems.map(i => ({ name: i.name, price: i.price || 0, quantity: i.quantity || 1 })),
+          total: totalPrice,
+          payment_method: selectedPayment || 'Not specified'
+        })
+      });
+      const orderData = await orderRes.json();
+      if (orderData.order_ref) orderRef = orderData.order_ref;
+    } catch (e) { console.error('Order create error:', e); }
+
     // Save order for thank-you page
     localStorage.setItem('confirmedOrder', JSON.stringify({
       items: inquiryItems.map(i => ({ name: i.name, price: i.price || 0, quantity: i.quantity || 1, image: i.image || '' })),
       total: totalPrice,
       paymentMethod: selectedPayment || 'To be confirmed',
+      orderRef,
       timestamp: Date.now()
     }));
 

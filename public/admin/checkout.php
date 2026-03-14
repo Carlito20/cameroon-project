@@ -9,6 +9,27 @@ if (file_exists($jsonPath)) {
     $products = json_decode(file_get_contents($jsonPath), true) ?? [];
     usort($products, fn($a, $b) => strcmp($a['name'], $b['name']));
 }
+
+// Pre-load order from pending_orders if from_order param given
+$preloadOrder = null;
+$fromOrderId  = (int)($_GET['from_order'] ?? 0);
+if ($fromOrderId) {
+    try {
+        $pdo  = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $stmt = $pdo->prepare('SELECT * FROM pending_orders WHERE id = ? AND status = "pending"');
+        $stmt->execute([$fromOrderId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            $preloadOrder = [
+                'id'             => $row['id'],
+                'order_ref'      => $row['order_ref'],
+                'payment_method' => $row['payment_method'],
+                'items'          => json_decode($row['items'], true) ?? [],
+                'total'          => $row['total']
+            ];
+        }
+    } catch (Exception $e) {}
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -278,6 +299,16 @@ if (file_exists($jsonPath)) {
 
 <div class="container">
 
+  <!-- Pending order banner -->
+  <div id="order-banner" style="display:none;background:#0d1020;border:1px solid #1a2a40;border-radius:10px;padding:12px 16px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+    <div>
+      <div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Processing Order</div>
+      <div style="font-size:15px;font-weight:800;color:#7b9fd4;" id="ob-ref"></div>
+      <div style="font-size:12px;color:#555;margin-top:2px;" id="ob-pay"></div>
+    </div>
+    <a href="orders.php" style="font-size:12px;color:#555;text-decoration:none;border:1px solid #2a2a2a;padding:6px 12px;border-radius:6px;touch-action:manipulation;">← Back to Orders</a>
+  </div>
+
   <!-- Scanner -->
   <div class="scan-section">
     <div class="scan-row">
@@ -374,6 +405,34 @@ let busy = false;
 let cameraOn = false;
 let codeReader = null;
 let selectedPayment = '';
+let pendingOrderId = <?= $preloadOrder ? (int)$preloadOrder['id'] : 'null' ?>;
+
+// Pre-load from pending order if coming from orders page
+<?php if ($preloadOrder): ?>
+(function() {
+  const order = <?= json_encode($preloadOrder) ?>;
+  // Show order banner
+  const banner = document.getElementById('order-banner');
+  if (banner) {
+    document.getElementById('ob-ref').textContent = order.order_ref;
+    document.getElementById('ob-pay').textContent = order.payment_method || '';
+    banner.style.display = 'flex';
+  }
+  // Pre-load cart items
+  order.items.forEach(item => {
+    cart.push({ name: item.name, price: item.price || 0, qty: item.quantity || 1, stock: 999 });
+  });
+  // Pre-select payment method
+  if (order.payment_method) {
+    selectedPayment = order.payment_method;
+    document.querySelectorAll('.pay-btn').forEach(b => {
+      if (b.dataset.method === order.payment_method) b.classList.add('selected');
+    });
+  }
+  renderCart();
+  document.getElementById('btn-new').style.display = 'inline-flex';
+})();
+<?php endif; ?>
 
 // Auto-focus
 document.getElementById('barcode-input').focus();
@@ -527,6 +586,14 @@ async function doCheckout() {
 
   busy = false;
   if (allOk) {
+    // Mark pending order as complete if this came from orders page
+    if (pendingOrderId) {
+      fetch('/api/orders.php', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'complete', id: pendingOrderId, note: 'Processed via checkout' })
+      }).catch(() => {});
+      pendingOrderId = null;
+    }
     showReceipt(snapshot);
   } else {
     btn.textContent = '✓  Checkout';
