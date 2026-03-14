@@ -55,6 +55,19 @@ function getProductPrice($productName) {
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// GET: look up by product name (for manual add in checkout)
+if ($method === 'GET' && isset($_GET['name'])) {
+    $productName = trim($_GET['name']);
+    if (!$productName) { echo json_encode(['error' => 'No name']); exit; }
+    try {
+        $pdo = getPdo();
+        $qty = getCurrentStock($pdo, $productName);
+        $price = getProductPrice($productName);
+        echo json_encode(['found' => true, 'product_name' => $productName, 'quantity' => $qty, 'price' => $price]);
+    } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
+    exit;
+}
+
 // GET: look up barcode
 if ($method === 'GET') {
     $barcode = trim($_GET['barcode'] ?? '');

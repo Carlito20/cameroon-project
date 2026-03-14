@@ -312,6 +312,7 @@ try {
   <div class="header-actions">
     <a href="history.php" class="btn btn-outline">📋 History</a>
     <a href="scan.php" class="btn btn-outline">📷 Scan</a>
+    <a href="checkout.php" class="btn btn-outline" style="color:#6dbf6d;border-color:#1a3a1a;">🛒 Checkout</a>
     <button class="btn btn-gold" onclick="initializeAll()">Initialize All</button>
     <span id="init-status"></span>
     <a href="logout.php" class="btn btn-danger">Logout</a>
