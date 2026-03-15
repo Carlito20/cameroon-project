@@ -359,37 +359,47 @@ function printSelected() {
 
   if (!labels.length) { showToast('No valid labels — generate barcodes first', 'err'); return; }
 
-  // Build print HTML
+  // Build print HTML — Phomemo M110, 40×30mm labels
   const sheet = document.getElementById('print-sheet');
   sheet.innerHTML = `
     <style>
-      @page { margin: 10mm; }
+      @page {
+        size: 40mm 30mm;
+        margin: 0;
+      }
+      body { margin: 0; padding: 0; }
       .label-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 4mm;
+        display: block;
         width: 100%;
       }
       .label {
-        border: 1px dashed #ccc;
-        border-radius: 4px;
-        padding: 6px 4px 4px;
+        width: 40mm;
+        height: 30mm;
+        box-sizing: border-box;
+        padding: 1.5mm 1.5mm 1mm;
         text-align: center;
-        page-break-inside: avoid;
-        break-inside: avoid;
+        page-break-after: always;
+        break-after: page;
         font-family: Arial, sans-serif;
-      }
-      .label svg { width: 100%; max-height: 50px; }
-      .label-name {
-        font-size: 8pt;
-        color: #222;
-        margin-top: 4px;
-        line-height: 1.3;
-        word-break: break-word;
-        max-height: 2.6em;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
-      .label-brand { font-size: 7pt; color: #888; margin-bottom: 2px; }
+      .label:last-child { page-break-after: avoid; break-after: avoid; }
+      .label svg { width: 38mm; height: auto; max-height: 14mm; display: block; }
+      .label-name {
+        font-size: 6pt;
+        color: #000;
+        margin-top: 1mm;
+        line-height: 1.2;
+        word-break: break-word;
+        max-height: 3.6em;
+        overflow: hidden;
+        width: 100%;
+      }
+      .label-brand { font-size: 6.5pt; font-weight: bold; color: #000; margin-bottom: 1mm; }
     </style>
     <div class="label-grid" id="label-grid"></div>`;
 
@@ -400,10 +410,11 @@ function printSelected() {
     div.innerHTML = `
       <div class="label-brand">AMERICAN SELECT</div>
       <svg id="lbl-svg-${i}"></svg>
-      <div class="label-name">${esc(lbl.name)}</div>`;    grid.appendChild(div);
+      <div class="label-name">${esc(lbl.name)}</div>`;
+    grid.appendChild(div);
     JsBarcode(`#lbl-svg-${i}`, lbl.barcode, {
-      format: 'CODE128', width: 1.5, height: 45,
-      displayValue: true, fontSize: 8, margin: 2
+      format: 'CODE128', width: 1.2, height: 38,
+      displayValue: true, fontSize: 7, margin: 1
     });
   });
 

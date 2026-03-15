@@ -612,7 +612,8 @@
     const borderR = parseFloat(styles.borderRightWidth) || 0;
     const padL    = parseFloat(styles.paddingLeft) || 0;
     const padR    = parseFloat(styles.paddingRight) || 0;
-    const left  = sectionRect.left + borderL + padL;
+    const safeLeft = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sat') || '0') || 0;
+    const left  = sectionRect.left + borderL + padL + safeLeft;
     const width = section.offsetWidth - borderL - borderR - padL - padR;
 
     header.setAttribute('data-is-fixed', '1');
@@ -1596,6 +1597,7 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     -webkit-appearance: none;
     appearance: none;
+    touch-action: manipulation;
   }
 
   .search-input:hover {
@@ -1627,8 +1629,9 @@
     font-size: 0.75rem;
     color: #666;
     transition: all 0.2s ease;
-    /* Extend touch target without changing visual layout */
-    position: absolute;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   /* Invisible touch-target extension for search-clear */
@@ -1751,6 +1754,7 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+    will-change: transform;
   }
 
   .dropdown-option {
@@ -2624,6 +2628,9 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     -webkit-appearance: none;
     appearance: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .sort-select:hover {

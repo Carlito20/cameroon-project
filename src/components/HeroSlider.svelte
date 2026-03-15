@@ -352,6 +352,8 @@
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
+    -webkit-transform: translateX(-50%) translateZ(0);
+    transform: translateX(-50%) translateZ(0);
     display: flex;
     align-items: center;
     gap: 8px;

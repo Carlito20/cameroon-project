@@ -354,12 +354,21 @@
     previewItem = null;
   }
 
+  let _scrollY = 0;
   function updateBodyClass() {
     if (typeof document !== 'undefined') {
       if (isOpen) {
+        _scrollY = window.scrollY;
         document.body.classList.add('cart-open');
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${_scrollY}px`;
+        document.body.style.width = '100%';
       } else {
         document.body.classList.remove('cart-open');
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, _scrollY);
       }
     }
   }
