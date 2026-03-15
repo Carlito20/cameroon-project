@@ -140,6 +140,19 @@ if ($method === 'POST') {
         exit;
     }
 
+    // Unassign barcode from product
+    if ($action === 'unassign') {
+        $productName = trim($data['product_name'] ?? '');
+        if (!$productName) { echo json_encode(['error' => 'Missing product name']); exit; }
+        try {
+            $pdo = getPdo();
+            $stmt = $pdo->prepare('DELETE FROM barcode_map WHERE product_name = ?');
+            $stmt->execute([$productName]);
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
+        exit;
+    }
+
     echo json_encode(['error' => 'Unknown action']);
     exit;
 }

@@ -146,6 +146,21 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       -webkit-tap-highlight-color: transparent;
     }
     .btn-preview:hover { background: #1a2040; }
+    .btn-unassign {
+      padding: 7px 12px; background: #200a0a; color: #e05c5c;
+      border: 1px solid #3a1010; border-radius: 6px; font-size: 12px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; min-height: 36px;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-unassign:hover { background: #300a0a; }
+    .btn-do-export {
+      padding: 10px 20px; background: #0d2010; color: #6dbf6d; border: 1px solid #1a4020;
+      border-radius: 8px; font-size: 14px; font-weight: 800; cursor: pointer;
+      min-height: 44px; touch-action: manipulation; -webkit-user-select: none; user-select: none;
+    }
+    .btn-do-export:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-do-export:not(:disabled):hover { background: #143020; }
 
     /* Qty input */
     .qty-input {
@@ -272,6 +287,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <div class="pr-actions">
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
         <button class="btn-preview" onclick="previewBarcode('<?= htmlspecialchars(addslashes($bc)) ?>', '<?= htmlspecialchars(addslashes($p['name'])) ?>')">👁 Preview</button>
+        <button class="btn-unassign" onclick="unassignBarcode(this, '<?= htmlspecialchars(addslashes($p['name'])) ?>')">✕ Unassign</button>
       </div>
     </div>
     <?php endforeach; ?>
@@ -284,6 +300,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
   <button class="btn-select-all" onclick="toggleSelectAll()">Select All</button>
   <span class="print-bar-label" id="print-count-label">0 products selected</span>
   <button class="btn-do-print" id="btn-do-print" onclick="printSelected()" disabled>🖨 Print Labels</button>
+  <button class="btn-do-export" id="btn-do-export" onclick="exportPNG()" disabled>📥 Export PNG</button>
 </div>
 
 <!-- Hidden print sheet -->
@@ -293,6 +310,8 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
 
 <!-- JsBarcode library -->
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<!-- JSZip for PNG export -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <script>
 const products = <?= json_encode(array_values($products)) ?>;
@@ -320,6 +339,31 @@ async function generateBarcode(btn, productName) {
     }
   } catch {
     btn.disabled = false; btn.textContent = '⚡ Generate';
+    showToast('Network error', 'err');
+  }
+}
+
+// ── Unassign barcode from product ───────────────────────
+async function unassignBarcode(btn, productName) {
+  if (!confirm(`Remove barcode from "${productName}"?`)) return;
+  btn.disabled = true;
+  btn.textContent = '…';
+  try {
+    const res = await fetch('/api/barcode.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'unassign', product_name: productName })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('✓ Barcode unassigned', 'ok');
+      setTimeout(() => location.reload(), 800);
+    } else {
+      btn.disabled = false; btn.textContent = '✕ Unassign';
+      showToast('Error: ' + (data.error || 'Failed'), 'err');
+    }
+  } catch {
+    btn.disabled = false; btn.textContent = '✕ Unassign';
     showToast('Network error', 'err');
   }
 }
@@ -447,6 +491,90 @@ function updatePrintCount() {
   const n = document.querySelectorAll('.pr-check:checked').length;
   document.getElementById('print-count-label').textContent = n + ' product' + (n === 1 ? '' : 's') + ' selected';
   document.getElementById('btn-do-print').disabled = n === 0;
+  document.getElementById('btn-do-export').disabled = n === 0;
+}
+
+// ── Export selected labels as PNG images in a ZIP ────────
+async function exportPNG() {
+  const checked = [...document.querySelectorAll('.pr-check:checked')];
+  if (!checked.length) return;
+
+  const labels = [];
+  checked.forEach(cb => {
+    const row = cb.closest('.product-row');
+    const qty = parseInt(row.querySelector('.qty-input').value, 10) || 1;
+    const name = cb.dataset.name;
+    const barcode = cb.dataset.barcode;
+    if (!barcode) { showToast('Generate barcodes first for all selected items', 'err'); return; }
+    for (let i = 0; i < qty; i++) labels.push({ barcode, name });
+  });
+
+  if (!labels.length) return;
+  showToast('Generating PNG images…', 'ok');
+
+  // 40×30mm at 203 DPI = 320×240px
+  const W = 320, H = 240;
+  const zip = new JSZip();
+
+  for (let i = 0; i < labels.length; i++) {
+    const { barcode, name } = labels[i];
+
+    // Render barcode SVG
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    JsBarcode(svg, barcode, { format: 'CODE128', width: 1.5, height: 80, displayValue: true, fontSize: 14, margin: 4 });
+    const svgData = new XMLSerializer().serializeToString(svg);
+    document.body.removeChild(svg);
+
+    // Draw on canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    // Brand text
+    ctx.fillStyle = '#000000';
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('AMERICAN SELECT', W / 2, 22);
+
+    // Barcode image from SVG
+    await new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 10, 28, W - 20, 150);
+        resolve();
+      };
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    });
+
+    // Product name (wrapped)
+    ctx.font = '13px Arial';
+    ctx.fillStyle = '#000000';
+    ctx.textAlign = 'center';
+    const words = name.split(' ');
+    let line = '', y = 192;
+    for (const word of words) {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > W - 16) {
+        ctx.fillText(line, W / 2, y); y += 16; line = word;
+      } else { line = test; }
+    }
+    if (line) ctx.fillText(line, W / 2, y);
+
+    // Add to zip
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    const filename = name.replace(/[^a-z0-9]/gi, '_').slice(0, 40) + (labels.length > 1 ? `_${i+1}` : '') + '.png';
+    zip.file(filename, blob);
+  }
+
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(zipBlob);
+  a.download = 'barcode-labels.zip';
+  a.click();
+  showToast('✓ PNG labels exported', 'ok');
 }
 
 function showToast(msg, type) {
