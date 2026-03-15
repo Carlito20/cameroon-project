@@ -105,13 +105,33 @@ export const categories: Category[] = [
             price: 5000
           },
           {
+            name: '380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice',
+            price: 8000,
+            quantity: 5,
+            colors: ['#2e7d32', '#2c2c2c', '#ff69b4', '#7b1fa2', '#1565c0'],
+            images: [
+              '/images/products/blender-380ml-1.webp',
+              '/images/products/blender-380ml-2.webp',
+              '/images/products/blender-380ml-3.webp',
+              '/images/products/blender-380ml-4.webp',
+              '/images/products/blender-380ml-5.webp',
+              '/images/products/blender-380ml-6.webp',
+              '/images/products/blender-380ml-7.webp',
+              '/images/products/blender-380ml-8.webp',
+              '/images/products/blender-380ml-9.webp',
+              '/images/products/blender-380ml-10.webp'
+            ]
+          },
+          {
             name: 'Manual Chopper. No Need for Electricity',
             images: [
               '/images/products/manual-chopper-no-electricity-1.webp',
               '/images/products/manual-chopper-no-electricity-2.webp',
-              '/images/products/manual-chopper-no-electricity-3.webp'
+              '/images/products/manual-chopper-no-electricity-3.webp',
+              '/images/products/manual-chopper-no-electricity-4.webp'
             ],
-            quantity: 2,
+            quantity: 4,
+            colors: ['#ff69b4', '#808080'],
             price: 10000
           }
         ]
@@ -353,39 +373,65 @@ export const categories: Category[] = [
           {
             name: 'Men',
             items: [
-              { name: 'Paris Night Just for Men', image: '/images/products/paris-night-just-for-men.webp', price: 5000, quantity: 6 },
-              { name: 'Infinity 3.3 oz EDT For Men', image: '/images/products/infinity-edt-men.webp', price: 3000, quantity: 6 },
-              { name: 'Platinum 3.4 oz EDP For Men', image: '/images/products/platinum-edp-men.webp', price: 3000, quantity: 6 },
-              { name: 'Savage 3.4 oz EDP For Men', image: '/images/products/savage-edp-men.webp', price: 3000, quantity: 6 },
-              { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.webp', price: 6000, quantity: 6 },
-              { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.webp', price: 6000, quantity: 6 },
-              { name: 'Victory 3.3 oz EDT For Men', image: '/images/products/victory-edt-men.webp', price: 3500, quantity: 3 },
-              { name: 'Hercules Paris 3.4 oz EDP For Men', image: '/images/products/hercules-paris-edp-men.webp', price: 3000, quantity: 6 },
-              { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.webp', price: 3000, quantity: 15 }
+              { name: 'Paris Night Just for Men', image: '/images/products/paris-night-just-for-men.webp', price: 6000, quantity: 6 },
+              { name: 'Infinity 3.3 oz EDT For Men', image: '/images/products/infinity-edt-men.webp', price: 6000, quantity: 6 },
+              { name: 'Platinum 3.4 oz EDP For Men', image: '/images/products/platinum-edp-men.webp', price: 6000, quantity: 6 },
+              { name: 'Savage 3.4 oz EDP For Men', image: '/images/products/savage-edp-men.webp', price: 6000, quantity: 6 },
+              { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.webp', price: 10000, quantity: 6 },
+              { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.webp', price: 10000, quantity: 6 },
+              { name: 'Victory 3.3 oz EDT For Men', image: '/images/products/victory-edt-men.webp', price: 6000, quantity: 3 },
+              { name: 'Hercules Paris 3.4 oz EDP For Men', image: '/images/products/hercules-paris-edp-men.webp', price: 6000, quantity: 6 },
+              { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.webp', price: 3000, quantity: 15 },
+              { name: 'Loveryblack Affinity At Midnight Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-at-midnight-unisex-1.webp', '/images/products/loveryblack-at-midnight-unisex-2.webp', '/images/products/loveryblack-at-midnight-unisex-3.webp', '/images/products/loveryblack-at-midnight-unisex-4.webp'], price: 15000, quantity: 2 },
+              { name: 'Loveryblack Affinity For Him Pheromone Cologne', images: ['/images/products/loveryblack-for-him-1.webp', '/images/products/loveryblack-for-him-2.webp', '/images/products/loveryblack-for-him-3.webp', '/images/products/loveryblack-for-him-4.webp'], price: 15000, quantity: 2 },
+              { name: 'Loveryblack Affinity Pure Passion Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-pure-passion-unisex-1.webp', '/images/products/loveryblack-pure-passion-unisex-2.webp', '/images/products/loveryblack-pure-passion-unisex-3.webp', '/images/products/loveryblack-pure-passion-unisex-4.webp'], price: 15000, quantity: 2 },
+              { name: 'Mens Cologne Bross 3.4oz Eau De Parfum Spray, Masculine Mist', images: ['/images/products/mens-cologne-bross-1.webp', '/images/products/mens-cologne-bross-2.webp'], price: 15000, quantity: 2 },
+              { name: "Men'S Extreme 3.4oz Eau De Parfum - Men Perfume Spray", images: ['/images/products/mens-extreme-edp-1.webp', '/images/products/mens-extreme-edp-2.webp'], price: 15000, quantity: 2 },
+              { name: "Men'S Salvang 3.4oz Eau De Parfume", images: ['/images/products/mens-salvang-edp-1.webp', '/images/products/mens-salvang-edp-2.webp'], price: 15000, quantity: 2 },
+              { name: 'Daspar De Homme Men Perfume with Pheromones', image: '/images/products/daspar-de-homme-pheromones-1.webp', price: 8000, quantity: 4 },
+              { name: 'Adventure Club Perfume For Men', images: ['/images/products/adventure-club-perfume-men-1.webp', '/images/products/adventure-club-perfume-men-2.webp', '/images/products/adventure-club-perfume-men-3.webp'], price: 8000, quantity: 3 },
+              { name: 'Azure Vantage Aqua Spray Cologne Eau De Parfum For Men', images: ['/images/products/azure-vantage-cologne-men-1.webp', '/images/products/azure-vantage-cologne-men-2.webp', '/images/products/azure-vantage-cologne-men-3.webp'], price: 8000, quantity: 3 },
+              { name: 'Investor Gold Spray Cologne Eau De Parfum For Men', images: ['/images/products/investor-gold-cologne-men-1.webp', '/images/products/investor-gold-cologne-men-2.webp', '/images/products/investor-gold-cologne-men-3.webp', '/images/products/investor-gold-cologne-men-4.webp', '/images/products/investor-gold-cologne-men-5.webp'], price: 8000, quantity: 3 },
+              { name: 'Invincible Black Spray Cologne For Men EDP', images: ['/images/products/invincible-black-cologne-men-1.webp', '/images/products/invincible-black-cologne-men-2.webp'], price: 8000, quantity: 3 },
+              { name: 'Invincible Platinum Spray Cologne Eau De Toilette For Men', images: ['/images/products/invincible-platinum-cologne-men-1.webp', '/images/products/invincible-platinum-cologne-men-2.webp', '/images/products/invincible-platinum-cologne-men-3.webp'], price: 8000, quantity: 3 },
+              { name: 'Magic Code Spray Cologne Eau De Toilette For Men', images: ['/images/products/magic-code-cologne-men-1.webp', '/images/products/magic-code-cologne-men-2.webp', '/images/products/magic-code-cologne-men-3.webp'], price: 8000, quantity: 3 },
+              { name: 'Cologne Eau De Toilette For Men', images: ['/images/products/cologne-edt-men-1.webp', '/images/products/cologne-edt-men-2.webp', '/images/products/cologne-edt-men-3.webp', '/images/products/cologne-edt-men-4.webp'], price: 8000, quantity: 3 },
+              { name: 'Victorious Heroes Spray Cologne Eau De Toilette For Men', images: ['/images/products/victorious-heroes-cologne-men-1.webp', '/images/products/victorious-heroes-cologne-men-2.webp', '/images/products/victorious-heroes-cologne-men-3.webp', '/images/products/victorious-heroes-cologne-men-4.webp'], price: 8000, quantity: 3 },
+              { name: 'Bleu De Rivoli Eau De Parfum', images: ['/images/products/bleu-de-rivoli-edp-men-1.webp', '/images/products/bleu-de-rivoli-edp-men-2.webp', '/images/products/bleu-de-rivoli-edp-men-3.webp'], price: 18000, quantity: 2 },
+              { name: 'Blue Intense Eau De Parfum', images: ['/images/products/blue-intense-edp-men-1.webp', '/images/products/blue-intense-edp-men-2.webp'], price: 18000, quantity: 2 },
+              { name: 'Eau De Vivre Eau De Parfum', images: ['/images/products/eau-de-vivre-edp-men-1.webp', '/images/products/eau-de-vivre-edp-men-2.webp', '/images/products/eau-de-vivre-edp-men-3.webp'], price: 18000, quantity: 2 },
+              { name: 'Imperial Oud Eau De Parfum', images: ['/images/products/imperial-oud-edp-men-1.webp', '/images/products/imperial-oud-edp-men-2.webp', '/images/products/imperial-oud-edp-men-3.webp'], price: 18000, quantity: 2 },
+              { name: 'Legende Intense Eau De Parfum', images: ['/images/products/legende-intense-edp-men-1.webp', '/images/products/legende-intense-edp-men-2.webp', '/images/products/legende-intense-edp-men-3.webp'], price: 18000, quantity: 2 },
+              { name: 'Reverie Pour Homme Eau De Parfum', images: ['/images/products/reverie-pour-homme-edp-men-1.webp', '/images/products/reverie-pour-homme-edp-men-2.webp', '/images/products/reverie-pour-homme-edp-men-3.webp'], price: 18000, quantity: 2 }
             ]
           },
           {
             name: 'Women',
             items: [
-              { name: 'Fantastic Pink 3.4 oz EDP For Women', image: '/images/products/fantastic-pink-edp-women.webp', price: 3000, quantity: 6 },
-              { name: 'Fleur De Paris 3.4 oz EDP For Women', image: '/images/products/fleur-de-paris-edp-women.webp', price: 5000, quantity: 6 },
-              { name: 'Lazell Night Bloom For Women EDP 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.webp', price: 6000, quantity: 6 },
-              { name: 'Lazell Spring For Women EDP 3.4 oz', image: '/images/products/lazell-spring-edp-women.webp', price: 6000, quantity: 6 },
-              { name: 'Miss Coco 3.4 oz EDP For Women', image: '/images/products/miss-coco-edp-women.webp', price: 3000, quantity: 6 },
+              { name: 'Fantastic Pink 3.4 oz EDP For Women', image: '/images/products/fantastic-pink-edp-women.webp', price: 5000, quantity: 6 },
+              { name: 'Fleur De Paris 3.4 oz EDP For Women', image: '/images/products/fleur-de-paris-edp-women.webp', price: 8000, quantity: 6 },
+              { name: 'Lazell Night Bloom For Women EDP 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.webp', price: 8000, quantity: 8 },
+              { name: 'Lazell Spring For Women EDP 3.4 oz', image: '/images/products/lazell-spring-edp-women.webp', price: 8000, quantity: 6 },
+              { name: 'Miss Coco 3.4 oz EDP For Women', image: '/images/products/miss-coco-edp-women.webp', price: 5000, quantity: 6 },
               { name: 'Island Coconut Body Mist', image: '/images/products/island-coconut-body-mist.webp', price: 3500, quantity: 8 },
               { name: 'Passion Fruit Body Mist', image: '/images/products/passion-fruit-body-mist.webp', price: 3500, quantity: 8 },
               { name: 'Watermelon Sugar Body Mist', image: '/images/products/watermelon-sugar-body-mist.webp', price: 3500, quantity: 4 },
               { name: 'Pineapple Dream Body Mist', image: '/images/products/pineapple-dream-body-mist.webp', price: 3500, quantity: 4 },
-              { name: 'Charm Spray Perfume Eau De Parfum For Women', images: ['/images/products/charm-spray-perfume1.webp', '/images/products/charm-spray-perfume2.webp', '/images/products/charm-spray-perfume3.webp'], price: 6000, quantity: 3 },
-              { name: 'Daicy Blue Spray Perfume Eau De Parfum', images: ['/images/products/daicy-blue-spray1.webp', '/images/products/daicy-blue-spray2.webp', '/images/products/daicy-blue-spray3.webp'], price: 6000, quantity: 3 },
-              { name: 'Flower Eau De Parfum For Women', images: ['/images/products/flower-edp-women1.webp', '/images/products/flower-edp-women2.webp'], price: 6000, quantity: 3 },
-              { name: 'Flower Pink Spray Perfume Eau De Parfum', images: ['/images/products/flower-pink-spray1.webp', '/images/products/flower-pink-spray2.webp', '/images/products/flower-pink-spray3.webp'], price: 6000, quantity: 3 },
-              { name: 'Gorgeous Flower Spray Perfume Eau De Parfum', images: ['/images/products/gorgeous-flower-spray1.webp', '/images/products/gorgeous-flower-spray2.webp', '/images/products/gorgeous-flower-spray3.webp'], price: 6000, quantity: 3 },
-              { name: 'Honey Bear Pink Spray Perfume Eau De Parfum', images: ['/images/products/honey-bear-pink-spray1.webp', '/images/products/honey-bear-pink-spray2.webp', '/images/products/honey-bear-pink-spray3.webp'], price: 6000, quantity: 3 },
-              { name: 'Love Is Forever Spray Perfume Eau De Parfum', images: ['/images/products/love-is-forever-spray1.webp', '/images/products/love-is-forever-spray2.webp'], price: 6000, quantity: 3 },
-              { name: 'Nice Girl Spray Perfume Eau De Parfum For Women', images: ['/images/products/nice-girl-spray1.webp', '/images/products/nice-girl-spray2.webp', '/images/products/nice-girl-spray3.webp'], price: 6000, quantity: 3 },
-              { name: 'Princess High Heels Pink Spray Perfume Eau De Parfum', images: ['/images/products/princess-high-heels1.webp', '/images/products/princess-high-heels2.webp', '/images/products/princess-high-heels3.webp', '/images/products/princess-high-heels4.webp'], price: 6000, quantity: 3 },
-              { name: 'Sexy Rose Pink Spray Perfume Eau De Parfum', images: ['/images/products/sexy-rose-pink-spray1.webp', '/images/products/sexy-rose-pink-spray2.webp', '/images/products/sexy-rose-pink-spray3.webp'], price: 6000, quantity: 3 }
+              { name: 'Charm Spray Perfume Eau De Parfum For Women', images: ['/images/products/charm-spray-perfume1.webp', '/images/products/charm-spray-perfume2.webp', '/images/products/charm-spray-perfume3.webp'], price: 10000, quantity: 3 },
+              { name: 'Daicy Blue Spray Perfume Eau De Parfum', images: ['/images/products/daicy-blue-spray1.webp', '/images/products/daicy-blue-spray2.webp', '/images/products/daicy-blue-spray3.webp'], price: 10000, quantity: 3 },
+              { name: 'Flower Eau De Parfum For Women', images: ['/images/products/flower-edp-women1.webp', '/images/products/flower-edp-women2.webp'], price: 10000, quantity: 3 },
+              { name: 'Flower Pink Spray Perfume Eau De Parfum', images: ['/images/products/flower-pink-spray1.webp', '/images/products/flower-pink-spray2.webp', '/images/products/flower-pink-spray3.webp'], price: 10000, quantity: 3 },
+              { name: 'Gorgeous Flower Spray Perfume Eau De Parfum', images: ['/images/products/gorgeous-flower-spray1.webp', '/images/products/gorgeous-flower-spray2.webp', '/images/products/gorgeous-flower-spray3.webp'], price: 10000, quantity: 3 },
+              { name: 'Honey Bear Pink Spray Perfume Eau De Parfum', images: ['/images/products/honey-bear-pink-spray1.webp', '/images/products/honey-bear-pink-spray2.webp', '/images/products/honey-bear-pink-spray3.webp'], price: 10000, quantity: 3 },
+              { name: 'Love Is Forever Spray Perfume Eau De Parfum', images: ['/images/products/love-is-forever-spray1.webp', '/images/products/love-is-forever-spray2.webp'], price: 10000, quantity: 3 },
+              { name: 'Nice Girl Spray Perfume Eau De Parfum For Women', images: ['/images/products/nice-girl-spray1.webp', '/images/products/nice-girl-spray2.webp', '/images/products/nice-girl-spray3.webp'], price: 10000, quantity: 3 },
+              { name: 'Princess High Heels Pink Spray Perfume Eau De Parfum', images: ['/images/products/princess-high-heels1.webp', '/images/products/princess-high-heels2.webp', '/images/products/princess-high-heels3.webp', '/images/products/princess-high-heels4.webp'], price: 10000, quantity: 3 },
+              { name: 'Sexy Rose Pink Spray Perfume Eau De Parfum', images: ['/images/products/sexy-rose-pink-spray1.webp', '/images/products/sexy-rose-pink-spray2.webp', '/images/products/sexy-rose-pink-spray3.webp'], price: 10000, quantity: 3 },
+              { name: 'Loveryblack Affinity At Midnight Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-at-midnight-unisex-1.webp', '/images/products/loveryblack-at-midnight-unisex-2.webp', '/images/products/loveryblack-at-midnight-unisex-3.webp', '/images/products/loveryblack-at-midnight-unisex-4.webp'], price: 15000, quantity: 2 },
+              { name: 'Loveryblack Affinity Pure Passion Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-pure-passion-unisex-1.webp', '/images/products/loveryblack-pure-passion-unisex-2.webp', '/images/products/loveryblack-pure-passion-unisex-3.webp', '/images/products/loveryblack-pure-passion-unisex-4.webp'], price: 15000, quantity: 2 },
+              { name: 'Lazell Black Onyx Women EDP 3.4', images: ['/images/products/lazell-black-onyx-women-edp-1.webp', '/images/products/lazell-black-onyx-women-edp-2.webp'], price: 8000, quantity: 3 },
+              { name: '365 Day Spray Perfume Eau De Parfum For Women', images: ['/images/products/365-day-spray-perfume-women-1.webp', '/images/products/365-day-spray-perfume-women-2.webp'], price: 6500, quantity: 3 },
+              { name: 'Harmonie De Jour Eau De Parfum', images: ['/images/products/harmonie-de-jour-edp-women-1.webp', '/images/products/harmonie-de-jour-edp-women-2.webp', '/images/products/harmonie-de-jour-edp-women-3.webp'], price: 18000, quantity: 2 }
             ]
           }
         ]
@@ -701,6 +747,20 @@ export const categories: Category[] = [
         name: 'Audio & Entertainment',
         items: [
           {
+            name: 'TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker',
+            price: 9000,
+            quantity: 5,
+            colors: ['#2e7d32', '#1565c0', '#c62828', '#2c2c2c', '#4a5240'],
+            images: [
+              '/images/products/tg192-speaker-1.webp',
+              '/images/products/tg192-speaker-2.webp',
+              '/images/products/tg192-speaker-3.webp',
+              '/images/products/tg192-speaker-4.webp',
+              '/images/products/tg192-speaker-5.webp',
+              '/images/products/tg192-speaker-6.webp'
+            ]
+          },
+          {
             name: 'TG537 Portable Wireless Speaker - TWS Technology',
             price: 8000,
             quantity: 6,
@@ -839,6 +899,26 @@ export const categories: Category[] = [
       {
         name: 'Cables & Adapters',
         items: [
+          {
+            name: '4-in-1 USB Mini SD Card Reader with Dual Card Slots',
+            price: 2000,
+            quantity: 10,
+            images: [
+              '/images/products/usb-sd-card-reader-4in1-1.webp',
+              '/images/products/usb-sd-card-reader-4in1-2.webp',
+              '/images/products/usb-sd-card-reader-4in1-3.webp',
+              '/images/products/usb-sd-card-reader-4in1-4.webp'
+            ]
+          },
+          {
+            name: 'USB 2.0 Type-C Flash Drive 128GB High-Speed Memory Stick',
+            price: 4000,
+            quantity: 5,
+            images: [
+              '/images/products/usb-typec-flash-drive-128gb-1.webp',
+              '/images/products/usb-typec-flash-drive-128gb-2.webp'
+            ]
+          },
           {
             name: 'Data Cable, USB C to USB C Charging Cable, Type C to Type C Fast Charging',
             price: 1000,
