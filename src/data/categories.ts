@@ -377,8 +377,8 @@ export const categories: Category[] = [
               { name: 'Infinity 3.3 oz EDT For Men', image: '/images/products/infinity-edt-men.webp', price: 6000, quantity: 6 },
               { name: 'Platinum 3.4 oz EDP For Men', image: '/images/products/platinum-edp-men.webp', price: 6000, quantity: 6 },
               { name: 'Savage 3.4 oz EDP For Men', image: '/images/products/savage-edp-men.webp', price: 6000, quantity: 6 },
-              { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.webp', price: 10000, quantity: 6 },
-              { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.webp', price: 10000, quantity: 6 },
+              { name: 'Taj Max Aqua Sport 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-aqua-sport.webp', price: 12000, quantity: 6 },
+              { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.webp', price: 12000, quantity: 6 },
               { name: 'Victory 3.3 oz EDT For Men', image: '/images/products/victory-edt-men.webp', price: 6000, quantity: 3 },
               { name: 'Hercules Paris 3.4 oz EDP For Men', image: '/images/products/hercules-paris-edp-men.webp', price: 6000, quantity: 6 },
               { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.webp', price: 3000, quantity: 15 },
@@ -389,20 +389,20 @@ export const categories: Category[] = [
               { name: "Men'S Extreme 3.4oz Eau De Parfum - Men Perfume Spray", images: ['/images/products/mens-extreme-edp-1.webp', '/images/products/mens-extreme-edp-2.webp'], price: 15000, quantity: 2 },
               { name: "Men'S Salvang 3.4oz Eau De Parfume", images: ['/images/products/mens-salvang-edp-1.webp', '/images/products/mens-salvang-edp-2.webp'], price: 15000, quantity: 2 },
               { name: 'Daspar De Homme Men Perfume with Pheromones', image: '/images/products/daspar-de-homme-pheromones-1.webp', price: 8000, quantity: 4 },
-              { name: 'Adventure Club Perfume For Men', images: ['/images/products/adventure-club-perfume-men-1.webp', '/images/products/adventure-club-perfume-men-2.webp', '/images/products/adventure-club-perfume-men-3.webp'], price: 8000, quantity: 3 },
+              { name: 'Adventure Club Perfume For Men', images: ['/images/products/adventure-club-perfume-men-3.webp', '/images/products/adventure-club-perfume-men-2.webp'], price: 8000, quantity: 3 },
               { name: 'Azure Vantage Aqua Spray Cologne Eau De Parfum For Men', images: ['/images/products/azure-vantage-cologne-men-1.webp', '/images/products/azure-vantage-cologne-men-2.webp', '/images/products/azure-vantage-cologne-men-3.webp'], price: 8000, quantity: 3 },
-              { name: 'Investor Gold Spray Cologne Eau De Parfum For Men', images: ['/images/products/investor-gold-cologne-men-1.webp', '/images/products/investor-gold-cologne-men-2.webp', '/images/products/investor-gold-cologne-men-3.webp', '/images/products/investor-gold-cologne-men-4.webp', '/images/products/investor-gold-cologne-men-5.webp'], price: 8000, quantity: 3 },
-              { name: 'Invincible Black Spray Cologne For Men EDP', images: ['/images/products/invincible-black-cologne-men-1.webp', '/images/products/invincible-black-cologne-men-2.webp'], price: 8000, quantity: 3 },
-              { name: 'Invincible Platinum Spray Cologne Eau De Toilette For Men', images: ['/images/products/invincible-platinum-cologne-men-1.webp', '/images/products/invincible-platinum-cologne-men-2.webp', '/images/products/invincible-platinum-cologne-men-3.webp'], price: 8000, quantity: 3 },
+              { name: 'Investor Gold Spray Cologne Eau De Parfum For Men', images: ['/images/products/investor-gold-cologne-men-5.webp', '/images/products/investor-gold-cologne-men-1.webp', '/images/products/investor-gold-cologne-men-2.webp', '/images/products/investor-gold-cologne-men-3.webp', '/images/products/investor-gold-cologne-men-4.webp'], price: 8000, quantity: 3 },
+              { name: 'Invincible Black Spray Cologne For Men EDP', images: ['/images/products/invincible-black-cologne-men-3.webp', '/images/products/invincible-black-cologne-men-2.webp'], price: 8000, quantity: 3 },
+              { name: 'Invincible Platinum Spray Cologne Eau De Toilette For Men', images: ['/images/products/invincible-platinum-cologne-men-1.webp', '/images/products/invincible-platinum-cologne-men-3.webp', '/images/products/invincible-platinum-cologne-men-2.webp'], price: 8000, quantity: 3 },
               { name: 'Magic Code Spray Cologne Eau De Toilette For Men', images: ['/images/products/magic-code-cologne-men-1.webp', '/images/products/magic-code-cologne-men-2.webp', '/images/products/magic-code-cologne-men-3.webp'], price: 8000, quantity: 3 },
               { name: 'Cologne Eau De Toilette For Men', images: ['/images/products/cologne-edt-men-1.webp', '/images/products/cologne-edt-men-2.webp', '/images/products/cologne-edt-men-3.webp', '/images/products/cologne-edt-men-4.webp'], price: 8000, quantity: 3 },
               { name: 'Victorious Heroes Spray Cologne Eau De Toilette For Men', images: ['/images/products/victorious-heroes-cologne-men-1.webp', '/images/products/victorious-heroes-cologne-men-2.webp', '/images/products/victorious-heroes-cologne-men-3.webp', '/images/products/victorious-heroes-cologne-men-4.webp'], price: 8000, quantity: 3 },
               { name: 'Bleu De Rivoli Eau De Parfum', images: ['/images/products/bleu-de-rivoli-edp-men-1.webp', '/images/products/bleu-de-rivoli-edp-men-2.webp', '/images/products/bleu-de-rivoli-edp-men-3.webp'], price: 18000, quantity: 2 },
               { name: 'Blue Intense Eau De Parfum', images: ['/images/products/blue-intense-edp-men-1.webp', '/images/products/blue-intense-edp-men-2.webp'], price: 18000, quantity: 2 },
-              { name: 'Eau De Vivre Eau De Parfum', images: ['/images/products/eau-de-vivre-edp-men-1.webp', '/images/products/eau-de-vivre-edp-men-2.webp', '/images/products/eau-de-vivre-edp-men-3.webp'], price: 18000, quantity: 2 },
-              { name: 'Imperial Oud Eau De Parfum', images: ['/images/products/imperial-oud-edp-men-1.webp', '/images/products/imperial-oud-edp-men-2.webp', '/images/products/imperial-oud-edp-men-3.webp'], price: 18000, quantity: 2 },
-              { name: 'Legende Intense Eau De Parfum', images: ['/images/products/legende-intense-edp-men-1.webp', '/images/products/legende-intense-edp-men-2.webp', '/images/products/legende-intense-edp-men-3.webp'], price: 18000, quantity: 2 },
-              { name: 'Reverie Pour Homme Eau De Parfum', images: ['/images/products/reverie-pour-homme-edp-men-1.webp', '/images/products/reverie-pour-homme-edp-men-2.webp', '/images/products/reverie-pour-homme-edp-men-3.webp'], price: 18000, quantity: 2 }
+              { name: 'Eau De Vivre Eau De Parfum', images: ['/images/products/eau-de-vivre-edp-men-2.webp', '/images/products/eau-de-vivre-edp-men-1.webp', '/images/products/eau-de-vivre-edp-men-3.webp'], price: 18000, quantity: 2 },
+              { name: 'Imperial Oud Eau De Parfum', images: ['/images/products/imperial-oud-edp-men-2.webp', '/images/products/imperial-oud-edp-men-1.webp', '/images/products/imperial-oud-edp-men-3.webp'], price: 18000, quantity: 2 },
+              { name: 'Legende Intense Eau De Parfum', images: ['/images/products/legende-intense-edp-men-2.webp', '/images/products/legende-intense-edp-men-1.webp', '/images/products/legende-intense-edp-men-3.webp'], price: 18000, quantity: 2 },
+              { name: 'Reverie Pour Homme Eau De Parfum', images: ['/images/products/reverie-pour-homme-edp-men-2.webp', '/images/products/reverie-pour-homme-edp-men-1.webp', '/images/products/reverie-pour-homme-edp-men-3.webp'], price: 18000, quantity: 2 }
             ]
           },
           {
@@ -429,8 +429,8 @@ export const categories: Category[] = [
               { name: 'Sexy Rose Pink Spray Perfume Eau De Parfum', images: ['/images/products/sexy-rose-pink-spray1.webp', '/images/products/sexy-rose-pink-spray2.webp', '/images/products/sexy-rose-pink-spray3.webp'], price: 10000, quantity: 3 },
               { name: 'Loveryblack Affinity At Midnight Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-at-midnight-unisex-1.webp', '/images/products/loveryblack-at-midnight-unisex-2.webp', '/images/products/loveryblack-at-midnight-unisex-3.webp', '/images/products/loveryblack-at-midnight-unisex-4.webp'], price: 15000, quantity: 2 },
               { name: 'Loveryblack Affinity Pure Passion Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-pure-passion-unisex-1.webp', '/images/products/loveryblack-pure-passion-unisex-2.webp', '/images/products/loveryblack-pure-passion-unisex-3.webp', '/images/products/loveryblack-pure-passion-unisex-4.webp'], price: 15000, quantity: 2 },
-              { name: 'Lazell Black Onyx Women EDP 3.4', images: ['/images/products/lazell-black-onyx-women-edp-1.webp', '/images/products/lazell-black-onyx-women-edp-2.webp'], price: 8000, quantity: 3 },
-              { name: '365 Day Spray Perfume Eau De Parfum For Women', images: ['/images/products/365-day-spray-perfume-women-1.webp', '/images/products/365-day-spray-perfume-women-2.webp'], price: 6500, quantity: 3 },
+              { name: 'Lazell Black Onyx Women EDP 3.4', images: ['/images/products/lazell-black-onyx-women-edp-1.webp', '/images/products/lazell-black-onyx-women-edp-3.webp'], price: 8000, quantity: 3 },
+              { name: '365 Day Spray Perfume Eau De Parfum For Women', images: ['/images/products/365-day-spray-perfume-women-1.webp', '/images/products/365-day-spray-perfume-women-2.webp', '/images/products/365-day-spray-perfume-women-3.webp'], price: 6500, quantity: 3 },
               { name: 'Harmonie De Jour Eau De Parfum', images: ['/images/products/harmonie-de-jour-edp-women-1.webp', '/images/products/harmonie-de-jour-edp-women-2.webp', '/images/products/harmonie-de-jour-edp-women-3.webp'], price: 18000, quantity: 2 }
             ]
           }
