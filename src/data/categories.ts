@@ -385,9 +385,9 @@ export const categories: Category[] = [
               { name: 'Loveryblack Affinity At Midnight Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-at-midnight-unisex-1.webp', '/images/products/loveryblack-at-midnight-unisex-2.webp', '/images/products/loveryblack-at-midnight-unisex-3.webp', '/images/products/loveryblack-at-midnight-unisex-4.webp'], price: 15000, quantity: 2 },
               { name: 'Loveryblack Affinity For Him Pheromone Cologne', images: ['/images/products/loveryblack-for-him-1.webp', '/images/products/loveryblack-for-him-2.webp', '/images/products/loveryblack-for-him-3.webp', '/images/products/loveryblack-for-him-4.webp'], price: 15000, quantity: 2 },
               { name: 'Loveryblack Affinity Pure Passion Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-pure-passion-unisex-1.webp', '/images/products/loveryblack-pure-passion-unisex-2.webp', '/images/products/loveryblack-pure-passion-unisex-3.webp', '/images/products/loveryblack-pure-passion-unisex-4.webp'], price: 15000, quantity: 2 },
-              { name: 'Mens Cologne Bross 3.4oz Eau De Parfum Spray, Masculine Mist', images: ['/images/products/mens-cologne-bross-1.webp', '/images/products/mens-cologne-bross-2.webp'], price: 15000, quantity: 2 },
-              { name: "Men'S Extreme 3.4oz Eau De Parfum - Men Perfume Spray", images: ['/images/products/mens-extreme-edp-1.webp', '/images/products/mens-extreme-edp-2.webp'], price: 15000, quantity: 2 },
-              { name: "Men'S Salvang 3.4oz Eau De Parfume", images: ['/images/products/mens-salvang-edp-1.webp', '/images/products/mens-salvang-edp-2.webp'], price: 15000, quantity: 2 },
+              { name: 'Mens Cologne Bross 3.4oz Eau De Parfum Spray, Masculine Mist', images: ['/images/products/mens-cologne-bross-1.webp', '/images/products/mens-cologne-bross-2.webp'], price: 10000, quantity: 2 },
+              { name: "Men'S Extreme 3.4oz Eau De Parfum - Men Perfume Spray", images: ['/images/products/mens-extreme-edp-1.webp', '/images/products/mens-extreme-edp-2.webp'], price: 10000, quantity: 2 },
+              { name: "Men'S Salvang 3.4oz Eau De Parfume", images: ['/images/products/mens-salvang-edp-1.webp', '/images/products/mens-salvang-edp-2.webp'], price: 10000, quantity: 2 },
               { name: 'Daspar De Homme Men Perfume with Pheromones', image: '/images/products/daspar-de-homme-pheromones-1.webp', price: 8000, quantity: 4 },
               { name: 'Adventure Club Perfume For Men', images: ['/images/products/adventure-club-perfume-men-3.webp', '/images/products/adventure-club-perfume-men-2.webp'], price: 8500, quantity: 3 },
               { name: 'Azure Vantage Aqua Spray Cologne Eau De Parfum For Men', images: ['/images/products/azure-vantage-cologne-men-1.webp', '/images/products/azure-vantage-cologne-men-2.webp', '/images/products/azure-vantage-cologne-men-3.webp'], price: 8000, quantity: 3 },
@@ -397,12 +397,12 @@ export const categories: Category[] = [
               { name: 'Magic Code Spray Cologne Eau De Toilette For Men', images: ['/images/products/magic-code-cologne-men-1.webp', '/images/products/magic-code-cologne-men-2.webp', '/images/products/magic-code-cologne-men-3.webp'], price: 8000, quantity: 3 },
               { name: 'Cologne Eau De Toilette For Men', images: ['/images/products/cologne-edt-men-1.webp', '/images/products/cologne-edt-men-2.webp', '/images/products/cologne-edt-men-3.webp', '/images/products/cologne-edt-men-4.webp'], price: 8000, quantity: 3 },
               { name: 'Victorious Heroes Spray Cologne Eau De Toilette For Men', images: ['/images/products/victorious-heroes-cologne-men-1.webp', '/images/products/victorious-heroes-cologne-men-2.webp', '/images/products/victorious-heroes-cologne-men-3.webp', '/images/products/victorious-heroes-cologne-men-4.webp'], price: 8000, quantity: 3 },
-              { name: 'Bleu De Rivoli Eau De Parfum', images: ['/images/products/bleu-de-rivoli-edp-men-2.webp', '/images/products/bleu-de-rivoli-edp-men-1.webp', '/images/products/bleu-de-rivoli-edp-men-3.webp'], price: 18000, quantity: 2 },
-              { name: 'Blue Intense Eau De Parfum', images: ['/images/products/blue-intense-edp-men-1.webp', '/images/products/blue-intense-edp-men-2.webp'], price: 18000, quantity: 2 },
-              { name: 'Eau De Vivre Eau De Parfum', images: ['/images/products/eau-de-vivre-edp-men-2.webp', '/images/products/eau-de-vivre-edp-men-1.webp', '/images/products/eau-de-vivre-edp-men-3.webp'], price: 18000, quantity: 2 },
-              { name: 'Imperial Oud Eau De Parfum', images: ['/images/products/imperial-oud-edp-men-2.webp', '/images/products/imperial-oud-edp-men-1.webp', '/images/products/imperial-oud-edp-men-3.webp'], price: 18000, quantity: 2 },
-              { name: 'Legende Intense Eau De Parfum', images: ['/images/products/legende-intense-edp-men-2.webp', '/images/products/legende-intense-edp-men-1.webp', '/images/products/legende-intense-edp-men-3.webp'], price: 18000, quantity: 2 },
-              { name: 'Reverie Pour Homme Eau De Parfum', images: ['/images/products/reverie-pour-homme-edp-men-2.webp', '/images/products/reverie-pour-homme-edp-men-1.webp', '/images/products/reverie-pour-homme-edp-men-3.webp'], price: 18000, quantity: 2 }
+              { name: 'Bleu De Rivoli Eau De Parfum', images: ['/images/products/bleu-de-rivoli-edp-men-2.webp', '/images/products/bleu-de-rivoli-edp-men-1.webp', '/images/products/bleu-de-rivoli-edp-men-3.webp'], price: 12000, quantity: 2 },
+              { name: 'Blue Intense Eau De Parfum', images: ['/images/products/blue-intense-edp-men-1.webp', '/images/products/blue-intense-edp-men-2.webp'], price: 12000, quantity: 2 },
+              { name: 'Eau De Vivre Eau De Parfum', images: ['/images/products/eau-de-vivre-edp-men-2.webp', '/images/products/eau-de-vivre-edp-men-1.webp', '/images/products/eau-de-vivre-edp-men-3.webp'], price: 12000, quantity: 2 },
+              { name: 'Imperial Oud Eau De Parfum', images: ['/images/products/imperial-oud-edp-men-2.webp', '/images/products/imperial-oud-edp-men-1.webp', '/images/products/imperial-oud-edp-men-3.webp'], price: 12000, quantity: 2 },
+              { name: 'Legende Intense Eau De Parfum', images: ['/images/products/legende-intense-edp-men-2.webp', '/images/products/legende-intense-edp-men-1.webp', '/images/products/legende-intense-edp-men-3.webp'], price: 12000, quantity: 2 },
+              { name: 'Reverie Pour Homme Eau De Parfum', images: ['/images/products/reverie-pour-homme-edp-men-2.webp', '/images/products/reverie-pour-homme-edp-men-1.webp', '/images/products/reverie-pour-homme-edp-men-3.webp'], price: 12000, quantity: 2 }
             ]
           },
           {
@@ -457,7 +457,7 @@ export const categories: Category[] = [
           {
             name: "Men's Electric Shaver 3 in 1 - Portable USB Rechargeable Shaver Featuring 3D Floating Blades and a Digital Display Suitable for Both Wet and Dry Shaving",
             price: 15000,
-            quantity: 3,
+            quantity: 6,
             images: [
               '/images/products/mens-electric-shaver-1.webp',
               '/images/products/mens-electric-shaver-2.webp',
@@ -681,7 +681,7 @@ export const categories: Category[] = [
           {
             name: '256 GB Memory Card with Adapter - Enough Storage for your data',
             price: 4000,
-            quantity: 5,
+            quantity: 10,
             images: [
               '/images/products/memory-card-256gb-1.webp',
               '/images/products/memory-card-256gb-2.webp',
