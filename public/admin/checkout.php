@@ -462,8 +462,20 @@ function scanBarcode(barcode) {
 // ── Cart ops ─────────────────────────────────────────────
 function addToCart(name, price, stock) {
   const ex = cart.find(i => i.name === name);
-  if (ex) { ex.qty++; ex.stock = stock; }
-  else cart.push({ name, price, qty: 1, stock });
+  if (ex) {
+    ex.stock = stock;
+    if (ex.qty >= stock) {
+      setScanStatus('⚠ Out of stock — only ' + stock + ' available for: ' + name.substring(0, 40), 'err');
+      return;
+    }
+    ex.qty++;
+  } else {
+    if (stock < 1) {
+      setScanStatus('⚠ Out of stock — 0 available for: ' + name.substring(0, 40), 'err');
+      return;
+    }
+    cart.push({ name, price, qty: 1, stock });
+  }
   renderCart();
   setScanStatus('✓ ' + name.substring(0, 50), 'ok');
   document.getElementById('btn-new').style.display = 'inline-flex';
@@ -471,7 +483,10 @@ function addToCart(name, price, stock) {
 }
 
 function adjustQty(idx, d) {
-  cart[idx].qty = Math.max(1, cart[idx].qty + d);
+  const item = cart[idx];
+  const newQty = item.qty + d;
+  if (d > 0 && newQty > item.stock) return; // block exceeding stock
+  cart[idx].qty = Math.max(1, newQty);
   renderCart();
 }
 
@@ -510,7 +525,7 @@ function renderCart() {
       <div class="qty-ctrl">
         <button class="qty-btn" onclick="adjustQty(${i},-1)">−</button>
         <span class="qty-num">${item.qty}</span>
-        <button class="qty-btn" onclick="adjustQty(${i},1)">+</button>
+        <button class="qty-btn" onclick="adjustQty(${i},1)" ${item.qty >= item.stock ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>+</button>
       </div>
       <div></div>
       <button class="remove-btn" onclick="removeItem(${i})">×</button>
@@ -641,7 +656,6 @@ function showReceipt(items) {
   document.getElementById('receipt-overlay').classList.add('open');
 
   // Build print area
-  const dateStr = document.getElementById('receipt-date').textContent;
   document.getElementById('print-area').innerHTML =
     `<h2 style="text-align:center;margin-bottom:4px;">AMERICAN SELECT</h2>
      <p style="text-align:center;font-size:12px;color:#666;margin-bottom:4px;">americanselect.net</p>

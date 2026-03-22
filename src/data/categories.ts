@@ -94,7 +94,7 @@ export const categories: Category[] = [
             price: 8000
           },
           {
-            name: '8.45oz RZSYZH USB Rechargeable Electric Blender with Stainless Steel Blades for Automatic Chopping',
+            name: '8.45oz RZSYZH USB Rechargeable Electric mini Garlic  Blender with Stainless Steel Blades for Automatic Chopping',
             images: [
               '/images/products/usb-electric-blender-1.webp',
               '/images/products/usb-electric-blender-2.webp',
@@ -166,12 +166,6 @@ export const categories: Category[] = [
           {
             name: "Dr Teal's Vanilla Comfort Body Wash with Pure Epsom Salt",
             images: ['/images/products/dr-teals-vanilla-comfort-wash1.webp', '/images/products/dr-teals-vanilla-comfort-wash2.webp', '/images/products/dr-teals-vanilla-comfort-wash3.webp'],
-            quantity: 3,
-            price: 5000
-          },
-          {
-            name: "Dr Teal's Restorative Minerals Body Wash, Magnesium, Potassium & Zinc",
-            images: ['/images/products/dr-teals-restorative-minerals-wash1.webp', '/images/products/dr-teals-restorative-minerals-wash2.webp'],
             quantity: 3,
             price: 5000
           },
@@ -307,6 +301,12 @@ export const categories: Category[] = [
             price: 5000
           },
           {
+            name: "Dr Teal's 24 Hour Moisture Body Lotion, Vanilla Comfort",
+            images: ['/images/products/dr-teals-lotion-vanilla1.webp', '/images/products/dr-teals-lotion-vanilla2.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
             name: 'Vaseline Men Cooling Hydration 3-in-1 Face, Hands & Body Lotion with Menthol',
             images: ['/images/products/vaseline-men-cooling1.webp', '/images/products/vaseline-men-cooling2.webp', '/images/products/vaseline-men-cooling3.webp'],
             quantity: 6,
@@ -354,17 +354,6 @@ export const categories: Category[] = [
             quantity: 4,
             price: 3500
           },
-          {
-            name: "Dr Teal's Restorative Minerals Body Lotion with Magnesium, Potassium & Zinc",
-            images: [
-              '/images/products/dr-teals-restorative-minerals-lotion1.webp',
-              '/images/products/dr-teals-restorative-minerals-lotion2.webp',
-              '/images/products/dr-teals-restorative-minerals-lotion3.webp',
-              '/images/products/dr-teals-restorative-minerals-lotion4.webp'
-            ],
-            quantity: 3,
-            price: 5000
-          }
         ]
       },
       {
@@ -465,7 +454,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: "Men's Electric Shaver | Exquisite Packaging Box, USB Charging, Lithium Battery, Matte Texture, Essential for Men, Beard Trimming",
+            name: "LQT Men's Electric Shaver | Exquisite Packaging Box, USB Charging, Lithium Battery, Matte Texture, Essential for Men, Beard Trimming",
             price: 12000,
             quantity: 2,
             images: [
@@ -669,7 +658,7 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: '1.83-inch Touch Screen, Unisex, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones',
+            name: 'Doviico 1.83-inch Touch Screen, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones',
             price: 5000,
             quantity: 2,
             colors: ['#ff69b4'],
@@ -861,7 +850,7 @@ export const categories: Category[] = [
           {
             name: 'Nokia Go Earbuds+ TWS-201',
             price: 8000,
-            quantity: 10,
+            quantity: 9,
             colors: ['#ffffff', '#2c2c2c'],
             images: [
               '/images/products/nokia-earbuds-1.webp',
@@ -874,7 +863,7 @@ export const categories: Category[] = [
           {
             name: 'Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology',
             price: 6000,
-            quantity: 6,
+            quantity: 7,
             colors: ['#ffffff'],
             images: [
               '/images/products/usb-tws-earbuds-1.webp',

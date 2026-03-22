@@ -106,59 +106,45 @@
   // Sort functionality
   let sortBy = 'default';
 
-  // Search through all products
+  // Search through all products (handles any depth of subcategory nesting)
+  function searchItems(items, lowerQuery, categoryName, subCategoryName, results) {
+    items.forEach(item => {
+      if (isSubCategory(item)) {
+        // Recurse into nested subcategories
+        searchItems(item.items, lowerQuery, categoryName, item.name, results);
+      } else {
+        const name = getProductName(item);
+        if (name.toLowerCase().includes(lowerQuery)) {
+          results.push({
+            product: item,
+            productName: name,
+            categoryName,
+            subCategoryName,
+            price: getProductPrice(item),
+            quantity: getProductQuantity(item),
+            images: getProductImages(item),
+            colors: getProductColors(item)
+          });
+        }
+      }
+    });
+  }
+
   function performSearch(query) {
     if (!query || query.trim().length < 2) {
       searchResults = [];
       return;
     }
-
     const lowerQuery = query.toLowerCase().trim();
     const results = [];
-
     categories.forEach(category => {
-      category.items.forEach(item => {
-        if (isSubCategory(item)) {
-          // Search within subcategory items
-          item.items.forEach(subItem => {
-            const name = getProductName(subItem);
-            if (name.toLowerCase().includes(lowerQuery)) {
-              results.push({
-                product: subItem,
-                productName: name,
-                categoryName: category.name,
-                subCategoryName: item.name,
-                price: getProductPrice(subItem),
-                quantity: getProductQuantity(subItem),
-                images: getProductImages(subItem),
-                colors: getProductColors(subItem)
-              });
-            }
-          });
-        } else {
-          // Search regular items
-          const name = getProductName(item);
-          if (name.toLowerCase().includes(lowerQuery)) {
-            results.push({
-              product: item,
-              productName: name,
-              categoryName: category.name,
-              subCategoryName: null,
-              price: getProductPrice(item),
-              quantity: getProductQuantity(item),
-              images: getProductImages(item),
-              colors: getProductColors(item)
-            });
-          }
-        }
-      });
+      searchItems(category.items, lowerQuery, category.name, null, results);
     });
-
     searchResults = results;
   }
 
-  // Reactive search - triggers when searchQuery changes
-  $: performSearch(searchQuery);
+  // Reactive search - triggers when searchQuery or categories changes
+  $: performSearch(searchQuery), categories;
 
   // Sort helper for product items
   function sortProducts(items, sort) {
