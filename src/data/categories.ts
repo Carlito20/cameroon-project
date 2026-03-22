@@ -344,13 +344,13 @@ export const categories: Category[] = [
           },
           {
             name: 'Lubriderm Fragrance Free Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Face, Hand & Body Lotion for Sensitive Skin, Hydrating Lotion for Healthier-Looking Skin',
-            images: ['/images/products/lubriderm-pro-ceramide1.webp', '/images/products/lubriderm-pro-ceramide2.webp', '/images/products/lubriderm-pro-ceramide3.webp'],
+            images: ['/images/products/lubriderm-pro-ceramide1.webp', '/images/products/lubriderm-pro-ceramide2.webp', '/images/products/lubriderm-pro-ceramide3.webp', '/images/products/lubriderm-ingredients.webp'],
             quantity: 8,
             price: 10000
           },
           {
             name: 'Lubriderm Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Hydrating Face, Hand & Body Lotion, 24-hour Moisturizer for Dry Skin, 6 Fl Oz',
-            images: ['/images/products/lubriderm-daily-6oz-1.webp', '/images/products/lubriderm-daily-6oz-2.webp'],
+            images: ['/images/products/lubriderm-daily-6oz-1.webp', '/images/products/lubriderm-daily-6oz-2.webp', '/images/products/lubriderm-ingredients.webp'],
             quantity: 4,
             price: 3500
           },
