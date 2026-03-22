@@ -568,7 +568,7 @@
     top: 100px;
     right: 20px;
     right: calc(20px + env(safe-area-inset-right, 0px));
-    width: 300px;
+    width: 340px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -577,6 +577,7 @@
     max-height: calc(100vh - 140px);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     will-change: transform;
@@ -668,6 +669,15 @@
   .cart-sidebar .basket-items {
     flex: 1;
     overflow-y: auto;
+    min-height: 0;
+  }
+
+  .cart-sidebar .basket-header,
+  .cart-sidebar .basket-total,
+  .cart-sidebar .pay-method-section,
+  .cart-sidebar .basket-actions,
+  .cart-sidebar .confirm-order-section {
+    flex-shrink: 0;
   }
 
   .cart-sidebar .basket-actions {
@@ -877,6 +887,7 @@
     border-radius: 20px 20px 0 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     animation: slideUpFull 0.3s ease;
   }
 
@@ -923,9 +934,9 @@
   .basket-item-with-image {
     display: flex;
     align-items: center;
-    padding: 12px 20px;
+    padding: 10px 16px;
     border-bottom: 1px solid #f1f1f1;
-    gap: 12px;
+    gap: 10px;
   }
 
   .basket-item-with-image:last-child {
@@ -956,13 +967,13 @@
 
   /* Smaller image for desktop sidebar */
   .item-image-small {
-    width: 45px;
-    height: 45px;
+    width: 60px;
+    height: 60px;
     border-radius: 6px;
   }
 
   .item-image-small.item-image-placeholder {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
   }
 
   .basket-item-with-image .item-details {
@@ -1072,8 +1083,8 @@
   }
 
   .item-name {
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: #2c3e50;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1295,7 +1306,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 20px;
+    padding: 8px 16px;
     background: #e8f4fc;
     border-top: 1px solid #e9ecef;
   }
@@ -1313,33 +1324,33 @@
   }
 
   .pay-method-section {
-    padding: 12px 20px 0;
+    padding: 8px 16px 0;
   }
   .pay-method-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: #666;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.4px;
   }
   .pay-method-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 12px;
+    gap: 5px;
+    margin-bottom: 8px;
   }
   .pay-method-btn {
-    padding: 8px 6px;
+    padding: 6px 4px;
     border: 1px solid #dee2e6;
     border-radius: 8px;
     background: white;
     color: #555;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     text-align: center;
-    min-height: 44px;
+    min-height: 36px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
@@ -1386,7 +1397,7 @@
   .basket-actions {
     display: flex;
     gap: 10px;
-    padding: 15px 20px;
+    padding: 10px 16px;
     background: #f8f9fa;
     border-top: 1px solid #e9ecef;
   }
