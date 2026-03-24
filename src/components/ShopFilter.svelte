@@ -58,6 +58,15 @@
     '#00008b': 'Dark Blue',
     '#8b0000': 'Dark Red',
     '#ffd700': 'Yellow',
+    '#2e7d32': 'Green',
+    '#1565c0': 'Navy',
+    '#c62828': 'Dark Red',
+    '#4a5240': 'Army Green',
+    '#1a237e': 'Indigo',
+    '#4a148c': 'Deep Purple',
+    '#b71c1c': 'Crimson',
+    '#e65100': 'Dark Orange',
+    '#33691e': 'Olive Green',
   };
 
   function getColorName(hex) {
@@ -342,6 +351,15 @@
     if (qty == null) return qty;
     const baseName = getProductName(productItem);
     return Math.max(0, qty - (cartTotals[baseName] || 0));
+  }
+
+  // Per-color remaining stock: each color has its own pool equal to product quantity
+  function getColorRemaining(productItem, colorHex) {
+    const qty = getProductQuantity(productItem);
+    if (qty == null) return null;
+    const baseName = getProductName(productItem);
+    const colorKey = `${baseName} (${getColorName(colorHex)})`;
+    return Math.max(0, qty - (cartTotals[colorKey] || 0));
   }
 
   // Track selected quantities before adding (default 1)
@@ -724,6 +742,9 @@
     const itemImage = getProductImage(productItem);
     const selectedColor = selectedColors[itemName];
     const displayName = selectedColor ? `${itemName} (${getColorName(selectedColor)})` : itemName;
+    const effectiveMax = selectedColor
+      ? (getColorRemaining(productItem, selectedColor) ?? stockQty ?? 99)
+      : (stockQty ?? 99);
 
     // Dispatch custom event for InquiryBasket to listen to
     const event = new CustomEvent('add-to-inquiry', {
@@ -731,7 +752,7 @@
         name: displayName,
         category: categoryName,
         quantity: qty,
-        maxStock: stockQty || 99,
+        maxStock: effectiveMax,
         price: itemPrice || 0,
         image: itemImage
       }
@@ -741,9 +762,9 @@
     // Update cartItems mirror for live stock calculation
     const existing = cartItems.find(i => i.name === displayName);
     if (existing) {
-      cartItems = cartItems.map(i => i.name === displayName ? { ...i, quantity: Math.min((i.quantity || 1) + qty, stockQty || 99) } : i);
+      cartItems = cartItems.map(i => i.name === displayName ? { ...i, quantity: Math.min((i.quantity || 1) + qty, effectiveMax) } : i);
     } else {
-      cartItems = [...cartItems, { name: displayName, quantity: qty, maxStock: stockQty || 99 }];
+      cartItems = [...cartItems, { name: displayName, quantity: qty, maxStock: effectiveMax }];
     }
 
     // Mark as added with quantity for visual feedback (keyed by color-specific name)
@@ -1024,7 +1045,7 @@
                     {#if result.colors}
                       <span class="color-dots">
                         {#each result.colors as color}
-                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} on:click|stopPropagation={() => selectColor(result.productName, color)}></button>
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} class:sold-out={getColorRemaining(result.product, color) === 0} disabled={getColorRemaining(result.product, color) === 0} on:click|stopPropagation={() => selectColor(result.productName, color)}></button>
                         {/each}
                         {#if selectedColors[result.productName]}
                           <span class="color-label">{getColorName(selectedColors[result.productName])}</span>
@@ -1108,7 +1129,7 @@
               <p class="product-quantity" style="padding: 0 0.5rem;">
                 <span class="color-dots">
                   {#each sp.colors as color}
-                    <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} on:click|stopPropagation={() => selectColor(sp.productName, color)}></button>
+                    <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} class:sold-out={getColorRemaining(sp.product, color) === 0} disabled={getColorRemaining(sp.product, color) === 0} on:click|stopPropagation={() => selectColor(sp.productName, color)}></button>
                   {/each}
                   {#if selectedColors[sp.productName]}
                     <span class="color-label">{getColorName(selectedColors[sp.productName])}</span>
@@ -1195,7 +1216,7 @@
                                     {#if getProductColors(nestedProduct)}
                                       <span class="color-dots">
                                         {#each getProductColors(nestedProduct) as color}
-                                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(nestedProduct)] === color} on:click|stopPropagation={() => selectColor(getProductName(nestedProduct), color)}></button>
+                                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(nestedProduct)] === color} class:sold-out={getColorRemaining(nestedProduct, color) === 0} disabled={getColorRemaining(nestedProduct, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(nestedProduct), color)}></button>
                                         {/each}
                                         {#if selectedColors[getProductName(nestedProduct)]}
                                           <span class="color-label">{getColorName(selectedColors[getProductName(nestedProduct)])}</span>
@@ -1261,7 +1282,7 @@
                           {#if getProductColors(subItem)}
                             <span class="color-dots">
                               {#each getProductColors(subItem) as color}
-                                <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(subItem)] === color} on:click|stopPropagation={() => selectColor(getProductName(subItem), color)}></button>
+                                <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(subItem)] === color} class:sold-out={getColorRemaining(subItem, color) === 0} disabled={getColorRemaining(subItem, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(subItem), color)}></button>
                               {/each}
                               {#if selectedColors[getProductName(subItem)]}
                                 <span class="color-label">{getColorName(selectedColors[getProductName(subItem)])}</span>
@@ -1329,7 +1350,7 @@
                     {#if getProductColors(item)}
                       <span class="color-dots">
                         {#each getProductColors(item) as color}
-                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(item)] === color} on:click|stopPropagation={() => selectColor(getProductName(item), color)}></button>
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(item)] === color} class:sold-out={getColorRemaining(item, color) === 0} disabled={getColorRemaining(item, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(item), color)}></button>
                         {/each}
                         {#if selectedColors[getProductName(item)]}
                           <span class="color-label">{getColorName(selectedColors[getProductName(item)])}</span>
@@ -1425,7 +1446,7 @@
             <div class="product-modal-colors">
               <span class="color-dots">
                 {#each productModal.colors as color}
-                  <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} on:click|stopPropagation={() => selectColor(productModal.productName, color)}></button>
+                  <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} class:sold-out={getColorRemaining(productModal.product, color) === 0} disabled={getColorRemaining(productModal.product, color) === 0} on:click|stopPropagation={() => selectColor(productModal.productName, color)}></button>
                 {/each}
                 {#if selectedColors[productModal.productName]}
                   <span class="color-label">{getColorName(selectedColors[productModal.productName])}</span>
@@ -2414,6 +2435,25 @@
     border: 3px solid #2c3e50;
     box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.4);
     transform: scale(1.2);
+  }
+
+  .color-dot.sold-out {
+    opacity: 0.3;
+    cursor: not-allowed;
+    position: relative;
+  }
+  .color-dot.sold-out::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.4) 3px,
+      rgba(0,0,0,0.4) 4px
+    );
+    border-radius: inherit;
   }
 
   .btn-inquiry.needs-color {
