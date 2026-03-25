@@ -34,6 +34,68 @@ function getPdo() {
     return $pdo;
 }
 
+// Get current stock — initialise from products-list.json if never set in DB
+function getOrInitStock($pdo, $productName) {
+    $stmt = $pdo->prepare('SELECT quantity FROM product_stock WHERE product_name = ?');
+    $stmt->execute([$productName]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row !== false) return (int)$row['quantity'];
+
+    // Not in DB yet — seed from static products-list.json
+    $jsonPath = __DIR__ . '/products-list.json';
+    $qty = 0;
+    if (file_exists($jsonPath)) {
+        $products = json_decode(file_get_contents($jsonPath), true) ?? [];
+        foreach ($products as $p) {
+            if ($p['name'] === $productName) { $qty = (int)($p['quantity'] ?? 0); break; }
+        }
+    }
+    $pdo->prepare('INSERT INTO product_stock (product_name, quantity) VALUES (?, ?) ON DUPLICATE KEY UPDATE quantity = quantity')
+        ->execute([$productName, $qty]);
+    return $qty;
+}
+
+// Reserve stock when order is placed — deducts immediately
+function reserveStock($pdo, $items, $orderRef) {
+    foreach ($items as $item) {
+        $name = $item['name'];
+        $qty  = max(1, (int)($item['quantity'] ?? 1));
+        $stockBefore = getOrInitStock($pdo, $name);
+        $stockAfter  = max(0, $stockBefore - $qty);
+        $pdo->prepare('INSERT INTO product_stock (product_name, quantity) VALUES (?, ?) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)')
+            ->execute([$name, $stockAfter]);
+        $pdo->prepare('INSERT INTO stock_transactions (product_name, action, quantity, stock_before, stock_after, note) VALUES (?, "sold", ?, ?, ?, ?)')
+            ->execute([$name, $qty, $stockBefore, $stockAfter, 'Reserved — ' . $orderRef]);
+    }
+}
+
+// Restore stock when order is cancelled
+function restoreStock($pdo, $items, $orderRef) {
+    foreach ($items as $item) {
+        $name = $item['name'];
+        $qty  = max(1, (int)($item['quantity'] ?? 1));
+        $stockBefore = getOrInitStock($pdo, $name);
+        $stockAfter  = $stockBefore + $qty;
+        $pdo->prepare('INSERT INTO product_stock (product_name, quantity) VALUES (?, ?) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)')
+            ->execute([$name, $stockAfter]);
+        $pdo->prepare('INSERT INTO stock_transactions (product_name, action, quantity, stock_before, stock_after, note) VALUES (?, "returned", ?, ?, ?, ?)')
+            ->execute([$name, $qty, $stockBefore, $stockAfter, 'Restored — Cancelled ' . $orderRef]);
+    }
+}
+
+// Auto-cancel orders older than 24 hours and restore their stock
+function autoExpireOrders($pdo) {
+    $stmt = $pdo->query('SELECT * FROM pending_orders WHERE status = "pending" AND created_at < NOW() - INTERVAL 24 HOUR');
+    $expired = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($expired as $order) {
+        $items = json_decode($order['items'], true) ?? [];
+        restoreStock($pdo, $items, $order['order_ref']);
+        $pdo->prepare('UPDATE pending_orders SET status = "cancelled", cancelled_at = NOW(), note = "Auto-cancelled after 24 hours — stock restored" WHERE id = ?')
+            ->execute([$order['id']]);
+    }
+    return count($expired);
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Handle CORS preflight
@@ -65,6 +127,10 @@ if ($action === 'create' && $method === 'POST') {
         $orderRef = 'ORD-' . date('ymd') . '-' . strtoupper(substr(uniqid(), -5));
         $pdo->prepare('INSERT INTO pending_orders (order_ref, payment_method, items, total) VALUES (?, ?, ?, ?)')
             ->execute([$orderRef, $paymentMethod, json_encode($items), $total]);
+
+        // Reserve stock immediately
+        reserveStock($pdo, $items, $orderRef);
+
         echo json_encode(['success' => true, 'order_ref' => $orderRef]);
     } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
     exit;
@@ -78,7 +144,7 @@ if (empty($_SESSION['admin_logged_in'])) {
     exit;
 }
 
-// ── COMPLETE order — deduct stock ────────────────────────────────────────
+// ── COMPLETE order — stock already reserved on create, just mark done ────
 if ($action === 'complete' && $method === 'POST') {
     $id   = (int)($data['id'] ?? 0);
     $note = substr(trim($data['note'] ?? ''), 0, 255);
@@ -91,25 +157,10 @@ if ($action === 'complete' && $method === 'POST') {
         $order = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$order) { echo json_encode(['error' => 'Order not found or already processed']); exit; }
 
-        $items = json_decode($order['items'], true) ?? [];
-
-        foreach ($items as $item) {
-            $name = $item['name'];
-            $qty  = max(1, (int)($item['quantity'] ?? 1));
-
-            $stockStmt = $pdo->prepare('SELECT quantity FROM product_stock WHERE product_name = ?');
-            $stockStmt->execute([$name]);
-            $row         = $stockStmt->fetch(PDO::FETCH_ASSOC);
-            $stockBefore = $row ? (int)$row['quantity'] : 0;
-            $stockAfter  = max(0, $stockBefore - $qty);
-
-            $pdo->prepare('INSERT INTO product_stock (product_name, quantity) VALUES (?, ?) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)')
-                ->execute([$name, $stockAfter]);
-
-            $txNote = trim(($order['order_ref'] ?? '') . ' — ' . ($order['payment_method'] ?? '') . ($note ? ' — ' . $note : ''));
-            $pdo->prepare('INSERT INTO stock_transactions (product_name, action, quantity, stock_before, stock_after, note) VALUES (?, "sold", ?, ?, ?, ?)')
-                ->execute([$name, $qty, $stockBefore, $stockAfter, $txNote]);
-        }
+        // Stock was already deducted when order was placed — just mark as completed
+        $txNote = trim($order['order_ref'] . ' — ' . ($order['payment_method'] ?? '') . ($note ? ' — ' . $note : ''));
+        $pdo->prepare('UPDATE stock_transactions SET note = ? WHERE note = ? AND action = "sold"')
+            ->execute(['Completed — ' . $txNote, 'Reserved — ' . $order['order_ref']]);
 
         $pdo->prepare('UPDATE pending_orders SET status = "completed", completed_at = NOW(), note = COALESCE(NULLIF(?, ""), note) WHERE id = ?')
             ->execute([$note, $id]);
@@ -119,26 +170,39 @@ if ($action === 'complete' && $method === 'POST') {
     exit;
 }
 
-// ── CANCEL order ─────────────────────────────────────────────────────────
+// ── CANCEL order — restore reserved stock ────────────────────────────────
 if ($action === 'cancel' && $method === 'POST') {
     $id   = (int)($data['id'] ?? 0);
     $note = substr(trim($data['note'] ?? ''), 0, 255);
     if (!$id) { echo json_encode(['error' => 'Invalid ID']); exit; }
 
     try {
-        $pdo = getPdo();
-        $pdo->prepare('UPDATE pending_orders SET status = "cancelled", cancelled_at = NOW(), note = ? WHERE id = ? AND status = "pending"')
-            ->execute([$note ?: 'Cancelled by admin', $id]);
+        $pdo  = getPdo();
+        $stmt = $pdo->prepare('SELECT * FROM pending_orders WHERE id = ? AND status = "pending"');
+        $stmt->execute([$id]);
+        $order = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$order) { echo json_encode(['error' => 'Order not found or already pending']); exit; }
+
+        $items = json_decode($order['items'], true) ?? [];
+        restoreStock($pdo, $items, $order['order_ref']);
+
+        $pdo->prepare('UPDATE pending_orders SET status = "cancelled", cancelled_at = NOW(), note = ? WHERE id = ?')
+            ->execute([$note ?: 'Cancelled by admin — stock restored', $id]);
+
         echo json_encode(['success' => true]);
     } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
     exit;
 }
 
-// ── GET orders ────────────────────────────────────────────────────────────
+// ── GET orders — also runs auto-expire check ─────────────────────────────
 if ($method === 'GET') {
     $status = $_GET['status'] ?? 'pending';
     try {
         $pdo = getPdo();
+
+        // Auto-expire any orders older than 24h
+        autoExpireOrders($pdo);
+
         if ($status === 'all') {
             $stmt = $pdo->query('SELECT * FROM pending_orders ORDER BY created_at DESC LIMIT 200');
         } else {

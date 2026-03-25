@@ -161,6 +161,21 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     }
     .btn-do-export:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-do-export:not(:disabled):hover { background: #143020; }
+    .scan-input {
+      width: 160px; padding: 6px 10px; background: #0d1a0d; border: 1px solid #1a3a1a;
+      border-radius: 6px; color: #e0e0e0; font-size: 13px; outline: none;
+      min-height: 36px; -webkit-appearance: none; appearance: none;
+      touch-action: manipulation; font-size: 16px;
+    }
+    .scan-input:focus { border-color: #6dbf6d; }
+    .scan-input::placeholder { color: #445; }
+    .btn-scan-assign {
+      padding: 7px 12px; background: #0d2010; color: #6dbf6d;
+      border: 1px solid #1a4020; border-radius: 6px; font-size: 12px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; min-height: 36px;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+    }
+    .btn-scan-assign:hover { background: #143020; }
 
     /* Qty input */
     .qty-input {
@@ -170,29 +185,123 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       min-height: 36px; touch-action: manipulation;
     }
 
-    /* Print controls bar */
-    .print-bar {
-      position: sticky; bottom: calc(0px + env(safe-area-inset-bottom, 0px));
-      background: #111; border-top: 1px solid #222; padding: 12px 16px;
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
-    }
-    .print-bar-label { font-size: 13px; color: #888; flex: 1; }
-    .btn-do-print {
-      padding: 10px 20px; background: #d4af37; color: #000; border: none;
-      border-radius: 8px; font-size: 14px; font-weight: 800; cursor: pointer;
-      min-height: 44px; touch-action: manipulation; -webkit-user-select: none; user-select: none;
+    /* Action sheet */
+    .action-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200;
+      display: none; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
       -webkit-tap-highlight-color: transparent;
     }
-    .btn-do-print:hover { background: #c8a428; }
-    .btn-do-print:disabled { background: #1e1e1e; color: #333; cursor: not-allowed; }
+    .action-backdrop.open { display: block; }
+    .action-sheet {
+      position: fixed; left: 0; right: 0;
+      bottom: calc(0px + env(safe-area-inset-bottom, 0px));
+      background: #161616; border-top: 1px solid #2a2a2a; border-radius: 18px 18px 0 0;
+      padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+      z-index: 201; transform: translateY(100%) translateZ(0); will-change: transform;
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      -webkit-transform: translateY(100%) translateZ(0);
+    }
+    .action-sheet.open {
+      transform: translateY(0) translateZ(0);
+      -webkit-transform: translateY(0) translateZ(0);
+    }
+    .action-sheet-handle {
+      width: 36px; height: 4px; background: #333; border-radius: 4px;
+      margin: 0 auto 14px;
+    }
+    .action-sheet-title {
+      font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 12px; text-align: center;
+    }
+    .action-btns { display: flex; flex-direction: column; gap: 8px; }
+    .action-btn {
+      width: 100%; padding: 14px 18px; border-radius: 10px; border: none;
+      font-size: 15px; font-weight: 700; cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: 10px;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; min-height: 52px;
+    }
+    .action-btn-print { background: #d4af37; color: #000; }
+    .action-btn-print:hover { background: #c8a428; }
+    .action-btn-generate { background: #1a1500; color: #d4af37; border: 1px solid #3a3010; }
+    .action-btn-generate:hover { background: #2a2500; }
+    .action-btn-generate:disabled { opacity: 0.35; cursor: not-allowed; }
+    .action-btn-export { background: #0d2010; color: #6dbf6d; border: 1px solid #1a4020; }
+    .action-btn-export:hover { background: #143020; }
+    .action-btn-cancel {
+      background: transparent; color: #666; border: 1px solid #222;
+      justify-content: center; margin-top: 4px;
+    }
+    .action-btn-cancel:hover { color: #aaa; border-color: #444; }
     .btn-select-all {
-      padding: 8px 14px; background: transparent; color: #888; border: 1px solid #2a2a2a;
-      border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;
-      min-height: 44px; touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      padding: 6px 12px; background: transparent; color: #666; border: 1px solid #222;
+      border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+      min-height: 36px; touch-action: manipulation; -webkit-user-select: none; user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
     .btn-select-all:hover { color: #ccc; border-color: #555; }
+    .action-btn-scan { background: #0d1a2e; color: #7b9fd4; border: 1px solid #1a2a50; }
+    .action-btn-scan:hover { background: #1a2a40; }
+
+    /* Scan-to-assign modal */
+    .scan-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 400;
+      display: none; align-items: flex-end; justify-content: center;
+      -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .scan-modal-overlay.open { display: flex; }
+    .scan-modal {
+      background: #161616; border: 1px solid #2a2a2a; border-radius: 18px 18px 0 0;
+      padding: 20px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+      width: 100%; max-width: 520px;
+    }
+    .scan-modal-handle { width: 36px; height: 4px; background: #333; border-radius: 4px; margin: 0 auto 16px; }
+    .scan-modal-title { font-size: 13px; font-weight: 700; color: #ccc; margin-bottom: 4px; }
+    .scan-modal-product { font-size: 12px; color: #d4af37; margin-bottom: 16px; line-height: 1.4; }
+    .scan-modal-input-row { display: flex; gap: 8px; align-items: center; }
+    .scan-modal-input {
+      flex: 1; padding: 13px 14px; background: #1a1a1a;
+      border: 2px solid #2a2a2a; border-radius: 8px; color: #e0e0e0;
+      font-size: 16px; outline: none; -webkit-appearance: none; appearance: none;
+      min-height: 50px; touch-action: manipulation;
+    }
+    .scan-modal-input:focus { border-color: #7b9fd4; }
+    .btn-modal-camera {
+      background: #1a1a1a; color: #888; border: 1px solid #2a2a2a; border-radius: 8px;
+      font-size: 22px; cursor: pointer; min-height: 50px; min-width: 50px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-modal-camera.active { background: #0d1a0d; color: #6dbf6d; border-color: #1a3a1a; }
+    .scan-modal-camera-wrap {
+      margin-top: 10px; display: none; border-radius: 10px; overflow: hidden; background: #000; position: relative;
+    }
+    .scan-modal-camera-wrap.visible { display: block; }
+    .scan-modal-camera-wrap video { width: 100%; max-height: 200px; object-fit: cover; display: block; }
+    .scan-modal-scanline {
+      position: absolute; left: 8%; right: 8%; height: 2px;
+      background: #7b9fd4; box-shadow: 0 0 8px #7b9fd4; opacity: 0.9;
+      animation: scanpulse 2s ease-in-out infinite;
+    }
+    .scan-modal-status { margin-top: 10px; font-size: 13px; color: #555; min-height: 18px; }
+    .scan-modal-status.ok { color: #6dbf6d; }
+    .scan-modal-status.err { color: #e05c5c; }
+    .scan-modal-btns { display: flex; gap: 8px; margin-top: 14px; }
+    .btn-modal-assign {
+      flex: 2; padding: 13px; background: #7b9fd4; color: #000; border: none;
+      border-radius: 8px; font-size: 15px; font-weight: 800; cursor: pointer;
+      min-height: 50px; touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-modal-assign:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-modal-cancel {
+      flex: 1; padding: 13px; background: transparent; color: #666;
+      border: 1px solid #2a2a2a; border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer; min-height: 50px; touch-action: manipulation;
+      -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+    }
 
     /* Toast */
     .toast {
@@ -210,7 +319,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     @media print {
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       body { background: white; color: black; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-      header, .container, .print-bar, .toast { display: none !important; }
+      header, .container, .action-backdrop, .action-sheet, .toast { display: none !important; }
       #print-sheet { display: block !important; }
     }
   </style>
@@ -244,9 +353,12 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <div class="stat-num" style="color:#d4884a;"><?= count($unassigned) ?></div>
       <div class="stat-lbl">Need Barcode</div>
     </div>
+    <div class="stat-box" style="display:flex;align-items:center;justify-content:center;min-width:unset;flex:0;">
+      <button class="btn-select-all" onclick="toggleSelectAll()">Select All</button>
+    </div>
   </div>
 
-  <input type="text" class="search-bar" id="search-bar" placeholder="Search products…" oninput="filterProducts(this.value)">
+  <input type="text" class="search-bar" id="search-bar" placeholder="Search products… (type to filter by name)" oninput="filterProducts(this.value)" autofocus>
 
   <!-- Unassigned products -->
   <?php if (count($unassigned)): ?>
@@ -262,6 +374,8 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <div class="pr-actions">
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
         <button class="btn-generate" onclick="generateBarcode(this, '<?= htmlspecialchars(addslashes($p['name'])) ?>')">⚡ Generate</button>
+        <input type="text" class="scan-input" placeholder="Scan or type barcode…" title="Scan manufacturer barcode" onkeydown="if(event.key==='Enter'){assignManual(this,'<?= htmlspecialchars(addslashes($p['name'])) ?>')}">
+        <button class="btn-scan-assign" onclick="assignManual(this.previousElementSibling, '<?= htmlspecialchars(addslashes($p['name'])) ?>')">✔ Assign</button>
       </div>
     </div>
     <?php endforeach; ?>
@@ -295,12 +409,44 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
   <?php endif; ?>
 </div>
 
-<!-- Sticky print bar -->
-<div class="print-bar">
-  <button class="btn-select-all" onclick="toggleSelectAll()">Select All</button>
-  <span class="print-bar-label" id="print-count-label">0 products selected</span>
-  <button class="btn-do-print" id="btn-do-print" onclick="printSelected()" disabled>🖨 Print Labels</button>
-  <button class="btn-do-export" id="btn-do-export" onclick="exportPNG()" disabled>📥 Export PNG</button>
+<!-- Action sheet backdrop -->
+<div class="action-backdrop" id="action-backdrop" onclick="closeActionSheet()"></div>
+
+<!-- Action sheet -->
+<div class="action-sheet" id="action-sheet">
+  <div class="action-sheet-handle"></div>
+  <div class="action-sheet-title" id="action-sheet-title">0 products selected</div>
+  <div class="action-btns">
+    <button class="action-btn action-btn-scan" id="btn-scan-assign" onclick="openScanModal()">📷 &nbsp;Scan to Assign Barcode</button>
+    <button class="action-btn action-btn-print" onclick="printSelected()">🖨 &nbsp;Print Labels</button>
+    <button class="action-btn action-btn-generate" id="btn-bulk-generate" onclick="generateSelected()">⚡ &nbsp;Generate Barcodes</button>
+    <button class="action-btn action-btn-export" onclick="exportPNG()">📥 &nbsp;Export PNG</button>
+    <button class="action-btn action-btn-cancel" onclick="closeActionSheet()">✕ &nbsp;Cancel</button>
+  </div>
+</div>
+
+<!-- Scan-to-assign modal -->
+<div class="scan-modal-overlay" id="scan-modal-overlay">
+  <div class="scan-modal">
+    <div class="scan-modal-handle"></div>
+    <div class="scan-modal-title">Scan Barcode to Assign</div>
+    <div class="scan-modal-product" id="scan-modal-product"></div>
+    <div class="scan-modal-input-row">
+      <input type="text" class="scan-modal-input" id="scan-modal-input"
+             placeholder="Scan barcode on packaging…"
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text">
+      <button class="btn-modal-camera" id="modal-camera-btn" onclick="toggleModalCamera()" title="Use camera">📷</button>
+    </div>
+    <div class="scan-modal-camera-wrap" id="modal-camera-wrap">
+      <video id="modal-camera-video" autoplay playsinline muted></video>
+      <div class="scan-modal-scanline"></div>
+    </div>
+    <div class="scan-modal-status" id="scan-modal-status">Scan or type the barcode from the product packaging</div>
+    <div class="scan-modal-btns">
+      <button class="btn-modal-assign" id="btn-modal-assign" onclick="doScanAssign()">✔ Assign</button>
+      <button class="btn-modal-cancel" onclick="closeScanModal()">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <!-- Hidden print sheet -->
@@ -339,6 +485,31 @@ async function generateBarcode(btn, productName) {
     }
   } catch {
     btn.disabled = false; btn.textContent = '⚡ Generate';
+    showToast('Network error', 'err');
+  }
+}
+
+// ── Assign manufacturer/scanned barcode manually ────────
+async function assignManual(input, productName) {
+  const barcode = input.value.trim();
+  if (!barcode) { input.focus(); showToast('Scan or enter a barcode first', 'err'); return; }
+  input.disabled = true;
+  try {
+    const res = await fetch('/api/barcode.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'assign', barcode, product_name: productName })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('✓ Barcode assigned', 'ok');
+      setTimeout(() => location.reload(), 800);
+    } else {
+      input.disabled = false;
+      showToast('Error: ' + (data.error || 'Failed'), 'err');
+    }
+  } catch {
+    input.disabled = false;
     showToast('Network error', 'err');
   }
 }
@@ -473,10 +644,21 @@ function printSelected() {
 // ── Search filter ────────────────────────────────────────
 function filterProducts(q) {
   q = q.toLowerCase().trim();
+  let anyUnassigned = false, anyAssigned = false;
   document.querySelectorAll('.product-row').forEach(row => {
     const name = (row.dataset.name || '').toLowerCase();
-    row.style.display = (!q || name.includes(q)) ? '' : 'none';
+    const visible = !q || name.startsWith(q);
+    row.style.display = visible ? '' : 'none';
+    if (visible) {
+      if (row.classList.contains('no-barcode')) anyUnassigned = true;
+      if (row.classList.contains('has-barcode')) anyAssigned = true;
+    }
   });
+  // Show/hide section headers based on whether their rows are visible
+  const uh = document.getElementById('unassigned-head');
+  const ah = document.getElementById('assigned-head');
+  if (uh) uh.style.display = anyUnassigned ? '' : 'none';
+  if (ah) ah.style.display = anyAssigned ? '' : 'none';
 }
 
 // ── Select all toggle ────────────────────────────────────
@@ -488,10 +670,61 @@ function toggleSelectAll() {
 }
 
 function updatePrintCount() {
-  const n = document.querySelectorAll('.pr-check:checked').length;
-  document.getElementById('print-count-label').textContent = n + ' product' + (n === 1 ? '' : 's') + ' selected';
-  document.getElementById('btn-do-print').disabled = n === 0;
-  document.getElementById('btn-do-export').disabled = n === 0;
+  const checked = [...document.querySelectorAll('.pr-check:checked')];
+  const n = checked.length;
+  const unassigned = checked.filter(cb => !cb.dataset.barcode);
+  const hasUnassigned = unassigned.length > 0;
+  const singleUnassigned = unassigned.length === 1 && checked.length === 1;
+
+  const sheet = document.getElementById('action-sheet');
+  const backdrop = document.getElementById('action-backdrop');
+  const title = document.getElementById('action-sheet-title');
+  const genBtn = document.getElementById('btn-bulk-generate');
+  const scanBtn = document.getElementById('btn-scan-assign');
+
+  if (n > 0) {
+    title.textContent = n + ' product' + (n === 1 ? '' : 's') + ' selected';
+    genBtn.disabled = !hasUnassigned;
+    genBtn.style.display = hasUnassigned ? '' : 'none';
+    // Scan to assign: only shown when exactly 1 unassigned item is checked
+    scanBtn.style.display = singleUnassigned ? '' : 'none';
+    sheet.classList.add('open');
+    backdrop.classList.add('open');
+  } else {
+    sheet.classList.remove('open');
+    backdrop.classList.remove('open');
+  }
+}
+
+function closeActionSheet() {
+  document.querySelectorAll('.pr-check').forEach(cb => cb.checked = false);
+  selectAllOn = false;
+  document.querySelector('.btn-select-all').textContent = 'Select All';
+  document.getElementById('action-sheet').classList.remove('open');
+  document.getElementById('action-backdrop').classList.remove('open');
+}
+
+// ── Bulk generate barcodes for selected unassigned items ──
+async function generateSelected() {
+  const checked = [...document.querySelectorAll('.pr-check:checked')].filter(cb => !cb.dataset.barcode);
+  if (!checked.length) return;
+  closeActionSheet();
+  showToast('Generating ' + checked.length + ' barcode(s)…', 'ok');
+  for (let idx = 0; idx < checked.length; idx++) {
+    const cb = checked[idx];
+    const name = cb.dataset.name;
+    const barcode = 'AS' + (Date.now() + idx).toString().slice(-8);
+    try {
+      const res = await fetch('/api/barcode.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'assign', barcode, product_name: name })
+      });
+      const data = await res.json();
+      if (!data.success) showToast('Failed for: ' + name.substring(0,30), 'err');
+    } catch { showToast('Network error', 'err'); }
+  }
+  setTimeout(() => location.reload(), 600);
 }
 
 // ── Export selected labels as PNG images in a ZIP ────────
@@ -575,6 +808,122 @@ async function exportPNG() {
   a.download = 'barcode-labels.zip';
   a.click();
   showToast('✓ PNG labels exported', 'ok');
+}
+
+// ── Scan-to-assign modal ──────────────────────────────────
+let modalCameraOn = false, modalCodeReader = null, scanTargetProduct = '';
+
+function openScanModal() {
+  const checked = [...document.querySelectorAll('.pr-check:checked')].filter(cb => !cb.dataset.barcode);
+  if (!checked.length) return;
+  scanTargetProduct = checked[0].dataset.name;
+  document.getElementById('scan-modal-product').textContent = scanTargetProduct;
+  document.getElementById('scan-modal-input').value = '';
+  document.getElementById('scan-modal-status').textContent = 'Scan or type the barcode from the product packaging';
+  document.getElementById('scan-modal-status').className = 'scan-modal-status';
+  document.getElementById('scan-modal-overlay').classList.add('open');
+  closeActionSheet();
+  setTimeout(() => document.getElementById('scan-modal-input').focus(), 200);
+}
+
+function closeScanModal() {
+  stopModalCamera();
+  document.getElementById('scan-modal-overlay').classList.remove('open');
+  scanTargetProduct = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('scan-modal-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); doScanAssign(); }
+  });
+  // Auto-fill status as user types
+  document.getElementById('scan-modal-input').addEventListener('input', function() {
+    const v = this.value.trim();
+    document.getElementById('scan-modal-status').textContent = v ? 'Press Assign or Enter to save' : 'Scan or type the barcode from the product packaging';
+    document.getElementById('scan-modal-status').className = 'scan-modal-status' + (v ? ' ok' : '');
+  });
+});
+
+async function doScanAssign() {
+  const barcode = document.getElementById('scan-modal-input').value.trim();
+  if (!barcode) {
+    document.getElementById('scan-modal-status').textContent = 'Please scan or enter a barcode first';
+    document.getElementById('scan-modal-status').className = 'scan-modal-status err';
+    return;
+  }
+  const btn = document.getElementById('btn-modal-assign');
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const res = await fetch('/api/barcode.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'assign', barcode, product_name: scanTargetProduct })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('scan-modal-status').textContent = '✓ Barcode assigned!';
+      document.getElementById('scan-modal-status').className = 'scan-modal-status ok';
+      stopModalCamera();
+      setTimeout(() => { closeScanModal(); location.reload(); }, 700);
+    } else {
+      btn.disabled = false; btn.textContent = '✔ Assign';
+      document.getElementById('scan-modal-status').textContent = 'Error: ' + (data.error || 'Failed');
+      document.getElementById('scan-modal-status').className = 'scan-modal-status err';
+    }
+  } catch {
+    btn.disabled = false; btn.textContent = '✔ Assign';
+    document.getElementById('scan-modal-status').textContent = 'Network error';
+    document.getElementById('scan-modal-status').className = 'scan-modal-status err';
+  }
+}
+
+async function toggleModalCamera() {
+  modalCameraOn ? stopModalCamera() : startModalCamera();
+}
+
+async function startModalCamera() {
+  document.getElementById('scan-modal-status').textContent = 'Loading camera…';
+  if (typeof ZXing === 'undefined') {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    }).catch(() => {
+      document.getElementById('scan-modal-status').textContent = 'Failed to load camera';
+      document.getElementById('scan-modal-status').className = 'scan-modal-status err';
+      return;
+    });
+  }
+  try {
+    modalCodeReader = new ZXing.BrowserMultiFormatReader();
+    await modalCodeReader.decodeFromConstraints(
+      { video: { facingMode: 'environment' } }, 'modal-camera-video',
+      (result) => {
+        if (result) {
+          stopModalCamera();
+          document.getElementById('scan-modal-input').value = result.getText();
+          document.getElementById('scan-modal-status').textContent = 'Press Assign or Enter to save';
+          document.getElementById('scan-modal-status').className = 'scan-modal-status ok';
+          doScanAssign();
+        }
+      }
+    );
+    modalCameraOn = true;
+    document.getElementById('modal-camera-wrap').classList.add('visible');
+    document.getElementById('modal-camera-btn').classList.add('active');
+    document.getElementById('scan-modal-status').textContent = 'Camera active — point at barcode';
+  } catch(e) {
+    document.getElementById('scan-modal-status').textContent = 'Camera error: ' + e.message;
+    document.getElementById('scan-modal-status').className = 'scan-modal-status err';
+  }
+}
+
+function stopModalCamera() {
+  if (modalCodeReader) { try { modalCodeReader.reset(); } catch {} modalCodeReader = null; }
+  modalCameraOn = false;
+  document.getElementById('modal-camera-wrap').classList.remove('visible');
+  document.getElementById('modal-camera-btn').classList.remove('active');
 }
 
 function showToast(msg, type) {

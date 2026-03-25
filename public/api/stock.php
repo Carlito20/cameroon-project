@@ -19,6 +19,12 @@ function getDB() {
         DB_PASS,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
+    $pdo->exec("CREATE TABLE IF NOT EXISTS product_stock (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        product_name VARCHAR(500) NOT NULL UNIQUE,
+        quantity INT NOT NULL DEFAULT 0,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )");
     return $pdo;
 }
 

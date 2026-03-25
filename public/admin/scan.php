@@ -204,7 +204,22 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     </div>
   </div>
 
-  <button class="start-btn" id="start-btn" onclick="startScanner()">Start Scanner</button>
+  <!-- Physical/USB scanner input -->
+  <div style="display:flex;gap:8px;margin-top:14px;align-items:center;">
+    <input type="text" id="scanner-input"
+           placeholder="Scan barcode with physical scanner…"
+           autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text"
+           style="flex:1;padding:13px 14px;background:#1a1a1a;border:2px solid #2a2a2a;border-radius:8px;
+                  color:#e0e0e0;font-size:16px;outline:none;-webkit-appearance:none;appearance:none;
+                  min-height:50px;touch-action:manipulation;"
+           onfocus="this.style.borderColor='#d4af37'" onblur="this.style.borderColor='#2a2a2a'">
+    <button onclick="startScanner()" id="start-btn"
+            style="padding:0 16px;background:#d4af37;color:#000;border:none;border-radius:8px;
+                   font-size:14px;font-weight:800;cursor:pointer;min-height:50px;white-space:nowrap;
+                   touch-action:manipulation;-webkit-user-select:none;user-select:none;">
+      📷 Camera
+    </button>
+  </div>
   <div class="status-bar" id="status-bar"></div>
 
   <!-- Found product card -->
@@ -260,6 +275,17 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
 <script>
   let codeReader = null, scanning = false, lastBarcode = '', debounceTimer = null;
   let currentProductName = '', selectedAction = '';
+
+  // Physical/USB scanner input
+  const scannerInput = document.getElementById('scanner-input');
+  scannerInput.focus();
+  scannerInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const v = this.value.trim();
+      if (v && !scanning) { this.value = ''; lastBarcode = v; handleBarcode(v); }
+    }
+  });
 
   function setStatus(msg, type) {
     const el = document.getElementById('status-bar');
@@ -398,11 +424,11 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     document.getElementById('result-card').classList.remove('visible');
     document.getElementById('assign-card').classList.remove('visible');
     document.getElementById('status-bar').className = 'status-bar';
-    document.getElementById('start-btn').disabled = false;
-    document.getElementById('start-btn').textContent = 'Start Scanner';
     document.getElementById('scan-line').style.display = 'none';
     document.getElementById('placeholder').style.display = 'flex';
     if (codeReader) { codeReader.reset(); codeReader = null; }
+    document.getElementById('scanner-input').value = '';
+    document.getElementById('scanner-input').focus();
   }
 </script>
 </body>
