@@ -343,6 +343,10 @@
   $: cartTotals = cartItems.reduce((acc, item) => {
     const baseName = item.name.replace(/\s\([^)]+\)$/, '');
     acc[baseName] = (acc[baseName] || 0) + (item.quantity || 1);
+    // Also track color-specific key (e.g. "Fan (Purple)") for per-color stock
+    if (item.name !== baseName) {
+      acc[item.name] = (acc[item.name] || 0) + (item.quantity || 1);
+    }
     return acc;
   }, {});
 
