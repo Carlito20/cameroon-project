@@ -78,23 +78,21 @@
 
   function selectColor(productName, color) {
     if (selectedColors[productName] === color) {
-      delete selectedColors[productName];
+      const { [productName]: _, ...rest } = selectedColors;
+      selectedColors = rest;
     } else {
-      selectedColors[productName] = color;
+      selectedColors = { ...selectedColors, [productName]: color };
     }
-    selectedColors = selectedColors;
   }
 
   function selectColorAndAdd(productItem, colorHex, categoryName, stockQty, itemPrice) {
     const name = getProductName(productItem);
     if (selectedColors[name] === colorHex) {
-      // Deselect on second tap — don't add
-      delete selectedColors[name];
-      selectedColors = selectedColors;
+      const { [name]: _, ...rest } = selectedColors;
+      selectedColors = rest;
       return;
     }
-    selectedColors[name] = colorHex;
-    selectedColors = selectedColors;
+    selectedColors = { ...selectedColors, [name]: colorHex };
     addToInquiry(productItem, categoryName, stockQty, itemPrice);
   }
 
