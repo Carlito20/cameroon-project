@@ -1096,8 +1096,8 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(result.product)]}
-                  class:needs-color={needsColor(result.product)}
-                  disabled={needsColor(result.product)}
+                  class:needs-color={result.colors && result.colors.length > 1 && !selectedColors[result.productName]}
+                  disabled={result.colors && result.colors.length > 1 && !selectedColors[result.productName]}
                   on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, result.price)}
                 >
                   {addedItems[getDisplayName(result.product)] ? `✓ Added (${addedItems[getDisplayName(result.product)]})` : 'Add to Cart'}
@@ -1174,8 +1174,8 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(sp.product)]}
-                  class:needs-color={needsColor(sp.product)}
-                  disabled={needsColor(sp.product)}
+                  class:needs-color={sp.colors && sp.colors.length > 1 && !selectedColors[sp.productName]}
+                  disabled={sp.colors && sp.colors.length > 1 && !selectedColors[sp.productName]}
                   on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}
                 >
                   {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
@@ -1269,8 +1269,8 @@
                                 <button
                                   class="btn btn-small btn-inquiry"
                                   class:added={addedItems[getDisplayName(nestedProduct)]}
-                                  class:needs-color={needsColor(nestedProduct)}
-                                  disabled={needsColor(nestedProduct)}
+                                  class:needs-color={getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 && !selectedColors[getProductName(nestedProduct)]}
+                                  disabled={getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 && !selectedColors[getProductName(nestedProduct)]}
                                   on:click={() => handleInquiryClick(nestedProduct, subItem.name, getProductQuantity(nestedProduct), getProductPrice(nestedProduct))}
                                 >
                                   {addedItems[getDisplayName(nestedProduct)] ? `✓ Added (${addedItems[getDisplayName(nestedProduct)]})` : 'Add to Cart'}
@@ -1336,8 +1336,8 @@
                       <button
                         class="btn btn-small btn-inquiry"
                         class:added={addedItems[getDisplayName(subItem)]}
-                        class:needs-color={needsColor(subItem)}
-                        disabled={needsColor(subItem)}
+                        class:needs-color={getProductColors(subItem) && getProductColors(subItem).length > 1 && !selectedColors[getProductName(subItem)]}
+                        disabled={getProductColors(subItem) && getProductColors(subItem).length > 1 && !selectedColors[getProductName(subItem)]}
                         on:click={() => handleInquiryClick(subItem, item.name, getProductQuantity(subItem), getProductPrice(subItem))}
                       >
                         {addedItems[getDisplayName(subItem)] ? `✓ Added (${addedItems[getDisplayName(subItem)]})` : 'Add to Cart'}
@@ -1405,8 +1405,8 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(item)]}
-                  class:needs-color={needsColor(item)}
-                  disabled={needsColor(item)}
+                  class:needs-color={getProductColors(item) && getProductColors(item).length > 1 && !selectedColors[getProductName(item)]}
+                  disabled={getProductColors(item) && getProductColors(item).length > 1 && !selectedColors[getProductName(item)]}
                   on:click={() => handleInquiryClick(item, category.name, getProductQuantity(item), getProductPrice(item))}
                 >
                   {addedItems[getDisplayName(item)] ? `✓ Added (${addedItems[getDisplayName(item)]})` : 'Add to Cart'}
@@ -1494,8 +1494,8 @@
             <button
               class="btn btn-inquiry"
               class:added={addedItems[getDisplayName(productModal.product)]}
-              class:needs-color={needsColor(productModal.product)}
-              disabled={needsColor(productModal.product)}
+              class:needs-color={productModal.colors && productModal.colors.length > 1 && !selectedColors[productModal.productName]}
+              disabled={productModal.colors && productModal.colors.length > 1 && !selectedColors[productModal.productName]}
               on:click={() => handleInquiryClick(productModal.product, productModal.subCategoryName || productModal.categoryName, productModal.quantity, productModal.price)}
             >
               {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : 'Add to Cart'}
