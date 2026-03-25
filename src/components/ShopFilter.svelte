@@ -59,7 +59,7 @@
     '#8b0000': 'Dark Red',
     '#ffd700': 'Yellow',
     '#2e7d32': 'Green',
-    '#1565c0': 'Navy',
+    '#1565c0': 'Blue',
     '#c62828': 'Dark Red',
     '#4a5240': 'Army Green',
     '#1a237e': 'Indigo',
