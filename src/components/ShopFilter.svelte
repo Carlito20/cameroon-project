@@ -1104,7 +1104,7 @@
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(result.product)]}
                   class:needs-color={!selectedColors[result.productName] && result.colors && result.colors.length > 1}
-                  disabled={(!selectedColors[result.productName] && result.colors && result.colors.length > 1) || (selectedColors[result.productName] && colorStockInfo[result.productName] >= Math.ceil(result.quantity / result.colors.length))}
+                  disabled={!!(selectedColors[result.productName] && result.colors && result.colors.length > 1 && colorStockInfo[result.productName] >= Math.ceil(result.quantity / result.colors.length))}
                   on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, result.price)}
                 >
                   {addedItems[getDisplayName(result.product)] ? `✓ Added (${addedItems[getDisplayName(result.product)]})` : 'Add to Cart'}
@@ -1182,7 +1182,7 @@
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(sp.product)]}
                   class:needs-color={!selectedColors[sp.productName] && sp.colors && sp.colors.length > 1}
-                  disabled={(!selectedColors[sp.productName] && sp.colors && sp.colors.length > 1) || (selectedColors[sp.productName] && colorStockInfo[sp.productName] >= Math.ceil(sp.quantity / sp.colors.length))}
+                  disabled={!!(selectedColors[sp.productName] && sp.colors && sp.colors.length > 1 && colorStockInfo[sp.productName] >= Math.ceil(sp.quantity / sp.colors.length))}
                   on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}
                 >
                   {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
@@ -1277,7 +1277,7 @@
                                   class="btn btn-small btn-inquiry"
                                   class:added={addedItems[getDisplayName(nestedProduct)]}
                                   class:needs-color={!selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1}
-                                  disabled={(!selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1) || (selectedColors[getProductName(nestedProduct)] && colorStockInfo[getProductName(nestedProduct)] >= Math.ceil(getProductQuantity(nestedProduct) / getProductColors(nestedProduct).length))}
+                                  disabled={!!(selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 && colorStockInfo[getProductName(nestedProduct)] >= Math.ceil(getProductQuantity(nestedProduct) / getProductColors(nestedProduct).length))}
                                   on:click={() => handleInquiryClick(nestedProduct, subItem.name, getProductQuantity(nestedProduct), getProductPrice(nestedProduct))}
                                 >
                                   {addedItems[getDisplayName(nestedProduct)] ? `✓ Added (${addedItems[getDisplayName(nestedProduct)]})` : 'Add to Cart'}
@@ -1344,7 +1344,7 @@
                         class="btn btn-small btn-inquiry"
                         class:added={addedItems[getDisplayName(subItem)]}
                         class:needs-color={!selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1}
-                        disabled={(!selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1) || (selectedColors[getProductName(subItem)] && colorStockInfo[getProductName(subItem)] >= Math.ceil(getProductQuantity(subItem) / getProductColors(subItem).length))}
+                        disabled={!!(selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1 && colorStockInfo[getProductName(subItem)] >= Math.ceil(getProductQuantity(subItem) / getProductColors(subItem).length))}
                         on:click={() => handleInquiryClick(subItem, item.name, getProductQuantity(subItem), getProductPrice(subItem))}
                       >
                         {addedItems[getDisplayName(subItem)] ? `✓ Added (${addedItems[getDisplayName(subItem)]})` : 'Add to Cart'}
@@ -1413,7 +1413,7 @@
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(item)]}
                   class:needs-color={!selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1}
-                  disabled={(!selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1) || (selectedColors[getProductName(item)] && colorStockInfo[getProductName(item)] >= Math.ceil(getProductQuantity(item) / getProductColors(item).length))}
+                  disabled={!!(selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1 && colorStockInfo[getProductName(item)] >= Math.ceil(getProductQuantity(item) / getProductColors(item).length))}
                   on:click={() => handleInquiryClick(item, category.name, getProductQuantity(item), getProductPrice(item))}
                 >
                   {addedItems[getDisplayName(item)] ? `✓ Added (${addedItems[getDisplayName(item)]})` : 'Add to Cart'}
@@ -1502,7 +1502,7 @@
               class="btn btn-inquiry"
               class:added={addedItems[getDisplayName(productModal.product)]}
               class:needs-color={!selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1}
-              disabled={(!selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1) || (selectedColors[productModal.productName] && colorStockInfo[productModal.productName] >= Math.ceil(productModal.quantity / productModal.colors.length))}
+              disabled={!!(selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1 && colorStockInfo[productModal.productName] >= Math.ceil(productModal.quantity / productModal.colors.length))}
               on:click={() => handleInquiryClick(productModal.product, productModal.subCategoryName || productModal.categoryName, productModal.quantity, productModal.price)}
             >
               {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : 'Add to Cart'}
@@ -2497,15 +2497,23 @@
     border-radius: 4px;
   }
 
-  .btn-inquiry.needs-color,
+  /* No color selected: clickable so shake animation fires, but JS blocks add */
+  .btn-inquiry.needs-color {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-inquiry.needs-color:hover,
+  .btn-inquiry.needs-color:active {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Color selected but out of stock: fully non-interactive */
   .btn-inquiry:disabled {
     pointer-events: none;
     cursor: default;
     -webkit-tap-highlight-color: transparent;
   }
-
-  .btn-inquiry.needs-color:hover,
-  .btn-inquiry.needs-color:active,
   .btn-inquiry:disabled:hover,
   .btn-inquiry:disabled:active {
     transform: none;
