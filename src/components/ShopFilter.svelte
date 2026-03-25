@@ -74,6 +74,7 @@
   }
 
   let selectedColors = {};
+  let needsColorItems = {};
 
   function selectColor(productName, color) {
     if (selectedColors[productName] === color) {
@@ -738,7 +739,13 @@
   }
 
   function handleInquiryClick(productItem, categoryName, stockQty, itemPrice) {
-    if (needsColor(productItem)) return;
+    if (needsColor(productItem)) {
+      const name = getProductName(productItem);
+      needsColorItems[name] = true;
+      needsColorItems = needsColorItems;
+      setTimeout(() => { delete needsColorItems[name]; needsColorItems = needsColorItems; }, 600);
+      return;
+    }
     addToInquiry(productItem, categoryName, stockQty, itemPrice);
   }
 
@@ -1049,7 +1056,7 @@
                   {#if getRemainingStock(result.product) > 0}
                     <span class="in-stock">In Stock: {getRemainingStock(result.product)}</span>
                     {#if result.colors}
-                      <span class="color-dots">
+                      <span class="color-dots" class:shake={needsColorItems[result.productName]}>
                         {#each result.colors as color}
                           <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} class:sold-out={getColorRemaining(result.product, color) === 0} disabled={getColorRemaining(result.product, color) === 0} on:click|stopPropagation={() => selectColor(result.productName, color)}></button>
                         {/each}
@@ -1076,10 +1083,10 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(result.product)]}
-                  class:needs-color={!addedItems[getDisplayName(result.product)] && needsColor(result.product)}
+                  class:needs-color={false}
                   on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, result.price)}
                 >
-                  {addedItems[getDisplayName(result.product)] ? `✓ Added (${addedItems[getDisplayName(result.product)]})` : needsColor(result.product) ? '↑ Select a Color' : 'Add to Cart'}
+                  {addedItems[getDisplayName(result.product)] ? `✓ Added (${addedItems[getDisplayName(result.product)]})` : 'Add to Cart'}
                 </button>
                 <a
                   href={getWhatsAppLink(result.product)}
@@ -1133,7 +1140,7 @@
             </a>
             {#if sp.colors && sp.quantity > 0}
               <p class="product-quantity" style="padding: 0 0.5rem;">
-                <span class="color-dots">
+                <span class="color-dots" class:shake={needsColorItems[sp.productName]}>
                   {#each sp.colors as color}
                     <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} class:sold-out={getColorRemaining(sp.product, color) === 0} disabled={getColorRemaining(sp.product, color) === 0} on:click|stopPropagation={() => selectColor(sp.productName, color)}></button>
                   {/each}
@@ -1153,10 +1160,10 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(sp.product)]}
-                  class:needs-color={!addedItems[getDisplayName(sp.product)] && needsColor(sp.product)}
+                  class:needs-color={false}
                   on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}
                 >
-                  {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : needsColor(sp.product) ? '↑ Select a Color' : 'Add to Cart'}
+                  {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
                 </button>
                 <a href={getWhatsAppLink(sp.product)} target="_blank" rel="noopener noreferrer" class="btn btn-small btn-whatsapp">WhatsApp</a>
               </div>
@@ -1220,7 +1227,7 @@
                                   {#if getRemainingStock(nestedProduct) > 0}
                                     <span class="in-stock">In Stock: {getRemainingStock(nestedProduct)}</span>
                                     {#if getProductColors(nestedProduct)}
-                                      <span class="color-dots">
+                                      <span class="color-dots" class:shake={needsColorItems[getProductName(nestedProduct)]}>
                                         {#each getProductColors(nestedProduct) as color}
                                           <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(nestedProduct)] === color} class:sold-out={getColorRemaining(nestedProduct, color) === 0} disabled={getColorRemaining(nestedProduct, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(nestedProduct), color)}></button>
                                         {/each}
@@ -1247,10 +1254,10 @@
                                 <button
                                   class="btn btn-small btn-inquiry"
                                   class:added={addedItems[getDisplayName(nestedProduct)]}
-                                  class:needs-color={!addedItems[getDisplayName(nestedProduct)] && needsColor(nestedProduct)}
+                                  class:needs-color={false}
                                   on:click={() => handleInquiryClick(nestedProduct, subItem.name, getProductQuantity(nestedProduct), getProductPrice(nestedProduct))}
                                 >
-                                  {addedItems[getDisplayName(nestedProduct)] ? `✓ Added (${addedItems[getDisplayName(nestedProduct)]})` : needsColor(nestedProduct) ? '↑ Select a Color' : 'Add to Cart'}
+                                  {addedItems[getDisplayName(nestedProduct)] ? `✓ Added (${addedItems[getDisplayName(nestedProduct)]})` : 'Add to Cart'}
                                 </button>
                                 <a
                                   href={getWhatsAppLink(nestedProduct)}
@@ -1286,7 +1293,7 @@
                         {#if getRemainingStock(subItem) > 0}
                           <span class="in-stock">In Stock: {getRemainingStock(subItem)}</span>
                           {#if getProductColors(subItem)}
-                            <span class="color-dots">
+                            <span class="color-dots" class:shake={needsColorItems[getProductName(subItem)]}>
                               {#each getProductColors(subItem) as color}
                                 <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(subItem)] === color} class:sold-out={getColorRemaining(subItem, color) === 0} disabled={getColorRemaining(subItem, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(subItem), color)}></button>
                               {/each}
@@ -1313,10 +1320,10 @@
                       <button
                         class="btn btn-small btn-inquiry"
                         class:added={addedItems[getDisplayName(subItem)]}
-                        class:needs-color={!addedItems[getDisplayName(subItem)] && needsColor(subItem)}
+                        class:needs-color={false}
                         on:click={() => handleInquiryClick(subItem, item.name, getProductQuantity(subItem), getProductPrice(subItem))}
                       >
-                        {addedItems[getDisplayName(subItem)] ? `✓ Added (${addedItems[getDisplayName(subItem)]})` : needsColor(subItem) ? '↑ Select a Color' : 'Add to Cart'}
+                        {addedItems[getDisplayName(subItem)] ? `✓ Added (${addedItems[getDisplayName(subItem)]})` : 'Add to Cart'}
                       </button>
                       <a
                         href={getWhatsAppLink(subItem)}
@@ -1354,7 +1361,7 @@
                   {#if getRemainingStock(item) > 0}
                     <span class="in-stock">In Stock: {getRemainingStock(item)}</span>
                     {#if getProductColors(item)}
-                      <span class="color-dots">
+                      <span class="color-dots" class:shake={needsColorItems[getProductName(item)]}>
                         {#each getProductColors(item) as color}
                           <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(item)] === color} class:sold-out={getColorRemaining(item, color) === 0} disabled={getColorRemaining(item, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(item), color)}></button>
                         {/each}
@@ -1381,10 +1388,10 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(item)]}
-                  class:needs-color={!addedItems[getDisplayName(item)] && needsColor(item)}
+                  class:needs-color={false}
                   on:click={() => handleInquiryClick(item, category.name, getProductQuantity(item), getProductPrice(item))}
                 >
-                  {addedItems[getDisplayName(item)] ? `✓ Added (${addedItems[getDisplayName(item)]})` : needsColor(item) ? '↑ Select a Color' : 'Add to Cart'}
+                  {addedItems[getDisplayName(item)] ? `✓ Added (${addedItems[getDisplayName(item)]})` : 'Add to Cart'}
                 </button>
                 <a
                   href={getWhatsAppLink(item)}
@@ -1450,7 +1457,7 @@
           {/if}
           {#if productModal.colors && getRemainingStock(productModal.product) > 0}
             <div class="product-modal-colors">
-              <span class="color-dots">
+              <span class="color-dots" class:shake={needsColorItems[productModal.productName]}>
                 {#each productModal.colors as color}
                   <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} class:sold-out={getColorRemaining(productModal.product, color) === 0} disabled={getColorRemaining(productModal.product, color) === 0} on:click|stopPropagation={() => selectColor(productModal.productName, color)}></button>
                 {/each}
@@ -1469,10 +1476,10 @@
             <button
               class="btn btn-inquiry"
               class:added={addedItems[getDisplayName(productModal.product)]}
-              class:needs-color={!addedItems[getDisplayName(productModal.product)] && needsColor(productModal.product)}
+              class:needs-color={false}
               on:click={() => handleInquiryClick(productModal.product, productModal.subCategoryName || productModal.categoryName, productModal.quantity, productModal.price)}
             >
-              {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : needsColor(productModal.product) ? '↑ Select a Color' : 'Add to Cart'}
+              {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : 'Add to Cart'}
             </button>
             <a href={getWhatsAppLink(productModal.product)} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">WhatsApp</a>
           </div>
@@ -2447,6 +2454,19 @@
     opacity: 0.35;
     cursor: not-allowed;
     filter: grayscale(60%);
+  }
+
+  @keyframes shake-dots {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(3px); }
+  }
+  .color-dots.shake {
+    animation: shake-dots 0.5s ease;
+    outline: 2px solid #e74c3c;
+    border-radius: 4px;
   }
 
   .btn-inquiry.needs-color {
