@@ -107,7 +107,7 @@ export const categories: Category[] = [
           {
             name: '380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice',
             price: 8000,
-            quantity: 5,
+            quantity: 1,
             colors: ['#2e7d32', '#2c2c2c', '#ff69b4', '#7b1fa2', '#1565c0'],
             images: [
               '/images/products/blender-380ml-1.webp',
@@ -130,7 +130,7 @@ export const categories: Category[] = [
               '/images/products/manual-chopper-no-electricity-3.webp',
               '/images/products/manual-chopper-no-electricity-4.webp'
             ],
-            quantity: 4,
+            quantity: 2,
             colors: ['#ff69b4', '#808080'],
             price: 10000
           }
@@ -595,7 +595,7 @@ export const categories: Category[] = [
           {
             name: 'Smart Watch Compatible with iPhone & Android Devices',
             price: 5000,
-            quantity: 4,
+            quantity: 2,
             colors: ['#ff69b4', '#2c2c2c'],
             images: [
               '/images/products/smart-watch-1.webp',
@@ -605,7 +605,7 @@ export const categories: Category[] = [
           {
             name: 'Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking',
             price: 8000,
-            quantity: 6,
+            quantity: 2,
             colors: ['#2c2c2c', '#d4af37', '#ff69b4'],
             images: [
               '/images/products/smartwatch-multi-1.webp',
@@ -701,7 +701,7 @@ export const categories: Category[] = [
           {
             name: 'Rechargeable Portable Fan',
             price: 3000,
-            quantity: 9,
+            quantity: 3,
             colors: ['#800080', '#ff69b4', '#2c2c2c'],
             images: [
               '/images/products/rechargeable-fan1.webp',
@@ -738,7 +738,7 @@ export const categories: Category[] = [
           {
             name: 'TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker',
             price: 9000,
-            quantity: 5,
+            quantity: 1,
             colors: ['#2e7d32', '#1565c0', '#c62828', '#2c2c2c', '#4a5240'],
             images: [
               '/images/products/tg192-speaker-1.webp',
@@ -752,7 +752,7 @@ export const categories: Category[] = [
           {
             name: 'TG537 Portable Wireless Speaker - TWS Technology',
             price: 8000,
-            quantity: 6,
+            quantity: 2,
             colors: ['#808080', '#e74c3c', '#2c2c2c'],
             images: [
               '/images/products/tg537-speaker-1.webp',
@@ -765,7 +765,7 @@ export const categories: Category[] = [
           {
             name: 'TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets',
             price: 8000,
-            quantity: 8,
+            quantity: 2,
             colors: ['#e74c3c', '#2980b9', '#2c2c2c', '#800080'],
             images: [
               '/images/products/tg667-speaker-1.webp',
@@ -777,7 +777,7 @@ export const categories: Category[] = [
           {
             name: 'Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation',
             price: 5000,
-            quantity: 10,
+            quantity: 5,
             colors: ['#808080', '#ffffff'],
             images: [
               '/images/products/hyundai-lp5t-1.webp',
@@ -827,7 +827,7 @@ export const categories: Category[] = [
           {
             name: 'Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation',
             price: 5500,
-            quantity: 4,
+            quantity: 2,
             colors: ['#ff8c00', '#f5f5dc'],
             images: [
               '/images/products/acer-tws-headset-1.webp',
@@ -839,7 +839,7 @@ export const categories: Category[] = [
           {
             name: 'Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control',
             price: 5500,
-            quantity: 6,
+            quantity: 2,
             colors: ['#f5f5dc', '#2c2c2c', '#800080'],
             images: [
               '/images/products/acer-wireless-stereo-1.webp',
@@ -850,7 +850,7 @@ export const categories: Category[] = [
           {
             name: 'Nokia Go Earbuds+ TWS-201',
             price: 8000,
-            quantity: 9,
+            quantity: 5,
             colors: ['#ffffff', '#2c2c2c'],
             images: [
               '/images/products/nokia-earbuds-1.webp',
@@ -950,7 +950,7 @@ export const categories: Category[] = [
           {
             name: '45W High Quality Type-C Charger - Super Fast Charging',
             price: 3500,
-            quantity: 40,
+            quantity: 20,
             colors: ['#2c2c2c', '#ffffff'],
             images: [
               '/images/products/45w-type-c-charger-4.webp',
