@@ -19,7 +19,20 @@
       "Bash(cd /c/Users/Administrator/cameroon-project && git push origin main 2>&1)",
       "Bash(taskkill:*)",
       "Bash(cd /c/Users/Administrator/cameroon-project && npm run reprocess-bg 2>&1)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(cmd:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(npx astro:*)",
+      "Bash(cd \"C:\\\\Users\\\\Administrator\\\\cameroon-project\" && rm public/images/products/dr-teals-lemon-balm1.webp public/images/products/dr-teals-lemon-balm2.webp)",
+      "Bash(npm run:*)",
+      "Bash(find:*)",
+      "Bash(node --input-type=module -e \":*)",
+      "Bash(npx tsx -e \":*)",
+      "Bash(git push:*)",
+      "Bash(npm install:*)",
+      "Skill(pdf)",
+      "Bash(wkhtmltopdf --version)"
     ]
   }
 }
