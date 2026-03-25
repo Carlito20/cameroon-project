@@ -1816,6 +1816,10 @@
     cursor: pointer;
     text-align: left;
     transition: background 0.15s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   @media (min-width: 769px) {
@@ -1882,6 +1886,10 @@
     font-size: 0.85rem;
     cursor: pointer;
     transition: background 0.2s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .clear-filter:hover,
@@ -1967,6 +1975,10 @@
     color: white;
     cursor: pointer;
     width: 100%;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
     text-align: left;
     border-radius: 0;
     transition: all 0.2s ease;
@@ -2055,6 +2067,10 @@
     width: 100%;
     text-align: left;
     transition: all 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .nested-subcategory-header:hover,
@@ -2208,6 +2224,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .lightbox-close:hover {
@@ -2233,6 +2253,12 @@
     border-radius: 8px;
     transition: background 0.2s ease;
     z-index: 10;
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .lightbox-nav:hover {
@@ -2328,6 +2354,11 @@
     font-size: 0.85rem;
     cursor: pointer;
     white-space: nowrap;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .lightbox-zoom-hint:hover {
@@ -2655,6 +2686,11 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .confirm-btn.remove-btn {
@@ -3206,6 +3242,7 @@
     justify-content: center;
     transition: all 0.2s ease;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
     -webkit-transform: translateZ(0);
