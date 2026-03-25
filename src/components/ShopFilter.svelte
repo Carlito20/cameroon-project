@@ -353,13 +353,15 @@
     return Math.max(0, qty - (cartTotals[baseName] || 0));
   }
 
-  // Per-color remaining stock: each color has its own pool equal to product quantity
+  // Per-color remaining stock: total quantity divided evenly across colors
   function getColorRemaining(productItem, colorHex) {
     const qty = getProductQuantity(productItem);
     if (qty == null) return null;
+    const colors = getProductColors(productItem);
+    const perColor = colors && colors.length > 1 ? Math.ceil(qty / colors.length) : qty;
     const baseName = getProductName(productItem);
     const colorKey = `${baseName} (${getColorName(colorHex)})`;
-    return Math.max(0, qty - (cartTotals[colorKey] || 0));
+    return Math.max(0, perColor - (cartTotals[colorKey] || 0));
   }
 
   // Track selected quantities before adding (default 1)
