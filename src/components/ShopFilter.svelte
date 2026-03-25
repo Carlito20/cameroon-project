@@ -2490,22 +2490,17 @@
 
   .btn-inquiry.needs-color,
   .btn-inquiry:disabled {
-    background: #e0e0e0;
-    color: #777;
-    border-color: #ccc;
-    cursor: not-allowed;
-    opacity: 0.9;
-    font-size: 0.78rem;
-    -webkit-user-select: none;
-    user-select: none;
+    pointer-events: none;
+    cursor: default;
     -webkit-tap-highlight-color: transparent;
   }
 
   .btn-inquiry.needs-color:hover,
-  .btn-inquiry.needs-color:active {
-    background: #e0e0e0;
-    color: #777;
+  .btn-inquiry.needs-color:active,
+  .btn-inquiry:disabled:hover,
+  .btn-inquiry:disabled:active {
     transform: none;
+    box-shadow: none;
   }
 
   .color-label {
