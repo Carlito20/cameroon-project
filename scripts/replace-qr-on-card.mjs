@@ -16,12 +16,11 @@ const qrPath     = resolve(ROOT, 'Images/QR/americanselect-qr.png');
 const outputPath = resolve(ROOT, 'business-card-updated.pdf');
 
 // Page 2 (back): 816 x 1035.12 pts
-// QR code box position on page (estimated from visual inspection):
-// x from left: 642, y from bottom: 742, width: 114, height: 114
-const QR_X = 642;
-const QR_Y = 742;
-const QR_W = 114;
-const QR_H = 114;
+// QR code box position measured from 100% zoom screenshot (page left offset=358px)
+const QR_X = 634;   // x from left
+const QR_Y = 749;   // y from bottom
+const QR_W = 131;   // width  (matches original QR size exactly)
+const QR_H = 133;   // height
 
 const pdfBytes = readFileSync(pdfPath);
 const qrBytes  = readFileSync(qrPath);
@@ -32,12 +31,12 @@ const qrImage = await pdf.embedPng(qrBytes);
 // Work on page 2 (index 1) — the back of the card
 const page = pdf.getPages()[1];
 
-// Draw white rectangle to cover existing QR code
+// Draw white rectangle to cover existing QR code (with generous buffer)
 page.drawRectangle({
-  x: QR_X - 2,
-  y: QR_Y - 2,
-  width: QR_W + 4,
-  height: QR_H + 4,
+  x: QR_X - 10,
+  y: QR_Y - 10,
+  width: QR_W + 20,
+  height: QR_H + 20,
   color: { type: 'RGB', red: 1, green: 1, blue: 1 },
 });
 
