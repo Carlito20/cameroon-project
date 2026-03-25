@@ -1071,7 +1071,7 @@
                     {#if result.colors}
                       <span class="color-dots" class:shake={needsColorItems[result.productName]}>
                         {#each result.colors as color}
-                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} class:sold-out={getColorRemaining(result.product, color) === 0} disabled={getColorRemaining(result.product, color) === 0} on:click|stopPropagation={() => selectColorAndAdd(result.product, color, result.subCategoryName || result.categoryName, result.quantity, result.price)}></button>
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} class:sold-out={getColorRemaining(result.product, color) === 0} disabled={getColorRemaining(result.product, color) === 0} on:click|stopPropagation={() => selectColor(result.productName, color)}></button>
                         {/each}
                         {#if selectedColors[result.productName]}
                           <span class="color-label">{getColorName(selectedColors[result.productName])}</span>
@@ -1096,7 +1096,8 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(result.product)]}
-                  class:needs-color={false}
+                  class:needs-color={needsColor(result.product)}
+                  disabled={needsColor(result.product)}
                   on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, result.price)}
                 >
                   {addedItems[getDisplayName(result.product)] ? `✓ Added (${addedItems[getDisplayName(result.product)]})` : 'Add to Cart'}
@@ -1155,7 +1156,7 @@
               <p class="product-quantity" style="padding: 0 0.5rem;">
                 <span class="color-dots" class:shake={needsColorItems[sp.productName]}>
                   {#each sp.colors as color}
-                    <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} class:sold-out={getColorRemaining(sp.product, color) === 0} disabled={getColorRemaining(sp.product, color) === 0} on:click|stopPropagation={() => selectColorAndAdd(sp.product, color, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}></button>
+                    <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} class:sold-out={getColorRemaining(sp.product, color) === 0} disabled={getColorRemaining(sp.product, color) === 0} on:click|stopPropagation={() => selectColor(sp.productName, color)}></button>
                   {/each}
                   {#if selectedColors[sp.productName]}
                     <span class="color-label">{getColorName(selectedColors[sp.productName])}</span>
@@ -1173,7 +1174,8 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(sp.product)]}
-                  class:needs-color={false}
+                  class:needs-color={needsColor(sp.product)}
+                  disabled={needsColor(sp.product)}
                   on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}
                 >
                   {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
@@ -1242,7 +1244,7 @@
                                     {#if getProductColors(nestedProduct)}
                                       <span class="color-dots" class:shake={needsColorItems[getProductName(nestedProduct)]}>
                                         {#each getProductColors(nestedProduct) as color}
-                                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(nestedProduct)] === color} class:sold-out={getColorRemaining(nestedProduct, color) === 0} disabled={getColorRemaining(nestedProduct, color) === 0} on:click|stopPropagation={() => selectColorAndAdd(nestedProduct, color, subItem.name, getProductQuantity(nestedProduct), getProductPrice(nestedProduct))}></button>
+                                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(nestedProduct)] === color} class:sold-out={getColorRemaining(nestedProduct, color) === 0} disabled={getColorRemaining(nestedProduct, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(nestedProduct), color)}></button>
                                         {/each}
                                         {#if selectedColors[getProductName(nestedProduct)]}
                                           <span class="color-label">{getColorName(selectedColors[getProductName(nestedProduct)])}</span>
@@ -1267,7 +1269,8 @@
                                 <button
                                   class="btn btn-small btn-inquiry"
                                   class:added={addedItems[getDisplayName(nestedProduct)]}
-                                  class:needs-color={false}
+                                  class:needs-color={needsColor(nestedProduct)}
+                                  disabled={needsColor(nestedProduct)}
                                   on:click={() => handleInquiryClick(nestedProduct, subItem.name, getProductQuantity(nestedProduct), getProductPrice(nestedProduct))}
                                 >
                                   {addedItems[getDisplayName(nestedProduct)] ? `✓ Added (${addedItems[getDisplayName(nestedProduct)]})` : 'Add to Cart'}
@@ -1308,7 +1311,7 @@
                           {#if getProductColors(subItem)}
                             <span class="color-dots" class:shake={needsColorItems[getProductName(subItem)]}>
                               {#each getProductColors(subItem) as color}
-                                <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(subItem)] === color} class:sold-out={getColorRemaining(subItem, color) === 0} disabled={getColorRemaining(subItem, color) === 0} on:click|stopPropagation={() => selectColorAndAdd(subItem, color, item.name, getProductQuantity(subItem), getProductPrice(subItem))}></button>
+                                <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(subItem)] === color} class:sold-out={getColorRemaining(subItem, color) === 0} disabled={getColorRemaining(subItem, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(subItem), color)}></button>
                               {/each}
                               {#if selectedColors[getProductName(subItem)]}
                                 <span class="color-label">{getColorName(selectedColors[getProductName(subItem)])}</span>
@@ -1333,7 +1336,8 @@
                       <button
                         class="btn btn-small btn-inquiry"
                         class:added={addedItems[getDisplayName(subItem)]}
-                        class:needs-color={false}
+                        class:needs-color={needsColor(subItem)}
+                        disabled={needsColor(subItem)}
                         on:click={() => handleInquiryClick(subItem, item.name, getProductQuantity(subItem), getProductPrice(subItem))}
                       >
                         {addedItems[getDisplayName(subItem)] ? `✓ Added (${addedItems[getDisplayName(subItem)]})` : 'Add to Cart'}
@@ -1376,7 +1380,7 @@
                     {#if getProductColors(item)}
                       <span class="color-dots" class:shake={needsColorItems[getProductName(item)]}>
                         {#each getProductColors(item) as color}
-                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(item)] === color} class:sold-out={getColorRemaining(item, color) === 0} disabled={getColorRemaining(item, color) === 0} on:click|stopPropagation={() => selectColorAndAdd(item, color, category.name, getProductQuantity(item), getProductPrice(item))}></button>
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(item)] === color} class:sold-out={getColorRemaining(item, color) === 0} disabled={getColorRemaining(item, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(item), color)}></button>
                         {/each}
                         {#if selectedColors[getProductName(item)]}
                           <span class="color-label">{getColorName(selectedColors[getProductName(item)])}</span>
@@ -1401,7 +1405,8 @@
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(item)]}
-                  class:needs-color={false}
+                  class:needs-color={needsColor(item)}
+                  disabled={needsColor(item)}
                   on:click={() => handleInquiryClick(item, category.name, getProductQuantity(item), getProductPrice(item))}
                 >
                   {addedItems[getDisplayName(item)] ? `✓ Added (${addedItems[getDisplayName(item)]})` : 'Add to Cart'}
@@ -1472,7 +1477,7 @@
             <div class="product-modal-colors">
               <span class="color-dots" class:shake={needsColorItems[productModal.productName]}>
                 {#each productModal.colors as color}
-                  <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} class:sold-out={getColorRemaining(productModal.product, color) === 0} disabled={getColorRemaining(productModal.product, color) === 0} on:click|stopPropagation={() => selectColorAndAdd(productModal.product, color, productModal.subCategoryName || productModal.categoryName, productModal.quantity, productModal.price)}></button>
+                  <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} class:sold-out={getColorRemaining(productModal.product, color) === 0} disabled={getColorRemaining(productModal.product, color) === 0} on:click|stopPropagation={() => selectColor(productModal.productName, color)}></button>
                 {/each}
                 {#if selectedColors[productModal.productName]}
                   <span class="color-label">{getColorName(selectedColors[productModal.productName])}</span>
@@ -1489,7 +1494,8 @@
             <button
               class="btn btn-inquiry"
               class:added={addedItems[getDisplayName(productModal.product)]}
-              class:needs-color={false}
+              class:needs-color={needsColor(productModal.product)}
+              disabled={needsColor(productModal.product)}
               on:click={() => handleInquiryClick(productModal.product, productModal.subCategoryName || productModal.categoryName, productModal.quantity, productModal.price)}
             >
               {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : 'Add to Cart'}
@@ -2482,11 +2488,12 @@
     border-radius: 4px;
   }
 
-  .btn-inquiry.needs-color {
+  .btn-inquiry.needs-color,
+  .btn-inquiry:disabled {
     background: #e0e0e0;
     color: #777;
     border-color: #ccc;
-    cursor: default;
+    cursor: not-allowed;
     opacity: 0.9;
     font-size: 0.78rem;
     -webkit-user-select: none;
