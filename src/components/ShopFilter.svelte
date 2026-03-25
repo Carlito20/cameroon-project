@@ -2444,22 +2444,9 @@
   }
 
   .color-dot.sold-out {
-    opacity: 0.3;
+    opacity: 0.35;
     cursor: not-allowed;
-    position: relative;
-  }
-  .color-dot.sold-out::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 3px,
-      rgba(0,0,0,0.4) 3px,
-      rgba(0,0,0,0.4) 4px
-    );
-    border-radius: inherit;
+    filter: grayscale(60%);
   }
 
   .btn-inquiry.needs-color {
