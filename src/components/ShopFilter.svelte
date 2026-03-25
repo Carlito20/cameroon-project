@@ -2414,10 +2414,12 @@
 
   .color-dots {
     display: inline-flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 5px;
     margin-left: 8px;
     vertical-align: middle;
+    max-width: 100%;
   }
 
   .color-dot {
@@ -2513,8 +2515,9 @@
     background: #f0f4f8;
     border-radius: 4px;
     padding: 1px 6px;
-    margin-left: 2px;
+    margin-left: 0;
     white-space: nowrap;
+    flex-basis: 100%;
   }
 
   .out-of-stock {
