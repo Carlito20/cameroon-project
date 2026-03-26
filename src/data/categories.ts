@@ -737,7 +737,7 @@ export const categories: Category[] = [
         items: [
           {
             name: 'TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker',
-            price: 9000,
+            price: 12000,
             quantity: 5,
             colors: ['#2e7d32', '#1565c0', '#c62828', '#2c2c2c', '#4a5240'],
             images: [
@@ -751,7 +751,7 @@ export const categories: Category[] = [
           },
           {
             name: 'TG537 Portable Wireless Speaker - TWS Technology',
-            price: 8000,
+            price: 10000,
             quantity: 6,
             colors: ['#808080', '#e74c3c', '#2c2c2c'],
             images: [
@@ -776,7 +776,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation',
-            price: 5000,
+            price: 7000,
             quantity: 10,
             colors: ['#808080', '#ffffff'],
             images: [
