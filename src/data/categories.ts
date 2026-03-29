@@ -466,7 +466,82 @@ export const categories: Category[] = [
       },
       {
         name: 'Hair Care (shampoo, conditioner, oils)',
-        items: []
+        items: [
+          {
+            name: 'Suave Keratin Infusion Smoothing Shampoo & Conditioner Set For Frizzy Hair',
+            images: [
+              '/images/products/suave-keratin-shampoo-conditioner1.webp',
+              '/images/products/suave-keratin-shampoo-conditioner2.webp',
+              '/images/products/suave-keratin-shampoo-conditioner3.webp',
+              '/images/products/suave-keratin-shampoo-conditioner4.webp',
+            ],
+            price: 10000,
+            quantity: 2
+          },
+          {
+            name: 'Suave Moisturizing Shampoo & Conditioner With Almond & Shea Butter',
+            images: [
+              '/images/products/suave-almond-shea-shampoo-conditioner1.webp',
+              '/images/products/suave-almond-shea-shampoo-conditioner2.webp',
+              '/images/products/suave-almond-shea-shampoo-conditioner3.webp',
+              '/images/products/suave-almond-shea-shampoo-conditioner4.webp',
+            ],
+            price: 10000,
+            quantity: 2
+          },
+          {
+            name: 'TRESemmé Rich Moisture Shampoo and Conditioner Set',
+            images: [
+              '/images/products/tresemme-rich-moisture-shampoo-conditioner1.webp',
+              '/images/products/tresemme-rich-moisture-shampoo-conditioner2.webp',
+              '/images/products/tresemme-rich-moisture-shampoo-conditioner3.webp',
+              '/images/products/tresemme-rich-moisture-shampoo-conditioner4.webp',
+            ],
+            price: 10000,
+            quantity: 2
+          },
+          {
+            name: 'TRESemmé Shampoo & Conditioner Keratin Smooth',
+            images: [
+              '/images/products/tresemme-keratin-smooth-shampoo-conditioner1.webp',
+              '/images/products/tresemme-keratin-smooth-shampoo-conditioner2.webp',
+              '/images/products/tresemme-keratin-smooth-shampoo-conditioner3.webp',
+              '/images/products/tresemme-keratin-smooth-shampoo-conditioner4.webp',
+            ],
+            price: 10000,
+            quantity: 2
+          },
+          {
+            name: 'TRESemmé Shampoo And Conditioner Anti-Breakage',
+            images: [
+              '/images/products/tresemme-anti-breakage-shampoo-conditioner1.webp',
+              '/images/products/tresemme-anti-breakage-shampoo-conditioner2.webp',
+              '/images/products/tresemme-anti-breakage-shampoo-conditioner3.webp',
+            ],
+            price: 10000,
+            quantity: 2
+          },
+          {
+            name: 'TRESemmé Shampoo and Conditioner for Women Amplified Volume Twin Pack',
+            images: [
+              '/images/products/tresemme-amplified-volume-shampoo-conditioner1.webp',
+              '/images/products/tresemme-amplified-volume-shampoo-conditioner2.webp',
+              '/images/products/tresemme-amplified-volume-shampoo-conditioner3.webp',
+            ],
+            price: 10000,
+            quantity: 2
+          },
+          {
+            name: 'TRESemmé Silky & Smooth Anti-Frizz Shampoo & Conditioner for Frizzy Hair',
+            images: [
+              '/images/products/tresemme-silky-smooth-shampoo-conditioner1.webp',
+              '/images/products/tresemme-silky-smooth-shampoo-conditioner2.webp',
+              '/images/products/tresemme-silky-smooth-shampoo-conditioner3.webp',
+            ],
+            price: 10000,
+            quantity: 2
+          },
+        ]
       }
     ]
   },
@@ -868,6 +943,26 @@ export const categories: Category[] = [
             images: [
               '/images/products/usb-tws-earbuds-1.webp',
               '/images/products/usb-tws-earbuds-2.webp'
+            ]
+          },
+          {
+            name: 'Y01 Over the Ear Wireless Headphones',
+            price: 13000,
+            quantity: 1,
+            images: [
+              '/images/products/y01-headphones3.webp',
+              '/images/products/y01-headphones1.webp',
+              '/images/products/y01-headphones2.webp',
+            ]
+          },
+          {
+            name: 'TOZO T6 Wireless Earbuds IPX8 Waterproof',
+            price: 8000,
+            quantity: 1,
+            images: [
+              '/images/products/tozo-t6-earbuds1.webp',
+              '/images/products/tozo-t6-earbuds2.webp',
+              '/images/products/tozo-t6-earbuds3.webp',
             ]
           },
           {

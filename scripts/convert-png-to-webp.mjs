@@ -138,6 +138,55 @@ const mappings = [
   ["Images/Electronics/Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone AnsweringDialing, Remote Photography, Music Playback, Sp.png", 'smartwatch-multi-2.webp'],
   ["Images/Electronics/Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone AnsweringDialing, Remote Photography, Music Playback, Sp (2).png", 'smartwatch-multi-3.webp'],
   ["Images/Electronics/Z68.png", 'smartwatch-multi-4.webp'],
+
+  // Suave Keratin Shampoo & Conditioner
+  ["Images/Shampoo and Conditioners/Suave Keratin Infusion Smoothing Shampoo & Conditioner Set For Frizzy Hair.png",      'suave-keratin-shampoo-conditioner1.webp'],
+  ["Images/Shampoo and Conditioners/Suave Keratin Infusion Smoothing Shampoo & Conditioner Set For Frizzy Hair1 (2).png", 'suave-keratin-shampoo-conditioner2.webp'],
+  ["Images/Shampoo and Conditioners/Suave Keratin Infusion Smoothing Shampoo & Conditioner Set For Frizzy Hair2.png",     'suave-keratin-shampoo-conditioner3.webp'],
+  ["Images/Shampoo and Conditioners/Suave Keratin Infusion Smoothing Shampoo & Conditioner Set For Frizzy Hair3.png",     'suave-keratin-shampoo-conditioner4.webp'],
+
+  // Suave Almond & Shea Shampoo & Conditioner
+  ["Images/Shampoo and Conditioners/Suave Moisturizing Shampoo & Conditioner With Almond & Shea Butter.png",              'suave-almond-shea-shampoo-conditioner1.webp'],
+  ["Images/Shampoo and Conditioners/Suave Moisturizing Shampoo & Conditioner With Almond & Shea Butter1.png",             'suave-almond-shea-shampoo-conditioner2.webp'],
+  ["Images/Shampoo and Conditioners/Suave Moisturizing Shampoo & Conditioner With Almond & Shea Butter2.png",             'suave-almond-shea-shampoo-conditioner3.webp'],
+  ["Images/Shampoo and Conditioners/Suave Moisturizing Shampoo & Conditioner With Almond & Shea Butter3 (2).png",         'suave-almond-shea-shampoo-conditioner4.webp'],
+
+  // TRESemmé Rich Moisture
+  ["Images/Shampoo and Conditioners/Tresemme Rich Moisture Shampoo and Conditioner Set.png",                              'tresemme-rich-moisture-shampoo-conditioner1.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Rich Moisture Shampoo and Conditioner Set1.png",                             'tresemme-rich-moisture-shampoo-conditioner2.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Rich Moisture Shampoo and Conditioner Set2.png",                             'tresemme-rich-moisture-shampoo-conditioner3.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Rich Moisture Shampoo and Conditioner Set3 (2).png",                         'tresemme-rich-moisture-shampoo-conditioner4.webp'],
+
+  // TRESemmé Keratin Smooth
+  ["Images/Shampoo and Conditioners/Tresemme Shampoo & Conditioner Keratin Smooth.png",                                   'tresemme-keratin-smooth-shampoo-conditioner1.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Shampoo & Conditioner Keratin Smooth1.png",                                  'tresemme-keratin-smooth-shampoo-conditioner2.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Shampoo & Conditioner Keratin Smooth2.png",                                  'tresemme-keratin-smooth-shampoo-conditioner3.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Shampoo & Conditioner Keratin Smooth3 (2).png",                              'tresemme-keratin-smooth-shampoo-conditioner4.webp'],
+
+  // TRESemmé Anti-Breakage
+  ["Images/Shampoo and Conditioners/TRESemmé Shampoo And Conditioner Anti-Breakage.png",                                  'tresemme-anti-breakage-shampoo-conditioner1.webp'],
+  ["Images/Shampoo and Conditioners/TRESemmé Shampoo And Conditioner Anti-Breakage1.png",                                 'tresemme-anti-breakage-shampoo-conditioner2.webp'],
+  ["Images/Shampoo and Conditioners/TRESemmé Shampoo And Conditioner Anti-Breakage2.png",                                 'tresemme-anti-breakage-shampoo-conditioner3.webp'],
+
+  // TRESemmé Amplified Volume
+  ["Images/Shampoo and Conditioners/Tresemme Shampoo and Conditioner for Women Amplified Volume Twin Pack.png",           'tresemme-amplified-volume-shampoo-conditioner1.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Shampoo and Conditioner for Women Amplified Volume Twin Pack1.png",          'tresemme-amplified-volume-shampoo-conditioner2.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Shampoo and Conditioner for Women Amplified Volume Twin Pack2.png",          'tresemme-amplified-volume-shampoo-conditioner3.webp'],
+
+  // TRESemmé Silky & Smooth
+  ["Images/Shampoo and Conditioners/Tresemme Silky & Smooth Anti-Frizz Shampoo & Conditioner Frizzy Hair.png",           'tresemme-silky-smooth-shampoo-conditioner1.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Silky & Smooth Anti-Frizz Shampoo & Conditioner Frizzy Hair1.png",          'tresemme-silky-smooth-shampoo-conditioner2.webp'],
+  ["Images/Shampoo and Conditioners/Tresemme Silky & Smooth Anti-Frizz Shampoo & Conditioner Frizzy Hair2.png",          'tresemme-silky-smooth-shampoo-conditioner3.webp'],
+
+  // Y01 Wireless Headphones
+  ["Images/Today/Y01 Over the Ear Wireless headphones.png",       'y01-headphones1.webp'],
+  ["Images/Today/Y01 Over the Ear Wireless headphones.png1.png",  'y01-headphones2.webp'],
+  ["Images/Today/Y01 Over the Ear Wireless headphones.png13.png", 'y01-headphones3.webp'],
+
+  // TOZO T6 Earbuds
+  ["Images/Today/TOZO T6 Wireless Earbuds IPX8 Waterproof.png",          'tozo-t6-earbuds1.webp'],
+  ["Images/Today/TOZO T6 Wireless Earbuds IPX8 Waterproof.png1.png",     'tozo-t6-earbuds2.webp'],
+  ["Images/Today/TOZO T6 Wireless Earbuds IPX8 Waterproof.png2 (2).png", 'tozo-t6-earbuds3.webp'],
 ];
 
 let converted = 0;
