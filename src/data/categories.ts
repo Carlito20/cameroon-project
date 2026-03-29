@@ -215,7 +215,7 @@ export const categories: Category[] = [
             name: 'Irish Spring Original Clean Deodorant Bar Soap',
             images: ['/images/products/irish-spring-soap-1.webp', '/images/products/irish-spring-soap-2.webp', '/images/products/irish-spring-soap-3.webp'],
             quantity: 40,
-            price: 500
+            price: 1300
           }
         ]
       },
@@ -827,8 +827,8 @@ export const categories: Category[] = [
           {
             name: 'TG537 Portable Wireless Speaker - TWS Technology',
             price: 10000,
-            quantity: 6,
-            colors: ['#808080', '#e74c3c', '#2c2c2c'],
+            quantity: 4,
+            colors: ['#808080', '#e74c3c', '#2c2c2c', '#00bcd4'],
             images: [
               '/images/products/tg537-speaker-1.webp',
               '/images/products/tg537-speaker-2.webp',
@@ -902,8 +902,8 @@ export const categories: Category[] = [
           {
             name: 'Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation',
             price: 5500,
-            quantity: 4,
-            colors: ['#ff8c00', '#f5f5dc'],
+            quantity: 5,
+            colors: ['#ff8c00', '#f5f5dc', '#2c2c2c'],
             images: [
               '/images/products/acer-tws-headset-1.webp',
               '/images/products/acer-tws-headset-2.webp',
@@ -914,8 +914,8 @@ export const categories: Category[] = [
           {
             name: 'Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control',
             price: 5500,
-            quantity: 6,
-            colors: ['#f5f5dc', '#2c2c2c', '#800080'],
+            quantity: 3,
+            colors: ['#2c2c2c', '#800080'],
             images: [
               '/images/products/acer-wireless-stereo-1.webp',
               '/images/products/acer-wireless-stereo-2.webp',

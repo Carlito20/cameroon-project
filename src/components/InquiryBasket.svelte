@@ -276,11 +276,17 @@
   let selectedPayment = '';
   let isConfirmationMode = false; // true when cart was loaded from admin's reply link
 
+  let customerName = '';
+  let customerPhone = '';
+
+  $: canConfirm = customerName.trim().length > 0 && customerPhone.trim().length > 0;
+
   function selectPayment(method) {
     selectedPayment = selectedPayment === method ? '' : method;
   }
 
   async function confirmOrder() {
+    if (!canConfirm) return;
     if (inquiryItems.length === 0) return;
 
     const itemList = inquiryItems.map(item => {
@@ -289,7 +295,8 @@
       return `• ${item.name} (×${qty})${itemTotal}`;
     }).join('\n');
 
-    const message = `✅ ORDER CONFIRMED\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA\n💳 Payment: ${selectedPayment || 'To be confirmed'}\n\nPlease process my order. Thank you!`;
+    const customerLine = customerName.trim() ? `\n👤 Name: ${customerName.trim()}${customerPhone.trim() ? `\n📞 Phone: ${customerPhone.trim()}` : ''}` : '';
+    const message = `✅ ORDER CONFIRMED\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA\n💳 Payment: ${selectedPayment || 'To be confirmed'}${customerLine}\n\nPlease process my order. Thank you!`;
 
     // Create pending order in database
     let orderRef = '';
@@ -301,7 +308,9 @@
           action: 'create',
           items: inquiryItems.map(i => ({ name: i.name, price: i.price || 0, quantity: i.quantity || 1 })),
           total: totalPrice,
-          payment_method: selectedPayment || 'Not specified'
+          payment_method: selectedPayment || 'Not specified',
+          customer_name: customerName.trim(),
+          customer_phone: customerPhone.trim()
         })
       });
       const orderData = await orderRes.json();
@@ -314,6 +323,8 @@
       total: totalPrice,
       paymentMethod: selectedPayment || 'To be confirmed',
       orderRef,
+      whatsappMessage: message,
+      whatsappNumber,
       timestamp: Date.now()
     }));
 
@@ -439,7 +450,11 @@
       </div>
       {#if isConfirmationMode}
         <div class="confirm-order-section">
-          <button class="confirm-order-btn" on:click={confirmOrder}>
+          <div class="customer-fields">
+            <input class="customer-field-input" type="text" placeholder="Your name *" bind:value={customerName} maxlength="100" autocomplete="name" />
+            <input class="customer-field-input" type="tel" placeholder="Phone number *" bind:value={customerPhone} maxlength="30" autocomplete="tel" inputmode="tel" />
+          </div>
+          <button class="confirm-order-btn" on:click={confirmOrder} disabled={!canConfirm} class:confirm-disabled={!canConfirm}>
             ✅ Confirm My Order
           </button>
           <p class="confirm-hint">Tap to finalise and send your order confirmation</p>
@@ -1775,5 +1790,34 @@
       min-height: 44px;
       min-width: 44px;
     }
+  }
+
+  /* Customer info inline fields */
+  .customer-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .customer-field-input {
+    display: block;
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: #1a1a1a;
+    background: #f9f9f9;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 46px;
+    touch-action: manipulation;
+    box-sizing: border-box;
+  }
+  .customer-field-input:focus { border-color: #25a244; background: #fff; }
+  .confirm-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
   }
 </style>

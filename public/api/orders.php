@@ -12,6 +12,8 @@ function getPdo() {
     $pdo->exec("CREATE TABLE IF NOT EXISTS pending_orders (
         id INT AUTO_INCREMENT PRIMARY KEY,
         order_ref VARCHAR(20) NOT NULL UNIQUE,
+        customer_name VARCHAR(100),
+        customer_phone VARCHAR(30),
         payment_method VARCHAR(50),
         items TEXT NOT NULL,
         total DECIMAL(10,2) NOT NULL,
@@ -21,6 +23,9 @@ function getPdo() {
         completed_at TIMESTAMP NULL,
         cancelled_at TIMESTAMP NULL
     )");
+    // Add columns to existing tables that predate this migration
+    try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN customer_name VARCHAR(100) AFTER order_ref"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN customer_phone VARCHAR(30) AFTER customer_name"); } catch (Exception $e) {}
     $pdo->exec("CREATE TABLE IF NOT EXISTS stock_transactions (
         id INT AUTO_INCREMENT PRIMARY KEY,
         product_name VARCHAR(500) NOT NULL,
@@ -116,7 +121,9 @@ $action = $data['action'] ?? $_GET['action'] ?? '';
 if ($action === 'create' && $method === 'POST') {
     $items         = $data['items'] ?? [];
     $total         = (float)($data['total'] ?? 0);
-    $paymentMethod = substr(trim($data['payment_method'] ?? 'Not specified'), 0, 50);
+    $paymentMethod  = substr(trim($data['payment_method'] ?? 'Not specified'), 0, 50);
+    $customerName   = substr(trim($data['customer_name'] ?? ''), 0, 100);
+    $customerPhone  = substr(trim($data['customer_phone'] ?? ''), 0, 30);
 
     if (empty($items) || $total < 0) {
         echo json_encode(['error' => 'Invalid order data']); exit;
@@ -125,8 +132,8 @@ if ($action === 'create' && $method === 'POST') {
     try {
         $pdo      = getPdo();
         $orderRef = 'ORD-' . date('ymd') . '-' . strtoupper(substr(uniqid(), -5));
-        $pdo->prepare('INSERT INTO pending_orders (order_ref, payment_method, items, total) VALUES (?, ?, ?, ?)')
-            ->execute([$orderRef, $paymentMethod, json_encode($items), $total]);
+        $pdo->prepare('INSERT INTO pending_orders (order_ref, customer_name, customer_phone, payment_method, items, total) VALUES (?, ?, ?, ?, ?, ?)')
+            ->execute([$orderRef, $customerName ?: null, $customerPhone ?: null, $paymentMethod, json_encode($items), $total]);
 
         // Reserve stock immediately
         reserveStock($pdo, $items, $orderRef);

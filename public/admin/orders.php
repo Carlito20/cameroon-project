@@ -79,6 +79,8 @@ $filter = $_GET['filter'] ?? 'pending';
       display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
     }
     .order-ref { font-size: 13px; font-weight: 800; color: #d4af37; letter-spacing: 0.5px; }
+    .order-customer { font-size: 14px; font-weight: 700; color: #e0e0e0; margin-top: 4px; }
+    .order-phone { font-size: 13px; color: #7b9fd4; margin-top: 2px; }
     .order-time { font-size: 11px; color: #555; margin-top: 3px; }
     .order-pay { font-size: 12px; color: #888; margin-top: 3px; }
     .status-badge {
@@ -272,10 +274,15 @@ function renderOrders(orders) {
 
     const noteHtml = o.note ? `<div class="order-note">${esc(o.note)}</div>` : '';
 
+    const customerHtml = o.customer_name
+      ? `<div class="order-customer">👤 ${esc(o.customer_name)}</div>${o.customer_phone ? `<div class="order-phone">📞 <a href="tel:${esc(o.customer_phone)}" style="color:#7b9fd4;text-decoration:none;">${esc(o.customer_phone)}</a></div>` : ''}`
+      : `<div class="order-customer" style="color:#555;font-weight:400;font-style:italic;">No customer info</div>`;
+
     return `<div class="order-card ${o.status}" id="order-${o.id}">
       <div class="order-head">
         <div>
           <div class="order-ref">${esc(o.order_ref)}</div>
+          ${customerHtml}
           <div class="order-time">${timeAgo(o.created_at)}</div>
           <div class="order-pay">${payIcon(o.payment_method)}${esc(o.payment_method || 'Payment not specified')}</div>
         </div>

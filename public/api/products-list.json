@@ -361,19 +361,23 @@
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Gray)",
-    "quantity": 2
+    "quantity": 1
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Red)",
-    "quantity": 2
+    "quantity": 1
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Black)",
-    "quantity": 2
+    "quantity": 1
+  },
+  {
+    "name": "TG537 Portable Wireless Speaker - TWS Technology (Cyan)",
+    "quantity": 1
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology",
-    "quantity": 6
+    "quantity": 4
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets (Red)",
@@ -429,23 +433,23 @@
   },
   {
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation (Orange)",
-    "quantity": 2
+    "quantity": 3
   },
   {
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation (Beige)",
-    "quantity": 2
+    "quantity": 1
+  },
+  {
+    "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation (Black)",
+    "quantity": 1
   },
   {
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation",
-    "quantity": 4
-  },
-  {
-    "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control (Beige)",
-    "quantity": 2
+    "quantity": 5
   },
   {
     "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control (Black)",
-    "quantity": 2
+    "quantity": 1
   },
   {
     "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control (Purple)",
@@ -453,7 +457,7 @@
   },
   {
     "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control",
-    "quantity": 6
+    "quantity": 3
   },
   {
     "name": "Nokia Go Earbuds+ TWS-201 (White)",
@@ -530,5 +534,9 @@
   {
     "name": "Rechargeable Digital Scale with USB Charging",
     "quantity": 4
+  },
+  {
+    "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Deep Purple)",
+    "quantity": 1
   }
 ]

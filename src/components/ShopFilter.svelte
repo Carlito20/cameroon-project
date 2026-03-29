@@ -64,9 +64,11 @@
     '#4a5240': 'Army Green',
     '#1a237e': 'Indigo',
     '#4a148c': 'Deep Purple',
+    '#7b1fa2': 'Deep Purple',
     '#b71c1c': 'Crimson',
     '#e65100': 'Dark Orange',
     '#33691e': 'Olive Green',
+    '#00bcd4': 'Cyan',
   };
 
   function getColorName(hex) {
@@ -78,21 +80,22 @@
 
   function selectColor(productName, color) {
     if (selectedColors[productName] === color) {
-      const { [productName]: _, ...rest } = selectedColors;
-      selectedColors = rest;
+      delete selectedColors[productName];
     } else {
-      selectedColors = { ...selectedColors, [productName]: color };
+      selectedColors[productName] = color;
     }
+    selectedColors = selectedColors;
   }
 
   function selectColorAndAdd(productItem, colorHex, categoryName, stockQty, itemPrice) {
     const name = getProductName(productItem);
     if (selectedColors[name] === colorHex) {
-      const { [name]: _, ...rest } = selectedColors;
-      selectedColors = rest;
+      delete selectedColors[name];
+      selectedColors = selectedColors;
       return;
     }
-    selectedColors = { ...selectedColors, [name]: colorHex };
+    selectedColors[name] = colorHex;
+    selectedColors = selectedColors;
     addToInquiry(productItem, categoryName, stockQty, itemPrice);
   }
 
@@ -378,14 +381,22 @@
     return Math.max(0, qty - (cartTotals[baseName] || 0));
   }
 
-  // Per-color remaining stock: total quantity divided evenly across colors
+  function isOutOfStock(productItem) {
+    const remaining = getRemainingStock(productItem);
+    return remaining !== null && remaining !== undefined && remaining === 0;
+  }
+
+  // Per-color remaining stock: use per-color API stock if available, else divide evenly
   function getColorRemaining(productItem, colorHex) {
+    const baseName = getProductName(productItem);
+    const colorKey = `${baseName} (${getColorName(colorHex)})`;
+    if (apiStock[colorKey] !== undefined) {
+      return Math.max(0, apiStock[colorKey] - (cartTotals[colorKey] || 0));
+    }
     const qty = getProductQuantity(productItem);
     if (qty == null) return null;
     const colors = getProductColors(productItem);
     const perColor = colors && colors.length > 1 ? Math.ceil(qty / colors.length) : qty;
-    const baseName = getProductName(productItem);
-    const colorKey = `${baseName} (${getColorName(colorHex)})`;
     return Math.max(0, perColor - (cartTotals[colorKey] || 0));
   }
 
@@ -1055,7 +1066,7 @@
     {:else}
       <div class="products-grid">
         {#each sortedSearchResults as result (result.productName)}
-          <div class="product-item" class:has-image={result.images}>
+          <div class="product-item" class:has-image={result.images} class:product-sold-out={isOutOfStock(result.product)}>
             {#if result.images}
               <div class="product-images">
                 <button class="product-image" on:click={() => openLightbox(result.images, result.productName)}>
@@ -1078,7 +1089,8 @@
                     {#if result.colors}
                       <span class="color-dots" class:shake={needsColorItems[result.productName]}>
                         {#each result.colors as color}
-                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} class:sold-out={getColorRemaining(result.product, color) === 0} disabled={getColorRemaining(result.product, color) === 0} on:click|stopPropagation={() => selectColor(result.productName, color)}></button>
+                          {@const soldOut = getColorRemaining(result.product, color) === 0}
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(result.productName, color)}></button>
                         {/each}
                         {#if selectedColors[result.productName]}
                           <span class="color-label">{getColorName(selectedColors[result.productName])}</span>
@@ -1104,7 +1116,7 @@
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(result.product)]}
                   class:needs-color={!selectedColors[result.productName] && result.colors && result.colors.length > 1}
-                  disabled={!!(selectedColors[result.productName] && result.colors && result.colors.length > 1 && colorStockInfo[result.productName] >= Math.ceil(result.quantity / result.colors.length))}
+                  disabled={isOutOfStock(result.product) || !!(selectedColors[result.productName] && result.colors && result.colors.length > 1 && colorStockInfo[result.productName] >= Math.ceil(result.quantity / result.colors.length))}
                   on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, result.price)}
                 >
                   {addedItems[getDisplayName(result.product)] ? `✓ Added (${addedItems[getDisplayName(result.product)]})` : 'Add to Cart'}
@@ -1163,7 +1175,8 @@
               <p class="product-quantity" style="padding: 0 0.5rem;">
                 <span class="color-dots" class:shake={needsColorItems[sp.productName]}>
                   {#each sp.colors as color}
-                    <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} class:sold-out={getColorRemaining(sp.product, color) === 0} disabled={getColorRemaining(sp.product, color) === 0} on:click|stopPropagation={() => selectColor(sp.productName, color)}></button>
+                    {@const soldOut = getColorRemaining(sp.product, color) === 0}
+                    <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(sp.productName, color)}></button>
                   {/each}
                   {#if selectedColors[sp.productName]}
                     <span class="color-label">{getColorName(selectedColors[sp.productName])}</span>
@@ -1182,7 +1195,7 @@
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(sp.product)]}
                   class:needs-color={!selectedColors[sp.productName] && sp.colors && sp.colors.length > 1}
-                  disabled={!!(selectedColors[sp.productName] && sp.colors && sp.colors.length > 1 && colorStockInfo[sp.productName] >= Math.ceil(sp.quantity / sp.colors.length))}
+                  disabled={isOutOfStock(sp.product) || !!(selectedColors[sp.productName] && sp.colors && sp.colors.length > 1 && colorStockInfo[sp.productName] >= Math.ceil(sp.quantity / sp.colors.length))}
                   on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}
                 >
                   {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
@@ -1231,7 +1244,7 @@
                     {#if expandedSubCategories.has(subItem.name)}
                       <div class="nested-subcategory-products">
                         {#each sortItems(subItem.items, sortBy) as nestedProduct}
-                          <div class="product-item" class:has-image={getProductImages(nestedProduct)}>
+                          <div class="product-item" class:has-image={getProductImages(nestedProduct)} class:product-sold-out={isOutOfStock(nestedProduct)}>
                             {#if getProductImages(nestedProduct)}
                               <div class="product-images">
                                 <button class="product-image" on:click={() => openLightbox(getProductImages(nestedProduct), getProductName(nestedProduct))}>
@@ -1251,7 +1264,9 @@
                                     {#if getProductColors(nestedProduct)}
                                       <span class="color-dots" class:shake={needsColorItems[getProductName(nestedProduct)]}>
                                         {#each getProductColors(nestedProduct) as color}
-                                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(nestedProduct)] === color} class:sold-out={getColorRemaining(nestedProduct, color) === 0} disabled={getColorRemaining(nestedProduct, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(nestedProduct), color)}></button>
+                                          {@const soldOut = getColorRemaining(nestedProduct, color) === 0}
+                                          {@const nestedName = getProductName(nestedProduct)}
+                                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[nestedName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(nestedName, color)}></button>
                                         {/each}
                                         {#if selectedColors[getProductName(nestedProduct)]}
                                           <span class="color-label">{getColorName(selectedColors[getProductName(nestedProduct)])}</span>
@@ -1277,7 +1292,7 @@
                                   class="btn btn-small btn-inquiry"
                                   class:added={addedItems[getDisplayName(nestedProduct)]}
                                   class:needs-color={!selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1}
-                                  disabled={!!(selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 && colorStockInfo[getProductName(nestedProduct)] >= Math.ceil(getProductQuantity(nestedProduct) / getProductColors(nestedProduct).length))}
+                                  disabled={isOutOfStock(nestedProduct) || !!(selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 && colorStockInfo[getProductName(nestedProduct)] >= Math.ceil(getProductQuantity(nestedProduct) / getProductColors(nestedProduct).length))}
                                   on:click={() => handleInquiryClick(nestedProduct, subItem.name, getProductQuantity(nestedProduct), getProductPrice(nestedProduct))}
                                 >
                                   {addedItems[getDisplayName(nestedProduct)] ? `✓ Added (${addedItems[getDisplayName(nestedProduct)]})` : 'Add to Cart'}
@@ -1298,7 +1313,7 @@
                     {/if}
                   </div>
                 {:else}
-                <div class="product-item" class:has-image={getProductImages(subItem)}>
+                <div class="product-item" class:has-image={getProductImages(subItem)} class:product-sold-out={isOutOfStock(subItem)}>
                   {#if getProductImages(subItem)}
                     <div class="product-images">
                       <button class="product-image" on:click={() => openLightbox(getProductImages(subItem), getProductName(subItem))}>
@@ -1318,7 +1333,9 @@
                           {#if getProductColors(subItem)}
                             <span class="color-dots" class:shake={needsColorItems[getProductName(subItem)]}>
                               {#each getProductColors(subItem) as color}
-                                <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(subItem)] === color} class:sold-out={getColorRemaining(subItem, color) === 0} disabled={getColorRemaining(subItem, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(subItem), color)}></button>
+                                {@const soldOut = getColorRemaining(subItem, color) === 0}
+                                {@const subItemName = getProductName(subItem)}
+                                <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[subItemName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(subItemName, color)}></button>
                               {/each}
                               {#if selectedColors[getProductName(subItem)]}
                                 <span class="color-label">{getColorName(selectedColors[getProductName(subItem)])}</span>
@@ -1344,7 +1361,7 @@
                         class="btn btn-small btn-inquiry"
                         class:added={addedItems[getDisplayName(subItem)]}
                         class:needs-color={!selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1}
-                        disabled={!!(selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1 && colorStockInfo[getProductName(subItem)] >= Math.ceil(getProductQuantity(subItem) / getProductColors(subItem).length))}
+                        disabled={isOutOfStock(subItem) || !!(selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1 && colorStockInfo[getProductName(subItem)] >= Math.ceil(getProductQuantity(subItem) / getProductColors(subItem).length))}
                         on:click={() => handleInquiryClick(subItem, item.name, getProductQuantity(subItem), getProductPrice(subItem))}
                       >
                         {addedItems[getDisplayName(subItem)] ? `✓ Added (${addedItems[getDisplayName(subItem)]})` : 'Add to Cart'}
@@ -1367,7 +1384,7 @@
           </div>
         {:else}
           <!-- Regular product item -->
-          <div class="product-item" class:has-image={getProductImages(item)}>
+          <div class="product-item" class:has-image={getProductImages(item)} class:product-sold-out={isOutOfStock(item)}>
             {#if getProductImages(item)}
               <div class="product-images">
                 <button class="product-image" on:click={() => openLightbox(getProductImages(item), getProductName(item))}>
@@ -1387,7 +1404,9 @@
                     {#if getProductColors(item)}
                       <span class="color-dots" class:shake={needsColorItems[getProductName(item)]}>
                         {#each getProductColors(item) as color}
-                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[getProductName(item)] === color} class:sold-out={getColorRemaining(item, color) === 0} disabled={getColorRemaining(item, color) === 0} on:click|stopPropagation={() => selectColor(getProductName(item), color)}></button>
+                          {@const soldOut = getColorRemaining(item, color) === 0}
+                          {@const itemName = getProductName(item)}
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[itemName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(itemName, color)}></button>
                         {/each}
                         {#if selectedColors[getProductName(item)]}
                           <span class="color-label">{getColorName(selectedColors[getProductName(item)])}</span>
@@ -1413,7 +1432,7 @@
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(item)]}
                   class:needs-color={!selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1}
-                  disabled={!!(selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1 && colorStockInfo[getProductName(item)] >= Math.ceil(getProductQuantity(item) / getProductColors(item).length))}
+                  disabled={isOutOfStock(item) || !!(selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1 && colorStockInfo[getProductName(item)] >= Math.ceil(getProductQuantity(item) / getProductColors(item).length))}
                   on:click={() => handleInquiryClick(item, category.name, getProductQuantity(item), getProductPrice(item))}
                 >
                   {addedItems[getDisplayName(item)] ? `✓ Added (${addedItems[getDisplayName(item)]})` : 'Add to Cart'}
@@ -1484,7 +1503,8 @@
             <div class="product-modal-colors">
               <span class="color-dots" class:shake={needsColorItems[productModal.productName]}>
                 {#each productModal.colors as color}
-                  <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} class:sold-out={getColorRemaining(productModal.product, color) === 0} disabled={getColorRemaining(productModal.product, color) === 0} on:click|stopPropagation={() => selectColor(productModal.productName, color)}></button>
+                  {@const soldOut = getColorRemaining(productModal.product, color) === 0}
+                  <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(productModal.productName, color)}></button>
                 {/each}
                 {#if selectedColors[productModal.productName]}
                   <span class="color-label">{getColorName(selectedColors[productModal.productName])}</span>
@@ -2512,7 +2532,19 @@
   .color-dot.sold-out {
     opacity: 0.35;
     cursor: not-allowed;
+    -webkit-filter: grayscale(60%);
     filter: grayscale(60%);
+  }
+
+  .product-sold-out {
+    opacity: 0.55;
+    -webkit-filter: grayscale(40%);
+    filter: grayscale(40%);
+    pointer-events: none;
+  }
+  .product-sold-out .btn-inquiry,
+  .product-sold-out .qty-btn {
+    cursor: not-allowed;
   }
 
   @keyframes shake-dots {

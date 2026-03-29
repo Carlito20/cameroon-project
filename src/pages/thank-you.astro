@@ -25,9 +25,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <div class="oc-header">
         <div class="oc-check">✅</div>
-        <h1>Order Confirmed!</h1>
+        <h1>Order Received!</h1>
         <p class="oc-ref" id="oc-ref" style="display:none;"></p>
-        <p class="oc-sub">Your confirmation has been sent to us on WhatsApp. We'll be in touch shortly.</p>
+        <p class="oc-sub">One last step — send us your WhatsApp confirmation below so we can process your order.</p>
+      </div>
+
+      <!-- WhatsApp action banner -->
+      <div class="wa-banner">
+        <div class="wa-banner-icon">💬</div>
+        <div class="wa-banner-body">
+          <div class="wa-banner-title">Send Your WhatsApp Confirmation</div>
+          <div class="wa-banner-desc">Tap the button below to send your order to us on WhatsApp. We won't process your order until we receive it.</div>
+        </div>
+        <button class="wa-send-btn" id="wa-send-btn" onclick="sendWhatsApp()">
+          Send Now
+        </button>
       </div>
 
       <!-- Order summary (filled by JS) -->
@@ -50,7 +62,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="oc-card">
         <div class="oc-card-title">🚀 What Happens Next</div>
         <ol class="oc-steps">
-          <li>We review your order and confirm availability on WhatsApp</li>
+          <li><strong>Send your WhatsApp message</strong> using the button above</li>
+          <li>We confirm availability and reply on WhatsApp</li>
           <li>You complete payment using the method above</li>
           <li>We arrange delivery or pickup with you directly</li>
           <li>Enjoy your items! 🎉</li>
@@ -124,6 +137,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     // Switch UI
     document.getElementById('generic-section').style.display = 'none';
     document.getElementById('order-section').style.display = 'block';
+
+    // Wire up WhatsApp send button
+    window.sendWhatsApp = function() {
+      const msg = order.whatsappMessage || '';
+      const num = order.whatsappNumber || '237670358551';
+      if (msg) {
+        window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
+      } else {
+        window.open(`https://wa.me/${num}`, '_blank');
+      }
+      const btn = document.getElementById('wa-send-btn');
+      if (btn) {
+        btn.textContent = '✅ Sent!';
+        btn.classList.add('wa-sent');
+      }
+    };
 
     // Show order ref if available
     if (order.orderRef) {
@@ -223,6 +252,48 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .pay-account-name { font-size: 13px; color: #555; font-weight: 600; }
   .pay-note { font-size: 13px; color: #666; line-height: 1.5; margin: 0; }
 
+  /* WhatsApp banner */
+  .wa-banner {
+    background: #25d366;
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+    animation: waPulse 2s ease-in-out infinite;
+    will-change: box-shadow;
+  }
+  @keyframes waPulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.35); }
+    50% { box-shadow: 0 4px 32px rgba(37,211,102,0.65); }
+  }
+  .wa-banner-icon { font-size: 36px; flex-shrink: 0; }
+  .wa-banner-body { flex: 1; }
+  .wa-banner-title { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+  .wa-banner-desc { font-size: 12px; color: rgba(255,255,255,0.85); line-height: 1.4; }
+  .wa-send-btn {
+    background: #fff;
+    color: #128c4a;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 48px;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+  .wa-send-btn:hover { background: #e8fff0; }
+  .wa-send-btn.wa-sent { background: #128c4a; color: #fff; animation: none; }
+
   /* Steps */
   .oc-steps { padding-left: 20px; margin: 0; }
   .oc-steps li { padding: 6px 0; color: #555; font-size: 14px; line-height: 1.5; }
@@ -253,5 +324,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .oc-header h1 { font-size: 1.7rem; }
     .oc-card { padding: 16px; }
     .btn { font-size: 14px; padding: 11px 16px; }
+    .wa-banner { flex-wrap: wrap; }
+    .wa-send-btn { width: 100%; text-align: center; }
   }
 </style>
