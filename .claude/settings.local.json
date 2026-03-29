@@ -32,7 +32,12 @@
       "Bash(git push:*)",
       "Bash(npm install:*)",
       "Skill(pdf)",
-      "Bash(wkhtmltopdf --version)"
+      "Bash(wkhtmltopdf --version)",
+      "Skill(claude-api)",
+      "Bash(cmd.exe /c \"del /f /q \"\"C:\\\\Users\\\\Administrator\\\\cameroon-project\\\\American_Select_Expenses.xlsx\"\"\")",
+      "Bash(echo \"ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY:0:10...\")",
+      "Bash(printenv)",
+      "Bash(node -e \":*)"
     ]
   }
 }
