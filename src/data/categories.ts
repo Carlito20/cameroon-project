@@ -309,7 +309,7 @@ export const categories: Category[] = [
           {
             name: 'Vaseline Men Cooling Hydration 3-in-1 Face, Hands & Body Lotion with Menthol',
             images: ['/images/products/vaseline-men-cooling1.webp', '/images/products/vaseline-men-cooling2.webp', '/images/products/vaseline-men-cooling3.webp'],
-            quantity: 6,
+            quantity: 4,
             price: 6000
           },
           {
