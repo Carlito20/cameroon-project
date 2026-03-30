@@ -315,13 +315,13 @@ export const categories: Category[] = [
           {
             name: 'Vaseline Intensive Care Body Lotion Cocoa Radiant with Pure Cocoa Butter',
             images: ['/images/products/vaseline-cocoa1.webp', '/images/products/vaseline-cocoa2.webp', '/images/products/vaseline-cocoa3.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 6000
           },
           {
             name: 'Vaseline Intensive Care Soothing Hydration Body Lotion with Aloe Vera',
             images: ['/images/products/vaseline-aloe1.webp', '/images/products/vaseline-aloe2.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 6000
           },
           {
@@ -333,7 +333,7 @@ export const categories: Category[] = [
           {
             name: 'Vaseline Intensive Care Calm Healing Body Lotion with Lavender Extract',
             images: ['/images/products/vaseline-lavender1.webp', '/images/products/vaseline-lavender2.webp'],
-            quantity: 6,
+            quantity: 3,
             price: 6000
           },
           {
