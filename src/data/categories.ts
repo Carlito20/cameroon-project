@@ -212,6 +212,36 @@ export const categories: Category[] = [
             price: 3500
           },
           {
+            name: 'Suave Men Hydrating 3-in-1 Body, Hair & Face Wash with Glycerin & Vitamin E',
+            images: ['/images/products/suave-men-3in1-1.webp', '/images/products/suave-men-3in1-2.webp', '/images/products/suave-men-3in1-3.webp', '/images/products/suave-men-3in1-4.webp', '/images/products/suave-men-3in1-5.webp'],
+            quantity: 6,
+            price: 3000
+          },
+          {
+            name: 'Suave Moisturizing Body Wash Cocoa Butter and Shea with Vitamin E',
+            images: ['/images/products/suave-cocoa-butter1.webp', '/images/products/suave-cocoa-butter2.webp', '/images/products/suave-cocoa-butter3.webp'],
+            quantity: 6,
+            price: 3000
+          },
+          {
+            name: 'Suave Moisturizing Body Wash Sweet Pea & Violet with Vitamin E',
+            images: ['/images/products/suave-sweet-pea1.webp', '/images/products/suave-sweet-pea2.webp', '/images/products/suave-sweet-pea3.webp', '/images/products/suave-sweet-pea4.webp'],
+            quantity: 6,
+            price: 3000
+          },
+          {
+            name: 'Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E',
+            images: ['/images/products/suave-ocean-breeze1.webp', '/images/products/suave-ocean-breeze2.webp', '/images/products/suave-ocean-breeze3.webp', '/images/products/suave-ocean-breeze4.webp'],
+            quantity: 6,
+            price: 3000
+          },
+          {
+            name: 'NIVEA MEN Maximum Hydration 3-in-1 Body Wash with Aloe Vera',
+            images: ['/images/products/nivea-men-hydration1.webp', '/images/products/nivea-men-hydration2.webp', '/images/products/nivea-men-hydration3.webp', '/images/products/nivea-men-hydration4.webp', '/images/products/nivea-men-hydration5.webp'],
+            quantity: 6,
+            price: 3500
+          },
+          {
             name: 'Irish Spring Original Clean Deodorant Bar Soap',
             images: ['/images/products/irish-spring-soap-1.webp', '/images/products/irish-spring-soap-2.webp', '/images/products/irish-spring-soap-3.webp'],
             quantity: 40,
@@ -223,32 +253,38 @@ export const categories: Category[] = [
         name: 'Body Lotions & Creams',
         items: [
           {
-            name: 'CeraVe Daily Moisturizing Lotion For Normal to Dry Skin',
-            image: '/images/products/cerave-lotion.webp',
-            quantity: 12,
-            price: 8500
+            name: 'Olay Body Lotion Age Defying with Niacinamide Serum',
+            images: ['/images/products/olay-age-defying1.webp', '/images/products/olay-age-defying2.webp', '/images/products/olay-age-defying3.webp', '/images/products/olay-age-defying4.webp', '/images/products/olay-lotion-all.webp'],
+            quantity: 3,
+            price: 10000
           },
           {
-            name: 'Cetaphil Moisturizing Cream',
-            images: ['/images/products/cetaphil-moisturizer1.webp', '/images/products/cetaphil-moisturizer2.webp'],
-            quantity: 12,
+            name: 'Olay Body Lotion Nourishing with Hyaluronic Acid Serum',
+            images: ['/images/products/olay-hyaluronic1.webp', '/images/products/olay-hyaluronic2.webp', '/images/products/olay-hyaluronic3.webp', '/images/products/olay-lotion-all.webp'],
+            quantity: 3,
+            price: 10000
+          },
+          {
+            name: 'Olay Body Lotion Smoothing with Retinol Serum',
+            images: ['/images/products/olay-retinol1.webp', '/images/products/olay-retinol2.webp', '/images/products/olay-retinol3.webp', '/images/products/olay-lotion-all.webp'],
+            quantity: 3,
+            price: 10000
+          },
+          {
+            name: 'Olay Body Lotion Tone Enhancing with AHA Serum',
+            images: ['/images/products/olay-aha1.webp', '/images/products/olay-aha2.webp', '/images/products/olay-aha3.webp', '/images/products/olay-aha4.webp', '/images/products/olay-lotion-all.webp'],
+            quantity: 3,
             price: 10000
           },
           {
             name: 'Aveeno Daily Moisturizing Body Lotion 18oz',
             image: '/images/products/aveeno-lotion.webp',
-            quantity: 5,
+            quantity: 4,
             price: 6000
           },
           {
             name: 'Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil',
             images: ['/images/products/jergens-coconut1.webp', '/images/products/jergens-coconut2.webp', '/images/products/jergens-coconut3.webp', '/images/products/jergens-coconut4.webp'],
-            quantity: 3,
-            price: 6000
-          },
-          {
-            name: 'Jergens Original Scent Dry Skin Body Lotion, Hand and Body Moisturizer, Cherry Almond Essence',
-            images: ['/images/products/jergens-cherry1.webp', '/images/products/jergens-cherry3.webp'],
             quantity: 3,
             price: 6000
           },
@@ -261,6 +297,12 @@ export const categories: Category[] = [
           {
             name: 'Jergens Soothing Aloe Body Lotion, Aloe Vera Body and Hand Moisturizer',
             images: ['/images/products/jergens-aloe1.webp', '/images/products/jergens-aloe2.webp', '/images/products/jergens-aloe3.webp'],
+            quantity: 3,
+            price: 6000
+          },
+          {
+            name: 'Jergens Skin Firming Body Lotion with Collagen and Elastin',
+            images: ['/images/products/jergens-skin-firming1.webp', '/images/products/jergens-skin-firming2.webp', '/images/products/jergens-skin-firming3.webp'],
             quantity: 3,
             price: 6000
           },
@@ -308,8 +350,14 @@ export const categories: Category[] = [
           },
           {
             name: 'Vaseline Men Cooling Hydration 3-in-1 Face, Hands & Body Lotion with Menthol',
-            images: ['/images/products/vaseline-men-cooling1.webp', '/images/products/vaseline-men-cooling2.webp', '/images/products/vaseline-men-cooling3.webp'],
+            images: ['/images/products/vaseline-men-cooling1.webp', '/images/products/vaseline-men-cooling-new.webp', '/images/products/vaseline-men-cooling2.webp', '/images/products/vaseline-men-cooling3.webp'],
             quantity: 4,
+            price: 6000
+          },
+          {
+            name: "Vaseline Men's Healing Moisture Hand & Body Lotion",
+            images: ['/images/products/vaseline-men-healing1.webp', '/images/products/vaseline-men-healing2.webp', '/images/products/vaseline-men-healing3.webp'],
+            quantity: 3,
             price: 6000
           },
           {
@@ -337,9 +385,15 @@ export const categories: Category[] = [
             price: 6000
           },
           {
+            name: 'Vaseline Intensive Care Unscented Advanced Repair Body Lotion',
+            images: ['/images/products/vaseline-unscented1.webp', '/images/products/vaseline-unscented2.webp', '/images/products/vaseline-unscented3.webp', '/images/products/vaseline-unscented4.webp'],
+            quantity: 3,
+            price: 6000
+          },
+          {
             name: 'Vaseline Intensive Care Nourishing Moisture Body Lotion with Pure Oat Extract',
             images: ['/images/products/vaseline-oat1.webp', '/images/products/vaseline-oat2.webp'],
-            quantity: 6,
+            quantity: 15,
             price: 6000
           },
           {
@@ -406,6 +460,18 @@ export const categories: Category[] = [
               { name: 'Passion Fruit Body Mist', image: '/images/products/passion-fruit-body-mist.webp', price: 3500, quantity: 8 },
               { name: 'Watermelon Sugar Body Mist', image: '/images/products/watermelon-sugar-body-mist.webp', price: 3500, quantity: 4 },
               { name: 'Pineapple Dream Body Mist', image: '/images/products/pineapple-dream-body-mist.webp', price: 3500, quantity: 4 },
+              { name: 'So Fresh La Vanille Angel Cake Body Mist - Vanilla Marshmallow', image: '/images/products/so-fresh-la-vanille.webp', price: 3500, quantity: 3 },
+              { name: 'So Fresh La Vanille Angel Cake Body Mist - Vanilla Coconut', image: '/images/products/so-fresh-la-vanille.webp', price: 3500, quantity: 3 },
+              { name: 'So Fresh La Vanille Angel Cake Body Mist - Vanilla Ice Cream', image: '/images/products/so-fresh-la-vanille.webp', price: 3500, quantity: 3 },
+              { name: "So Fresh The Beaches Collection Let's Get Away Body Mist - South Beach", image: '/images/products/so-fresh-beaches.webp', price: 3500, quantity: 3 },
+              { name: "So Fresh The Beaches Collection Let's Get Away Body Mist - Copacabana Beach", image: '/images/products/so-fresh-beaches.webp', price: 3500, quantity: 3 },
+              { name: "So Fresh The Beaches Collection Let's Get Away Body Mist - Maui Beach", image: '/images/products/so-fresh-beaches.webp', price: 3500, quantity: 3 },
+              { name: 'So Fresh The Dulce Collection Utopia Body Mist - Red Velvet', image: '/images/products/so-fresh-dulce.webp', price: 3500, quantity: 3 },
+              { name: 'So Fresh The Dulce Collection Utopia Body Mist - Chocolate Dreams', image: '/images/products/so-fresh-dulce.webp', price: 3500, quantity: 3 },
+              { name: 'So Fresh The Dulce Collection Utopia Body Mist - Cherry On Top', image: '/images/products/so-fresh-dulce.webp', price: 3500, quantity: 3 },
+              { name: 'So Fresh Wildflower Collection Morning Dew Body Mist - Forget Me Not', image: '/images/products/so-fresh-wildflower.webp', price: 3500, quantity: 3 },
+              { name: 'So Fresh Wildflower Collection Morning Dew Body Mist - Sunset Blossom', image: '/images/products/so-fresh-wildflower.webp', price: 3500, quantity: 3 },
+              { name: 'So Fresh Wildflower Collection Morning Dew Body Mist - Desert Willow', image: '/images/products/so-fresh-wildflower.webp', price: 3500, quantity: 3 },
               { name: 'Charm Spray Perfume Eau De Parfum For Women', images: ['/images/products/charm-spray-perfume1.webp', '/images/products/charm-spray-perfume2.webp', '/images/products/charm-spray-perfume3.webp'], price: 10000, quantity: 3 },
               { name: 'Daicy Blue Spray Perfume Eau De Parfum', images: ['/images/products/daicy-blue-spray1.webp', '/images/products/daicy-blue-spray2.webp', '/images/products/daicy-blue-spray3.webp'], price: 10000, quantity: 3 },
               { name: 'Flower Eau De Parfum For Women', images: ['/images/products/flower-edp-women1.webp', '/images/products/flower-edp-women2.webp'], price: 10000, quantity: 3 },
@@ -428,6 +494,12 @@ export const categories: Category[] = [
       {
         name: 'Oral Care (toothpaste, brushes, mouthwash)',
         items: [
+          {
+            name: 'Colgate Cavity Protection Toothpaste with Fluoride',
+            images: ['/images/products/colgate-cavity1.webp', '/images/products/colgate-cavity2.webp', '/images/products/colgate-cavity3.webp', '/images/products/colgate-cavity4.webp'],
+            quantity: 18,
+            price: 1500
+          },
           {
             name: 'Crest Pro-Health Advanced Mouthwash',
             images: ['/images/products/crest-mouthwash-1.webp', '/images/products/crest-mouthwash-2.webp'],
@@ -570,12 +642,6 @@ export const categories: Category[] = [
             quantity: 3,
             price: 4500
           },
-          {
-            name: 'Cetaphil Moisturizing Cream',
-            images: ['/images/products/cetaphil-moisturizer1.webp', '/images/products/cetaphil-moisturizer2.webp'],
-            quantity: 12,
-            price: 10000
-          }
         ]
       },
       {
