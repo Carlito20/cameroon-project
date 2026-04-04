@@ -2207,7 +2207,7 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    padding: env(safe-area-inset-top, 1rem) env(safe-area-inset-right, 1rem) env(safe-area-inset-bottom, 1rem) env(safe-area-inset-left, 1rem);
+    padding: calc(1rem + env(safe-area-inset-top, 0px)) calc(1rem + env(safe-area-inset-right, 0px)) calc(1rem + env(safe-area-inset-bottom, 0px)) calc(1rem + env(safe-area-inset-left, 0px));
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     will-change: transform;
@@ -3347,7 +3347,7 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    padding: env(safe-area-inset-top, 1rem) env(safe-area-inset-right, 1rem) env(safe-area-inset-bottom, 1rem) env(safe-area-inset-left, 1rem);
+    padding: calc(1rem + env(safe-area-inset-top, 0px)) calc(1rem + env(safe-area-inset-right, 0px)) calc(1rem + env(safe-area-inset-bottom, 0px)) calc(1rem + env(safe-area-inset-left, 0px));
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     will-change: transform;

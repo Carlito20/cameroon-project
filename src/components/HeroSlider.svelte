@@ -442,8 +442,8 @@
     }
 
     .nav-btn {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
     }
 
     .nav-btn.prev {

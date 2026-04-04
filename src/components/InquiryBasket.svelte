@@ -734,6 +734,9 @@
     background: white;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     z-index: 1000;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -1805,7 +1808,7 @@
     padding: 11px 14px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 0.95rem;
+    font-size: 16px;
     color: #1a1a1a;
     background: #f9f9f9;
     outline: none;
