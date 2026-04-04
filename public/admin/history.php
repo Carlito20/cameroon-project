@@ -3,9 +3,10 @@ require_once __DIR__ . '/../api/db.php';
 session_start();
 if (empty($_SESSION['admin_logged_in'])) { header('Location: index.php'); exit; }
 
-$filter = $_GET['filter'] ?? 'all';
-$search = trim($_GET['search'] ?? '');
-$page   = max(1, (int)($_GET['page'] ?? 1));
+$filter  = $_GET['filter']  ?? 'all';
+$search  = trim($_GET['search'] ?? '');
+$days    = (int)($_GET['days'] ?? 0); // 0 = all time
+$page    = max(1, (int)($_GET['page'] ?? 1));
 $perPage = 50;
 $offset  = ($page - 1) * $perPage;
 
@@ -32,7 +33,8 @@ try {
     $where = [];
     $params = [];
     if ($filter !== 'all') { $where[] = 'action = ?'; $params[] = $filter; }
-    if ($search !== '') { $where[] = 'product_name LIKE ?'; $params[] = '%' . $search . '%'; }
+    if ($search !== '')    { $where[] = 'product_name LIKE ?'; $params[] = '%' . $search . '%'; }
+    if ($days > 0)         { $where[] = 'created_at >= NOW() - INTERVAL ? DAY'; $params[] = $days; }
     $whereSQL = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
     $countStmt = $pdo->prepare("SELECT COUNT(*) FROM stock_transactions $whereSQL");
@@ -94,9 +96,7 @@ $actionColors = [
       padding-left: calc(16px + env(safe-area-inset-left, 0px));
       padding-right: calc(16px + env(safe-area-inset-right, 0px));
     }
-    .toolbar {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
-    }
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
     .search-box {
       flex: 1; min-width: 180px; padding: 9px 14px; background: #1a1a1a;
       border: 1px solid #2a2a2a; border-radius: 8px; color: #e0e0e0;
@@ -104,20 +104,21 @@ $actionColors = [
       touch-action: manipulation; min-height: 44px;
     }
     .search-box:focus { border-color: #d4af37; }
-    .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-    .filter-tab {
+    .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .date-tabs  { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+    .filter-tab, .date-tab {
       padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
       cursor: pointer; text-decoration: none; border: 1px solid #2a2a2a;
       color: #666; background: transparent; min-height: 44px; display: flex;
       align-items: center; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
       -webkit-user-select: none; user-select: none;
     }
-    .filter-tab:hover { color: #ccc; border-color: #555; }
+    .filter-tab:hover, .date-tab:hover { color: #ccc; border-color: #555; }
     .filter-tab.active { background: #d4af37; color: #000; border-color: #d4af37; }
+    .date-tab.active   { background: #1a2a3a; color: #7b9fd4; border-color: #2a4a6a; }
     .count-badge { background: #1a1a1a; color: #666; border-radius: 4px; padding: 4px 10px; font-size: 12px; }
     .db-error { background:#2a0a0a;border:1px solid #5c1a1a;color:#ff6b6b;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px; }
     .empty-state { text-align: center; padding: 60px 20px; color: #444; font-size: 15px; }
-
     .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-x; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     thead tr { background: #1a1a1a; }
@@ -125,15 +126,11 @@ $actionColors = [
     td { padding: 10px 14px; border-bottom: 1px solid #1a1a1a; vertical-align: middle; }
     tr:hover td { background: #111; }
     .product-col { max-width: 340px; line-height: 1.4; font-size: 13px; }
-    .action-badge {
-      display: inline-block; padding: 3px 10px; border-radius: 20px;
-      font-size: 12px; font-weight: 700; border: 1px solid;
-    }
+    .action-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1px solid; }
     .qty-cell { font-size: 15px; font-weight: 700; }
     .stock-change { font-size: 12px; color: #555; }
     .note-cell { font-size: 12px; color: #666; font-style: italic; max-width: 150px; }
     .date-cell { font-size: 12px; color: #555; white-space: nowrap; }
-
     .pagination { display: flex; gap: 8px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
     .page-btn {
       padding: 8px 14px; border-radius: 6px; border: 1px solid #2a2a2a;
@@ -164,22 +161,38 @@ $actionColors = [
   <form method="GET" action="">
     <div class="toolbar">
       <input type="text" class="search-box" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search products..." oninput="this.form.submit()">
+      <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
+      <input type="hidden" name="days"   value="<?= $days ?>">
       <span class="count-badge"><?= $total ?> records</span>
-    </div>
-    <div class="filter-tabs" style="margin-bottom:20px;">
-      <?php
-      $tabs = ['all'=>'All','received'=>'📦 Received','sold'=>'✅ Sold','damaged'=>'⚠️ Damaged','returned'=>'↩️ Returned'];
-      foreach ($tabs as $val => $label):
-        $active = $filter === $val ? 'active' : '';
-        $href = '?filter=' . $val . ($search ? '&search=' . urlencode($search) : '');
-      ?>
-        <a href="<?= $href ?>" class="filter-tab <?= $active ?>"><?= $label ?></a>
-      <?php endforeach; ?>
     </div>
   </form>
 
+  <!-- Action filter -->
+  <div class="filter-tabs">
+    <?php
+    $tabs = ['all'=>'All','received'=>'📦 Received','sold'=>'✅ Sold','damaged'=>'⚠️ Damaged','returned'=>'↩️ Returned'];
+    foreach ($tabs as $val => $label):
+      $active = $filter === $val ? 'active' : '';
+      $href = '?' . http_build_query(['filter'=>$val, 'days'=>$days, 'search'=>$search]);
+    ?>
+      <a href="<?= $href ?>" class="filter-tab <?= $active ?>"><?= $label ?></a>
+    <?php endforeach; ?>
+  </div>
+
+  <!-- Date range filter -->
+  <div class="date-tabs">
+    <?php
+    $dateRanges = [0=>'All Time', 30=>'Last 30 Days', 60=>'Last 60 Days', 90=>'Last 90 Days'];
+    foreach ($dateRanges as $d => $label):
+      $active = $days === $d ? 'active' : '';
+      $href = '?' . http_build_query(['filter'=>$filter, 'days'=>$d, 'search'=>$search]);
+    ?>
+      <a href="<?= $href ?>" class="date-tab <?= $active ?>"><?= $label ?></a>
+    <?php endforeach; ?>
+  </div>
+
   <?php if (empty($transactions)): ?>
-    <div class="empty-state">No transactions yet<?= $filter !== 'all' ? ' for this filter' : '' ?><?= $search ? ' matching "' . htmlspecialchars($search) . '"' : '' ?>.</div>
+    <div class="empty-state">No transactions found<?= $filter !== 'all' ? ' for this filter' : '' ?><?= $days > 0 ? ' in the last ' . $days . ' days' : '' ?><?= $search ? ' matching "' . htmlspecialchars($search) . '"' : '' ?>.</div>
   <?php else: ?>
   <div class="table-scroll">
     <table>
@@ -218,7 +231,7 @@ $actionColors = [
   <?php if ($totalPages > 1): ?>
     <div class="pagination">
       <?php for ($p = 1; $p <= $totalPages; $p++):
-        $href = '?filter=' . urlencode($filter) . '&page=' . $p . ($search ? '&search=' . urlencode($search) : '');
+        $href = '?' . http_build_query(['filter'=>$filter, 'days'=>$days, 'search'=>$search, 'page'=>$p]);
       ?>
         <a href="<?= $href ?>" class="page-btn <?= $p === $page ? 'active' : '' ?>"><?= $p ?></a>
       <?php endfor; ?>
