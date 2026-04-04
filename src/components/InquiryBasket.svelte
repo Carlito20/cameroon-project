@@ -439,6 +439,9 @@
           <button class="pay-method-btn" class:selected={selectedPayment === 'Orange Money'} on:click={() => selectPayment('Orange Money')}>🟠 Orange Money</button>
           <button class="pay-method-btn" class:selected={selectedPayment === 'Not sure yet'} on:click={() => selectPayment('Not sure yet')}>🤔 Not sure yet</button>
         </div>
+        {#if selectedPayment === 'MTN MoMo'}
+          <div class="momo-info">📲 Send to: <strong>679 457 181</strong></div>
+        {/if}
       </div>
 
       <div class="basket-actions">
@@ -539,6 +542,9 @@
               <button class="pay-method-btn" class:selected={selectedPayment === 'Orange Money'} on:click={() => selectPayment('Orange Money')}>🟠 Orange Money</button>
               <button class="pay-method-btn" class:selected={selectedPayment === 'Not sure yet'} on:click={() => selectPayment('Not sure yet')}>🤔 Not sure yet</button>
             </div>
+            {#if selectedPayment === 'MTN MoMo'}
+              <div class="momo-info">📲 Send to: <strong>679 457 181</strong></div>
+            {/if}
           </div>
 
           <div class="basket-actions">
@@ -1380,6 +1386,20 @@
     border-color: #25a244;
     background: #f0fff4;
     color: #1a7a32;
+  }
+  .momo-info {
+    margin-top: 8px;
+    background: #fffbea;
+    border: 1px solid #f0c040;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #7a5c00;
+    text-align: center;
+  }
+  .momo-info strong {
+    font-size: 15px;
+    letter-spacing: 0.5px;
   }
 
   .confirm-order-section {
