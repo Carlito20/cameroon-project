@@ -358,6 +358,9 @@ if ($fromOrderId) {
         <button class="pay-btn" data-method="Orange Money" onclick="selectPayment(this)">🟠 Orange Money</button>
         <button class="pay-btn" data-method="Other" onclick="selectPayment(this)">💳 Other</button>
       </div>
+      <div id="momo-info" style="display:none;background:#1a1500;border:1px solid #3a3000;border-radius:8px;padding:10px 14px;margin-top:8px;font-size:13px;color:#f0c040;">
+        📲 Send to: <strong style="font-size:15px;letter-spacing:1px;">679 457 181</strong>
+      </div>
       <button class="btn-checkout" id="btn-checkout" onclick="doCheckout()" disabled>
         ✓&nbsp; Checkout
       </button>
@@ -558,6 +561,8 @@ function selectPayment(el) {
   document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
   selectedPayment = el.dataset.method;
+  const momoInfo = document.getElementById('momo-info');
+  if (momoInfo) momoInfo.style.display = selectedPayment === 'MTN Mobile Money' ? 'block' : 'none';
   renderCart();
 }
 

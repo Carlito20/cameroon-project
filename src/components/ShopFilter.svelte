@@ -3,7 +3,7 @@
 
   // Props passed from Astro
   export let categories = [];
-  export let whatsappNumber = "237670358551";
+  export let whatsappNumber = "237679457181";
 
   // Helper functions for product items
   function isSubCategory(item) {

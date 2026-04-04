@@ -1,7 +1,7 @@
 <script>
   let isOpen = false;
 
-  const whatsappNumber = "237670358551";
+  const whatsappNumber = "237679457181";
   const whatsappMessage = encodeURIComponent("Hi, I'd like to place an order. Can you help me?");
 
   function openModal() {

@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
 
-  export let whatsappNumber = "237670358551";
+  export let whatsappNumber = "237679457181";
   export let formspreeEndpoint = "https://formspree.io/f/xwvrbryr";
 
   // Cart expiration time: 1 hour in milliseconds

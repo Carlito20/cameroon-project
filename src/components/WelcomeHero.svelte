@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
 
-  export let whatsappNumber = "237670358551";
+  export let whatsappNumber = "237679457181";
 
   // Slides with background images and unique messages for each category
   const slides = [
