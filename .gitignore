@@ -22,3 +22,15 @@ pnpm-debug.log*
 .vscode/
 .idea/
 
+# Tesseract OCR training data (auto-downloaded at runtime)
+*.traineddata
+
+# Excel temp files
+~$*.xlsx
+
+# Receipt test images
+receipts/test-*.png
+
+# Build zip
+americanselect-site.zip
+
