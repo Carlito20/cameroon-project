@@ -96,16 +96,44 @@
     "quantity": 11
   },
   {
+    "name": "Suave Men Hydrating 3-in-1 Body, Hair & Face Wash with Glycerin & Vitamin E",
+    "quantity": 6
+  },
+  {
+    "name": "Suave Moisturizing Body Wash Cocoa Butter and Shea with Vitamin E",
+    "quantity": 6
+  },
+  {
+    "name": "Suave Moisturizing Body Wash Sweet Pea & Violet with Vitamin E",
+    "quantity": 6
+  },
+  {
+    "name": "Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E",
+    "quantity": 6
+  },
+  {
+    "name": "NIVEA MEN Maximum Hydration 3-in-1 Body Wash with Aloe Vera",
+    "quantity": 6
+  },
+  {
     "name": "Irish Spring Original Clean Deodorant Bar Soap",
     "quantity": 40
   },
   {
-    "name": "CeraVe Daily Moisturizing Lotion For Normal to Dry Skin",
-    "quantity": 12
+    "name": "Olay Body Lotion Age Defying with Niacinamide Serum",
+    "quantity": 3
   },
   {
-    "name": "Cetaphil Moisturizing Cream",
-    "quantity": 12
+    "name": "Olay Body Lotion Nourishing with Hyaluronic Acid Serum",
+    "quantity": 3
+  },
+  {
+    "name": "Olay Body Lotion Smoothing with Retinol Serum",
+    "quantity": 3
+  },
+  {
+    "name": "Olay Body Lotion Tone Enhancing with AHA Serum",
+    "quantity": 3
   },
   {
     "name": "Aveeno Daily Moisturizing Body Lotion 18oz",
@@ -116,15 +144,15 @@
     "quantity": 3
   },
   {
-    "name": "Jergens Original Scent Dry Skin Body Lotion, Hand and Body Moisturizer, Cherry Almond Essence",
-    "quantity": 3
-  },
-  {
     "name": "Jergens Shea Butter Hand and Body Lotion, Deep Conditioning Moisturizer",
     "quantity": 3
   },
   {
     "name": "Jergens Soothing Aloe Body Lotion, Aloe Vera Body and Hand Moisturizer",
+    "quantity": 3
+  },
+  {
+    "name": "Jergens Skin Firming Body Lotion with Collagen and Elastin",
     "quantity": 3
   },
   {
@@ -160,6 +188,10 @@
     "quantity": 6
   },
   {
+    "name": "Vaseline Men's Healing Moisture Hand & Body Lotion",
+    "quantity": 3
+  },
+  {
     "name": "Vaseline Intensive Care Body Lotion Cocoa Radiant with Pure Cocoa Butter",
     "quantity": 6
   },
@@ -176,6 +208,10 @@
     "quantity": 6
   },
   {
+    "name": "Vaseline Intensive Care Unscented Advanced Repair Body Lotion",
+    "quantity": 3
+  },
+  {
     "name": "Vaseline Intensive Care Nourishing Moisture Body Lotion with Pure Oat Extract",
     "quantity": 6
   },
@@ -186,6 +222,10 @@
   {
     "name": "Lubriderm Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Hydrating Face, Hand & Body Lotion, 24-hour Moisturizer for Dry Skin, 6 Fl Oz",
     "quantity": 4
+  },
+  {
+    "name": "Colgate Cavity Protection Toothpaste with Fluoride",
+    "quantity": 18
   },
   {
     "name": "Crest Pro-Health Advanced Mouthwash",
