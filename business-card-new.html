@@ -5,13 +5,18 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  @page { width: 3.5in; height: 2in; margin: 0; }
+  @page { size: 7.5in 2.2in landscape; margin: 0; }
 
   body {
-    width: 3.5in;
-    height: 2in;
+    width: 7.5in;
+    height: 2.2in;
     font-family: Arial, sans-serif;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25in;
+    background: #fff;
   }
 
   /* ===== FRONT ===== */
@@ -26,7 +31,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    page-break-after: always;
+    /* page-break-after: always; */
     position: relative;
     overflow: hidden;
   }
