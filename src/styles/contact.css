@@ -203,6 +203,26 @@
   color: #25D366;
 }
 
+/* Orange Money styling */
+.orange-method {
+  background: rgba(255, 102, 0, 0.08);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #ff6600;
+}
+
+.orange-link {
+  color: #cc4400;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.orange-link:hover {
+  color: #ff6600;
+}
+
 .whatsapp-btn {
   background: #25D366;
   color: white !important;
