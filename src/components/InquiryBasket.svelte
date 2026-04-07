@@ -174,6 +174,7 @@
     if (expiryCheckInterval) {
       clearInterval(expiryCheckInterval);
     }
+    if (waReturnCleanup) waReturnCleanup();
   });
 
   // Update quantity for an item (respecting stock limits)
@@ -217,7 +218,7 @@
     updateBodyClass();
   }
 
-  async function sendViaWhatsApp() {
+  function sendViaWhatsApp() {
     if (inquiryItems.length === 0) return;
 
     const itemList = inquiryItems.map(item => {
@@ -230,33 +231,64 @@
     const paymentLine = selectedPayment ? `\n💳 Preferred Payment: ${selectedPayment}` : '';
     const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nEstimated Total: ${formatPrice(totalPrice)} FCFA${paymentLine}\n\nPlease confirm availability and final price.\n\n🔗 My cart: ${cartLink}`;
 
-    // Send to Formspree for email notification
+    // Store order data — Formspree only fires after user confirms they sent the message
+    pendingWhatsAppData = {
+      _subject: `New Order - ${totalItems} item${totalItems === 1 ? '' : 's'} - ${formatPrice(totalPrice)} FCFA`,
+      order_type: 'WhatsApp Order Request',
+      total_items: totalItems,
+      estimated_total: `${formatPrice(totalPrice)} FCFA`,
+      order_details: itemList,
+      payment_method: selectedPayment || 'Not specified',
+      cart_link: cartLink,
+      full_message: message
+    };
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+
+    // Guard: remove any previous listeners before adding new ones
+    if (waReturnCleanup) waReturnCleanup();
+
+    // Listen for user returning to the page, then ask if message was sent
+    const onReturn = () => {
+      window.removeEventListener('focus', onReturn);
+      document.removeEventListener('visibilitychange', onVisibility);
+      waReturnCleanup = null;
+      // Small delay so the tab switch fully completes
+      setTimeout(() => { showSentPrompt = true; }, 400);
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') onReturn();
+    };
+    window.addEventListener('focus', onReturn);
+    document.addEventListener('visibilitychange', onVisibility);
+    waReturnCleanup = () => {
+      window.removeEventListener('focus', onReturn);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }
+
+  let showSentPrompt = false;
+
+  async function confirmMessageSent() {
+    showSentPrompt = false;
+    if (!pendingWhatsAppData) return;
     try {
       await fetch(formspreeEndpoint, {
         method: 'POST',
-        body: JSON.stringify({
-          _subject: `New Order - ${totalItems} item${totalItems === 1 ? '' : 's'} - ${formatPrice(totalPrice)} FCFA`,
-          order_type: 'WhatsApp Order Request',
-          total_items: totalItems,
-          estimated_total: `${formatPrice(totalPrice)} FCFA`,
-          order_details: itemList,
-          payment_method: selectedPayment || 'Not specified',
-          cart_link: cartLink,
-          full_message: message
-        }),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
+        body: JSON.stringify(pendingWhatsAppData),
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
       });
     } catch (e) {
       console.error('Formspree error:', e);
     }
+    pendingWhatsAppData = null;
+  }
 
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-
-    window.open(whatsappUrl, '_blank');
+  function dismissSentPrompt() {
+    showSentPrompt = false;
+    pendingWhatsAppData = null;
   }
 
   function toggleBasket() {
@@ -275,6 +307,8 @@
 
   let selectedPayment = '';
   let isConfirmationMode = false; // true when cart was loaded from admin's reply link
+  let pendingWhatsAppData = null; // holds order data waiting for send confirmation
+  let waReturnCleanup = null;    // cleans up focus/visibilitychange listeners
 
   let customerName = '';
   let customerPhone = '';
@@ -442,6 +476,9 @@
         {#if selectedPayment === 'MTN MoMo'}
           <div class="momo-info">📲 Send to: <strong>679 457 181</strong></div>
         {/if}
+        {#if selectedPayment === 'Orange Money'}
+          <div class="momo-info orange-momo-info">📲 Send to: <strong>686 271 567</strong></div>
+        {/if}
       </div>
 
       <div class="basket-actions">
@@ -545,6 +582,9 @@
             {#if selectedPayment === 'MTN MoMo'}
               <div class="momo-info">📲 Send to: <strong>679 457 181</strong></div>
             {/if}
+            {#if selectedPayment === 'Orange Money'}
+              <div class="momo-info orange-momo-info">📲 Send to: <strong>686 271 567</strong></div>
+            {/if}
           </div>
 
           <div class="basket-actions">
@@ -578,6 +618,20 @@
       {#if previewItem.price}
         <p class="cart-preview-price">{formatPrice(previewItem.price)} FCFA</p>
       {/if}
+    </div>
+  </div>
+{/if}
+
+<!-- WhatsApp send confirmation prompt -->
+{#if showSentPrompt}
+  <div class="wa-sent-overlay" on:click={dismissSentPrompt}>
+    <div class="wa-sent-prompt" on:click|stopPropagation>
+      <div class="wa-sent-icon">💬</div>
+      <p class="wa-sent-question">Did you send the message on WhatsApp?</p>
+      <div class="wa-sent-actions">
+        <button class="wa-sent-btn wa-sent-yes" on:click={confirmMessageSent}>Yes, I sent it</button>
+        <button class="wa-sent-btn wa-sent-no" on:click={dismissSentPrompt}>No, I didn't</button>
+      </div>
     </div>
   </div>
 {/if}
@@ -1401,6 +1455,11 @@
     font-size: 15px;
     letter-spacing: 0.5px;
   }
+  .orange-momo-info {
+    background: #fff4eb;
+    border-color: #f07820;
+    color: #7a3800;
+  }
 
   .confirm-order-section {
     padding: 12px 20px 16px;
@@ -1842,5 +1901,83 @@
   .confirm-disabled {
     opacity: 0.45;
     cursor: not-allowed;
+  }
+
+  /* WhatsApp send confirmation prompt */
+  .wa-sent-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    /* iOS fixed positioning fix */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+    /* Safe area insets for notched devices */
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+    /* iOS tap-to-dismiss */
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wa-sent-prompt {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px 24px 22px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    cursor: default;
+  }
+  .wa-sent-icon { font-size: 36px; margin-bottom: 10px; }
+  .wa-sent-question {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 20px;
+    line-height: 1.4;
+  }
+  .wa-sent-actions { display: flex; gap: 10px; }
+  .wa-sent-btn {
+    flex: 1;
+    min-height: 44px;
+    padding: 11px 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wa-sent-yes { background: #25d366; color: #fff; }
+  .wa-sent-yes:hover { background: #1db954; }
+  .wa-sent-no { background: #f0f0f0; color: #555; }
+  .wa-sent-no:hover { background: #e0e0e0; }
+
+  /* Landscape mobile — prevent prompt overflowing short viewport */
+  @media (max-height: 500px) {
+    .wa-sent-prompt {
+      padding: 16px 20px 14px;
+      max-height: 90dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .wa-sent-icon { font-size: 26px; margin-bottom: 6px; }
+    .wa-sent-question { font-size: 14px; margin-bottom: 12px; }
+  }
+
+  /* Very small screens — stack buttons vertically */
+  @media (max-width: 400px) {
+    .wa-sent-prompt { padding: 22px 16px 18px; }
+    .wa-sent-actions { flex-direction: column; gap: 8px; }
+    .wa-sent-question { font-size: 15px; }
   }
 </style>

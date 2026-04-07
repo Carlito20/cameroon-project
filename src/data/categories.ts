@@ -110,25 +110,25 @@ export const categories: Category[] = [
             quantity: 5,
             colors: ['#2e7d32', '#2c2c2c', '#ff69b4', '#7b1fa2', '#1565c0'],
             images: [
+              '/images/products/blender-380ml-5.webp',
               '/images/products/blender-380ml-1.webp',
-              '/images/products/blender-380ml-2.webp',
               '/images/products/blender-380ml-3.webp',
               '/images/products/blender-380ml-4.webp',
-              '/images/products/blender-380ml-5.webp',
+              '/images/products/blender-380ml-10.webp',
+              '/images/products/blender-380ml-2.webp',
               '/images/products/blender-380ml-6.webp',
               '/images/products/blender-380ml-7.webp',
               '/images/products/blender-380ml-8.webp',
-              '/images/products/blender-380ml-9.webp',
-              '/images/products/blender-380ml-10.webp'
+              '/images/products/blender-380ml-9.webp'
             ]
           },
           {
             name: 'Manual Chopper. No Need for Electricity',
             images: [
+              '/images/products/manual-chopper-no-electricity-4.webp',
               '/images/products/manual-chopper-no-electricity-1.webp',
               '/images/products/manual-chopper-no-electricity-2.webp',
-              '/images/products/manual-chopper-no-electricity-3.webp',
-              '/images/products/manual-chopper-no-electricity-4.webp'
+              '/images/products/manual-chopper-no-electricity-3.webp'
             ],
             quantity: 4,
             colors: ['#ff69b4', '#808080'],
@@ -750,9 +750,9 @@ export const categories: Category[] = [
             colors: ['#2c2c2c', '#d4af37', '#ff69b4'],
             images: [
               '/images/products/smartwatch-multi-1.webp',
+              '/images/products/smartwatch-multi-4.webp',
               '/images/products/smartwatch-multi-2.webp',
-              '/images/products/smartwatch-multi-3.webp',
-              '/images/products/smartwatch-multi-4.webp'
+              '/images/products/smartwatch-multi-3.webp'
             ]
           },
           {
@@ -845,9 +845,9 @@ export const categories: Category[] = [
             quantity: 9,
             colors: ['#800080', '#ff69b4', '#2c2c2c'],
             images: [
+              '/images/products/rechargeable-fan3.webp',
               '/images/products/rechargeable-fan1.webp',
               '/images/products/rechargeable-fan2.webp',
-              '/images/products/rechargeable-fan3.webp',
               '/images/products/rechargeable-fan4.webp'
             ]
           },
@@ -883,9 +883,9 @@ export const categories: Category[] = [
             colors: ['#2e7d32', '#1565c0', '#c62828', '#2c2c2c', '#4a5240'],
             images: [
               '/images/products/tg192-speaker-1.webp',
-              '/images/products/tg192-speaker-2.webp',
-              '/images/products/tg192-speaker-3.webp',
               '/images/products/tg192-speaker-4.webp',
+              '/images/products/tg192-speaker-3.webp',
+              '/images/products/tg192-speaker-2.webp',
               '/images/products/tg192-speaker-5.webp',
               '/images/products/tg192-speaker-6.webp'
             ]
@@ -894,25 +894,28 @@ export const categories: Category[] = [
             name: 'TG537 Portable Wireless Speaker - TWS Technology',
             price: 10000,
             quantity: 4,
-            colors: ['#808080', '#e74c3c', '#2c2c2c', '#00bcd4'],
+            colors: ['#1565c0', '#e74c3c', '#2c2c2c', '#00bcd4'],
             images: [
+              '/images/products/tg537-speaker-6.webp',
+              '/images/products/tg537-speaker-5.webp',
               '/images/products/tg537-speaker-1.webp',
+              '/images/products/tg537-speaker-7.webp',
               '/images/products/tg537-speaker-2.webp',
               '/images/products/tg537-speaker-3.webp',
-              '/images/products/tg537-speaker-4.webp',
-              '/images/products/tg537-speaker-5.webp'
+              '/images/products/tg537-speaker-4.webp'
             ]
           },
           {
             name: 'TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets',
             price: 8000,
-            quantity: 8,
+            quantity: 4,
             colors: ['#e74c3c', '#2980b9', '#2c2c2c', '#800080'],
             images: [
               '/images/products/tg667-speaker-1.webp',
               '/images/products/tg667-speaker-2.webp',
-              '/images/products/tg667-speaker-3.webp',
-              '/images/products/tg667-speaker-4.webp'
+              '/images/products/tg667-speaker-4.webp',
+              '/images/products/tg667-speaker-5.webp',
+              '/images/products/tg667-speaker-3.webp'
             ]
           },
           {
@@ -922,8 +925,8 @@ export const categories: Category[] = [
             colors: ['#808080', '#ffffff'],
             images: [
               '/images/products/hyundai-lp5t-1.webp',
-              '/images/products/hyundai-lp5t-2.webp',
-              '/images/products/hyundai-lp5t-3.webp'
+              '/images/products/hyundai-lp5t-3.webp',
+              '/images/products/hyundai-lp5t-2.webp'
             ]
           },
           {
@@ -972,8 +975,9 @@ export const categories: Category[] = [
             colors: ['#ff8c00', '#f5f5dc', '#2c2c2c'],
             images: [
               '/images/products/acer-tws-headset-1.webp',
-              '/images/products/acer-tws-headset-2.webp',
               '/images/products/acer-tws-headset-3.webp',
+              '/images/products/acer-tws-headset-5.webp',
+              '/images/products/acer-tws-headset-2.webp',
               '/images/products/acer-tws-headset-4.webp'
             ]
           },
@@ -984,8 +988,8 @@ export const categories: Category[] = [
             colors: ['#2c2c2c', '#800080'],
             images: [
               '/images/products/acer-wireless-stereo-1.webp',
-              '/images/products/acer-wireless-stereo-2.webp',
-              '/images/products/acer-wireless-stereo-3.webp'
+              '/images/products/acer-wireless-stereo-3.webp',
+              '/images/products/acer-wireless-stereo-2.webp'
             ]
           },
           {
@@ -995,10 +999,10 @@ export const categories: Category[] = [
             colors: ['#ffffff', '#2c2c2c'],
             images: [
               '/images/products/nokia-earbuds-1.webp',
+              '/images/products/nokia-earbuds-5.webp',
               '/images/products/nokia-earbuds-2.webp',
               '/images/products/nokia-earbuds-3.webp',
-              '/images/products/nokia-earbuds-4.webp',
-              '/images/products/nokia-earbuds-5.webp'
+              '/images/products/nokia-earbuds-4.webp'
             ]
           },
           {
