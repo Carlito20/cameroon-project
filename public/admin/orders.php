@@ -145,6 +145,14 @@ $filter = $_GET['filter'] ?? 'pending';
       -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
     }
     .btn-print-receipt:hover { background: #221a2e; }
+    .btn-wa-confirm {
+      flex: 1; padding: 10px 12px; background: #0d2010; color: #25d366;
+      border: 1px solid #1a4a20; border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; min-height: 44px; touch-action: manipulation;
+      -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+      text-decoration: none; display: flex; align-items: center; justify-content: center;
+    }
+    .btn-wa-confirm:hover { background: #112a18; }
 
     @media print {
       body > *:not(#print-area) { display: none !important; }
@@ -279,13 +287,14 @@ function renderOrders(orders) {
       </div>`;
     }).join('');
 
-    const orderJson = JSON.stringify(o).replace(/'/g, "\\'");
+    const waConfirmLink = o.customer_phone ? buildWaConfirmLink(o) : null;
     const actionsHtml = `<div class="order-actions">
       ${isPending ? `
         <button class="btn-complete" onclick="completeOrder(${o.id})">✓ Mark Paid & Complete</button>
         <button class="btn-scan"     onclick="scanOrder(${o.id})">📷 Scan & Process</button>
         <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>` : ''}
       <button class="btn-print-receipt" onclick='printOrderReceipt(${JSON.stringify(o)})'>🖨 Print Receipt</button>
+      ${waConfirmLink ? `<a class="btn-wa-confirm" href="${waConfirmLink}" target="_blank" rel="noopener noreferrer">📱 Send Confirmation</a>` : ''}
     </div>`;
 
     const noteHtml = o.note ? `<div class="order-note">${esc(o.note)}</div>` : '';
@@ -385,6 +394,35 @@ function showToast(msg, type) {
 
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildWaConfirmLink(o) {
+  // Normalise phone → international format (add 237 if no country code)
+  let phone = String(o.customer_phone).replace(/\D/g, '');
+  if (!phone.startsWith('237')) phone = '237' + phone;
+
+  const items = JSON.parse(o.items || '[]');
+  const payIcon = o.payment_method?.includes('MTN') ? '🟡' : o.payment_method?.includes('Orange') ? '🟠' : '💵';
+
+  let lines = '';
+  let total = 0;
+  items.forEach(i => {
+    const line = (i.price || 0) * (i.quantity || 1);
+    total += line;
+    lines += `• ${i.name} ×${i.quantity || 1}${i.price ? ' — ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
+  });
+
+  const msg =
+    `✅ *Payment Received — American Select*\n` +
+    `Order Ref: ${o.order_ref}\n\n` +
+    lines +
+    `\n*Total: ${Number(o.total || total).toLocaleString()} FCFA*\n` +
+    `${payIcon} Paid via: ${o.payment_method || 'N/A'}\n\n` +
+    `Thank you for shopping with American Select!\n` +
+    `Questions? Call/WhatsApp:\n` +
+    `MTN: 679 457 181 | Orange: 686 271 567`;
+
+  return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
 function printOrderReceipt(o) {
