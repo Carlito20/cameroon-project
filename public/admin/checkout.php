@@ -662,10 +662,16 @@ function showReceipt(items) {
 
   // Build print area
   document.getElementById('print-area').innerHTML =
-    `<h2 style="text-align:center;margin-bottom:4px;">AMERICAN SELECT</h2>
-     <p style="text-align:center;font-size:12px;color:#666;margin-bottom:4px;">americanselect.net</p>
-     <p style="text-align:center;font-size:12px;color:#666;margin-bottom:16px;">${dateStr}</p>
-     <hr style="border:1px dashed #ccc;margin:12px 0;">` +
+    `<div style="text-align:center;margin-bottom:10px;">
+       <img src="/images/as-logo.jpeg" alt="American Select" style="height:72px;object-fit:contain;display:block;margin:0 auto 8px;">
+       <h2 style="font-size:17px;letter-spacing:1px;margin-bottom:2px;">AMERICAN SELECT</h2>
+       <p style="font-size:11px;color:#555;margin:0;">Quality Imports from the USA &amp; Canada</p>
+       <p style="font-size:11px;color:#555;margin:4px 0 0;">Yaoundé, Cameroon</p>
+       <p style="font-size:11px;color:#555;margin:2px 0 0;">MTN: 679 457 181 &nbsp;|&nbsp; Orange: 686 271 567</p>
+       <p style="font-size:11px;color:#555;margin:2px 0 0;">americanselect.net</p>
+     </div>
+     <hr style="border:none;border-top:1px dashed #aaa;margin:10px 0;">
+     <p style="font-size:11px;color:#666;text-align:center;margin-bottom:12px;">${dateStr}</p>` +
     items.map(item => {
       const line = item.price * item.qty;
       return `<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
@@ -673,11 +679,13 @@ function showReceipt(items) {
         <div style="font-weight:bold;">${line.toLocaleString()} FCFA</div>
       </div>`;
     }).join('') +
-    `<hr style="border:1px dashed #ccc;margin:12px 0;">
+    `<hr style="border:none;border-top:1px dashed #aaa;margin:10px 0;">
      <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:bold;">
        <span>TOTAL</span><span>${total.toLocaleString()} FCFA</span>
      </div>
-     <p style="margin-top:8px;font-size:12px;color:#888;">Paid via: ${selectedPayment}</p>`;
+     <p style="margin-top:6px;font-size:12px;color:#888;">Paid via: ${selectedPayment}</p>
+     <hr style="border:none;border-top:1px dashed #aaa;margin:14px 0 8px;">
+     <p style="text-align:center;font-size:11px;color:#888;margin:0;">Thank you for shopping with American Select!</p>`;
 }
 
 function printReceipt() {

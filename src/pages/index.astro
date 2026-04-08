@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import WelcomeHero from '../components/WelcomeHero.svelte';
 import HeroSlider from '../components/HeroSlider.svelte';
+import FeaturedProducts from '../components/FeaturedProducts.svelte';
+import InquiryBasket from '../components/InquiryBasket.svelte';
 import '../styles/index.css';
 
 const whatsappNumber = "237679457181";
@@ -13,6 +15,9 @@ const whatsappNumber = "237679457181";
 
   <!-- Category Slider -->
   <HeroSlider client:load />
+
+  <!-- Featured Products -->
+  <FeaturedProducts client:load />
 
   <section class="features section">
     <div class="container">
@@ -50,6 +55,9 @@ const whatsappNumber = "237679457181";
       </div>
     </div>
   </section>
+
+  <!-- Inquiry Basket (needed for Add to Basket on home page) -->
+  <InquiryBasket client:load />
 
 </BaseLayout>
 

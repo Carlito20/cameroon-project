@@ -361,8 +361,24 @@
 
   function getWhatsAppLink(item) {
     const name = getProductName(item);
-    const message = encodeURIComponent(`Hi, I'm interested in ordering: ${name}\n\nPlease let me know the price and availability.`);
+    const message = encodeURIComponent(`Hi, I have a question about: ${name}\n\n`);
     return `https://wa.me/${whatsappNumber}?text=${message}`;
+  }
+
+  // Share product link
+  let sharedItem = null;
+  async function shareProduct(name) {
+    const url = window.location.origin + '/shop?search=' + encodeURIComponent(name);
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+    }
+    sharedItem = name;
+    setTimeout(() => { sharedItem = null; }, 2000);
   }
 
   // Track which items have been added to inquiry with their quantities
@@ -1113,7 +1129,7 @@
                       </span>
                     {/if}
                   {:else}
-                    <span class="out-of-stock">Out of Stock</span>
+                    <span class="out-of-stock">Currently unavailable</span>
                   {/if}
                 </p>
               {:else}
@@ -1144,6 +1160,9 @@
                 >
                   WhatsApp
                 </a>
+                <button class="btn-share" title="Copy link" on:click={() => shareProduct(result.productName)}>
+                  {sharedItem === result.productName ? '✓' : '🔗'}
+                </button>
               </div>
             </div>
           </div>
@@ -1178,7 +1197,7 @@
                     {#if getProductQuantity(sp.product) > 0}
                       <span class="in-stock">In Stock: {getRemainingStock(sp.product)}</span>
                     {:else}
-                      <span class="out-of-stock">Out of Stock</span>
+                      <span class="out-of-stock">Currently unavailable</span>
                     {/if}
                   </p>
                 {:else}
@@ -1216,6 +1235,9 @@
                   {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
                 </button>
                 <a href={getWhatsAppLink(sp.product)} target="_blank" rel="noopener noreferrer" class="btn btn-small btn-whatsapp">WhatsApp</a>
+                <button class="btn-share" title="Copy link" on:click={() => shareProduct(sp.productName)}>
+                  {sharedItem === sp.productName ? '✓' : '🔗'}
+                </button>
               </div>
             </div>
           </div>
@@ -1289,7 +1311,7 @@
                                       </span>
                                     {/if}
                                   {:else}
-                                    <span class="out-of-stock">Out of Stock</span>
+                                    <span class="out-of-stock">Currently unavailable</span>
                                   {/if}
                                 </p>
                               {:else}
@@ -1320,6 +1342,9 @@
                                 >
                                   WhatsApp
                                 </a>
+                                <button class="btn-share" title="Copy link" on:click={() => shareProduct(getProductName(nestedProduct))}>
+                                  {sharedItem === getProductName(nestedProduct) ? '✓' : '🔗'}
+                                </button>
                               </div>
                             </div>
                           </div>
@@ -1358,7 +1383,7 @@
                             </span>
                           {/if}
                         {:else}
-                          <span class="out-of-stock">Out of Stock</span>
+                          <span class="out-of-stock">Currently unavailable</span>
                         {/if}
                       </p>
                     {:else}
@@ -1389,6 +1414,9 @@
                       >
                         WhatsApp
                       </a>
+                      <button class="btn-share" title="Copy link" on:click={() => shareProduct(getProductName(subItem))}>
+                        {sharedItem === getProductName(subItem) ? '✓' : '🔗'}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1429,7 +1457,7 @@
                       </span>
                     {/if}
                   {:else}
-                    <span class="out-of-stock">Out of Stock</span>
+                    <span class="out-of-stock">Currently unavailable</span>
                   {/if}
                 </p>
               {:else}
@@ -1460,6 +1488,9 @@
                 >
                   WhatsApp
                 </a>
+                <button class="btn-share" title="Copy link" on:click={() => shareProduct(getProductName(item))}>
+                  {sharedItem === getProductName(item) ? '✓' : '🔗'}
+                </button>
               </div>
 
             </div>
@@ -1508,7 +1539,7 @@
               {#if getProductQuantity(productModal.product) > 0}
                 <span class="in-stock">In Stock: {getRemainingStock(productModal.product)}</span>
               {:else}
-                <span class="out-of-stock">Out of Stock</span>
+                <span class="out-of-stock">Currently unavailable</span>
               {/if}
             </p>
           {:else}
@@ -1543,6 +1574,9 @@
               {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : 'Add to Cart'}
             </button>
             <a href={getWhatsAppLink(productModal.product)} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">WhatsApp</a>
+            <button class="btn-share btn-share-modal" title="Copy link" on:click={() => shareProduct(productModal.productName)}>
+              {sharedItem === productModal.productName ? '✓ Copied!' : '🔗 Copy Link'}
+            </button>
           </div>
           <a href="/shop?category={productModal.categoryId}" class="product-modal-view-all">View all in {productModal.categoryName} →</a>
         </div>
@@ -2637,6 +2671,35 @@
 
   .btn-whatsapp:hover {
     background: #128C7E;
+  }
+
+  .btn-share {
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #666;
+    white-space: nowrap;
+    min-height: 32px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: border-color 0.2s, color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .btn-share:hover {
+    border-color: #aaa;
+    color: #333;
+  }
+
+  .btn-share-modal {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    min-height: 40px;
   }
 
   .product-actions {

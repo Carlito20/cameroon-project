@@ -29,7 +29,7 @@ const getColorName = hex => colorNames[hex.toLowerCase()] || hex;
 let existingMap = {};
 try {
   const existing = JSON.parse(readFileSync(outputPath, 'utf-8'));
-  for (const e of existing) existingMap[e.name] = e.quantity;
+  for (const e of existing) existingMap[e.name] = { quantity: e.quantity, price: e.price };
 } catch { /* file may not exist yet */ }
 
 const content = readFileSync(categoriesPath, 'utf-8');
@@ -60,13 +60,17 @@ for (const raw of lines) {
   const nm = line.match(/^name:\s*['"](.+)['"]/);
   if (nm) {
     if (cur?.name && cur.quantity !== undefined) products.push(cur);
-    cur = { name: nm[1], quantity: undefined, colorsRaw: null };
+    cur = { name: nm[1], quantity: undefined, price: undefined, colorsRaw: null };
     continue;
   }
 
   // quantity:
   const qm = line.match(/^quantity:\s*(\d+)/);
   if (qm && cur) { cur.quantity = parseInt(qm[1]); continue; }
+
+  // price:
+  const pm = line.match(/^price:\s*(\d+)/);
+  if (pm && cur) { cur.price = parseInt(pm[1]); continue; }
 
   // end of product block
   if ((line === '},' || line === '}') && cur?.name && cur.quantity !== undefined) {
@@ -83,7 +87,17 @@ const parseColors = raw => raw ? (raw.match(/#[0-9a-fA-F]{6}/g) || []) : [];
 const result = [];
 const seen   = new Set();
 // Use existing quantity if present (preserves manual per-color stock edits)
-const add    = (name, qty) => { if (!seen.has(name)) { seen.add(name); result.push({ name, quantity: existingMap[name] !== undefined ? existingMap[name] : qty }); } };
+const add = (name, qty, price) => {
+  if (!seen.has(name)) {
+    seen.add(name);
+    const ex = existingMap[name];
+    result.push({
+      name,
+      quantity: ex?.quantity !== undefined ? ex.quantity : qty,
+      price:    price ?? ex?.price ?? undefined,
+    });
+  }
+};
 
 for (const p of products) {
   if (!p.name || p.quantity == null) continue;
@@ -91,13 +105,13 @@ for (const p of products) {
 
   if (colors.length > 1) {
     const perColor = Math.ceil(p.quantity / colors.length);
-    for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor);
-    add(p.name, p.quantity); // base entry too
+    for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor, p.price);
+    add(p.name, p.quantity, p.price); // base entry too
   } else if (colors.length === 1) {
-    add(p.name, p.quantity);
-    add(`${p.name} (${getColorName(colors[0])})`, p.quantity);
+    add(p.name, p.quantity, p.price);
+    add(`${p.name} (${getColorName(colors[0])})`, p.quantity, p.price);
   } else {
-    add(p.name, p.quantity);
+    add(p.name, p.quantity, p.price);
   }
 }
 

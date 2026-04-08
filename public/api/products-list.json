@@ -1,614 +1,767 @@
 [
   {
     "name": "Manual Pasta Maker Machine, 9 Adjustable Thickness Settings",
-    "quantity": 2
+    "quantity": 2,
+    "price": 20000
   },
   {
     "name": "Reusable Stretchable Storage Lids for Round Pots, Bowls, and Cups – Air-Tight, Food-Safe",
-    "quantity": 15
+    "quantity": 15,
+    "price": 2000
   },
   {
     "name": "1000 Reusable Stretchable Storage Lids for Round Pots, Bowls, and Cups – Air-Tight, Food-Safe",
-    "quantity": 5
+    "quantity": 5,
+    "price": 3000
   },
   {
     "name": "Manual Food Chopper, Pull String Vegetable and Meat Mincer with Clear Container, Hand-Powered Kitchen Processor",
-    "quantity": 11
+    "quantity": 11,
+    "price": 8000
   },
   {
     "name": "8.45oz RZSYZH USB Rechargeable Electric mini Garlic  Blender with Stainless Steel Blades for Automatic Chopping",
-    "quantity": 5
+    "quantity": 5,
+    "price": 5000
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Green)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 8000
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Black)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 8000
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Pink)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 8000
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Deep Purple)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 8000
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Blue)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 8000
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice",
-    "quantity": 5
+    "quantity": 5,
+    "price": 8000
   },
   {
     "name": "Manual Chopper. No Need for Electricity (Pink)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 10000
   },
   {
     "name": "Manual Chopper. No Need for Electricity (Gray)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 10000
   },
   {
     "name": "Manual Chopper. No Need for Electricity",
-    "quantity": 4
+    "quantity": 4,
+    "price": 10000
   },
   {
     "name": "Dr Teal's Body Wash with Prebiotic Lemon Balm and Essential Oil Blend",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's Body Wash Relax and Relief with Eucalyptus Spearmint",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's Vanilla Comfort Body Wash with Pure Epsom Salt",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's Hawaiian Bliss Body Wash with Alaea Red Sea Salt, Hibiscus & Papaya, 24 fl oz",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's Body Wash with Pure Epsom Salt, Soothe & Sleep with Lavender",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's Body Wash, Nourish & Protect with Coconut Oil",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's Body Wash with Pure Epsom Salt, Shea Butter & Almond",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Olay Essential Botanicals Body Wash, Spiced Chai & Pear",
-    "quantity": 11
+    "quantity": 11,
+    "price": 3500
   },
   {
     "name": "Olay Essential Botanicals Body Wash, White Tea & Cucumber",
-    "quantity": 11
+    "quantity": 11,
+    "price": 3500
   },
   {
     "name": "Olay Essential Botanicals Body Wash, Lavender Milk & Sandalwood",
-    "quantity": 11
+    "quantity": 11,
+    "price": 3500
   },
   {
     "name": "Suave Men Hydrating 3-in-1 Body, Hair & Face Wash with Glycerin & Vitamin E",
-    "quantity": 6
+    "quantity": 6,
+    "price": 3000
   },
   {
     "name": "Suave Moisturizing Body Wash Cocoa Butter and Shea with Vitamin E",
-    "quantity": 6
+    "quantity": 6,
+    "price": 3000
   },
   {
     "name": "Suave Moisturizing Body Wash Sweet Pea & Violet with Vitamin E",
-    "quantity": 6
+    "quantity": 6,
+    "price": 3000
   },
   {
     "name": "Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E",
-    "quantity": 6
+    "quantity": 6,
+    "price": 3000
   },
   {
     "name": "NIVEA MEN Maximum Hydration 3-in-1 Body Wash with Aloe Vera",
-    "quantity": 6
+    "quantity": 6,
+    "price": 3500
   },
   {
     "name": "Irish Spring Original Clean Deodorant Bar Soap",
-    "quantity": 40
+    "quantity": 40,
+    "price": 1300
   },
   {
     "name": "Olay Body Lotion Age Defying with Niacinamide Serum",
-    "quantity": 3
+    "quantity": 3,
+    "price": 10000
   },
   {
     "name": "Olay Body Lotion Nourishing with Hyaluronic Acid Serum",
-    "quantity": 3
+    "quantity": 3,
+    "price": 10000
   },
   {
     "name": "Olay Body Lotion Smoothing with Retinol Serum",
-    "quantity": 3
+    "quantity": 3,
+    "price": 10000
   },
   {
     "name": "Olay Body Lotion Tone Enhancing with AHA Serum",
-    "quantity": 3
+    "quantity": 3,
+    "price": 10000
   },
   {
     "name": "Aveeno Daily Moisturizing Body Lotion 18oz",
-    "quantity": 5
+    "quantity": 5,
+    "price": 6000
   },
   {
     "name": "Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil",
-    "quantity": 3
+    "quantity": 3,
+    "price": 6000
   },
   {
     "name": "Jergens Shea Butter Hand and Body Lotion, Deep Conditioning Moisturizer",
-    "quantity": 3
+    "quantity": 3,
+    "price": 6000
   },
   {
     "name": "Jergens Soothing Aloe Body Lotion, Aloe Vera Body and Hand Moisturizer",
-    "quantity": 3
+    "quantity": 3,
+    "price": 6000
   },
   {
     "name": "Jergens Skin Firming Body Lotion with Collagen and Elastin",
-    "quantity": 3
+    "quantity": 3,
+    "price": 6000
   },
   {
     "name": "Jergens Ultra Healing Dry Skin Lotion, Hand and Body Moisturizer",
-    "quantity": 3
+    "quantity": 3,
+    "price": 6000
   },
   {
     "name": "Dr Teal's 24 Hour Moisture+ Body Lotion, Prebiotic Lemon Balm & Essential Oils",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's 24 Hour Moisture+ Body Lotion, Eucalyptus & Spearmint",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's 24 Hour Moisture+ Body Lotion, Coconut Oil & Essential Oils",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's 24 Hour Moisture+ Body Lotion, Shea Butter & Almond",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's 24 Hour Moisture+ Body Lotion, Lavender Essential Oil",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Dr Teal's 24 Hour Moisture Body Lotion, Vanilla Comfort",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Vaseline Men Cooling Hydration 3-in-1 Face, Hands & Body Lotion with Menthol",
-    "quantity": 6
+    "quantity": 6,
+    "price": 6000
   },
   {
     "name": "Vaseline Men's Healing Moisture Hand & Body Lotion",
-    "quantity": 3
+    "quantity": 3,
+    "price": 6000
   },
   {
     "name": "Vaseline Intensive Care Body Lotion Cocoa Radiant with Pure Cocoa Butter",
-    "quantity": 6
+    "quantity": 6,
+    "price": 6000
   },
   {
     "name": "Vaseline Intensive Care Soothing Hydration Body Lotion with Aloe Vera",
-    "quantity": 6
+    "quantity": 6,
+    "price": 6000
   },
   {
     "name": "Vaseline Intensive Care Sensitive Skin Relief Body Lotion with Colloidal Oatmeal",
-    "quantity": 4
+    "quantity": 4,
+    "price": 6000
   },
   {
     "name": "Vaseline Intensive Care Calm Healing Body Lotion with Lavender Extract",
-    "quantity": 6
+    "quantity": 6,
+    "price": 6000
   },
   {
     "name": "Vaseline Intensive Care Unscented Advanced Repair Body Lotion",
-    "quantity": 3
+    "quantity": 3,
+    "price": 6000
   },
   {
     "name": "Vaseline Intensive Care Nourishing Moisture Body Lotion with Pure Oat Extract",
-    "quantity": 6
+    "quantity": 6,
+    "price": 6000
   },
   {
     "name": "Lubriderm Fragrance Free Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Face, Hand & Body Lotion for Sensitive Skin, Hydrating Lotion for Healthier-Looking Skin",
-    "quantity": 8
+    "quantity": 8,
+    "price": 10000
   },
   {
     "name": "Lubriderm Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Hydrating Face, Hand & Body Lotion, 24-hour Moisturizer for Dry Skin, 6 Fl Oz",
-    "quantity": 4
+    "quantity": 4,
+    "price": 3500
   },
   {
     "name": "Colgate Cavity Protection Toothpaste with Fluoride",
-    "quantity": 18
+    "quantity": 18,
+    "price": 1500
   },
   {
     "name": "Crest Pro-Health Advanced Mouthwash",
-    "quantity": 9
+    "quantity": 9,
+    "price": 4000
   },
   {
     "name": "Men's Electric Shaver 3 in 1 - Portable USB Rechargeable Shaver Featuring 3D Floating Blades and a Digital Display Suitable for Both Wet and Dry Shaving",
-    "quantity": 6
+    "quantity": 6,
+    "price": 15000
   },
   {
     "name": "LQT Men's Electric Shaver | Exquisite Packaging Box, USB Charging, Lithium Battery, Matte Texture, Essential for Men, Beard Trimming",
-    "quantity": 2
+    "quantity": 2,
+    "price": 12000
   },
   {
     "name": "Suave Keratin Infusion Smoothing Shampoo & Conditioner Set For Frizzy Hair",
-    "quantity": 2
+    "quantity": 2,
+    "price": 10000
   },
   {
     "name": "Suave Moisturizing Shampoo & Conditioner With Almond & Shea Butter",
-    "quantity": 2
+    "quantity": 2,
+    "price": 10000
   },
   {
     "name": "TRESemmé Rich Moisture Shampoo and Conditioner Set",
-    "quantity": 2
+    "quantity": 2,
+    "price": 10000
   },
   {
     "name": "TRESemmé Shampoo & Conditioner Keratin Smooth",
-    "quantity": 2
+    "quantity": 2,
+    "price": 10000
   },
   {
     "name": "TRESemmé Shampoo And Conditioner Anti-Breakage",
-    "quantity": 2
+    "quantity": 2,
+    "price": 10000
   },
   {
     "name": "TRESemmé Shampoo and Conditioner for Women Amplified Volume Twin Pack",
-    "quantity": 2
+    "quantity": 2,
+    "price": 10000
   },
   {
     "name": "TRESemmé Silky & Smooth Anti-Frizz Shampoo & Conditioner for Frizzy Hair",
-    "quantity": 2
+    "quantity": 2,
+    "price": 10000
   },
   {
     "name": "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",
-    "quantity": 3
+    "quantity": 3,
+    "price": 4500
   },
   {
     "name": "Dr Teal's Kids 3-in-1 Bubble Bath, Body Wash & Shampoo with Ashwagandha",
-    "quantity": 3
+    "quantity": 3,
+    "price": 4500
   },
   {
     "name": "Febreze Air Freshener Spray, Odor-Fighting Room Spray, Linen & Sky",
-    "quantity": 4
+    "quantity": 4,
+    "price": 2000
   },
   {
     "name": "Febreze Air Mist Air Freshener Spray, Heavy Duty Crisp Clean",
-    "quantity": 4
+    "quantity": 4,
+    "price": 2000
   },
   {
     "name": "Febreze Air Mist Air Freshener Spray Hawaiian Aloha",
-    "quantity": 4
+    "quantity": 4,
+    "price": 2000
   },
   {
     "name": "Febreze Air Effects Air Freshener - Mountain Scent",
-    "quantity": 4
+    "quantity": 4,
+    "price": 2000
   },
   {
     "name": "Mop and Bucket Set, 360° Spin Mop and Bucket Set and 4 Microfiber Mop Refills",
-    "quantity": 3
+    "quantity": 3,
+    "price": 15000
   },
   {
     "name": "Smart Watch Compatible with iPhone & Android Devices (Pink)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 5000
   },
   {
     "name": "Smart Watch Compatible with iPhone & Android Devices (Black)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 5000
   },
   {
     "name": "Smart Watch Compatible with iPhone & Android Devices",
-    "quantity": 4
+    "quantity": 4,
+    "price": 5000
   },
   {
     "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking (Black)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking (Gold)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking (Pink)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking",
-    "quantity": 6
+    "quantity": 6,
+    "price": 8000
   },
   {
     "name": "LAXASFIT Unisex Smartwatch Compatible with Both iPhone and Android",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "LAXASFIT Unisex Smartwatch Compatible with Both iPhone and Android (Black)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "PLEIVO New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone",
-    "quantity": 1
+    "quantity": 1,
+    "price": 8000
   },
   {
     "name": "PLEIVO New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone (Black)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 8000
   },
   {
     "name": "Smart Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen",
-    "quantity": 1
+    "quantity": 1,
+    "price": 9000
   },
   {
     "name": "Smart Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen (Black)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 9000
   },
   {
     "name": "GT4 PRO Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "GT4 PRO Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications (Black)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "Doviico 1.83-inch Touch Screen, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones",
-    "quantity": 2
+    "quantity": 2,
+    "price": 5000
   },
   {
     "name": "Doviico 1.83-inch Touch Screen, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones (Pink)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 5000
   },
   {
     "name": "256 GB Memory Card with Adapter - Enough Storage for your data",
-    "quantity": 10
+    "quantity": 10,
+    "price": 4000
   },
   {
     "name": "20000mAh Large-Capacity Mobile Power Bank",
-    "quantity": 15
+    "quantity": 15,
+    "price": 7000
   },
   {
     "name": "Rechargeable LED Torch/Flashlight With High Power Lamp",
-    "quantity": 15
+    "quantity": 15,
+    "price": 2500
   },
   {
     "name": "Rechargeable Portable Fan (Purple)",
-    "quantity": 3
+    "quantity": 3,
+    "price": 3000
   },
   {
     "name": "Rechargeable Portable Fan (Pink)",
-    "quantity": 3
+    "quantity": 3,
+    "price": 3000
   },
   {
     "name": "Rechargeable Portable Fan (Black)",
-    "quantity": 3
+    "quantity": 3,
+    "price": 3000
   },
   {
     "name": "Rechargeable Portable Fan",
-    "quantity": 9
+    "quantity": 9,
+    "price": 3000
   },
   {
     "name": "Dark Grey USB Rechargeable Fan",
-    "quantity": 4
+    "quantity": 4,
+    "price": 3000
   },
   {
     "name": "Dark Grey USB Rechargeable Fan (Black)",
-    "quantity": 4
+    "quantity": 4,
+    "price": 3000
   },
   {
     "name": "YISSVIC Rechargeable Electric Fly Swatter Foldable Bug Zapper",
-    "quantity": 6
+    "quantity": 6,
+    "price": 10000
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Green)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 12000
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Blue)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 12000
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Dark Red)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 12000
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Black)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 12000
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Army Green)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 12000
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker",
-    "quantity": 5
+    "quantity": 5,
+    "price": 12000
   },
   {
-    "name": "TG537 Portable Wireless Speaker - TWS Technology (Gray)",
-    "quantity": 1
+    "name": "TG537 Portable Wireless Speaker - TWS Technology (Blue)",
+    "quantity": 1,
+    "price": 10000
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Red)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 10000
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Black)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 10000
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Cyan)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 10000
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology",
-    "quantity": 4
+    "quantity": 4,
+    "price": 10000
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets (Red)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets (Blue)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets (Black)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets (Purple)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 8000
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets",
-    "quantity": 8
+    "quantity": 8,
+    "price": 8000
   },
   {
     "name": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation (Gray)",
-    "quantity": 5
+    "quantity": 5,
+    "price": 7000
   },
   {
     "name": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation (White)",
-    "quantity": 5
+    "quantity": 5,
+    "price": 7000
   },
   {
     "name": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation",
-    "quantity": 10
+    "quantity": 10,
+    "price": 7000
   },
   {
     "name": "JS59 Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo, 50 Hours of Playback Time, USB-C",
-    "quantity": 2
+    "quantity": 2,
+    "price": 2500
   },
   {
     "name": "JS59 Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo, 50 Hours of Playback Time, USB-C (Black)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 2500
   },
   {
     "name": "YD03 Wireless Earbuds",
-    "quantity": 5
+    "quantity": 5,
+    "price": 4000
   },
   {
     "name": "Airpod Pro",
-    "quantity": 10
+    "quantity": 10,
+    "price": 15000
   },
   {
     "name": "Monster Wireless Earbuds with CVC 8.0 Noise Reduction",
-    "quantity": 1
+    "quantity": 1,
+    "price": 4000
   },
   {
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation (Orange)",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5500
   },
   {
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation (Beige)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 5500
   },
   {
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation (Black)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 5500
   },
   {
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation",
-    "quantity": 5
+    "quantity": 5,
+    "price": 5500
   },
   {
     "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control (Black)",
-    "quantity": 1
+    "quantity": 1,
+    "price": 5500
   },
   {
     "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control (Purple)",
-    "quantity": 2
+    "quantity": 2,
+    "price": 5500
   },
   {
     "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control",
-    "quantity": 3
+    "quantity": 3,
+    "price": 5500
   },
   {
     "name": "Nokia Go Earbuds+ TWS-201 (White)",
-    "quantity": 5
+    "quantity": 5,
+    "price": 8000
   },
   {
     "name": "Nokia Go Earbuds+ TWS-201 (Black)",
-    "quantity": 5
+    "quantity": 5,
+    "price": 8000
   },
   {
     "name": "Nokia Go Earbuds+ TWS-201",
-    "quantity": 9
+    "quantity": 9,
+    "price": 8000
   },
   {
     "name": "Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology",
-    "quantity": 7
+    "quantity": 7,
+    "price": 6000
   },
   {
     "name": "Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology (White)",
-    "quantity": 7
+    "quantity": 7,
+    "price": 6000
   },
   {
     "name": "Y01 Over the Ear Wireless Headphones",
-    "quantity": 1
+    "quantity": 1,
+    "price": 13000
   },
   {
     "name": "TOZO T6 Wireless Earbuds IPX8 Waterproof",
-    "quantity": 1
+    "quantity": 1,
+    "price": 8000
   },
   {
     "name": "Portable Wireless Speaker, 15W Stereo, RGB Lighting, Suitable for Both Indoor and Outdoor Use",
-    "quantity": 3
+    "quantity": 3,
+    "price": 6000
   },
   {
     "name": "4-in-1 USB Mini SD Card Reader with Dual Card Slots",
-    "quantity": 10
+    "quantity": 10,
+    "price": 2000
   },
   {
     "name": "USB 2.0 Type-C Flash Drive 128GB High-Speed Memory Stick",
-    "quantity": 5
+    "quantity": 5,
+    "price": 4000
   },
   {
     "name": "Data Cable, USB C to USB C Charging Cable, Type C to Type C Fast Charging",
-    "quantity": 15
+    "quantity": 15,
+    "price": 1000
   },
   {
     "name": "7-in-1 USB Extender Hub",
-    "quantity": 10
+    "quantity": 10,
+    "price": 5000
   },
   {
     "name": "USB to USB C Charging Cable",
-    "quantity": 15
+    "quantity": 15,
+    "price": 1000
   },
   {
     "name": "USB iPhone Charging Cable",
-    "quantity": 10
+    "quantity": 10,
+    "price": 1000
   },
   {
     "name": "45W High Quality Type-C Charger - Super Fast Charging (Black)",
-    "quantity": 20
+    "quantity": 20,
+    "price": 3500
   },
   {
     "name": "45W High Quality Type-C Charger - Super Fast Charging (White)",
-    "quantity": 20
+    "quantity": 20,
+    "price": 3500
   },
   {
     "name": "45W High Quality Type-C Charger - Super Fast Charging",
-    "quantity": 40
+    "quantity": 40,
+    "price": 3500
   },
   {
     "name": "Non-Contact Forehead Digital Thermometer",
-    "quantity": 10
+    "quantity": 10,
+    "price": 3000
   },
   {
     "name": "Rechargeable/Battery Powered (Optional) Digital Wrist Blood Pressure Monitor with Large LCD, Voice Broadcast (Optional)",
-    "quantity": 3
+    "quantity": 3,
+    "price": 15000
   },
   {
     "name": "Rechargeable Arm Blood Pressure Monitor with Large LED Screen, Digital Blood Pressure Machine",
-    "quantity": 3
+    "quantity": 3,
+    "price": 15000
   },
   {
     "name": "Rechargeable Digital Scale with USB Charging",
-    "quantity": 4
+    "quantity": 4,
+    "price": 10000
   }
 ]

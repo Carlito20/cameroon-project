@@ -138,6 +138,19 @@ $filter = $_GET['filter'] ?? 'pending';
       cursor: pointer; min-height: 44px; touch-action: manipulation;
       -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
     }
+    .btn-print-receipt {
+      flex: 1; padding: 10px 12px; background: #1a1520; color: #a98fd4;
+      border: 1px solid #2a1a40; border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; min-height: 44px; touch-action: manipulation;
+      -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+    }
+    .btn-print-receipt:hover { background: #221a2e; }
+
+    @media print {
+      body > *:not(#print-area) { display: none !important; }
+      #print-area { display: block !important; padding: 10mm 15mm; color: #000; background: #fff; }
+      @page { size: A5; margin: 10mm; }
+    }
     .btn-cancel:hover { background: #1a0d0d; color: #e05c5c; border-color: #5a2a2a; }
 
     /* Cancel modal */
@@ -223,6 +236,7 @@ $filter = $_GET['filter'] ?? 'pending';
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="print-area" style="display:none;"></div>
 
 <script>
 const FILTER = '<?= htmlspecialchars($filter) ?>';
@@ -265,12 +279,14 @@ function renderOrders(orders) {
       </div>`;
     }).join('');
 
-    const actionsHtml = isPending ? `
-      <div class="order-actions">
+    const orderJson = JSON.stringify(o).replace(/'/g, "\\'");
+    const actionsHtml = `<div class="order-actions">
+      ${isPending ? `
         <button class="btn-complete" onclick="completeOrder(${o.id})">✓ Mark Paid & Complete</button>
         <button class="btn-scan"     onclick="scanOrder(${o.id})">📷 Scan & Process</button>
-        <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>
-      </div>` : '';
+        <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>` : ''}
+      <button class="btn-print-receipt" onclick='printOrderReceipt(${JSON.stringify(o)})'>🖨 Print Receipt</button>
+    </div>`;
 
     const noteHtml = o.note ? `<div class="order-note">${esc(o.note)}</div>` : '';
 
@@ -369,6 +385,53 @@ function showToast(msg, type) {
 
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function printOrderReceipt(o) {
+  const items = JSON.parse(o.items || '[]');
+  let total = 0;
+  const itemsHtml = items.map(i => {
+    const line = (i.price || 0) * (i.quantity || 1);
+    total += line;
+    return `<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+      <div>
+        <div>${esc(i.name)}</div>
+        <div style="color:#888;">×${i.quantity || 1}${i.price ? ' @ ' + Number(i.price).toLocaleString() + ' FCFA' : ''}</div>
+      </div>
+      <div style="font-weight:bold;">${i.price ? line.toLocaleString() + ' FCFA' : '—'}</div>
+    </div>`;
+  }).join('');
+
+  const payIcon = o.payment_method?.includes('MTN') ? '🟡' : o.payment_method?.includes('Orange') ? '🟠' : '💵';
+  const date = new Date(o.created_at + ' UTC').toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+
+  document.getElementById('print-area').innerHTML = `
+    <div style="text-align:center;margin-bottom:12px;">
+      <img src="/images/as-logo.jpeg" alt="American Select" style="height:72px;object-fit:contain;display:block;margin:0 auto 8px;">
+      <h2 style="font-size:17px;letter-spacing:1px;margin-bottom:2px;">AMERICAN SELECT</h2>
+      <p style="font-size:11px;color:#555;margin:0;">Quality Imports from the USA &amp; Canada</p>
+      <p style="font-size:11px;color:#555;margin:4px 0 0;">Yaoundé, Cameroon</p>
+      <p style="font-size:11px;color:#555;margin:2px 0 0;">MTN: 679 457 181 &nbsp;|&nbsp; Orange: 686 271 567</p>
+      <p style="font-size:11px;color:#555;margin:2px 0 0;">americanselect.net</p>
+    </div>
+    <hr style="border:none;border-top:1px dashed #aaa;margin:10px 0;">
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:10px;">
+      <span>Order: <strong style="color:#222;">${esc(o.order_ref)}</strong></span>
+      <span>${date}</span>
+    </div>
+    ${o.customer_name ? `<p style="font-size:12px;color:#555;margin-bottom:8px;">Customer: <strong style="color:#222;">${esc(o.customer_name)}${o.customer_phone ? ' · ' + esc(o.customer_phone) : ''}</strong></p>` : ''}
+    ${itemsHtml}
+    <hr style="border:none;border-top:1px dashed #aaa;margin:10px 0;">
+    <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:bold;">
+      <span>TOTAL</span><span>${(o.total || total).toLocaleString()} FCFA</span>
+    </div>
+    <p style="margin-top:6px;font-size:12px;color:#888;">${payIcon} Paid via: ${esc(o.payment_method || 'N/A')}</p>
+    <hr style="border:none;border-top:1px dashed #aaa;margin:14px 0 8px;">
+    <p style="text-align:center;font-size:11px;color:#888;">Thank you for shopping with American Select!</p>`;
+
+  document.getElementById('print-area').style.display = 'block';
+  window.print();
+  document.getElementById('print-area').style.display = 'none';
 }
 
 loadOrders();

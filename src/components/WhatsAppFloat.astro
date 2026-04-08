@@ -12,12 +12,12 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
   rel="noopener noreferrer"
   class="whatsapp-float"
   aria-label="Contact us on WhatsApp"
-  title="Chat with us on WhatsApp"
 >
-  <svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg class="wa-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill="#fff" d="M16 0c-8.837 0-16 7.163-16 16 0 2.825 0.737 5.607 2.137 8.048l-2.137 7.952 7.933-2.127c2.42 1.396 5.175 2.127 8.067 2.127 8.837 0 16-7.163 16-16s-7.163-16-16-16zM16 29.467c-2.482 0-4.908-0.646-7.07-1.87l-0.507-0.292-5.247 1.402 1.402-5.247-0.292-0.507c-1.224-2.162-1.87-4.588-1.87-7.07 0-7.72 6.28-14 14-14s14 6.28 14 14-6.28 14-14 14z"/>
     <path fill="#fff" d="M22.188 18.611c-0.333-0.167-1.965-0.969-2.267-1.078-0.302-0.11-0.522-0.167-0.742 0.167s-0.853 1.078-1.045 1.298c-0.192 0.22-0.383 0.248-0.717 0.082s-1.396-0.515-2.658-1.643c-0.983-0.877-1.647-1.962-1.84-2.296s-0.021-0.514 0.146-0.68c0.15-0.149 0.333-0.389 0.5-0.583s0.222-0.333 0.333-0.556 0.056-0.417-0.028-0.583c-0.083-0.167-0.742-1.789-1.017-2.449-0.268-0.643-0.54-0.556-0.742-0.566-0.192-0.009-0.412-0.011-0.632-0.011s-0.576 0.082-0.877 0.417c-0.302 0.333-1.152 1.126-1.152 2.748s1.18 3.187 1.344 3.406c0.167 0.22 2.322 3.541 5.625 4.966 0.785 0.339 1.399 0.542 1.876 0.693 0.789 0.251 1.506 0.216 2.074 0.131 0.632-0.095 1.965-0.803 2.241-1.579s0.276-1.441 0.193-1.579c-0.083-0.139-0.302-0.22-0.635-0.389z"/>
   </svg>
+  <span class="wa-label">Chat with us</span>
   <span class="whatsapp-pulse"></span>
 </a>
 
@@ -27,12 +27,12 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
     bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     right: calc(20px + env(safe-area-inset-right, 0px));
     background: #25D366;
-    border-radius: 50%;
-    width: 50px;
+    border-radius: 30px;
     height: 50px;
+    padding: 0 18px 0 14px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 8px;
     box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
     z-index: 1000;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -44,9 +44,20 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
     -webkit-tap-highlight-color: transparent;
   }
 
-  .whatsapp-float svg {
-    width: 28px;
-    height: 28px;
+  .wa-icon {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+
+  .wa-label {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .whatsapp-float:hover {
@@ -84,16 +95,23 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
     }
   }
 
-  /* Mobile optimization */
+  /* Mobile: icon only */
   @media (max-width: 768px) {
     .whatsapp-float {
       bottom: calc(15px + env(safe-area-inset-bottom, 0px));
       right: calc(15px + env(safe-area-inset-right, 0px));
+      border-radius: 50%;
       width: 48px;
       height: 48px;
+      padding: 0;
+      justify-content: center;
     }
 
-    .whatsapp-float svg {
+    .wa-label {
+      display: none;
+    }
+
+    .wa-icon {
       width: 26px;
       height: 26px;
     }
@@ -105,7 +123,7 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
       height: 46px;
     }
 
-    .whatsapp-float svg {
+    .wa-icon {
       width: 24px;
       height: 24px;
     }
