@@ -302,12 +302,28 @@ if ($fromOrderId) {
       body > *:not(.print-area) { display: none !important; }
       .print-area { display: block !important; color: #000; background: #fff; padding: 20px; }
     }
+    .drawer-status {
+      font-size: 11px; padding: 4px 10px; border-radius: 20px;
+      border: 1px solid #222; background: #111; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .btn-open-drawer {
+      flex: 1; min-width: 100%; padding: 12px; background: #0a1a2a; color: #7b9fd4;
+      border: 1px solid #1a2a40; border-radius: 8px; font-size: 14px; font-weight: 700;
+      cursor: pointer; min-height: 44px; touch-action: manipulation;
+      -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+      display: none;
+    }
+    .btn-open-drawer:hover { background: #0d2035; }
+    .btn-open-drawer:active { background: #1a2a40; }
   </style>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/qz-tray@2.2.4/qz-tray.js" defer></script>
 <body>
 <header>
   <div><h1>AMERICAN SELECT</h1><span>POS Checkout</span></div>
   <div class="header-btns">
+    <span class="drawer-status" id="drawer-status" title="Cash drawer connection via QZ Tray">⚫ Drawer</span>
     <button class="btn-new" id="btn-new" onclick="newSale()">＋ New Sale</button>
     <a href="dashboard.php" class="back-btn">← Dashboard</a>
   </div>
@@ -411,6 +427,7 @@ if ($fromOrderId) {
       <a class="btn-wa-confirm-receipt" id="btn-wa-confirm" href="#" target="_blank" rel="noopener" style="display:none;">
         📱 Send Confirmation
       </a>
+      <button class="btn-open-drawer" id="btn-open-drawer" onclick="openCashDrawer(true)">🗄 Open Cash Drawer</button>
       <button class="btn-newsale" onclick="newSale()">＋ New Sale</button>
     </div>
   </div>
@@ -727,6 +744,15 @@ function showReceipt(items) {
 
   document.getElementById('receipt-overlay').classList.add('open');
 
+  // Cash drawer: auto-open on Cash payments, show manual button always for Cash
+  const drawerBtn = document.getElementById('btn-open-drawer');
+  if (selectedPayment === 'Cash') {
+    drawerBtn.style.display = 'flex';
+    openCashDrawer(false); // silent auto-trigger
+  } else {
+    drawerBtn.style.display = 'none';
+  }
+
   // Build print area
   document.getElementById('print-area').innerHTML =
     `<div style="text-align:center;margin-bottom:10px;">
@@ -854,6 +880,82 @@ function pickProduct(el) {
     })
     .catch(() => addToCart(name, price, catalogMap[name]?.quantity ?? 99));
 }
+
+// ── QZ Tray / Cash Drawer ─────────────────────────────────
+let qzReady = false;
+let qzPrinterName = null;
+
+function initQZ() {
+  if (typeof qz === 'undefined') return; // QZ Tray not loaded yet — will retry via defer
+  if (qz.websocket.isActive()) return;   // Already connected
+
+  // Suppress certificate errors for self-signed / no-cert setups
+  qz.security.setCertificatePromise(() => Promise.resolve(''));
+  qz.security.setSignatureAlgorithm('SHA512');
+  qz.security.setSignaturePromise(() => Promise.resolve(''));
+
+  qz.websocket.connect({ retries: 2, delay: 1 })
+    .then(() => qz.printers.find())
+    .then(printers => {
+      // Prefer a known thermal/receipt printer name; fall back to first
+      const thermal = printers.find(p =>
+        /volcora|thermal|receipt|pos|epson|star|citizen|bixolon/i.test(p)
+      ) || printers[0] || null;
+      qzPrinterName = thermal;
+      qzReady = !!thermal;
+      updateDrawerStatus(qzReady);
+    })
+    .catch(() => {
+      qzReady = false;
+      updateDrawerStatus(false);
+    });
+}
+
+function updateDrawerStatus(connected) {
+  const el = document.getElementById('drawer-status');
+  if (!el) return;
+  if (connected) {
+    el.textContent = '🟢 Drawer';
+    el.style.color = '#6dbf6d';
+    el.title = 'Cash drawer ready via QZ Tray (' + (qzPrinterName || 'printer') + ')';
+  } else {
+    el.textContent = '⚫ Drawer';
+    el.style.color = '#555';
+    el.title = 'Cash drawer offline — install & run QZ Tray (qz.io)';
+  }
+}
+
+// openCashDrawer(manual): if manual=true, show feedback; if false, silent
+async function openCashDrawer(manual) {
+  if (!qzReady || !qzPrinterName) {
+    if (manual) {
+      const el = document.getElementById('drawer-status');
+      const orig = el ? el.textContent : '';
+      if (el) { el.textContent = '⚠ Not connected'; el.style.color = '#d4884a'; }
+      setTimeout(() => updateDrawerStatus(false), 2500);
+    }
+    return;
+  }
+  try {
+    const config = qz.configs.create(qzPrinterName, { raw: true });
+    // ESC/POS: ESC p 0 25 250 — open cash drawer on pin 2
+    await qz.print(config, [{ type: 'raw', format: 'command', data: '\x1B\x70\x00\x19\xFA' }]);
+    if (manual) {
+      const el = document.getElementById('drawer-status');
+      if (el) { el.textContent = '✓ Opened'; el.style.color = '#6dbf6d'; }
+      setTimeout(() => updateDrawerStatus(true), 1500);
+    }
+  } catch(e) {
+    if (manual) {
+      const el = document.getElementById('drawer-status');
+      if (el) { el.textContent = '⚠ Error'; el.style.color = '#e05c5c'; }
+      setTimeout(() => updateDrawerStatus(qzReady), 2500);
+    }
+  }
+}
+
+// Init after QZ Tray script loads (defer)
+window.addEventListener('load', () => { setTimeout(initQZ, 300); });
 
 // ── Helpers ───────────────────────────────────────────────
 function setScanStatus(msg, type) {

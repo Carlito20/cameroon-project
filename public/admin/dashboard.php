@@ -303,6 +303,7 @@ try {
     }
   </style>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/qz-tray@2.2.4/qz-tray.js" defer></script>
 <body>
 <header>
   <div>
@@ -317,6 +318,7 @@ try {
     <a href="checkout.php" class="btn btn-outline" style="color:#6dbf6d;border-color:#1a3a1a;">🛒 Checkout</a>
     <button class="btn btn-gold" onclick="initializeAll()">Initialize All</button>
     <span id="init-status"></span>
+    <button class="btn btn-outline" id="btn-drawer" onclick="openCashDrawer()" title="Open cash drawer" style="color:#7b9fd4;border-color:#1a2a40;">🗄 <span id="drawer-label">Drawer</span></button>
     <a href="logout.php" class="btn btn-danger">Logout</a>
   </div>
 </header>
@@ -660,6 +662,61 @@ function resetScannerResult() {
       }
     }).catch(() => {});
 })();
+
+// ── QZ Tray / Cash Drawer ─────────────────────────────────
+let qzReady = false;
+let qzPrinterName = null;
+
+function initQZ() {
+  if (typeof qz === 'undefined') return;
+  if (qz.websocket.isActive()) return;
+  qz.security.setCertificatePromise(() => Promise.resolve(''));
+  qz.security.setSignatureAlgorithm('SHA512');
+  qz.security.setSignaturePromise(() => Promise.resolve(''));
+  qz.websocket.connect({ retries: 2, delay: 1 })
+    .then(() => qz.printers.find())
+    .then(printers => {
+      const thermal = printers.find(p =>
+        /volcora|thermal|receipt|pos|epson|star|citizen|bixolon/i.test(p)
+      ) || printers[0] || null;
+      qzPrinterName = thermal;
+      qzReady = !!thermal;
+      updateDrawerLabel(qzReady);
+    })
+    .catch(() => { qzReady = false; updateDrawerLabel(false); });
+}
+
+function updateDrawerLabel(connected) {
+  const lbl = document.getElementById('drawer-label');
+  const btn = document.getElementById('btn-drawer');
+  if (!lbl || !btn) return;
+  if (connected) {
+    lbl.textContent = 'Drawer';
+    btn.style.color = '#7b9fd4';
+    btn.title = 'Open cash drawer (' + (qzPrinterName || 'printer') + ')';
+  } else {
+    lbl.textContent = 'Drawer ⚫';
+    btn.style.color = '#444';
+    btn.title = 'Cash drawer offline — install & run QZ Tray (qz.io)';
+  }
+}
+
+async function openCashDrawer() {
+  const lbl = document.getElementById('drawer-label');
+  if (!qzReady || !qzPrinterName) {
+    if (lbl) { const t = lbl.textContent; lbl.textContent = 'Not connected'; setTimeout(() => { lbl.textContent = t; }, 2000); }
+    return;
+  }
+  try {
+    const config = qz.configs.create(qzPrinterName, { raw: true });
+    await qz.print(config, [{ type: 'raw', format: 'command', data: '\x1B\x70\x00\x19\xFA' }]);
+    if (lbl) { lbl.textContent = '✓ Opened'; setTimeout(() => updateDrawerLabel(true), 1500); }
+  } catch(e) {
+    if (lbl) { lbl.textContent = 'Error'; setTimeout(() => updateDrawerLabel(qzReady), 2000); }
+  }
+}
+
+window.addEventListener('load', () => { setTimeout(initQZ, 300); });
 
 function filterTable(query) {
   const lower = query.toLowerCase();
