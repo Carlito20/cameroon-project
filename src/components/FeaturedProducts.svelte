@@ -95,7 +95,7 @@
               on:click={() => addToBasket(product, i)}
               disabled={product.stock === 0}
             >
-              {addedIndex === i ? '✓ Added' : product.stock === 0 ? 'Out of Stock' : 'Add to Basket'}
+              {addedIndex === i ? '✓ Added' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
             </button>
           </div>
         </div>
@@ -242,7 +242,7 @@
   .fp-add-btn {
     width: 100%;
     padding: 9px 12px;
-    background: var(--secondary-color, #2c3e50);
+    background: #111111;
     color: #fff;
     border: none;
     border-radius: 7px;
