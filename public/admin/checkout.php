@@ -220,7 +220,7 @@ if ($fromOrderId) {
     .phone-input {
       width: 100%; padding: 10px 14px; background: #1a1a1a;
       border: 1px solid #2a2a2a; border-radius: 8px; color: #e0e0e0;
-      font-size: 15px; outline: none; -webkit-appearance: none; appearance: none;
+      font-size: 16px; outline: none; -webkit-appearance: none; appearance: none;
       min-height: 44px; touch-action: manipulation; margin-bottom: 12px;
     }
     .phone-input:focus { border-color: #555; }

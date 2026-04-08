@@ -249,7 +249,7 @@
     font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
-    min-height: 40px;
+    min-height: 44px;
     touch-action: manipulation;
     -webkit-user-select: none;
     user-select: none;
@@ -323,7 +323,7 @@
     .fp-add-btn {
       font-size: 0.8rem;
       padding: 8px 10px;
-      min-height: 38px;
+      min-height: 44px;
     }
   }
 
