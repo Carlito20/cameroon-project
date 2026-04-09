@@ -5,6 +5,7 @@ export interface Product {
   price?: number;
   quantity?: number;
   colors?: string[];
+  colorQuantities?: Record<string, number>;
 }
 
 export interface SubCategory {
@@ -971,8 +972,9 @@ export const categories: Category[] = [
           {
             name: 'Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation',
             price: 5500,
-            quantity: 5,
+            quantity: 6,
             colors: ['#ff8c00', '#f5f5dc', '#2c2c2c'],
+            colorQuantities: { '#ff8c00': 3, '#f5f5dc': 2, '#2c2c2c': 1 },
             images: [
               '/images/products/acer-tws-headset-1.webp',
               '/images/products/acer-tws-headset-3.webp',
@@ -985,7 +987,8 @@ export const categories: Category[] = [
             name: 'Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control',
             price: 5500,
             quantity: 3,
-            colors: ['#2c2c2c', '#800080'],
+            colors: ['#800080', '#2c2c2c'],
+            colorQuantities: { '#800080': 2, '#2c2c2c': 1 },
             images: [
               '/images/products/acer-wireless-stereo-1.webp',
               '/images/products/acer-wireless-stereo-3.webp',

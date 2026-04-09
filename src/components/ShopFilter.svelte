@@ -417,18 +417,27 @@
     return remaining !== null && remaining !== undefined && remaining === 0;
   }
 
-  // Per-color remaining stock: use per-color API stock if available, else divide evenly
+  // Per-color max stock: uses colorQuantities if defined, else divides evenly
+  function getColorMax(productItem, colorHex) {
+    if (typeof productItem !== 'string' && productItem.colorQuantities && productItem.colorQuantities[colorHex] !== undefined) {
+      return productItem.colorQuantities[colorHex];
+    }
+    const qty = getProductQuantity(productItem);
+    if (qty == null) return null;
+    const colors = getProductColors(productItem);
+    return colors && colors.length > 1 ? Math.ceil(qty / colors.length) : qty;
+  }
+
+  // Per-color remaining stock: use per-color API stock if available, else use getColorMax
   function getColorRemaining(productItem, colorHex) {
     const baseName = getProductName(productItem);
     const colorKey = `${baseName} (${getColorName(colorHex)})`;
     if (apiStock[colorKey] !== undefined) {
       return Math.max(0, apiStock[colorKey] - (cartTotals[colorKey] || 0));
     }
-    const qty = getProductQuantity(productItem);
-    if (qty == null) return null;
-    const colors = getProductColors(productItem);
-    const perColor = colors && colors.length > 1 ? Math.ceil(qty / colors.length) : qty;
-    return Math.max(0, perColor - (cartTotals[colorKey] || 0));
+    const max = getColorMax(productItem, colorHex);
+    if (max == null) return null;
+    return Math.max(0, max - (cartTotals[colorKey] || 0));
   }
 
   // Track selected quantities before adding (default 1)
@@ -1140,14 +1149,14 @@
               <div class="quantity-selector">
                 <button class="qty-btn" on:click={() => decrementQty(result.productName)} disabled={(displayQuantities[result.productName] || 1) <= 1}>−</button>
                 <span class="qty-value">{displayQuantities[result.productName] || 1}</span>
-                <button class="qty-btn" on:click={() => incrementQty(result.productName, getRemainingStock(result.product))} disabled={selectedColors[result.productName] && result.colors && result.colors.length > 1 ? (displayQuantities[result.productName] || 1) >= Math.ceil(result.quantity / result.colors.length) - colorStockInfo[result.productName] : getRemainingStock(result.product) != null && (displayQuantities[result.productName] || 1) >= getRemainingStock(result.product)}>+</button>
+                <button class="qty-btn" on:click={() => incrementQty(result.productName, getRemainingStock(result.product))} disabled={selectedColors[result.productName] && result.colors && result.colors.length > 1 ? (displayQuantities[result.productName] || 1) >= (getColorRemaining(result.product, selectedColors[result.productName]) ?? 99) : getRemainingStock(result.product) != null && (displayQuantities[result.productName] || 1) >= getRemainingStock(result.product)}>+</button>
               </div>
               <div class="product-actions">
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(result.product)]}
                   class:needs-color={!selectedColors[result.productName] && result.colors && result.colors.length > 1}
-                  disabled={isOutOfStock(result.product) || !!(selectedColors[result.productName] && result.colors && result.colors.length > 1 && colorStockInfo[result.productName] >= Math.ceil(result.quantity / result.colors.length))}
+                  disabled={isOutOfStock(result.product) || !!(selectedColors[result.productName] && result.colors && result.colors.length > 1 && getColorRemaining(result.product, selectedColors[result.productName]) === 0)}
                   on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, result.price)}
                 >
                   {addedItems[getDisplayName(result.product)] ? `✓ Added (${addedItems[getDisplayName(result.product)]})` : 'Add to Cart'}
@@ -1222,14 +1231,14 @@
               <div class="quantity-selector">
                 <button class="qty-btn" on:click={() => decrementQty(sp.productName)} disabled={(displayQuantities[sp.productName] || 1) <= 1}>−</button>
                 <span class="qty-value">{displayQuantities[sp.productName] || 1}</span>
-                <button class="qty-btn" on:click={() => incrementQty(sp.productName, getRemainingStock(sp.product))} disabled={selectedColors[sp.productName] && sp.colors && sp.colors.length > 1 ? (displayQuantities[sp.productName] || 1) >= Math.ceil(sp.quantity / sp.colors.length) - colorStockInfo[sp.productName] : getRemainingStock(sp.product) != null && (displayQuantities[sp.productName] || 1) >= getRemainingStock(sp.product)}>+</button>
+                <button class="qty-btn" on:click={() => incrementQty(sp.productName, getRemainingStock(sp.product))} disabled={selectedColors[sp.productName] && sp.colors && sp.colors.length > 1 ? (displayQuantities[sp.productName] || 1) >= (getColorRemaining(sp.product, selectedColors[sp.productName]) ?? 99) : getRemainingStock(sp.product) != null && (displayQuantities[sp.productName] || 1) >= getRemainingStock(sp.product)}>+</button>
               </div>
               <div class="product-actions">
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(sp.product)]}
                   class:needs-color={!selectedColors[sp.productName] && sp.colors && sp.colors.length > 1}
-                  disabled={isOutOfStock(sp.product) || !!(selectedColors[sp.productName] && sp.colors && sp.colors.length > 1 && colorStockInfo[sp.productName] >= Math.ceil(sp.quantity / sp.colors.length))}
+                  disabled={isOutOfStock(sp.product) || !!(selectedColors[sp.productName] && sp.colors && sp.colors.length > 1 && getColorRemaining(sp.product, selectedColors[sp.productName]) === 0)}
                   on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}
                 >
                   {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
@@ -1322,14 +1331,14 @@
                               <div class="quantity-selector">
                                 <button class="qty-btn" on:click={() => decrementQty(getProductName(nestedProduct))} disabled={(displayQuantities[getProductName(nestedProduct)] || 1) <= 1}>−</button>
                                 <span class="qty-value">{displayQuantities[getProductName(nestedProduct)] || 1}</span>
-                                <button class="qty-btn" on:click={() => incrementQty(getProductName(nestedProduct), getRemainingStock(nestedProduct))} disabled={selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 ? (displayQuantities[getProductName(nestedProduct)] || 1) >= Math.ceil(getProductQuantity(nestedProduct) / getProductColors(nestedProduct).length) - colorStockInfo[getProductName(nestedProduct)] : getRemainingStock(nestedProduct) != null && (displayQuantities[getProductName(nestedProduct)] || 1) >= getRemainingStock(nestedProduct)}>+</button>
+                                <button class="qty-btn" on:click={() => incrementQty(getProductName(nestedProduct), getRemainingStock(nestedProduct))} disabled={selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 ? (displayQuantities[getProductName(nestedProduct)] || 1) >= (getColorRemaining(nestedProduct, selectedColors[getProductName(nestedProduct)]) ?? 99) : getRemainingStock(nestedProduct) != null && (displayQuantities[getProductName(nestedProduct)] || 1) >= getRemainingStock(nestedProduct)}>+</button>
                               </div>
                               <div class="product-actions">
                                 <button
                                   class="btn btn-small btn-inquiry"
                                   class:added={addedItems[getDisplayName(nestedProduct)]}
                                   class:needs-color={!selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1}
-                                  disabled={isOutOfStock(nestedProduct) || !!(selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 && colorStockInfo[getProductName(nestedProduct)] >= Math.ceil(getProductQuantity(nestedProduct) / getProductColors(nestedProduct).length))}
+                                  disabled={isOutOfStock(nestedProduct) || !!(selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 && getColorRemaining(nestedProduct, selectedColors[getProductName(nestedProduct)]) === 0)}
                                   on:click={() => handleInquiryClick(nestedProduct, subItem.name, getProductQuantity(nestedProduct), getProductPrice(nestedProduct))}
                                 >
                                   {addedItems[getDisplayName(nestedProduct)] ? `✓ Added (${addedItems[getDisplayName(nestedProduct)]})` : 'Add to Cart'}
@@ -1394,14 +1403,14 @@
                     <div class="quantity-selector">
                       <button class="qty-btn" on:click={() => decrementQty(getProductName(subItem))} disabled={(displayQuantities[getProductName(subItem)] || 1) <= 1}>−</button>
                       <span class="qty-value">{displayQuantities[getProductName(subItem)] || 1}</span>
-                      <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getRemainingStock(subItem))} disabled={selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1 ? (displayQuantities[getProductName(subItem)] || 1) >= Math.ceil(getProductQuantity(subItem) / getProductColors(subItem).length) - colorStockInfo[getProductName(subItem)] : getRemainingStock(subItem) != null && (displayQuantities[getProductName(subItem)] || 1) >= getRemainingStock(subItem)}>+</button>
+                      <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getRemainingStock(subItem))} disabled={selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1 ? (displayQuantities[getProductName(subItem)] || 1) >= (getColorRemaining(subItem, selectedColors[getProductName(subItem)]) ?? 99) : getRemainingStock(subItem) != null && (displayQuantities[getProductName(subItem)] || 1) >= getRemainingStock(subItem)}>+</button>
                     </div>
                     <div class="product-actions">
                       <button
                         class="btn btn-small btn-inquiry"
                         class:added={addedItems[getDisplayName(subItem)]}
                         class:needs-color={!selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1}
-                        disabled={isOutOfStock(subItem) || !!(selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1 && colorStockInfo[getProductName(subItem)] >= Math.ceil(getProductQuantity(subItem) / getProductColors(subItem).length))}
+                        disabled={isOutOfStock(subItem) || !!(selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1 && getColorRemaining(subItem, selectedColors[getProductName(subItem)]) === 0)}
                         on:click={() => handleInquiryClick(subItem, item.name, getProductQuantity(subItem), getProductPrice(subItem))}
                       >
                         {addedItems[getDisplayName(subItem)] ? `✓ Added (${addedItems[getDisplayName(subItem)]})` : 'Add to Cart'}
@@ -1468,14 +1477,14 @@
               <div class="quantity-selector">
                 <button class="qty-btn" on:click={() => decrementQty(getProductName(item))} disabled={(displayQuantities[getProductName(item)] || 1) <= 1}>−</button>
                 <span class="qty-value">{displayQuantities[getProductName(item)] || 1}</span>
-                <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getRemainingStock(item))} disabled={selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1 ? (displayQuantities[getProductName(item)] || 1) >= Math.ceil(getProductQuantity(item) / getProductColors(item).length) - colorStockInfo[getProductName(item)] : getRemainingStock(item) != null && (displayQuantities[getProductName(item)] || 1) >= getRemainingStock(item)}>+</button>
+                <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getRemainingStock(item))} disabled={selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1 ? (displayQuantities[getProductName(item)] || 1) >= (getColorRemaining(item, selectedColors[getProductName(item)]) ?? 99) : getRemainingStock(item) != null && (displayQuantities[getProductName(item)] || 1) >= getRemainingStock(item)}>+</button>
               </div>
               <div class="product-actions">
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(item)]}
                   class:needs-color={!selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1}
-                  disabled={isOutOfStock(item) || !!(selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1 && colorStockInfo[getProductName(item)] >= Math.ceil(getProductQuantity(item) / getProductColors(item).length))}
+                  disabled={isOutOfStock(item) || !!(selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1 && getColorRemaining(item, selectedColors[getProductName(item)]) === 0)}
                   on:click={() => handleInquiryClick(item, category.name, getProductQuantity(item), getProductPrice(item))}
                 >
                   {addedItems[getDisplayName(item)] ? `✓ Added (${addedItems[getDisplayName(item)]})` : 'Add to Cart'}
@@ -1561,14 +1570,14 @@
           <div class="quantity-selector" style="justify-content: flex-start; margin-top: 1rem;">
             <button class="qty-btn" on:click={() => decrementQty(productModal.productName)} disabled={(displayQuantities[productModal.productName] || 1) <= 1}>−</button>
             <span class="qty-value">{displayQuantities[productModal.productName] || 1}</span>
-            <button class="qty-btn" on:click={() => incrementQty(productModal.productName, getRemainingStock(productModal.product))} disabled={selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1 ? (displayQuantities[productModal.productName] || 1) >= Math.ceil(productModal.quantity / productModal.colors.length) - colorStockInfo[productModal.productName] : getRemainingStock(productModal.product) != null && (displayQuantities[productModal.productName] || 1) >= getRemainingStock(productModal.product)}>+</button>
+            <button class="qty-btn" on:click={() => incrementQty(productModal.productName, getRemainingStock(productModal.product))} disabled={selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1 ? (displayQuantities[productModal.productName] || 1) >= (getColorRemaining(productModal.product, selectedColors[productModal.productName]) ?? 99) : getRemainingStock(productModal.product) != null && (displayQuantities[productModal.productName] || 1) >= getRemainingStock(productModal.product)}>+</button>
           </div>
           <div class="product-modal-actions">
             <button
               class="btn btn-inquiry"
               class:added={addedItems[getDisplayName(productModal.product)]}
               class:needs-color={!selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1}
-              disabled={!!(selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1 && colorStockInfo[productModal.productName] >= Math.ceil(productModal.quantity / productModal.colors.length))}
+              disabled={!!(selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1 && getColorRemaining(productModal.product, selectedColors[productModal.productName]) === 0)}
               on:click={() => handleInquiryClick(productModal.product, productModal.subCategoryName || productModal.categoryName, productModal.quantity, productModal.price)}
             >
               {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : 'Add to Cart'}
