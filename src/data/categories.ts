@@ -426,6 +426,7 @@ export const categories: Category[] = [
               { name: 'Victory 3.3 oz EDT For Men', image: '/images/products/victory-edt-men.webp', price: 5000, quantity: 2 },
               { name: 'Hercules Paris 3.4 oz EDP For Men', image: '/images/products/hercules-paris-edp-men.webp', price: 5000, quantity: 6 },
               { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.webp', price: 3000, quantity: 10 },
+              { name: 'Right Guard Sport Fresh Scent Antiperspirant & Deodorant Invisible Solid 4-in-1 For Men, 48-Hour Odor Protection', images: ['/images/products/right-guard-sport-men-1.webp', '/images/products/right-guard-sport-men-2.webp'], price: 2000, quantity: 6 },
               { name: 'Loveryblack Affinity At Midnight Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-at-midnight-unisex-1.webp', '/images/products/loveryblack-at-midnight-unisex-2.webp', '/images/products/loveryblack-at-midnight-unisex-3.webp', '/images/products/loveryblack-at-midnight-unisex-4.webp'], price: 10000, quantity: 2 },
               { name: 'Loveryblack Affinity For Him Pheromone Cologne', images: ['/images/products/loveryblack-for-him-1.webp', '/images/products/loveryblack-for-him-2.webp', '/images/products/loveryblack-for-him-3.webp', '/images/products/loveryblack-for-him-4.webp'], price: 10000, quantity: 2 },
               { name: 'Loveryblack Affinity Pure Passion Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-pure-passion-unisex-1.webp', '/images/products/loveryblack-pure-passion-unisex-2.webp', '/images/products/loveryblack-pure-passion-unisex-3.webp', '/images/products/loveryblack-pure-passion-unisex-4.webp'], price: 10000, quantity: 2 },
@@ -452,6 +453,7 @@ export const categories: Category[] = [
           {
             name: 'Women',
             items: [
+              { name: 'Lady Speed Stick 72HR Antiperspirant Deodorant for Women, Invisible Dry, Shower Fresh Scent, 2.3 oz', images: ['/images/products/lady-speed-stick-72hr-1.webp', '/images/products/lady-speed-stick-72hr-2.webp', '/images/products/lady-speed-stick-72hr-3.webp', '/images/products/lady-speed-stick-72hr-4.webp'], price: 1500, quantity: 8 },
               { name: 'Fantastic Pink 3.4 oz EDP For Women', image: '/images/products/fantastic-pink-edp-women.webp', price: 5000, quantity: 5 },
               { name: 'Fleur De Paris 3.4 oz EDP For Women', image: '/images/products/fleur-de-paris-edp-women.webp', price: 8000, quantity: 5 },
               { name: 'Lazell Night Bloom For Women EDP 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.webp', price: 8000, quantity: 7 },

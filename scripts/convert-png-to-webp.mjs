@@ -187,6 +187,16 @@ const mappings = [
   ["Images/Today/TOZO T6 Wireless Earbuds IPX8 Waterproof.png",          'tozo-t6-earbuds1.webp'],
   ["Images/Today/TOZO T6 Wireless Earbuds IPX8 Waterproof.png1.png",     'tozo-t6-earbuds2.webp'],
   ["Images/Today/TOZO T6 Wireless Earbuds IPX8 Waterproof.png2 (2).png", 'tozo-t6-earbuds3.webp'],
+
+  // Lady Speed Stick 72HR Women's Deodorant
+  ["Images/Today/Antiperspirant Deodorant for Women, 72 HR Sweat & Odor Protection, Invisible Dry, Shower Fresh Scent, 2.3 oz Stick.png",   'lady-speed-stick-72hr-1.webp'],
+  ["Images/Today/Antiperspirant Deodorant for Women, 72 HR Sweat & Odor Protection, Invisible Dry, Shower Fresh Scent, 2.3 oz Stick.2.png", 'lady-speed-stick-72hr-2.webp'],
+  ["Images/Today/Antiperspirant Deodorant for Women, 72 HR Sweat & Odor Protection, Invisible Dry, Shower Fresh Scent, 2.3 oz Stick1.png",  'lady-speed-stick-72hr-3.webp'],
+  ["Images/Today/Antiperspirant Deodorant for Women, 72 HR Sweat & Odor Protection, Invisible Dry, Shower Fresh Scent, 2.3 oz Stick4.png",  'lady-speed-stick-72hr-4.webp'],
+
+  // Right Guard Sport Men's Deodorant
+  ["Images/Today/Right Guard Sport Fresh Scent Antiperspirant & Deodorant Invisible Solid - 4-in-1 Deodorant For Men, Blocks Sweat, 48-Hour Odor Protection, Quick-Drying, & Long-Lasting.png",   'right-guard-sport-men-1.webp'],
+  ["Images/Today/Right Guard Sport Fresh Scent Antiperspirant & Deodorant Invisible Solid - 4-in-1 Deodorant For Men, Blocks Sweat, 48-Hour Odor Protection, Quick-Drying, & Long-Lasting.1.png", 'right-guard-sport-men-2.webp'],
 ];
 
 let converted = 0;
