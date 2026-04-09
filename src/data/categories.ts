@@ -992,8 +992,8 @@ export const categories: Category[] = [
             colors: ['#800080', '#2c2c2c'],
             colorQuantities: { '#800080': 2, '#2c2c2c': 1 },
             images: [
-              '/images/products/acer-wireless-stereo-1.webp',
               '/images/products/acer-wireless-stereo-3.webp',
+              '/images/products/acer-wireless-stereo-1.webp',
               '/images/products/acer-wireless-stereo-2.webp'
             ]
           },
