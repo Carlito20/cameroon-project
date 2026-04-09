@@ -976,11 +976,11 @@ export const categories: Category[] = [
             colors: ['#ff8c00', '#f5f5dc', '#2c2c2c'],
             colorQuantities: { '#ff8c00': 3, '#f5f5dc': 2, '#2c2c2c': 1 },
             images: [
+              '/images/products/acer-tws-headset-2.webp',
+              '/images/products/acer-tws-headset-4.webp',
               '/images/products/acer-tws-headset-1.webp',
               '/images/products/acer-tws-headset-3.webp',
-              '/images/products/acer-tws-headset-5.webp',
-              '/images/products/acer-tws-headset-2.webp',
-              '/images/products/acer-tws-headset-4.webp'
+              '/images/products/acer-tws-headset-5.webp'
             ]
           },
           {
