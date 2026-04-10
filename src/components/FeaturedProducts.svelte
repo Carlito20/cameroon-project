@@ -1,4 +1,14 @@
 <script>
+  // Maps category display name → shop URL category ID
+  const CATEGORY_ID = {
+    "Kitchen":       "home-kitchen",
+    "Body Care":     "body-bath",
+    "Personal Care": "body-bath",
+    "Kids":          "kids",
+    "Health":        "health-wellness",
+    "Electronics":   "electronics",
+  };
+
   // ── Full product pool (all have confirmed images) ──────────────────────
   const POOL = [
     { name: "Manual Pasta Maker Machine, 9 Adjustable Thickness Settings",                                                   short: "Manual Pasta Maker",                        price: 20000, stock: 2,  image: "/images/products/manual-pasta-maker-1.jpg",       category: "Kitchen"        },
@@ -67,6 +77,11 @@
   function fmt(n) {
     return Number(n).toLocaleString('fr-CM') + ' XAF';
   }
+
+  function shopLink(category) {
+    const id = CATEGORY_ID[category];
+    return id ? `/shop?category=${id}` : '/shop';
+  }
 </script>
 
 <section class="featured-section">
@@ -82,7 +97,7 @@
     <div class="featured-grid">
       {#each featured as product, i}
         <div class="fp-card">
-          <a href="/shop" class="fp-img-wrap">
+          <a href={shopLink(product.category)} class="fp-img-wrap">
             <img src={product.image} alt={product.short} loading="lazy">
             <span class="fp-category">{product.category}</span>
           </a>
