@@ -1211,23 +1211,27 @@ window.addEventListener('load', updateOfflineUI);
 // ── Service Worker (offline page caching) ────────────────
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' })
-    .then(reg => {
-      // When a new SW installs and activates, the page is now cached offline.
-      // Show a one-time toast so the cashier knows offline mode is armed.
-      if (reg.installing || reg.waiting) {
-        const sw = reg.installing || reg.waiting;
-        sw.addEventListener('statechange', () => {
-          if (sw.state === 'activated') showSwToast();
-        });
-      }
-    })
     .catch(() => {});
 }
 
+// Self-cache: every time this page loads successfully, save it to the offline
+// cache directly — doesn't rely on the SW intercepting the request.
+window.addEventListener('load', async () => {
+  if (!('caches' in window)) return;
+  try {
+    const res = await fetch('/admin/checkout.php', { credentials: 'same-origin' });
+    if (res.status === 200) {
+      const cache = await caches.open('as-pos-v1');
+      await cache.put('/admin/checkout.php', res);
+      showSwToast();
+    }
+  } catch {}
+});
+
 function showSwToast() {
-  // Only show once per browser
-  if (sessionStorage.getItem('sw_toast_shown')) return;
-  sessionStorage.setItem('sw_toast_shown', '1');
+  // Only show once ever (not every page load)
+  if (localStorage.getItem('sw_toast_shown')) return;
+  localStorage.setItem('sw_toast_shown', '1');
   const t = document.createElement('div');
   t.textContent = '✓ Offline mode ready — page is cached';
   t.style.cssText = [
