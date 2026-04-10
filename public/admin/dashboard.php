@@ -730,6 +730,11 @@ function filterTable(query) {
   });
   document.getElementById('row-count').textContent = visible + ' products';
 }
+
+// Register Service Worker so checkout.php gets cached for offline use
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' }).catch(() => {});
+}
 </script>
 </body>
 </html>

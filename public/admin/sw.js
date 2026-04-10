@@ -1,15 +1,14 @@
 // American Select POS — Service Worker
-// Caches checkout.php after first authenticated load so it opens offline.
+// Caches checkout.php after first authenticated load.
+// When offline, ANY /admin/ URL serves the cached checkout directly
+// so the cashier never hits the PHP login wall.
 const CACHE = 'as-pos-v1';
 
-// No precaching on install — we cache on first authenticated access instead,
-// so we never store a login-redirect response.
 self.addEventListener('install', e => {
   e.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', e => {
-  // Remove old cache versions
   e.waitUntil(
     caches.keys()
       .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
@@ -26,21 +25,22 @@ self.addEventListener('fetch', e => {
 
   const path = url.pathname;
 
-  // ── checkout.php: network-first, cache on success ────────
-  // Cache the plain URL (ignore query params like ?from_order=)
-  if (path === '/admin/checkout.php') {
+  // ── Any /admin/ page: network-first ─────────────────────
+  // Online  → fetch normally and cache checkout.php on success
+  // Offline → serve cached checkout.php regardless of which /admin/ URL was requested
+  if (path.startsWith('/admin/')) {
     e.respondWith(
       fetch(req)
         .then(res => {
-          // Only cache a real authenticated response (200), not a login redirect
-          if (res.status === 200) {
+          // Cache checkout.php whenever it loads successfully (status 200, not a redirect)
+          if (path === '/admin/checkout.php' && res.status === 200) {
             const clone = res.clone();
             caches.open(CACHE).then(c => c.put(new Request('/admin/checkout.php'), clone));
           }
           return res;
         })
         .catch(() =>
-          // Offline: serve cached version regardless of original query params
+          // Offline: always serve the cached checkout page
           caches.match('/admin/checkout.php')
         )
     );
@@ -63,7 +63,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // ── Images: cache-first (they rarely change) ─────────────
+  // ── Images: cache-first (rarely change) ──────────────────
   if (path.startsWith('/images/')) {
     e.respondWith(
       caches.match(req).then(cached => {
