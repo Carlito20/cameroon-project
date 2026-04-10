@@ -1208,6 +1208,39 @@ window.addEventListener('offline', updateOfflineUI);
 window.addEventListener('online', () => { updateOfflineUI(); syncOfflineQueue(); });
 window.addEventListener('load', updateOfflineUI);
 
+// ── Service Worker (offline page caching) ────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' })
+    .then(reg => {
+      // When a new SW installs and activates, the page is now cached offline.
+      // Show a one-time toast so the cashier knows offline mode is armed.
+      if (reg.installing || reg.waiting) {
+        const sw = reg.installing || reg.waiting;
+        sw.addEventListener('statechange', () => {
+          if (sw.state === 'activated') showSwToast();
+        });
+      }
+    })
+    .catch(() => {});
+}
+
+function showSwToast() {
+  // Only show once per browser
+  if (sessionStorage.getItem('sw_toast_shown')) return;
+  sessionStorage.setItem('sw_toast_shown', '1');
+  const t = document.createElement('div');
+  t.textContent = '✓ Offline mode ready — page is cached';
+  t.style.cssText = [
+    'position:fixed', 'bottom:24px', 'left:50%', 'transform:translateX(-50%)',
+    'background:#1f3a1f', 'color:#6dbf6d', 'padding:10px 20px',
+    'border-radius:20px', 'font-size:13px', 'font-weight:700',
+    'border:1px solid #2d5a2d', 'z-index:9999', 'white-space:nowrap',
+    'box-shadow:0 4px 16px rgba(0,0,0,.4)'
+  ].join(';');
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
 // ── Helpers ───────────────────────────────────────────────
 function setScanStatus(msg, type) {
   const el = document.getElementById('scan-status');
