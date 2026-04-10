@@ -419,7 +419,7 @@ if ($fromOrderId) {
     </div>
     <div style="margin-top:10px;font-size:12px;color:#555;">Paid via: <span id="receipt-payment" style="color:#d4af37;font-weight:700;"></span></div>
     <div class="receipt-btns">
-      <button class="btn-print" onclick="printReceipt()">🖨 Print</button>
+      <button class="btn-print" id="btn-print" onclick="printReceipt()">🖨 Print</button>
       <a class="btn-whatsapp" id="btn-whatsapp" href="#" target="_blank" rel="noopener">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Share
@@ -781,10 +781,109 @@ function showReceipt(items) {
      <p style="text-align:center;font-size:11px;color:#888;margin:0;">Thank you for shopping with American Select!</p>`;
 }
 
-function printReceipt() {
-  document.getElementById('print-area').style.display = 'block';
-  window.print();
-  document.getElementById('print-area').style.display = 'none';
+// ── Thermal receipt via QZ Tray (ESC/POS, 80mm) ──────────
+async function printReceiptThermal() {
+  const W = 48; // characters per line on 80mm normal font
+  const ESC = '\x1B', GS = '\x1D', LF = '\x0A';
+
+  function center(text) {
+    if (text.length >= W) return text;
+    const pad = Math.floor((W - text.length) / 2);
+    return ' '.repeat(pad) + text;
+  }
+  function padLine(left, right) {
+    const gap = W - left.length - right.length;
+    if (gap <= 0) return left.substring(0, W - right.length - 1) + ' ' + right;
+    return left + ' '.repeat(gap) + right;
+  }
+  function dashes() { return '-'.repeat(W); }
+  function fmt(n) { return Number(n).toLocaleString() + ' FCFA'; }
+
+  const now = new Date();
+  const dateStr =
+    now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) +
+    '  ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+  let d = '';
+
+  // Init
+  d += ESC + '@';
+
+  // ── Header ────────────────────────────────────────────────
+  d += ESC + 'a\x01';        // center
+  d += ESC + 'E\x01';        // bold on
+  d += GS + '!\x11';         // double width + height
+  d += 'AMERICAN SELECT' + LF;
+  d += GS + '!\x00';         // normal size
+  d += ESC + 'E\x00';        // bold off
+  d += 'Quality Imports from USA & Canada' + LF;
+  d += 'americanselect.net' + LF;
+  d += 'MTN: 679 457 181  |  Orange: 686 271 567' + LF;
+  d += 'Yaounde, Cameroon' + LF;
+
+  // ── Date ──────────────────────────────────────────────────
+  d += ESC + 'a\x00';        // left
+  d += dashes() + LF;
+  d += center(dateStr) + LF;
+  d += dashes() + LF;
+
+  // ── Items ─────────────────────────────────────────────────
+  let total = 0;
+  cart.forEach(item => {
+    const line = item.price * item.qty;
+    total += line;
+    const name = item.name.length > W ? item.name.substring(0, W - 1) + '~' : item.name;
+    d += name + LF;
+    const meta = '  x' + item.qty + ' @ ' + (item.price ? item.price.toLocaleString() + ' FCFA' : '--');
+    const amt  = item.price ? fmt(line) : '--';
+    d += padLine(meta, amt) + LF;
+  });
+
+  // ── Total ─────────────────────────────────────────────────
+  d += dashes() + LF;
+  d += ESC + 'E\x01';        // bold on
+  d += padLine('TOTAL', fmt(total)) + LF;
+  d += ESC + 'E\x00';        // bold off
+  d += 'Paid via: ' + selectedPayment + LF;
+
+  // ── Footer ────────────────────────────────────────────────
+  d += dashes() + LF;
+  d += ESC + 'a\x01';        // center
+  d += 'Thank you for shopping with' + LF;
+  d += 'American Select!' + LF;
+  d += LF + LF + LF;
+
+  // ── Cut ───────────────────────────────────────────────────
+  d += GS + 'V\x42\x05';    // partial cut
+
+  const config = qz.configs.create(qzPrinterName, { raw: true });
+  await qz.print(config, [{ type: 'raw', format: 'plain', data: d }]);
+}
+
+async function printReceipt() {
+  const btn = document.getElementById('btn-print');
+  if (qzReady && qzPrinterName) {
+    // ── Direct thermal print (silent, no dialog) ───────────
+    const orig = btn ? btn.textContent : '';
+    if (btn) { btn.textContent = 'Printing…'; btn.disabled = true; }
+    try {
+      await printReceiptThermal();
+      if (btn) { btn.textContent = '✓ Printed'; btn.style.color = '#6dbf6d'; }
+      setTimeout(() => {
+        if (btn) { btn.textContent = orig; btn.style.color = ''; btn.disabled = false; }
+      }, 2000);
+    } catch(e) {
+      if (btn) { btn.textContent = '⚠ Error — retry'; btn.style.color = '#e05c5c'; btn.disabled = false; }
+      setTimeout(() => {
+        if (btn) { btn.textContent = orig; btn.style.color = ''; }
+      }, 3000);
+    }
+  } else {
+    // ── Browser print fallback ─────────────────────────────
+    document.getElementById('print-area').style.display = 'block';
+    window.print();
+    document.getElementById('print-area').style.display = 'none';
+  }
 }
 
 // ── New Sale ─────────────────────────────────────────────
