@@ -316,6 +316,27 @@ if ($fromOrderId) {
     }
     .btn-open-drawer:hover { background: #0d2035; }
     .btn-open-drawer:active { background: #1a2a40; }
+
+    /* ── Offline banner ── */
+    .offline-banner {
+      display: none;
+      background: #1f1200; border-bottom: 1px solid #4a3000;
+      padding: 9px 20px;
+      padding-left: calc(20px + env(safe-area-inset-left, 0px));
+      padding-right: calc(20px + env(safe-area-inset-right, 0px));
+      font-size: 13px; color: #f0a040;
+      align-items: center; justify-content: space-between; gap: 10px;
+      flex-wrap: wrap;
+    }
+    .offline-banner.visible { display: flex; }
+    .offline-sync-btn {
+      background: #4a3000; color: #f0a040; border: 1px solid #6a4500;
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700;
+      cursor: pointer; white-space: nowrap;
+      min-height: 30px; touch-action: manipulation;
+      -webkit-user-select: none; user-select: none;
+    }
+    .offline-sync-btn:hover { background: #6a4000; }
   </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/qz-tray@2.2.4/qz-tray.js" defer></script>
@@ -328,6 +349,11 @@ if ($fromOrderId) {
     <a href="dashboard.php" class="back-btn">← Dashboard</a>
   </div>
 </header>
+
+<div class="offline-banner" id="offline-banner">
+  <span id="offline-msg">⚡ Offline — sales are saved locally and will sync when connected</span>
+  <button class="offline-sync-btn" id="offline-sync-btn" onclick="syncOfflineQueue()" style="display:none;">Sync pending</button>
+</div>
 
 <div class="container">
 
@@ -490,6 +516,11 @@ document.getElementById('barcode-input').addEventListener('keydown', function(e)
 
 // ── Barcode scan ─────────────────────────────────────────
 function scanBarcode(barcode) {
+  if (!navigator.onLine) {
+    setScanStatus('Offline — barcode lookup unavailable. Use manual search below.', 'err');
+    openManual();
+    return;
+  }
   setScanStatus('Looking up…', '');
   fetch('/api/barcode.php?barcode=' + encodeURIComponent(barcode))
     .then(r => r.json())
@@ -635,6 +666,16 @@ async function doCheckout() {
   msg.textContent = '';
 
   const snapshot = cart.map(i => ({ ...i }));
+  const total = snapshot.reduce((s, i) => s + i.price * i.qty, 0);
+
+  // ── OFFLINE: queue sale locally, show receipt, sync later ──
+  if (!navigator.onLine) {
+    queueOfflineSale(snapshot, total, selectedPayment);
+    busy = false;
+    showReceipt(snapshot);
+    return;
+  }
+
   const results = [];
   let allOk = true;
 
@@ -1055,6 +1096,117 @@ async function openCashDrawer(manual) {
 
 // Init after QZ Tray script loads (defer)
 window.addEventListener('load', () => { setTimeout(initQZ, 300); });
+
+// ── Offline queue ─────────────────────────────────────────
+const OFFLINE_QUEUE_KEY = 'as_offline_sales';
+
+function loadOfflineQueue() {
+  try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]'); } catch { return []; }
+}
+function saveOfflineQueue(q) {
+  localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(q));
+}
+
+function queueOfflineSale(items, total, payment) {
+  const q = loadOfflineQueue();
+  q.push({
+    id: 'offline_' + Date.now(),
+    timestamp: Date.now(),
+    items: items.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+    total,
+    payment
+  });
+  saveOfflineQueue(q);
+  updateOfflineUI();
+}
+
+function updateOfflineUI() {
+  const online = navigator.onLine;
+  const banner  = document.getElementById('offline-banner');
+  const syncBtn = document.getElementById('offline-sync-btn');
+  const msgEl   = document.getElementById('offline-msg');
+  const q = loadOfflineQueue();
+
+  if (!online) {
+    banner.classList.add('visible');
+    if (msgEl) msgEl.textContent = '⚡ Offline — sales are saved locally and will sync when connected';
+  } else if (q.length > 0) {
+    banner.classList.add('visible');
+    if (msgEl) msgEl.textContent = '✅ Back online — ' + q.length + ' sale' + (q.length > 1 ? 's' : '') + ' pending sync';
+  } else {
+    banner.classList.remove('visible');
+  }
+
+  if (syncBtn) {
+    if (q.length > 0 && online) {
+      syncBtn.style.display = 'inline-block';
+      syncBtn.textContent   = 'Sync ' + q.length + ' pending';
+      syncBtn.style.color   = '#f0a040';
+    } else {
+      syncBtn.style.display = 'none';
+    }
+  }
+}
+
+async function syncOfflineQueue() {
+  const q = loadOfflineQueue();
+  if (!q.length || !navigator.onLine) return;
+
+  const syncBtn = document.getElementById('offline-sync-btn');
+  if (syncBtn) { syncBtn.textContent = 'Syncing…'; syncBtn.disabled = true; }
+
+  const remaining = [];
+  for (const sale of q) {
+    let ok = true;
+    for (const item of sale.items) {
+      try {
+        const res = await fetch('/api/barcode.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'transaction',
+            product_name: item.name,
+            tx_action: 'sold',
+            quantity: item.qty,
+            note: 'POS Offline Sale (' + new Date(sale.timestamp).toLocaleString() + ') — ' + sale.payment
+          })
+        });
+        const d = await res.json();
+        if (!d.success) ok = false;
+      } catch { ok = false; }
+    }
+    if (!ok) remaining.push(sale);
+  }
+
+  saveOfflineQueue(remaining);
+
+  if (syncBtn) {
+    syncBtn.disabled = false;
+    if (remaining.length === 0) {
+      syncBtn.textContent = '✓ All synced';
+      syncBtn.style.color = '#6dbf6d';
+      setTimeout(updateOfflineUI, 2000);
+    } else {
+      updateOfflineUI();
+    }
+  } else {
+    updateOfflineUI();
+  }
+}
+
+// Auto-open manual panel helper
+function openManual() {
+  const wrap = document.getElementById('manual-wrap');
+  if (wrap && !wrap.classList.contains('open')) {
+    wrap.classList.add('open');
+    setTimeout(() => { const inp = document.getElementById('manual-input'); if (inp) inp.focus(); }, 80);
+  }
+}
+
+// Online/offline events
+window.addEventListener('offline', updateOfflineUI);
+window.addEventListener('online', () => { updateOfflineUI(); syncOfflineQueue(); });
+window.addEventListener('load', updateOfflineUI);
 
 // ── Helpers ───────────────────────────────────────────────
 function setScanStatus(msg, type) {
