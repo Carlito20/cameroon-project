@@ -78,9 +78,10 @@
     return Number(n).toLocaleString('fr-CM') + ' XAF';
   }
 
-  function shopLink(category) {
+  function shopLink(category, productName) {
     const id = CATEGORY_ID[category];
-    return id ? `/shop?category=${id}` : '/shop';
+    const base = id ? `/shop?category=${id}` : '/shop';
+    return base + '&product=' + encodeURIComponent(productName);
   }
 </script>
 
@@ -97,7 +98,7 @@
     <div class="featured-grid">
       {#each featured as product, i}
         <div class="fp-card">
-          <a href={shopLink(product.category)} class="fp-img-wrap">
+          <a href={shopLink(product.category, product.name)} class="fp-img-wrap">
             <img src={product.image} alt={product.short} loading="lazy">
           </a>
           <div class="fp-body">

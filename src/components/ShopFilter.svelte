@@ -242,6 +242,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const categoryParam = urlParams.get('category');
     const searchParam = urlParams.get('search');
+    const productParam = urlParams.get('product');
 
     if (categoryParam && categories.find(c => c.id === categoryParam)) {
       selectedCategory = categoryParam;
@@ -254,6 +255,14 @@
     // If search parameter exists, populate the search field
     if (searchParam) {
       searchQuery = decodeURIComponent(searchParam);
+    }
+
+    // If a specific product was linked (e.g. from Today's Picks), open its modal
+    if (productParam) {
+      const match = getAllProductsFlat().find(sp => sp.productName === productParam);
+      if (match) {
+        tick().then(() => openProductModal(match));
+      }
     }
 
     // Fetch live stock from API — overrides categories.ts quantities
