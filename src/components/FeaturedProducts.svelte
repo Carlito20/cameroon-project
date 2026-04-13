@@ -19,9 +19,9 @@
     { name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Lavender Essential Oil",                                                short: "Dr Teal's Lotion — Lavender",               price: 5000,  stock: 3,  image: "/images/products/dr-teals-lotion-lavender1.jpg",  category: "Body Care"      },
     { name: "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",             short: "Dr Teal's Kids 3-in-1 Sleep Bath",          price: 4500,  stock: 3,  image: "/images/products/dr-teals-kids.jpg",              category: "Kids"           },
     { name: "Aveeno Daily Moisturizing Body Lotion 18oz",                                                                     short: "Aveeno Daily Moisturizing Lotion 18oz",     price: 6000,  stock: 5,  image: "/images/products/aveeno-lotion.jpg",              category: "Body Care"      },
-    { name: "Jergens Ultra Healing Dry Skin Lotion, Hand and Body Moisturizer",                                               short: "Jergens Ultra Healing Lotion",              price: 6000,  stock: 3,  image: "/images/products/jergens-ultra1.jpg",             category: "Body Care"      },
-    { name: "Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil",                    short: "Jergens Hydrating Coconut Lotion",          price: 6000,  stock: 3,  image: "/images/products/jergens-coconut1.jpg",           category: "Body Care"      },
-    { name: "Jergens Shea Butter Hand and Body Lotion, Deep Conditioning Moisturizer",                                        short: "Jergens Shea Butter Lotion",                price: 6000,  stock: 3,  image: "/images/products/jergens-shea1.jpg",              category: "Body Care"      },
+    { name: "Jergens Ultra Healing Dry Skin Lotion, Hand and Body Moisturizer",                                               short: "Jergens Ultra Healing Lotion",              price: 6500,  stock: 3,  image: "/images/products/jergens-ultra1.jpg",             category: "Body Care"      },
+    { name: "Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil",                    short: "Jergens Hydrating Coconut Lotion",          price: 6500,  stock: 3,  image: "/images/products/jergens-coconut1.jpg",           category: "Body Care"      },
+    { name: "Jergens Shea Butter Hand and Body Lotion, Deep Conditioning Moisturizer",                                        short: "Jergens Shea Butter Lotion",                price: 6500,  stock: 3,  image: "/images/products/jergens-shea1.jpg",              category: "Body Care"      },
     { name: "Olay Essential Botanicals Body Wash, Spiced Chai & Pear",                                                        short: "Olay Body Wash — Spiced Chai & Pear",       price: 3500,  stock: 11, image: "/images/products/olay-spiced-chai.jpg",           category: "Body Care"      },
     { name: "Olay Essential Botanicals Body Wash, White Tea & Cucumber",                                                       short: "Olay Body Wash — White Tea & Cucumber",     price: 3500,  stock: 11, image: "/images/products/olay-white-tea.jpeg",            category: "Body Care"      },
     { name: "Men's Electric Shaver 3 in 1 - Portable USB Rechargeable Shaver Featuring 3D Floating Blades and a Digital Display Suitable for Both Wet and Dry Shaving", short: "Men's Electric Shaver 3-in-1", price: 15000, stock: 6, image: "/images/products/mens-electric-shaver-1.jpeg", category: "Personal Care" },
@@ -88,8 +88,8 @@
   <div class="container">
     <div class="featured-header">
       <div>
-        <h2>Featured Products</h2>
-        <p>Today's picks — imported fresh from the USA &amp; Canada</p>
+        <h2>Today's Picks</h2>
+        <p>Fresh selections updated daily — imported from the USA &amp; Canada</p>
       </div>
       <a href="/shop" class="view-all-btn">View All Products →</a>
     </div>
@@ -99,7 +99,6 @@
         <div class="fp-card">
           <a href={shopLink(product.category)} class="fp-img-wrap">
             <img src={product.image} alt={product.short} loading="lazy">
-            <span class="fp-category">{product.category}</span>
           </a>
           <div class="fp-body">
             <p class="fp-name">{product.short}</p>
@@ -161,6 +160,8 @@
     transition: border-color 0.2s;
     -webkit-user-select: none;
     user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .view-all-btn:hover {
@@ -198,6 +199,8 @@
     overflow: hidden;
     background: #f0f0f0;
     text-decoration: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .fp-img-wrap img {
@@ -210,20 +213,6 @@
 
   .fp-card:hover .fp-img-wrap img {
     transform: scale(1.05);
-  }
-
-  .fp-category {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: rgba(0,0,0,0.55);
-    color: #fff;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 20px;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
   }
 
   .fp-body {
@@ -345,10 +334,6 @@
   @media (max-width: 375px) {
     .featured-grid {
       gap: 0.65rem;
-    }
-
-    .fp-category {
-      font-size: 0.62rem;
     }
   }
 </style>

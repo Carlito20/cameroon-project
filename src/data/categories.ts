@@ -287,31 +287,31 @@ export const categories: Category[] = [
             name: 'Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil',
             images: ['/images/products/jergens-coconut1.webp', '/images/products/jergens-coconut2.webp', '/images/products/jergens-coconut3.webp', '/images/products/jergens-coconut4.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Jergens Shea Butter Hand and Body Lotion, Deep Conditioning Moisturizer',
             images: ['/images/products/jergens-shea1.webp', '/images/products/jergens-shea2.webp', '/images/products/jergens-common.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Jergens Soothing Aloe Body Lotion, Aloe Vera Body and Hand Moisturizer',
             images: ['/images/products/jergens-aloe1.webp', '/images/products/jergens-aloe2.webp', '/images/products/jergens-aloe3.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Jergens Skin Firming Body Lotion with Collagen and Elastin',
             images: ['/images/products/jergens-skin-firming1.webp', '/images/products/jergens-skin-firming2.webp', '/images/products/jergens-skin-firming3.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Jergens Ultra Healing Dry Skin Lotion, Hand and Body Moisturizer',
             images: ['/images/products/jergens-ultra1.webp', '/images/products/jergens-ultra2.webp', '/images/products/jergens-ultra3.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Prebiotic Lemon Balm & Essential Oils",
@@ -353,49 +353,49 @@ export const categories: Category[] = [
             name: 'Vaseline Men Cooling Hydration 3-in-1 Face, Hands & Body Lotion with Menthol',
             images: ['/images/products/vaseline-men-cooling1.webp', '/images/products/vaseline-men-cooling-new.webp', '/images/products/vaseline-men-cooling2.webp', '/images/products/vaseline-men-cooling3.webp'],
             quantity: 4,
-            price: 6000
+            price: 6500
           },
           {
             name: "Vaseline Men's Healing Moisture Hand & Body Lotion",
             images: ['/images/products/vaseline-men-healing1.webp', '/images/products/vaseline-men-healing2.webp', '/images/products/vaseline-men-healing3.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Vaseline Intensive Care Body Lotion Cocoa Radiant with Pure Cocoa Butter',
             images: ['/images/products/vaseline-cocoa1.webp', '/images/products/vaseline-cocoa2.webp', '/images/products/vaseline-cocoa3.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Vaseline Intensive Care Soothing Hydration Body Lotion with Aloe Vera',
             images: ['/images/products/vaseline-aloe1.webp', '/images/products/vaseline-aloe2.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Vaseline Intensive Care Sensitive Skin Relief Body Lotion with Colloidal Oatmeal',
             images: ['/images/products/vaseline-sensitive1.webp', '/images/products/vaseline-sensitive3.webp'],
             quantity: 4,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Vaseline Intensive Care Calm Healing Body Lotion with Lavender Extract',
             images: ['/images/products/vaseline-lavender1.webp', '/images/products/vaseline-lavender2.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Vaseline Intensive Care Unscented Advanced Repair Body Lotion',
             images: ['/images/products/vaseline-unscented1.webp', '/images/products/vaseline-unscented2.webp', '/images/products/vaseline-unscented3.webp', '/images/products/vaseline-unscented4.webp'],
             quantity: 3,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Vaseline Intensive Care Nourishing Moisture Body Lotion with Pure Oat Extract',
             images: ['/images/products/vaseline-oat1.webp', '/images/products/vaseline-oat2.webp'],
             quantity: 15,
-            price: 6000
+            price: 6500
           },
           {
             name: 'Lubriderm Fragrance Free Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Face, Hand & Body Lotion for Sensitive Skin, Hydrating Lotion for Healthier-Looking Skin',
