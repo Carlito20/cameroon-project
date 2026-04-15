@@ -1,4 +1,6 @@
 <script>
+  import { onMount } from 'svelte';
+
   // Maps category display name → shop URL category ID
   const CATEGORY_ID = {
     "Kitchen":       "home-kitchen",
@@ -55,7 +57,13 @@
     return a;
   }
 
-  const featured = seededShuffle(POOL, getDaySeed()).slice(0, DAILY_COUNT);
+  // Computed client-side in onMount so the picks reflect the visitor's
+  // current date instead of the build date (which was baking stale picks).
+  let featured = [];
+
+  onMount(() => {
+    featured = seededShuffle(POOL, getDaySeed()).slice(0, DAILY_COUNT);
+  });
 
   // ── State & helpers ────────────────────────────────────────────────────
   let addedIndex = -1;
