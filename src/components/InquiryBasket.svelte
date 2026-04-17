@@ -550,10 +550,10 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     z-index: 998;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    max-height: calc(100vh - 140px);
+    max-height: calc(100vh - 120px);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     will-change: transform;
@@ -643,9 +643,9 @@
   }
 
   .cart-sidebar .basket-items {
-    flex: 1;
+    flex: none;
     overflow-y: auto;
-    min-height: 0;
+    max-height: 180px;
   }
 
   .cart-sidebar .basket-header,
