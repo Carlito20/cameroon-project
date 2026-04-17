@@ -496,7 +496,7 @@ function normalisePhone(raw) {
   return phone;
 }
 
-// Sent as soon as admin sees the order — lets customer know it's been received
+// Sent as soon as admin sees the order - lets customer know it's been received
 function buildWaOrderReceivedLink(o) {
   const phone = normalisePhone(o.customer_phone);
   const items = JSON.parse(o.items || '[]');
@@ -506,18 +506,23 @@ function buildWaOrderReceivedLink(o) {
     lines += `- ${i.name} x${i.quantity || 1}${i.price ? ' - ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
   });
   const payIcon = o.payment_method?.includes('MTN') ? '🟡' : o.payment_method?.includes('Orange') ? '🟠' : '💵';
+  const name = o.customer_name || 'there';
   const msg =
-    `✅ *Order Received — American Select*\n` +
-    `Hi ${o.customer_name || 'there'}! We have received your order.\n\n` +
-    `📋 Order Ref: *${o.order_ref}*\n\n` +
+    `✅ *Order Received - American Select*\n` +
+    `Hi ${name}! We have received your order.\n` +
+    `Bonjour ${name} ! Nous avons bien recu votre commande.\n\n` +
+    `📋 Order Ref / Ref Commande: *${o.order_ref}*\n\n` +
     lines +
     `\n*Total: ${Number(o.total).toLocaleString()} FCFA*\n` +
-    `${payIcon} Payment: ${o.payment_method || 'N/A'}\n\n` +
+    `${payIcon} Payment / Paiement: ${o.payment_method || 'N/A'}\n\n` +
     `Please send payment to complete your order:\n` +
+    `Veuillez envoyer le paiement pour finaliser votre commande :\n` +
     `🟡 MTN MoMo: *679 457 181*\n` +
     `🟠 Orange Money: *686 271 567*\n\n` +
     `Use your name as payment reference.\n` +
-    `We will confirm once payment is received. Thank you!`;
+    `Utilisez votre nom comme reference de paiement.\n` +
+    `We will confirm once payment is received. Thank you!\n` +
+    `Nous confirmerons des reception du paiement. Merci !`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -533,14 +538,17 @@ function buildWaPaymentReceiptLink(o) {
     total += line;
     lines += `- ${i.name} x${i.quantity || 1}${i.price ? ' - ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
   });
+  const name = o.customer_name || 'there';
   const msg =
-    `✅ *Payment Received — American Select*\n` +
-    `Hi ${o.customer_name || 'there'}! Your payment has been confirmed.\n\n` +
-    `📋 Order Ref: *${o.order_ref}*\n\n` +
+    `✅ *Payment Confirmed - American Select*\n` +
+    `Hi ${name}! Your payment has been confirmed.\n` +
+    `Bonjour ${name} ! Votre paiement a ete confirme.\n\n` +
+    `📋 Order Ref / Ref Commande: *${o.order_ref}*\n\n` +
     lines +
     `\n*Total: ${Number(o.total || total).toLocaleString()} FCFA*\n` +
-    `${payIcon} Paid via: ${o.payment_method || 'N/A'}\n\n` +
+    `${payIcon} Paid via / Paye par: ${o.payment_method || 'N/A'}\n\n` +
     `Thank you for shopping with American Select!\n` +
+    `Merci pour votre achat chez American Select !\n` +
     `Questions? Call/WhatsApp:\n` +
     `MTN: 679 457 181 | Orange: 686 271 567`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
@@ -584,9 +592,10 @@ function printOrderReceipt(o) {
     <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:bold;">
       <span>TOTAL</span><span>${(o.total || total).toLocaleString()} FCFA</span>
     </div>
-    <p style="margin-top:6px;font-size:12px;color:#888;">${payIcon} Paid via: ${esc(o.payment_method || 'N/A')}</p>
+    <p style="margin-top:6px;font-size:12px;color:#888;">${payIcon} Paid via / Paye par: ${esc(o.payment_method || 'N/A')}</p>
     <hr style="border:none;border-top:1px dashed #aaa;margin:14px 0 8px;">
-    <p style="text-align:center;font-size:11px;color:#888;">Thank you for shopping with American Select!</p>`;
+    <p style="text-align:center;font-size:11px;color:#888;">Thank you for shopping with American Select!</p>
+    <p style="text-align:center;font-size:11px;color:#888;">Merci pour votre achat chez American Select !</p>`;
 
   document.getElementById('print-area').style.display = 'block';
   window.print();
