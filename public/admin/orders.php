@@ -484,7 +484,15 @@ function esc(s) {
 
 function normalisePhone(raw) {
   let phone = String(raw).replace(/\D/g, '');
-  if (!phone.startsWith('237')) phone = '237' + phone;
+  // Already has a country code (10+ digits starting with known codes)
+  if (phone.startsWith('237')) return phone;          // Cameroon
+  if (phone.startsWith('1') && phone.length === 11) return phone;  // USA/Canada with leading 1
+  if (phone.startsWith('44')) return phone;           // UK
+  // US/Canada 10-digit number — add country code 1
+  if (phone.length === 10 && !phone.startsWith('0')) return '1' + phone;
+  // Cameroon 9-digit number — add 237
+  if (phone.length === 9) return '237' + phone;
+  // Fallback: return as-is
   return phone;
 }
 
