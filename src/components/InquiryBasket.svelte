@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
 
   export let whatsappNumber = "237679457181";
-  export let formspreeEndpoint = "https://formspree.io/f/xwvrbryr";
+  export let formspreeEndpoint = ""; // kept for prop compatibility, unused
 
   // Cart expiration time: 1 hour in milliseconds
   const CART_EXPIRY_MS = 60 * 60 * 1000;
@@ -93,7 +93,6 @@
         image: d.img || '', maxStock: 99, addedAt: Date.now()
       }));
       inquiryItems = items;
-      isConfirmationMode = true;
       // Clean URL
       const url = new URL(window.location.href);
       url.searchParams.delete('cart');
@@ -171,10 +170,7 @@
   });
 
   onDestroy(() => {
-    if (expiryCheckInterval) {
-      clearInterval(expiryCheckInterval);
-    }
-    if (waReturnCleanup) waReturnCleanup();
+    if (expiryCheckInterval) clearInterval(expiryCheckInterval);
   });
 
   // Update quantity for an item (respecting stock limits)
@@ -223,72 +219,17 @@
 
     const itemList = inquiryItems.map(item => {
       const qty = item.quantity || 1;
-      const itemTotal = item.price ? ` - ${formatPrice(item.price * qty)} FCFA` : '';
-      return `• ${item.name} (${qty})${itemTotal}`;
+      const itemTotal = item.price ? ` — ${formatPrice(item.price * qty)} FCFA` : '';
+      return `• ${item.name} (×${qty})${itemTotal}`;
     }).join('\n');
 
-    const cartLink = generateCartLink();
-    const paymentLine = selectedPayment ? `\n💳 Preferred Payment: ${selectedPayment}` : '';
-    const message = `Hi! I'm interested in ordering (${totalItems} items):\n\n${itemList}\n\nEstimated Total: ${formatPrice(totalPrice)} FCFA${paymentLine}\n\nPlease confirm availability and final price.\n\n🔗 My cart: ${cartLink}`;
+    const paymentLine = selectedPayment ? `\n💳 Payment: ${selectedPayment}` : '';
+    const nameLine = customerName.trim() ? `\n👤 Name: ${customerName.trim()}` : '';
+    const phoneLine = customerPhone.trim() ? `\n📞 Phone: ${customerPhone.trim()}` : '';
 
-    // Store order data — Formspree only fires after user confirms they sent the message
-    pendingWhatsAppData = {
-      _subject: `New Order - ${totalItems} item${totalItems === 1 ? '' : 's'} - ${formatPrice(totalPrice)} FCFA`,
-      order_type: 'WhatsApp Order Request',
-      total_items: totalItems,
-      estimated_total: `${formatPrice(totalPrice)} FCFA`,
-      order_details: itemList,
-      payment_method: selectedPayment || 'Not specified',
-      cart_link: cartLink,
-      full_message: message
-    };
+    const message = `Hi! I'd like to order from American Select:\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA${paymentLine}${nameLine}${phoneLine}\n\nThank you!`;
 
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
-
-    // Guard: remove any previous listeners before adding new ones
-    if (waReturnCleanup) waReturnCleanup();
-
-    // Listen for user returning to the page, then ask if message was sent
-    const onReturn = () => {
-      window.removeEventListener('focus', onReturn);
-      document.removeEventListener('visibilitychange', onVisibility);
-      waReturnCleanup = null;
-      // Small delay so the tab switch fully completes
-      setTimeout(() => { showSentPrompt = true; }, 400);
-    };
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') onReturn();
-    };
-    window.addEventListener('focus', onReturn);
-    document.addEventListener('visibilitychange', onVisibility);
-    waReturnCleanup = () => {
-      window.removeEventListener('focus', onReturn);
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }
-
-  let showSentPrompt = false;
-
-  async function confirmMessageSent() {
-    showSentPrompt = false;
-    if (!pendingWhatsAppData) return;
-    try {
-      await fetch(formspreeEndpoint, {
-        method: 'POST',
-        body: JSON.stringify(pendingWhatsAppData),
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-      });
-    } catch (e) {
-      console.error('Formspree error:', e);
-    }
-    pendingWhatsAppData = null;
-  }
-
-  function dismissSentPrompt() {
-    showSentPrompt = false;
-    pendingWhatsAppData = null;
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
   }
 
   function toggleBasket() {
@@ -306,84 +247,11 @@
   }
 
   let selectedPayment = '';
-  let isConfirmationMode = false; // true when cart was loaded from admin's reply link
-  let pendingWhatsAppData = null; // holds order data waiting for send confirmation
-  let waReturnCleanup = null;    // cleans up focus/visibilitychange listeners
-
   let customerName = '';
   let customerPhone = '';
 
-  $: canConfirm = customerName.trim().length > 0 && customerPhone.trim().length > 0;
-
   function selectPayment(method) {
     selectedPayment = selectedPayment === method ? '' : method;
-  }
-
-  async function confirmOrder() {
-    if (!canConfirm) return;
-    if (inquiryItems.length === 0) return;
-
-    const itemList = inquiryItems.map(item => {
-      const qty = item.quantity || 1;
-      const itemTotal = item.price ? ` — ${formatPrice(item.price * qty)} FCFA` : '';
-      return `• ${item.name} (×${qty})${itemTotal}`;
-    }).join('\n');
-
-    const customerLine = customerName.trim() ? `\n👤 Name: ${customerName.trim()}${customerPhone.trim() ? `\n📞 Phone: ${customerPhone.trim()}` : ''}` : '';
-    const message = `✅ ORDER CONFIRMED\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA\n💳 Payment: ${selectedPayment || 'To be confirmed'}${customerLine}\n\nPlease process my order. Thank you!`;
-
-    // Create pending order in database
-    let orderRef = '';
-    try {
-      const orderRes = await fetch('/api/orders.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'create',
-          items: inquiryItems.map(i => ({ name: i.name, price: i.price || 0, quantity: i.quantity || 1 })),
-          total: totalPrice,
-          payment_method: selectedPayment || 'Not specified',
-          customer_name: customerName.trim(),
-          customer_phone: customerPhone.trim()
-        })
-      });
-      const orderData = await orderRes.json();
-      if (orderData.order_ref) orderRef = orderData.order_ref;
-    } catch (e) { console.error('Order create error:', e); }
-
-    // Save order for thank-you page
-    localStorage.setItem('confirmedOrder', JSON.stringify({
-      items: inquiryItems.map(i => ({ name: i.name, price: i.price || 0, quantity: i.quantity || 1, image: i.image || '' })),
-      total: totalPrice,
-      paymentMethod: selectedPayment || 'To be confirmed',
-      orderRef,
-      whatsappMessage: message,
-      whatsappNumber,
-      timestamp: Date.now()
-    }));
-
-    // Notify via Formspree
-    try {
-      await fetch(formspreeEndpoint, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          _subject: `✅ ORDER CONFIRMED — ${totalItems} item${totalItems === 1 ? '' : 's'} — ${formatPrice(totalPrice)} FCFA`,
-          order_type: 'Confirmed Order',
-          total_items: totalItems,
-          estimated_total: `${formatPrice(totalPrice)} FCFA`,
-          payment_method: selectedPayment || 'Not specified',
-          order_details: itemList
-        })
-      });
-    } catch (e) { console.error('Formspree error:', e); }
-
-    // Open WhatsApp with confirmation
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
-
-    // Clear cart and go to confirmation page
-    localStorage.removeItem(STORAGE_KEY);
-    window.location.href = '/thank-you/?order=confirmed';
   }
 
   let previewItem = null;
@@ -481,25 +349,18 @@
         {/if}
       </div>
 
+      <div class="customer-fields">
+        <input class="customer-field-input" type="text" placeholder="Your name (optional)" bind:value={customerName} maxlength="100" autocomplete="name" />
+        <input class="customer-field-input" type="tel" placeholder="Your phone (optional)" bind:value={customerPhone} maxlength="30" autocomplete="tel" inputmode="tel" />
+      </div>
+
       <div class="basket-actions">
-        <button class="clear-btn" on:click={clearAll}>Clear All</button>
+        <button class="clear-btn" on:click={clearAll}>Clear</button>
         <button class="send-btn" on:click={sendViaWhatsApp}>
           <span class="whatsapp-icon">💬</span>
-          {isConfirmationMode ? 'Message Us' : 'Order Via WhatsApp'}
+          Order via WhatsApp
         </button>
       </div>
-      {#if isConfirmationMode}
-        <div class="confirm-order-section">
-          <div class="customer-fields">
-            <input class="customer-field-input" type="text" placeholder="Your name *" bind:value={customerName} maxlength="100" autocomplete="name" />
-            <input class="customer-field-input" type="tel" placeholder="Phone number *" bind:value={customerPhone} maxlength="30" autocomplete="tel" inputmode="tel" />
-          </div>
-          <button class="confirm-order-btn" on:click={confirmOrder} disabled={!canConfirm} class:confirm-disabled={!canConfirm}>
-            ✅ Confirm My Order
-          </button>
-          <p class="confirm-hint">Tap to finalise and send your order confirmation</p>
-        </div>
-      {/if}
     </div>
   {:else}
     <button class="cart-collapsed desktop-only" on:click={toggleDesktopCart} aria-label="Expand cart">
@@ -587,21 +448,18 @@
             {/if}
           </div>
 
+          <div class="customer-fields">
+            <input class="customer-field-input" type="text" placeholder="Your name (optional)" bind:value={customerName} maxlength="100" autocomplete="name" />
+            <input class="customer-field-input" type="tel" placeholder="Your phone (optional)" bind:value={customerPhone} maxlength="30" autocomplete="tel" inputmode="tel" />
+          </div>
+
           <div class="basket-actions">
-            <button class="clear-btn" on:click={clearAll}>Clear All</button>
+            <button class="clear-btn" on:click={clearAll}>Clear</button>
             <button class="send-btn" on:click={sendViaWhatsApp}>
               <span class="whatsapp-icon">💬</span>
-              {isConfirmationMode ? 'Message Us' : 'Order Via WhatsApp'}
+              Order via WhatsApp
             </button>
           </div>
-          {#if isConfirmationMode}
-            <div class="confirm-order-section">
-              <button class="confirm-order-btn" on:click={confirmOrder}>
-                ✅ Confirm My Order
-              </button>
-              <p class="confirm-hint">Tap to finalise and send your order confirmation</p>
-            </div>
-          {/if}
         </div>
       </div>
     </div>
@@ -622,19 +480,6 @@
   </div>
 {/if}
 
-<!-- WhatsApp send confirmation prompt -->
-{#if showSentPrompt}
-  <div class="wa-sent-overlay" on:click={dismissSentPrompt}>
-    <div class="wa-sent-prompt" on:click|stopPropagation>
-      <div class="wa-sent-icon">💬</div>
-      <p class="wa-sent-question">Did you send the message on WhatsApp?</p>
-      <div class="wa-sent-actions">
-        <button class="wa-sent-btn wa-sent-yes" on:click={confirmMessageSent}>Yes, I sent it</button>
-        <button class="wa-sent-btn wa-sent-no" on:click={dismissSentPrompt}>No, I didn't</button>
-      </div>
-    </div>
-  </div>
-{/if}
 
 <style>
   /* Desktop Sidebar Cart */
@@ -750,8 +595,8 @@
   .cart-sidebar .basket-header,
   .cart-sidebar .basket-total,
   .cart-sidebar .pay-method-section,
-  .cart-sidebar .basket-actions,
-  .cart-sidebar .confirm-order-section {
+  .cart-sidebar .customer-fields,
+  .cart-sidebar .basket-actions {
     flex-shrink: 0;
   }
 
@@ -1461,35 +1306,6 @@
     color: #7a3800;
   }
 
-  .confirm-order-section {
-    padding: 12px 20px 16px;
-  }
-  .confirm-order-btn {
-    width: 100%;
-    padding: 14px;
-    background: #25a244;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: 800;
-    cursor: pointer;
-    letter-spacing: 0.3px;
-    min-height: 50px;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    user-select: none;
-    transition: background 0.15s;
-  }
-  .confirm-order-btn:hover { background: #1e8a38; }
-  .confirm-hint {
-    text-align: center;
-    font-size: 11px;
-    color: #999;
-    margin-top: 6px;
-    margin-bottom: 0;
-  }
 
   .basket-actions {
     display: flex;
@@ -1879,7 +1695,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 10px;
+    padding: 0 20px 10px;
   }
   .customer-field-input {
     display: block;
@@ -1897,87 +1713,5 @@
     touch-action: manipulation;
     box-sizing: border-box;
   }
-  .customer-field-input:focus { border-color: #25a244; background: #fff; }
-  .confirm-disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-
-  /* WhatsApp send confirmation prompt */
-  .wa-sent-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-backdrop-filter: blur(2px);
-    backdrop-filter: blur(2px);
-    /* iOS fixed positioning fix */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    will-change: transform;
-    /* Safe area insets for notched devices */
-    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
-    /* iOS tap-to-dismiss */
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .wa-sent-prompt {
-    background: #fff;
-    border-radius: 14px;
-    padding: 28px 24px 22px;
-    max-width: 320px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-    cursor: default;
-  }
-  .wa-sent-icon { font-size: 36px; margin-bottom: 10px; }
-  .wa-sent-question {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin: 0 0 20px;
-    line-height: 1.4;
-  }
-  .wa-sent-actions { display: flex; gap: 10px; }
-  .wa-sent-btn {
-    flex: 1;
-    min-height: 44px;
-    padding: 11px 8px;
-    border-radius: 8px;
-    border: none;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .wa-sent-yes { background: #25d366; color: #fff; }
-  .wa-sent-yes:hover { background: #1db954; }
-  .wa-sent-no { background: #f0f0f0; color: #555; }
-  .wa-sent-no:hover { background: #e0e0e0; }
-
-  /* Landscape mobile — prevent prompt overflowing short viewport */
-  @media (max-height: 500px) {
-    .wa-sent-prompt {
-      padding: 16px 20px 14px;
-      max-height: 90dvh;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .wa-sent-icon { font-size: 26px; margin-bottom: 6px; }
-    .wa-sent-question { font-size: 14px; margin-bottom: 12px; }
-  }
-
-  /* Very small screens — stack buttons vertically */
-  @media (max-width: 400px) {
-    .wa-sent-prompt { padding: 22px 16px 18px; }
-    .wa-sent-actions { flex-direction: column; gap: 8px; }
-    .wa-sent-question { font-size: 15px; }
-  }
+  .customer-field-input:focus { border-color: #25d366; background: #fff; }
 </style>
