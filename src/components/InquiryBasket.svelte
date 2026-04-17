@@ -882,6 +882,14 @@
   .mobile-cart-expanded .basket-header {
     border-radius: 20px 20px 0 0;
     padding: 18px 20px;
+    flex-shrink: 0;
+  }
+
+  .mobile-cart-expanded .basket-items {
+    flex: none;
+    max-height: 130px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .collapse-cart-btn {
@@ -986,7 +994,10 @@
   }
 
   .basket-footer {
-    flex-shrink: 0;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     background: white;
     border-top: 1px solid #e9ecef;
   }
@@ -1562,7 +1573,7 @@
     }
 
     .mobile-cart-expanded .basket-footer {
-      padding-bottom: env(safe-area-inset-bottom);
+      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     }
   }
 
