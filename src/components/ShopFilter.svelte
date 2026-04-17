@@ -170,7 +170,7 @@
   }
 
   function performSearch(query) {
-    if (!query || query.trim().length < 2) {
+    if (!query || query.trim().length < 1) {
       searchResults = [];
       return;
     }
@@ -982,7 +982,7 @@
 
   // Start/stop showcase based on view state
   $: {
-    if (selectedCategory === 'all' && (!searchQuery || searchQuery.trim().length < 2)) {
+    if (selectedCategory === 'all' && (!searchQuery || searchQuery.trim().length < 1)) {
       if (!showcaseActive) startShowcase();
     } else {
       if (showcaseActive) stopShowcase();
