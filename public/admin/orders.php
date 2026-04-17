@@ -198,6 +198,36 @@ $filter = $_GET['filter'] ?? 'pending';
       -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
     }
 
+    /* Search & date bar */
+    .search-bar {
+      display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;
+    }
+    .search-input {
+      flex: 1; min-width: 180px; padding: 10px 14px; background: #1a1a1a;
+      border: 1px solid #2a2a2a; border-radius: 8px; color: #e0e0e0;
+      font-size: 14px; outline: none; -webkit-appearance: none; appearance: none;
+      min-height: 44px; touch-action: manipulation;
+    }
+    .search-input:focus { border-color: #d4af37; }
+    .search-input::placeholder { color: #444; }
+    .date-input {
+      padding: 10px 12px; background: #1a1a1a; border: 1px solid #2a2a2a;
+      border-radius: 8px; color: #e0e0e0; font-size: 13px; outline: none;
+      -webkit-appearance: none; appearance: none; min-height: 44px;
+      touch-action: manipulation; cursor: pointer;
+      color-scheme: dark;
+    }
+    .date-input:focus { border-color: #d4af37; }
+    .search-clear {
+      padding: 10px 14px; background: transparent; color: #666;
+      border: 1px solid #2a2a2a; border-radius: 8px; font-size: 13px;
+      font-weight: 600; cursor: pointer; min-height: 44px; white-space: nowrap;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .search-clear:hover { color: #ccc; border-color: #555; }
+    .results-count { font-size: 12px; color: #444; padding: 4px 0; width: 100%; }
+
     /* Toast */
     .toast {
       position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 50%;
@@ -225,6 +255,15 @@ $filter = $_GET['filter'] ?? 'pending';
     <a href="?filter=all"       class="tab <?= $filter==='all'       ? 'active-pending'   : '' ?>">All</a>
   </div>
 
+  <div class="search-bar">
+    <input type="search" class="search-input" id="search-input"
+      placeholder="Search by name, phone, or order ref…" oninput="applyFilters()" autocomplete="off">
+    <input type="date" class="date-input" id="date-from" onchange="applyFilters()" title="From date">
+    <input type="date" class="date-input" id="date-to"   onchange="applyFilters()" title="To date">
+    <button class="search-clear" onclick="clearFilters()">Clear</button>
+  </div>
+  <div class="results-count" id="results-count"></div>
+
   <div id="orders-list">
     <div class="loading">Loading orders…</div>
   </div>
@@ -249,6 +288,46 @@ $filter = $_GET['filter'] ?? 'pending';
 <script>
 const FILTER = '<?= htmlspecialchars($filter) ?>';
 let cancelTargetId = null;
+let allOrders = [];
+
+function applyFilters() {
+  const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+  const from = document.getElementById('date-from').value;  // 'YYYY-MM-DD' or ''
+  const to   = document.getElementById('date-to').value;
+
+  const filtered = allOrders.filter(o => {
+    // Text search: name, phone, order ref, item names
+    if (q) {
+      const items = JSON.parse(o.items || '[]');
+      const itemNames = items.map(i => (i.name || '').toLowerCase()).join(' ');
+      const haystack = [o.customer_name, o.customer_phone, o.order_ref, itemNames]
+        .map(s => (s || '').toLowerCase()).join(' ');
+      if (!haystack.includes(q)) return false;
+    }
+    // Date range (compare YYYY-MM-DD prefix of created_at)
+    if (from || to) {
+      const d = (o.created_at || '').slice(0, 10);
+      if (from && d < from) return false;
+      if (to   && d > to)   return false;
+    }
+    return true;
+  });
+
+  renderOrders(filtered);
+  const count = document.getElementById('results-count');
+  if (q || from || to) {
+    count.textContent = `${filtered.length} of ${allOrders.length} order${allOrders.length !== 1 ? 's' : ''} shown`;
+  } else {
+    count.textContent = '';
+  }
+}
+
+function clearFilters() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('date-from').value = '';
+  document.getElementById('date-to').value = '';
+  applyFilters();
+}
 
 function fmt(n) { return Number(n).toLocaleString('en-US'); }
 
@@ -271,7 +350,11 @@ function payIcon(method) {
 function renderOrders(orders) {
   const list = document.getElementById('orders-list');
   if (!orders.length) {
-    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div>No ${FILTER === 'all' ? '' : FILTER} orders</div>`;
+    const q = (document.getElementById('search-input')?.value || '').trim();
+    const msg = q || document.getElementById('date-from')?.value || document.getElementById('date-to')?.value
+      ? 'No orders match your search'
+      : `No ${FILTER === 'all' ? '' : FILTER} orders`;
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div>${msg}</div>`;
     return;
   }
 
@@ -331,7 +414,8 @@ async function loadOrders() {
     const res = await fetch('/api/orders.php?status=' + FILTER);
     const data = await res.json();
     if (data.error) { document.getElementById('orders-list').innerHTML = `<div class="empty-state">Error: ${data.error}</div>`; return; }
-    renderOrders(data.orders || []);
+    allOrders = data.orders || [];
+    applyFilters();
   } catch {
     document.getElementById('orders-list').innerHTML = '<div class="empty-state">Network error — check connection</div>';
   }
