@@ -265,6 +265,9 @@
 
   function toggleDesktopCart() {
     isDesktopExpanded = !isDesktopExpanded;
+    if (typeof document !== 'undefined') {
+      document.body.classList.toggle('cart-sidebar-open', isDesktopExpanded);
+    }
   }
 
   function closeBasket() {

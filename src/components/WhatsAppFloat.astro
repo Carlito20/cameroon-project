@@ -35,7 +35,7 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
     gap: 8px;
     box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
     z-index: 1000;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.25s ease;
     text-decoration: none;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
@@ -132,6 +132,13 @@ const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMe
   /* Hide when cart is open on mobile */
   :global(body.cart-open) .whatsapp-float {
     display: none;
+  }
+
+  /* Hide when desktop cart sidebar is expanded */
+  :global(body.cart-sidebar-open) .whatsapp-float {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8) translateZ(0);
   }
 
   /* Accessibility: reduce motion for users who prefer it */
