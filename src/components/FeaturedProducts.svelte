@@ -262,6 +262,8 @@
     -webkit-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
     transition: background 0.2s ease, transform 0.15s ease;
   }
 
