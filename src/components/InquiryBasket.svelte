@@ -249,9 +249,17 @@
   let selectedPayment = '';
   let customerName = '';
   let customerPhone = '';
+  let showValidation = false;
+
+  $: canOrder = !!selectedPayment && customerName.trim().length > 0 && customerPhone.trim().length > 0;
 
   function selectPayment(method) {
-    selectedPayment = selectedPayment === method ? '' : method;
+    selectedPayment = method;
+  }
+
+  function tryOrder() {
+    showValidation = true;
+    if (canOrder) sendViaWhatsApp();
   }
 
   let previewItem = null;
@@ -334,7 +342,7 @@
       </div>
 
       <div class="pay-method-section">
-        <div class="pay-method-label">How would you like to pay?</div>
+        <div class="pay-method-label">Payment method <span class="req-star">*</span></div>
         <div class="pay-method-grid">
           <button class="pay-method-btn" class:selected={selectedPayment === 'Cash'} on:click={() => selectPayment('Cash')}>💵 Cash</button>
           <button class="pay-method-btn" class:selected={selectedPayment === 'MTN MoMo'} on:click={() => selectPayment('MTN MoMo')}>🟡 MTN MoMo</button>
@@ -347,16 +355,25 @@
         {#if selectedPayment === 'Orange Money'}
           <div class="momo-info orange-momo-info">📲 Send to: <strong>686 271 567</strong></div>
         {/if}
+        {#if showValidation && !selectedPayment}
+          <div class="field-error">Please select a payment method</div>
+        {/if}
       </div>
 
       <div class="customer-fields">
-        <input class="customer-field-input" type="text" placeholder="Your name (optional)" bind:value={customerName} maxlength="100" autocomplete="name" />
-        <input class="customer-field-input" type="tel" placeholder="Your phone (optional)" bind:value={customerPhone} maxlength="30" autocomplete="tel" inputmode="tel" />
+        <div class="field-wrap">
+          <input class="customer-field-input" class:field-invalid={showValidation && !customerName.trim()} type="text" placeholder="Your name *" bind:value={customerName} maxlength="100" autocomplete="name" />
+          {#if showValidation && !customerName.trim()}<div class="field-error">Name is required</div>{/if}
+        </div>
+        <div class="field-wrap">
+          <input class="customer-field-input" class:field-invalid={showValidation && !customerPhone.trim()} type="tel" placeholder="Your phone number *" bind:value={customerPhone} maxlength="30" autocomplete="tel" inputmode="tel" />
+          {#if showValidation && !customerPhone.trim()}<div class="field-error">Phone number is required</div>{/if}
+        </div>
       </div>
 
       <div class="basket-actions">
         <button class="clear-btn" on:click={clearAll}>Clear</button>
-        <button class="send-btn" on:click={sendViaWhatsApp}>
+        <button class="send-btn" on:click={tryOrder}>
           <span class="whatsapp-icon">💬</span>
           Order via WhatsApp
         </button>
@@ -433,7 +450,7 @@
           </div>
 
           <div class="pay-method-section">
-            <div class="pay-method-label">How would you like to pay?</div>
+            <div class="pay-method-label">Payment method <span class="req-star">*</span></div>
             <div class="pay-method-grid">
               <button class="pay-method-btn" class:selected={selectedPayment === 'Cash'} on:click={() => selectPayment('Cash')}>💵 Cash</button>
               <button class="pay-method-btn" class:selected={selectedPayment === 'MTN MoMo'} on:click={() => selectPayment('MTN MoMo')}>🟡 MTN MoMo</button>
@@ -446,16 +463,25 @@
             {#if selectedPayment === 'Orange Money'}
               <div class="momo-info orange-momo-info">📲 Send to: <strong>686 271 567</strong></div>
             {/if}
+            {#if showValidation && !selectedPayment}
+              <div class="field-error">Please select a payment method</div>
+            {/if}
           </div>
 
           <div class="customer-fields">
-            <input class="customer-field-input" type="text" placeholder="Your name (optional)" bind:value={customerName} maxlength="100" autocomplete="name" />
-            <input class="customer-field-input" type="tel" placeholder="Your phone (optional)" bind:value={customerPhone} maxlength="30" autocomplete="tel" inputmode="tel" />
+            <div class="field-wrap">
+              <input class="customer-field-input" class:field-invalid={showValidation && !customerName.trim()} type="text" placeholder="Your name *" bind:value={customerName} maxlength="100" autocomplete="name" />
+              {#if showValidation && !customerName.trim()}<div class="field-error">Name is required</div>{/if}
+            </div>
+            <div class="field-wrap">
+              <input class="customer-field-input" class:field-invalid={showValidation && !customerPhone.trim()} type="tel" placeholder="Your phone number *" bind:value={customerPhone} maxlength="30" autocomplete="tel" inputmode="tel" />
+              {#if showValidation && !customerPhone.trim()}<div class="field-error">Phone number is required</div>{/if}
+            </div>
           </div>
 
           <div class="basket-actions">
             <button class="clear-btn" on:click={clearAll}>Clear</button>
-            <button class="send-btn" on:click={sendViaWhatsApp}>
+            <button class="send-btn" on:click={tryOrder}>
               <span class="whatsapp-icon">💬</span>
               Order via WhatsApp
             </button>
@@ -1714,4 +1740,15 @@
     box-sizing: border-box;
   }
   .customer-field-input:focus { border-color: #25d366; background: #fff; }
+  .customer-field-input.field-invalid { border-color: #e53935; background: #fff5f5; }
+
+  .field-wrap { display: flex; flex-direction: column; gap: 3px; }
+
+  .field-error {
+    font-size: 12px;
+    color: #e53935;
+    padding: 0 2px;
+  }
+
+  .req-star { color: #e53935; font-weight: 700; }
 </style>
