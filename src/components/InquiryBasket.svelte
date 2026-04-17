@@ -214,8 +214,11 @@
     updateBodyClass();
   }
 
-  function sendViaWhatsApp() {
+  let isSending = false;
+
+  async function sendViaWhatsApp() {
     if (inquiryItems.length === 0) return;
+    isSending = true;
 
     const itemList = inquiryItems.map(item => {
       const qty = item.quantity || 1;
@@ -223,13 +226,36 @@
       return `• ${item.name} (×${qty})${itemTotal}`;
     }).join('\n');
 
-    const paymentLine = selectedPayment ? `\n💳 Payment: ${selectedPayment}` : '';
-    const nameLine = customerName.trim() ? `\n👤 Name: ${customerName.trim()}` : '';
-    const phoneLine = customerPhone.trim() ? `\n📞 Phone: ${customerPhone.trim()}` : '';
+    // Save order to database so it appears in admin
+    let orderRef = '';
+    try {
+      const res = await fetch('/api/orders.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'create',
+          items: inquiryItems.map(i => ({ name: i.name, price: i.price || 0, quantity: i.quantity || 1 })),
+          total: totalPrice,
+          payment_method: selectedPayment,
+          customer_name: customerName.trim(),
+          customer_phone: customerPhone.trim()
+        })
+      });
+      const data = await res.json();
+      if (data.order_ref) orderRef = data.order_ref;
+    } catch (e) {
+      console.error('Order save error:', e);
+    }
 
-    const message = `Hi! I'd like to order from American Select:\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA${paymentLine}${nameLine}${phoneLine}\n\nThank you!`;
+    const paymentLine = `\n💳 Payment: ${selectedPayment}`;
+    const nameLine = `\n👤 Name: ${customerName.trim()}`;
+    const phoneLine = `\n📞 Phone: ${customerPhone.trim()}`;
+    const refLine = orderRef ? `\n📋 Order Ref: ${orderRef}` : '';
+
+    const message = `Hi! I'd like to order from American Select:\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA${paymentLine}${nameLine}${phoneLine}${refLine}\n\nThank you!`;
 
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+    isSending = false;
   }
 
   function toggleBasket() {
@@ -261,6 +287,7 @@
     showValidation = true;
     if (canOrder) sendViaWhatsApp();
   }
+
 
   let previewItem = null;
 
@@ -373,9 +400,9 @@
 
       <div class="basket-actions">
         <button class="clear-btn" on:click={clearAll}>Clear</button>
-        <button class="send-btn" on:click={tryOrder}>
+        <button class="send-btn" on:click={tryOrder} disabled={isSending}>
           <span class="whatsapp-icon">💬</span>
-          Order via WhatsApp
+          {isSending ? 'Saving order…' : 'Order via WhatsApp'}
         </button>
       </div>
     </div>

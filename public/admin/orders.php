@@ -287,14 +287,16 @@ function renderOrders(orders) {
       </div>`;
     }).join('');
 
-    const waConfirmLink = o.customer_phone ? buildWaConfirmLink(o) : null;
+    const waReceivedLink  = o.customer_phone ? buildWaOrderReceivedLink(o) : null;
+    const waReceiptLink   = o.customer_phone ? buildWaPaymentReceiptLink(o) : null;
     const actionsHtml = `<div class="order-actions">
       ${isPending ? `
         <button class="btn-complete" onclick="completeOrder(${o.id})">✓ Mark Paid & Complete</button>
         <button class="btn-scan"     onclick="scanOrder(${o.id})">📷 Scan & Process</button>
-        <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>` : ''}
+        <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>
+        ${waReceivedLink ? `<a class="btn-wa-confirm" href="${waReceivedLink}" target="_blank" rel="noopener noreferrer">📱 Order Received</a>` : ''}` : ''}
       <button class="btn-print-receipt" onclick='printOrderReceipt(${JSON.stringify(o)})'>🖨 Print Receipt</button>
-      ${waConfirmLink ? `<a class="btn-wa-confirm" href="${waConfirmLink}" target="_blank" rel="noopener noreferrer">📱 Send Confirmation</a>` : ''}
+      ${waReceiptLink ? `<a class="btn-wa-confirm" href="${waReceiptLink}" target="_blank" rel="noopener noreferrer">📱 Payment Receipt</a>` : ''}
     </div>`;
 
     const noteHtml = o.note ? `<div class="order-note">${esc(o.note)}</div>` : '';
@@ -396,14 +398,42 @@ function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function buildWaConfirmLink(o) {
-  // Normalise phone → international format (add 237 if no country code)
-  let phone = String(o.customer_phone).replace(/\D/g, '');
+function normalisePhone(raw) {
+  let phone = String(raw).replace(/\D/g, '');
   if (!phone.startsWith('237')) phone = '237' + phone;
+  return phone;
+}
 
+// Sent as soon as admin sees the order — lets customer know it's been received
+function buildWaOrderReceivedLink(o) {
+  const phone = normalisePhone(o.customer_phone);
+  const items = JSON.parse(o.items || '[]');
+  let lines = '';
+  items.forEach(i => {
+    const line = (i.price || 0) * (i.quantity || 1);
+    lines += `• ${i.name} ×${i.quantity || 1}${i.price ? ' — ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
+  });
+  const payIcon = o.payment_method?.includes('MTN') ? '🟡' : o.payment_method?.includes('Orange') ? '🟠' : '💵';
+  const msg =
+    `✅ *Order Received — American Select*\n` +
+    `Hi ${o.customer_name || 'there'}! We have received your order.\n\n` +
+    `📋 Order Ref: *${o.order_ref}*\n\n` +
+    lines +
+    `\n*Total: ${Number(o.total).toLocaleString()} FCFA*\n` +
+    `${payIcon} Payment: ${o.payment_method || 'N/A'}\n\n` +
+    `Please send payment to complete your order:\n` +
+    `🟡 MTN MoMo: *679 457 181*\n` +
+    `🟠 Orange Money: *686 271 567*\n\n` +
+    `Use your name as payment reference.\n` +
+    `We will confirm once payment is received. Thank you!`;
+  return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+}
+
+// Sent after marking the order as paid & complete
+function buildWaPaymentReceiptLink(o) {
+  const phone = normalisePhone(o.customer_phone);
   const items = JSON.parse(o.items || '[]');
   const payIcon = o.payment_method?.includes('MTN') ? '🟡' : o.payment_method?.includes('Orange') ? '🟠' : '💵';
-
   let lines = '';
   let total = 0;
   items.forEach(i => {
@@ -411,17 +441,16 @@ function buildWaConfirmLink(o) {
     total += line;
     lines += `• ${i.name} ×${i.quantity || 1}${i.price ? ' — ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
   });
-
   const msg =
     `✅ *Payment Received — American Select*\n` +
-    `Order Ref: ${o.order_ref}\n\n` +
+    `Hi ${o.customer_name || 'there'}! Your payment has been confirmed.\n\n` +
+    `📋 Order Ref: *${o.order_ref}*\n\n` +
     lines +
     `\n*Total: ${Number(o.total || total).toLocaleString()} FCFA*\n` +
     `${payIcon} Paid via: ${o.payment_method || 'N/A'}\n\n` +
     `Thank you for shopping with American Select!\n` +
     `Questions? Call/WhatsApp:\n` +
     `MTN: 679 457 181 | Orange: 686 271 567`;
-
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
