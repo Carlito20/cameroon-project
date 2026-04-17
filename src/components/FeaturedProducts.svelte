@@ -35,34 +35,27 @@
     { name: "Rechargeable Arm Blood Pressure Monitor with Large LED Screen, Digital Blood Pressure Machine",                   short: "Arm Blood Pressure Monitor",                price: 15000, stock: 3,  image: "/images/products/arm-bp-monitor-1.jpeg",          category: "Health"         },
   ];
 
-  const DAILY_COUNT = 8;
-
-  // ── Seeded daily shuffle ───────────────────────────────────────────────
-  // Uses the day-of-year as a seed so it's consistent all day, changes daily
+  // ── One pick per category, rotates daily ─────────────────────────────
   function getDaySeed() {
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
     return Math.floor((now - start) / 86400000); // day of year
   }
 
-  function seededShuffle(arr, seed) {
-    const a = [...arr];
-    let s = seed;
-    for (let i = a.length - 1; i > 0; i--) {
-      // Simple LCG
-      s = (s * 1664525 + 1013904223) & 0xffffffff;
-      const j = Math.abs(s) % (i + 1);
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  // Computed client-side in onMount so the picks reflect the visitor's
-  // current date instead of the build date (which was baking stale picks).
+  // Computed client-side in onMount so picks reflect the visitor's current date.
   let featured = [];
 
   onMount(() => {
-    featured = seededShuffle(POOL, getDaySeed()).slice(0, DAILY_COUNT);
+    const seed = getDaySeed();
+    const byCategory = {};
+    for (const p of POOL) {
+      if (!byCategory[p.category]) byCategory[p.category] = [];
+      byCategory[p.category].push(p);
+    }
+    // Pick one item per category; offset each category so they cycle independently
+    featured = Object.values(byCategory).map((items, ci) => {
+      return items[(seed + ci * 7) % items.length];
+    });
   });
 
   // ── State & helpers ────────────────────────────────────────────────────
@@ -179,7 +172,7 @@
 
   .featured-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
   }
 
