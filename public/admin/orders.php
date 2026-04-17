@@ -365,7 +365,7 @@ function renderOrders(orders) {
       const line = (i.price || 0) * (i.quantity || 1);
       return `<div class="order-item">
         <span class="oi-name">${esc(i.name)}</span>
-        <span class="oi-qty">×${i.quantity || 1}</span>
+        <span class="oi-qty">x${i.quantity || 1}</span>
         ${i.price ? `<span class="oi-price">${fmt(line)} FCFA</span>` : ''}
       </div>`;
     }).join('');
@@ -503,7 +503,7 @@ function buildWaOrderReceivedLink(o) {
   let lines = '';
   items.forEach(i => {
     const line = (i.price || 0) * (i.quantity || 1);
-    lines += `• ${i.name} ×${i.quantity || 1}${i.price ? ' — ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
+    lines += `- ${i.name} x${i.quantity || 1}${i.price ? ' - ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
   });
   const payIcon = o.payment_method?.includes('MTN') ? '🟡' : o.payment_method?.includes('Orange') ? '🟠' : '💵';
   const msg =
@@ -531,7 +531,7 @@ function buildWaPaymentReceiptLink(o) {
   items.forEach(i => {
     const line = (i.price || 0) * (i.quantity || 1);
     total += line;
-    lines += `• ${i.name} ×${i.quantity || 1}${i.price ? ' — ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
+    lines += `- ${i.name} x${i.quantity || 1}${i.price ? ' - ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
   });
   const msg =
     `✅ *Payment Received — American Select*\n` +
@@ -555,7 +555,7 @@ function printOrderReceipt(o) {
     return `<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
       <div>
         <div>${esc(i.name)}</div>
-        <div style="color:#888;">×${i.quantity || 1}${i.price ? ' @ ' + Number(i.price).toLocaleString() + ' FCFA' : ''}</div>
+        <div style="color:#888;">x${i.quantity || 1}${i.price ? ' @ ' + Number(i.price).toLocaleString() + ' FCFA' : ''}</div>
       </div>
       <div style="font-weight:bold;">${i.price ? line.toLocaleString() + ' FCFA' : '—'}</div>
     </div>`;
