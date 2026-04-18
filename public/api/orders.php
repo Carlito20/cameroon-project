@@ -230,6 +230,17 @@ if (in_array($action, ['damaged','returned']) && $method === 'POST') {
     exit;
 }
 
+// ── CLEAR ALL orders — remove before going live ───────────────────────────
+if ($action === 'clear_all' && $method === 'POST') {
+    try {
+        $pdo = getPdo();
+        $pdo->exec('DELETE FROM pending_orders');
+        $pdo->exec('DELETE FROM stock_transactions');
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
+    exit;
+}
+
 // ── GET orders — also runs auto-expire check ─────────────────────────────
 if ($method === 'GET') {
     $status = $_GET['status'] ?? 'pending';

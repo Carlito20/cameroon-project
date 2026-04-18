@@ -320,6 +320,7 @@ try {
     <button class="btn btn-gold" onclick="initializeAll()">Initialize All</button>
     <span id="init-status"></span>
     <button class="btn btn-outline" id="btn-drawer" onclick="openCashDrawer()" title="Open cash drawer" style="color:#7b9fd4;border-color:#1a2a40;">🗄 <span id="drawer-label">Drawer</span></button>
+    <button class="btn btn-danger" onclick="clearAllOrders()">Clear Orders</button>
     <a href="logout.php" class="btn btn-danger">Logout</a>
   </div>
 </header>
@@ -730,6 +731,20 @@ function filterTable(query) {
     if (show) visible++;
   });
   document.getElementById('row-count').textContent = visible + ' products';
+}
+
+async function clearAllOrders() {
+  const answer = prompt('Type DELETE to clear all orders (this cannot be undone):');
+  if (answer !== 'DELETE') return;
+  try {
+    const res = await fetch('/api/orders.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'clear_all' })
+    });
+    const data = await res.json();
+    if (data.success) alert('All orders cleared.');
+    else alert('Error: ' + (data.error || 'Failed'));
+  } catch { alert('Network error'); }
 }
 
 // Register Service Worker so checkout.php gets cached for offline use
