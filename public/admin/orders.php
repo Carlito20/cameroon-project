@@ -250,10 +250,16 @@ $filter = $_GET['filter'] ?? 'pending';
     .date-input {
       padding: 10px 12px; background: #1a1a1a; border: 1px solid #2a2a2a;
       border-radius: 8px; color: #e0e0e0; font-size: 13px; outline: none;
-      -webkit-appearance: none; appearance: none; min-height: 44px;
-      touch-action: manipulation; cursor: pointer;
+      min-height: 44px; touch-action: manipulation; cursor: pointer;
       color-scheme: dark;
     }
+    .date-input::-webkit-datetime-edit { color: #e0e0e0; }
+    .date-input::-webkit-datetime-edit-fields-wrapper { color: #e0e0e0; }
+    .date-input::-webkit-datetime-edit-text { color: #666; }
+    .date-input::-webkit-datetime-edit-month-field { color: #e0e0e0; }
+    .date-input::-webkit-datetime-edit-day-field   { color: #e0e0e0; }
+    .date-input::-webkit-datetime-edit-year-field  { color: #e0e0e0; }
+    .date-input::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
     .date-input:focus { border-color: #d4af37; }
     .search-clear {
       padding: 10px 14px; background: transparent; color: #666;
@@ -425,14 +431,14 @@ function renderOrders(orders) {
     }).join('');
 
     const waReceivedLink  = o.customer_phone ? buildWaOrderReceivedLink(o) : null;
-    const waReceiptLink   = o.customer_phone ? buildWaPaymentReceiptLink(o) : null;
+    const waReceiptLink   = o.customer_phone && o.status === 'completed' ? buildWaPaymentReceiptLink(o) : null;
     const actionsHtml = `<div class="order-actions">
       ${isPending ? `
         <button class="btn-complete" onclick="completeOrder(${o.id})">✓ Mark Paid & Complete</button>
         <button class="btn-scan"     onclick="scanOrder(${o.id})">📷 Scan & Process</button>
         <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>
         ${waReceivedLink ? `<a class="btn-wa-confirm" href="${waReceivedLink}" target="_blank" rel="noopener noreferrer">📱 Order Received</a>` : ''}` : ''}
-      <button class="btn-print-receipt" onclick="printOrderReceipt(${o.id})">🖨 Print Receipt</button>
+      ${o.status !== 'cancelled' ? `<button class="btn-print-receipt" onclick="printOrderReceipt(${o.id})">🖨 Print Receipt</button>` : ''}
       ${waReceiptLink ? `<a class="btn-wa-confirm" href="${waReceiptLink}" target="_blank" rel="noopener noreferrer">📱 Payment Receipt</a>` : ''}
     </div>`;
 
@@ -578,20 +584,19 @@ function buildWaOrderReceivedLink(o) {
     const line = (i.price || 0) * (i.quantity || 1);
     lines += `- ${i.name} x${i.quantity || 1}${i.price ? ' - ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
   });
-  const payIcon = o.payment_method?.includes('MTN') ? '🟡' : o.payment_method?.includes('Orange') ? '🟠' : '💵';
   const name = o.customer_name || 'there';
   const msg =
-    `✅ *Order Received - American Select*\n` +
+    `*Order Received - American Select*\n` +
     `Hi ${name}! We have received your order.\n` +
     `Bonjour ${name} ! Nous avons bien recu votre commande.\n\n` +
-    `📋 Order Ref / Ref Commande: *${o.order_ref}*\n\n` +
+    `Order Ref / Ref Commande: *${o.order_ref}*\n\n` +
     lines +
     `\n*Total: ${Number(o.total).toLocaleString()} FCFA*\n` +
-    `${payIcon} Payment / Paiement: ${o.payment_method || 'N/A'}\n\n` +
+    `Payment / Paiement: ${o.payment_method || 'N/A'}\n\n` +
     `Please send payment to complete your order:\n` +
     `Veuillez envoyer le paiement pour finaliser votre commande :\n` +
-    `🟡 MTN MoMo: *679 457 181*\n` +
-    `🟠 Orange Money: *686 271 567*\n\n` +
+    `MTN MoMo: *679 457 181*\n` +
+    `Orange Money: *686 271 567*\n\n` +
     `After paying, please reply with your *MoMo transaction ID* so we can confirm.\n` +
     `Apres le paiement, merci de repondre avec votre *ID de transaction MoMo* pour confirmation.\n\n` +
     `We will confirm once payment is received. Thank you!\n` +
@@ -603,7 +608,6 @@ function buildWaOrderReceivedLink(o) {
 function buildWaPaymentReceiptLink(o) {
   const phone = normalisePhone(o.customer_phone);
   const items = JSON.parse(o.items || '[]');
-  const payIcon = o.payment_method?.includes('MTN') ? '🟡' : o.payment_method?.includes('Orange') ? '🟠' : '💵';
   let lines = '';
   let total = 0;
   items.forEach(i => {
@@ -613,14 +617,14 @@ function buildWaPaymentReceiptLink(o) {
   });
   const name = o.customer_name || 'there';
   const msg =
-    `✅ *Payment Confirmed - American Select*\n` +
+    `*Payment Confirmed - American Select*\n` +
     `Hi ${name}! Your payment has been confirmed.\n` +
     `Bonjour ${name} ! Votre paiement a ete confirme.\n\n` +
-    `📋 Order Ref / Ref Commande: *${o.order_ref}*\n\n` +
+    `Order Ref / Ref Commande: *${o.order_ref}*\n\n` +
     lines +
     `\n*Total: ${Number(o.total || total).toLocaleString()} FCFA*\n` +
-    `${payIcon} Paid via / Paye par: ${o.payment_method || 'N/A'}\n` +
-    (o.payment_ref ? `🔖 Transaction ID: *${o.payment_ref}*\n` : '') +
+    `Paid via / Paye par: ${o.payment_method || 'N/A'}\n` +
+    (o.payment_ref ? `Transaction ID: *${o.payment_ref}*\n` : '') +
     `\nThank you for shopping with American Select!\n` +
     `Merci pour votre achat chez American Select !\n` +
     `Questions? Call/WhatsApp:\n` +

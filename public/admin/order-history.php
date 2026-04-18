@@ -63,17 +63,16 @@ function buildWaReceiptLink(array $o): string {
         $total += $line;
         $lines .= '- ' . ($i['name'] ?? '') . ' x' . ($i['quantity'] ?? 1) . ($i['price'] ? ' - ' . number_format($line) . ' FCFA' : '') . "\n";
     }
-    $payIcon = str_contains($o['payment_method'] ?? '', 'MTN') ? '🟡' : (str_contains($o['payment_method'] ?? '', 'Orange') ? '🟠' : '💵');
-    $name    = $o['customer_name'] ?: 'there';
-    $txLine  = !empty($o['payment_ref']) ? "\n🔖 Transaction ID: " . $o['payment_ref'] : '';
+    $name   = $o['customer_name'] ?: 'there';
+    $txLine = !empty($o['payment_ref']) ? "\nTransaction ID: " . $o['payment_ref'] : '';
     $msg =
-        "✅ *Payment Confirmed - American Select*\n" .
+        "*Payment Confirmed - American Select*\n" .
         "Hi {$name}! Your payment has been confirmed.\n" .
         "Bonjour {$name} ! Votre paiement a ete confirme.\n\n" .
-        "📋 Order Ref / Ref Commande: *{$o['order_ref']}*\n\n" .
+        "Order Ref / Ref Commande: *{$o['order_ref']}*\n\n" .
         $lines .
         "\n*Total: " . number_format((float)($o['total'] ?: $total)) . " FCFA*\n" .
-        "{$payIcon} Paid via / Paye par: " . ($o['payment_method'] ?? 'N/A') . $txLine . "\n\n" .
+        "Paid via / Paye par: " . ($o['payment_method'] ?? 'N/A') . $txLine . "\n\n" .
         "Thank you for shopping with American Select!\n" .
         "Merci pour votre achat chez American Select !\n" .
         "Questions? Call/WhatsApp:\nMTN: 679 457 181 | Orange: 686 271 567";
@@ -406,7 +405,9 @@ function buildWaReceiptLink(array $o): string {
       </div>
 
       <div class="order-actions">
-        <button class="btn-print" onclick="printOrderReceipt(<?= (int)$o['id'] ?>)">🖨 Print Receipt</button>
+        <?php if (in_array($o['status'], ['completed','damaged','returned'])): ?>
+          <button class="btn-print" onclick="printOrderReceipt(<?= (int)$o['id'] ?>)">🖨 Print Receipt</button>
+        <?php endif; ?>
         <?php if (!empty($o['customer_phone']) && $o['status'] === 'completed'): ?>
           <a class="btn-wa" href="<?= buildWaReceiptLink($o) ?>" target="_blank" rel="noopener noreferrer">📱 Resend Receipt</a>
         <?php endif; ?>

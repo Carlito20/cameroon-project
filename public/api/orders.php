@@ -9,6 +9,7 @@ function getPdo() {
         DB_USER, DB_PASS,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
+    $pdo->exec("SET time_zone = '+00:00'");
     $pdo->exec("CREATE TABLE IF NOT EXISTS pending_orders (
         id INT AUTO_INCREMENT PRIMARY KEY,
         order_ref VARCHAR(20) NOT NULL UNIQUE,
