@@ -348,6 +348,7 @@ let cancelTargetId = null;
 let completeTargetId = null;
 let allOrders = [];
 
+
 function applyFilters() {
   const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
   const from = document.getElementById('date-from').value;  // 'YYYY-MM-DD' or ''
@@ -586,13 +587,15 @@ function buildWaOrderReceivedLink(o) {
   });
   const name = o.customer_name || 'there';
   const msg =
-    `*Order Received - American Select*\n` +
+    `✅ *Order Received - American Select*\n` +
     `Hi ${name}! We have received your order.\n` +
     `Bonjour ${name} ! Nous avons bien recu votre commande.\n\n` +
-    `Order Ref / Ref Commande: *${o.order_ref}*\n\n` +
     lines +
-    `\n*Total: ${Number(o.total).toLocaleString()} FCFA*\n` +
-    `Payment / Paiement: ${o.payment_method || 'N/A'}\n\n` +
+    `\nTotal: ${Number(o.total).toLocaleString()} FCFA\n` +
+    `💳 Payment: ${o.payment_method || 'N/A'}\n` +
+    (o.customer_name ? `👤 Name: ${o.customer_name}\n` : '') +
+    (o.customer_phone ? `📞 Phone: ${o.customer_phone}\n` : '') +
+    `📋 Order Ref: ${o.order_ref}\n\n` +
     `Please send payment to complete your order:\n` +
     `Veuillez envoyer le paiement pour finaliser votre commande :\n` +
     `MTN MoMo: *679 457 181*\n` +
@@ -617,14 +620,16 @@ function buildWaPaymentReceiptLink(o) {
   });
   const name = o.customer_name || 'there';
   const msg =
-    `*Payment Confirmed - American Select*\n` +
+    `✅ *Payment Confirmed - American Select*\n` +
     `Hi ${name}! Your payment has been confirmed.\n` +
     `Bonjour ${name} ! Votre paiement a ete confirme.\n\n` +
-    `Order Ref / Ref Commande: *${o.order_ref}*\n\n` +
     lines +
-    `\n*Total: ${Number(o.total || total).toLocaleString()} FCFA*\n` +
-    `Paid via / Paye par: ${o.payment_method || 'N/A'}\n` +
-    (o.payment_ref ? `Transaction ID: *${o.payment_ref}*\n` : '') +
+    `\nTotal: ${Number(o.total || total).toLocaleString()} FCFA\n` +
+    `💳 Payment: ${o.payment_method || 'N/A'}\n` +
+    (o.customer_name ? `👤 Name: ${o.customer_name}\n` : '') +
+    (o.customer_phone ? `📞 Phone: ${o.customer_phone}\n` : '') +
+    `📋 Order Ref: ${o.order_ref}\n` +
+    (o.payment_ref ? `🔖 Transaction ID: ${o.payment_ref}\n` : '') +
     `\nThank you for shopping with American Select!\n` +
     `Merci pour votre achat chez American Select !\n` +
     `Questions? Call/WhatsApp:\n` +
