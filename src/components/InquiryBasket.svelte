@@ -247,10 +247,10 @@
       console.error('Order save error:', e);
     }
 
-    const paymentLine = `\n💳 Payment: ${selectedPayment}`;
-    const nameLine = `\n👤 Name: ${customerName.trim()}`;
-    const phoneLine = `\n📞 Phone: ${customerPhone.trim()}`;
-    const refLine = orderRef ? `\n📋 Order Ref: ${orderRef}` : '';
+    const paymentLine = `\nPayment: ${selectedPayment}`;
+    const nameLine = `\nName: ${customerName.trim()}`;
+    const phoneLine = `\nPhone: ${customerPhone.trim()}`;
+    const refLine = orderRef ? `\nOrder Ref: ${orderRef}` : '';
 
     const message = `Hi! I'd like to order from American Select:\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA${paymentLine}${nameLine}${phoneLine}${refLine}\n\nThank you!`;
 
