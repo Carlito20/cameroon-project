@@ -255,6 +255,7 @@
     const message = `Hi! I'd like to order from American Select:\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA${paymentLine}${nameLine}${phoneLine}${refLine}\n\nThank you!`;
 
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+    clearAll();
     isSending = false;
   }
 
@@ -377,7 +378,6 @@
           <button class="pay-method-btn" class:selected={selectedPayment === 'Cash'} on:click={() => selectPayment('Cash')}>💵 Cash</button>
           <button class="pay-method-btn" class:selected={selectedPayment === 'MTN MoMo'} on:click={() => selectPayment('MTN MoMo')}>🟡 MTN MoMo</button>
           <button class="pay-method-btn" class:selected={selectedPayment === 'Orange Money'} on:click={() => selectPayment('Orange Money')}>🟠 Orange Money</button>
-          <button class="pay-method-btn" class:selected={selectedPayment === 'Not sure yet'} on:click={() => selectPayment('Not sure yet')}>🤔 Not sure yet</button>
         </div>
         {#if selectedPayment === 'MTN MoMo'}
           <div class="momo-info">📲 Send to: <strong>679 457 181</strong></div>
@@ -485,7 +485,6 @@
               <button class="pay-method-btn" class:selected={selectedPayment === 'Cash'} on:click={() => selectPayment('Cash')}>💵 Cash</button>
               <button class="pay-method-btn" class:selected={selectedPayment === 'MTN MoMo'} on:click={() => selectPayment('MTN MoMo')}>🟡 MTN MoMo</button>
               <button class="pay-method-btn" class:selected={selectedPayment === 'Orange Money'} on:click={() => selectPayment('Orange Money')}>🟠 Orange Money</button>
-              <button class="pay-method-btn" class:selected={selectedPayment === 'Not sure yet'} on:click={() => selectPayment('Not sure yet')}>🤔 Not sure yet</button>
             </div>
             {#if selectedPayment === 'MTN MoMo'}
               <div class="momo-info">📲 Send to: <strong>679 457 181</strong></div>

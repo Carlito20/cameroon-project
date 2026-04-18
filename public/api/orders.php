@@ -17,7 +17,7 @@ function getPdo() {
         payment_method VARCHAR(50),
         items TEXT NOT NULL,
         total DECIMAL(10,2) NOT NULL,
-        status ENUM('pending','completed','cancelled') DEFAULT 'pending',
+        status ENUM('pending','completed','cancelled','damaged','returned') DEFAULT 'pending',
         note VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         completed_at TIMESTAMP NULL,
@@ -26,6 +26,8 @@ function getPdo() {
     // Add columns to existing tables that predate this migration
     try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN customer_name VARCHAR(100) AFTER order_ref"); } catch (Exception $e) {}
     try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN customer_phone VARCHAR(30) AFTER customer_name"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN payment_ref VARCHAR(100) AFTER payment_method"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE pending_orders MODIFY COLUMN status ENUM('pending','completed','cancelled','damaged','returned') DEFAULT 'pending'"); } catch (Exception $e) {}
     $pdo->exec("CREATE TABLE IF NOT EXISTS stock_transactions (
         id INT AUTO_INCREMENT PRIMARY KEY,
         product_name VARCHAR(500) NOT NULL,
@@ -153,8 +155,9 @@ if (empty($_SESSION['admin_logged_in'])) {
 
 // ── COMPLETE order — stock already reserved on create, just mark done ────
 if ($action === 'complete' && $method === 'POST') {
-    $id   = (int)($data['id'] ?? 0);
-    $note = substr(trim($data['note'] ?? ''), 0, 255);
+    $id          = (int)($data['id'] ?? 0);
+    $note        = substr(trim($data['note'] ?? ''), 0, 255);
+    $paymentRef  = substr(trim($data['payment_ref'] ?? ''), 0, 100);
     if (!$id) { echo json_encode(['error' => 'Invalid ID']); exit; }
 
     try {
@@ -169,8 +172,8 @@ if ($action === 'complete' && $method === 'POST') {
         $pdo->prepare('UPDATE stock_transactions SET note = ? WHERE note = ? AND action = "sold"')
             ->execute(['Completed — ' . $txNote, 'Reserved — ' . $order['order_ref']]);
 
-        $pdo->prepare('UPDATE pending_orders SET status = "completed", completed_at = NOW(), note = COALESCE(NULLIF(?, ""), note) WHERE id = ?')
-            ->execute([$note, $id]);
+        $pdo->prepare('UPDATE pending_orders SET status = "completed", completed_at = NOW(), note = COALESCE(NULLIF(?, ""), note), payment_ref = COALESCE(NULLIF(?, ""), payment_ref) WHERE id = ?')
+            ->execute([$note, $paymentRef, $id]);
 
         echo json_encode(['success' => true]);
     } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
@@ -195,6 +198,31 @@ if ($action === 'cancel' && $method === 'POST') {
 
         $pdo->prepare('UPDATE pending_orders SET status = "cancelled", cancelled_at = NOW(), note = ? WHERE id = ?')
             ->execute([$note ?: 'Cancelled by admin — stock restored', $id]);
+
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
+    exit;
+}
+
+// ── DAMAGED / RETURNED — restore stock and update status ─────────────────
+if (in_array($action, ['damaged','returned']) && $method === 'POST') {
+    $id   = (int)($data['id'] ?? 0);
+    $note = substr(trim($data['note'] ?? ''), 0, 255);
+    if (!$id) { echo json_encode(['error' => 'Invalid ID']); exit; }
+
+    try {
+        $pdo  = getPdo();
+        $stmt = $pdo->prepare('SELECT * FROM pending_orders WHERE id = ? AND status = "completed"');
+        $stmt->execute([$id]);
+        $order = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$order) { echo json_encode(['error' => 'Order not found or not completed']); exit; }
+
+        $items = json_decode($order['items'], true) ?? [];
+        restoreStock($pdo, $items, $order['order_ref']);
+
+        $defaultNote = $action === 'damaged' ? 'Damaged — stock restored' : 'Returned by customer — stock restored';
+        $pdo->prepare('UPDATE pending_orders SET status = ?, note = COALESCE(NULLIF(?, ""), ?) WHERE id = ?')
+            ->execute([$action, $note, $defaultNote, $id]);
 
         echo json_encode(['success' => true]);
     } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }

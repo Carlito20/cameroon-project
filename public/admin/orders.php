@@ -81,7 +81,7 @@ $filter = $_GET['filter'] ?? 'pending';
     .order-ref { font-size: 13px; font-weight: 800; color: #d4af37; letter-spacing: 0.5px; }
     .order-customer { font-size: 14px; font-weight: 700; color: #e0e0e0; margin-top: 4px; }
     .order-phone { font-size: 13px; color: #7b9fd4; margin-top: 2px; }
-    .order-time { font-size: 11px; color: #555; margin-top: 3px; }
+    .order-time { font-size: 12px; color: #888; margin-top: 3px; }
     .order-pay { font-size: 12px; color: #888; margin-top: 3px; }
     .status-badge {
       font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
@@ -160,6 +160,43 @@ $filter = $_GET['filter'] ?? 'pending';
       @page { size: A5; margin: 10mm; }
     }
     .btn-cancel:hover { background: #1a0d0d; color: #e05c5c; border-color: #5a2a2a; }
+
+    /* Complete order modal */
+    .complete-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+      z-index: 200; display: none; align-items: center; justify-content: center;
+      padding: 20px;
+      padding-top: calc(20px + env(safe-area-inset-top, 0px));
+      padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    }
+    .complete-overlay.open { display: flex; }
+    .complete-modal {
+      background: #111; border: 1px solid #2a2a2a; border-radius: 14px;
+      padding: 24px 20px; max-width: 400px; width: 100%;
+    }
+    .complete-modal h3 { font-size: 16px; color: #e0e0e0; margin-bottom: 10px; }
+    .complete-modal p { font-size: 13px; color: #888; margin-bottom: 16px; line-height: 1.5; }
+    .payment-ref-input {
+      width: 100%; padding: 10px 14px; background: #1a1a1a;
+      border: 1px solid #2a2a2a; border-radius: 8px; color: #e0e0e0;
+      font-size: 14px; outline: none; -webkit-appearance: none; appearance: none;
+      min-height: 44px; touch-action: manipulation; margin-bottom: 14px;
+    }
+    .payment-ref-input:focus { border-color: #555; }
+    .complete-modal-btns { display: flex; gap: 10px; }
+    .btn-complete-confirm {
+      flex: 1; padding: 11px; background: #0d2010; color: #4caf50;
+      border: 1px solid #1a4a20; border-radius: 8px; font-size: 14px; font-weight: 700;
+      cursor: pointer; min-height: 44px; touch-action: manipulation;
+      -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+    }
+    .btn-complete-cancel {
+      flex: 1; padding: 11px; background: transparent; color: #888;
+      border: 1px solid #2a2a2a; border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer; min-height: 44px; touch-action: manipulation;
+      -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+    }
 
     /* Cancel modal */
     .cancel-overlay {
@@ -269,6 +306,20 @@ $filter = $_GET['filter'] ?? 'pending';
   </div>
 </div>
 
+<!-- Complete order modal -->
+<div class="complete-overlay" id="complete-overlay">
+  <div class="complete-modal">
+    <h3>Mark as Paid & Complete</h3>
+    <p>Enter the MoMo transaction ID the customer sent you. This will be saved to the receipt.<br>
+    <span style="color:#555;">Leave blank if you don't have it yet.</span></p>
+    <input type="text" class="payment-ref-input" id="payment-ref-input" placeholder="e.g. TXN123456789" maxlength="100" autocomplete="off" autocapitalize="characters">
+    <div class="complete-modal-btns">
+      <button class="btn-complete-cancel" onclick="closeCompleteModal()">Back</button>
+      <button class="btn-complete-confirm" id="complete-confirm-btn" onclick="confirmComplete()">✓ Mark Paid</button>
+    </div>
+  </div>
+</div>
+
 <!-- Cancel modal -->
 <div class="cancel-overlay" id="cancel-overlay">
   <div class="cancel-modal">
@@ -288,6 +339,7 @@ $filter = $_GET['filter'] ?? 'pending';
 <script>
 const FILTER = '<?= htmlspecialchars($filter) ?>';
 let cancelTargetId = null;
+let completeTargetId = null;
 let allOrders = [];
 
 function applyFilters() {
@@ -332,11 +384,13 @@ function clearFilters() {
 function fmt(n) { return Number(n).toLocaleString('en-US'); }
 
 function timeAgo(dateStr) {
-  const diff = Math.floor((Date.now() - new Date(dateStr + ' UTC').getTime()) / 1000);
-  if (diff < 60) return 'just now';
-  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
-  return Math.floor(diff/86400) + 'd ago';
+  const d = new Date(dateStr + ' UTC');
+  const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+  const dateLabel = (d.getMonth()+1).toString().padStart(2,'0') + '/' + d.getDate().toString().padStart(2,'0') + '/' + d.getFullYear();
+  if (diff < 60) return 'just now · ' + dateLabel;
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago · ' + dateLabel;
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago · ' + dateLabel;
+  return dateLabel;
 }
 
 function payIcon(method) {
@@ -378,7 +432,7 @@ function renderOrders(orders) {
         <button class="btn-scan"     onclick="scanOrder(${o.id})">📷 Scan & Process</button>
         <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>
         ${waReceivedLink ? `<a class="btn-wa-confirm" href="${waReceivedLink}" target="_blank" rel="noopener noreferrer">📱 Order Received</a>` : ''}` : ''}
-      <button class="btn-print-receipt" onclick='printOrderReceipt(${JSON.stringify(o)})'>🖨 Print Receipt</button>
+      <button class="btn-print-receipt" onclick="printOrderReceipt(${o.id})">🖨 Print Receipt</button>
       ${waReceiptLink ? `<a class="btn-wa-confirm" href="${waReceiptLink}" target="_blank" rel="noopener noreferrer">📱 Payment Receipt</a>` : ''}
     </div>`;
 
@@ -421,17 +475,36 @@ async function loadOrders() {
   }
 }
 
-async function completeOrder(id) {
-  if (!confirm('Mark this order as paid and complete? Stock will be deducted.')) return;
+function completeOrder(id) {
+  completeTargetId = id;
+  document.getElementById('payment-ref-input').value = '';
+  document.getElementById('complete-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('payment-ref-input').focus(), 100);
+}
+
+function closeCompleteModal() {
+  completeTargetId = null;
+  document.getElementById('complete-overlay').classList.remove('open');
+}
+
+async function confirmComplete() {
+  if (!completeTargetId) return;
+  const paymentRef = document.getElementById('payment-ref-input').value.trim();
+  const btn = document.getElementById('complete-confirm-btn');
+  btn.textContent = 'Saving…'; btn.disabled = true;
   try {
     const res = await fetch('/api/orders.php', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'complete', id })
+      body: JSON.stringify({ action: 'complete', id: completeTargetId, payment_ref: paymentRef })
     });
     const data = await res.json();
-    if (data.success) { showToast('✓ Order completed — stock updated', 'ok'); loadOrders(); }
-    else showToast('Error: ' + (data.error || 'Failed'), 'err');
+    if (data.success) {
+      closeCompleteModal();
+      showToast('✓ Order completed — stock updated', 'ok');
+      loadOrders();
+    } else showToast('Error: ' + (data.error || 'Failed'), 'err');
   } catch { showToast('Network error', 'err'); }
+  btn.textContent = '✓ Mark Paid'; btn.disabled = false;
 }
 
 function scanOrder(id) {
@@ -519,8 +592,8 @@ function buildWaOrderReceivedLink(o) {
     `Veuillez envoyer le paiement pour finaliser votre commande :\n` +
     `🟡 MTN MoMo: *679 457 181*\n` +
     `🟠 Orange Money: *686 271 567*\n\n` +
-    `Use your name as payment reference.\n` +
-    `Utilisez votre nom comme reference de paiement.\n` +
+    `After paying, please reply with your *MoMo transaction ID* so we can confirm.\n` +
+    `Apres le paiement, merci de repondre avec votre *ID de transaction MoMo* pour confirmation.\n\n` +
     `We will confirm once payment is received. Thank you!\n` +
     `Nous confirmerons des reception du paiement. Merci !`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
@@ -546,15 +619,18 @@ function buildWaPaymentReceiptLink(o) {
     `📋 Order Ref / Ref Commande: *${o.order_ref}*\n\n` +
     lines +
     `\n*Total: ${Number(o.total || total).toLocaleString()} FCFA*\n` +
-    `${payIcon} Paid via / Paye par: ${o.payment_method || 'N/A'}\n\n` +
-    `Thank you for shopping with American Select!\n` +
+    `${payIcon} Paid via / Paye par: ${o.payment_method || 'N/A'}\n` +
+    (o.payment_ref ? `🔖 Transaction ID: *${o.payment_ref}*\n` : '') +
+    `\nThank you for shopping with American Select!\n` +
     `Merci pour votre achat chez American Select !\n` +
     `Questions? Call/WhatsApp:\n` +
     `MTN: 679 457 181 | Orange: 686 271 567`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
-function printOrderReceipt(o) {
+function printOrderReceipt(id) {
+  const o = allOrders.find(x => x.id == id);
+  if (!o) return;
   const items = JSON.parse(o.items || '[]');
   let total = 0;
   const itemsHtml = items.map(i => {
@@ -593,13 +669,16 @@ function printOrderReceipt(o) {
       <span>TOTAL</span><span>${(o.total || total).toLocaleString()} FCFA</span>
     </div>
     <p style="margin-top:6px;font-size:12px;color:#888;">${payIcon} Paid via / Paye par: ${esc(o.payment_method || 'N/A')}</p>
+    ${o.payment_ref ? `<p style="font-size:12px;color:#888;">🔖 Transaction ID: <strong style="color:#222;">${esc(o.payment_ref)}</strong></p>` : ''}
     <hr style="border:none;border-top:1px dashed #aaa;margin:14px 0 8px;">
     <p style="text-align:center;font-size:11px;color:#888;">Thank you for shopping with American Select!</p>
     <p style="text-align:center;font-size:11px;color:#888;">Merci pour votre achat chez American Select !</p>`;
 
-  document.getElementById('print-area').style.display = 'block';
-  window.print();
-  document.getElementById('print-area').style.display = 'none';
+  const printArea = document.getElementById('print-area');
+  printArea.style.display = 'block';
+  const hidePrint = () => { printArea.style.display = 'none'; window.removeEventListener('afterprint', hidePrint); };
+  window.addEventListener('afterprint', hidePrint);
+  setTimeout(() => window.print(), 100);
 }
 
 loadOrders();

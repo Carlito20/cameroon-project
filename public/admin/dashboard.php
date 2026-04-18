@@ -313,7 +313,8 @@ try {
   <div class="header-actions">
     <a href="orders.php" class="btn btn-outline" style="color:#d4af37;border-color:#3a3010;" id="orders-link">📦 Orders</a>
     <a href="barcodes.php" class="btn btn-outline" style="color:#b47bd4;border-color:#2a1a3a;">🏷 Labels</a>
-    <a href="history.php" class="btn btn-outline">📋 History</a>
+    <a href="order-history.php" class="btn btn-outline" style="color:#6dbf6d;border-color:#1a3a1a;">📋 Order History</a>
+    <a href="history.php" class="btn btn-outline">📦 Stock History</a>
     <a href="scan.php" class="btn btn-outline">📷 Scan</a>
     <a href="checkout.php" class="btn btn-outline" style="color:#6dbf6d;border-color:#1a3a1a;">🛒 Checkout</a>
     <button class="btn btn-gold" onclick="initializeAll()">Initialize All</button>

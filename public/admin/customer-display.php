@@ -156,8 +156,9 @@
 <!-- Welcome (shown when no active sale) -->
 <div class="welcome-screen" id="welcome-screen">
   <img src="/images/as-logo.jpeg" alt="American Select">
-  <h1>Welcome!</h1>
-  <p>Your items will appear here as they are scanned.</p>
+  <h1>Welcome! / Bienvenue !</h1>
+  <p>Your items will appear here as they are scanned.<br>
+  <span style="opacity:0.7;font-size:0.9em;">Vos articles apparaîtront ici au fur et à mesure du scan.</span></p>
   <div class="welcome-dots">
     <div class="welcome-dot"></div>
     <div class="welcome-dot"></div>
@@ -175,7 +176,7 @@
     <div class="items-list" id="items-list">
       <div class="empty-state">
         <div class="empty-icon">🛒</div>
-        <span>Scanning items…</span>
+        <span>Scanning items… / Scan en cours…</span>
       </div>
     </div>
   </div>
