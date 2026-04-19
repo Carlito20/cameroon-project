@@ -252,7 +252,7 @@
     const phoneLine = `\nPhone: ${customerPhone.trim()}`;
     const refLine = orderRef ? `\nOrder Ref: ${orderRef}` : '';
 
-    const message = `Hi! I'd like to order from American Select:\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA${paymentLine}${nameLine}${phoneLine}${refLine}\n\nThank you!`;
+    const message = `Hi! / Bonjour !\nI'd like to order from American Select / Je voudrais commander :\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA${paymentLine}${nameLine}${phoneLine}${refLine}\n\nThank you! / Merci !`;
 
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
     clearAll();
