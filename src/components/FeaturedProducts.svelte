@@ -35,26 +35,25 @@
     { name: "Rechargeable Arm Blood Pressure Monitor with Large LED Screen, Digital Blood Pressure Machine",                   short: "Arm Blood Pressure Monitor",                price: 15000, stock: 3,  image: "/images/products/arm-bp-monitor-1.jpeg",          category: "Health"         },
   ];
 
-  // ── One pick per category, rotates daily ─────────────────────────────
-  function getDaySeed() {
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    return Math.floor((now - start) / 86400000); // day of year
+  // ── One pick per category, rotates every 4 hours ─────────────────────
+  function getSeed() {
+    // Changes every 4 hours — 6 rotations per day
+    return Math.floor(Date.now() / (1000 * 60 * 60 * 4));
   }
 
-  // Computed client-side in onMount so picks reflect the visitor's current date.
   let featured = [];
 
   onMount(() => {
-    const seed = getDaySeed();
+    const seed = getSeed();
     const byCategory = {};
     for (const p of POOL) {
       if (!byCategory[p.category]) byCategory[p.category] = [];
       byCategory[p.category].push(p);
     }
-    // Pick one item per category; offset each category so they cycle independently
+    // Each category uses a different prime offset so they don't cycle in sync
+    const offsets = [1, 3, 5, 11, 13, 17];
     featured = Object.values(byCategory).map((items, ci) => {
-      return items[(seed + ci * 7) % items.length];
+      return items[(seed * offsets[ci % offsets.length]) % items.length];
     });
   });
 
