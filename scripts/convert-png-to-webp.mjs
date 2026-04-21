@@ -197,6 +197,19 @@ const mappings = [
   // Right Guard Sport Men's Deodorant
   ["Images/Today/Right Guard Sport Fresh Scent Antiperspirant & Deodorant Invisible Solid - 4-in-1 Deodorant For Men, Blocks Sweat, 48-Hour Odor Protection, Quick-Drying, & Long-Lasting.png",   'right-guard-sport-men-1.webp'],
   ["Images/Today/Right Guard Sport Fresh Scent Antiperspirant & Deodorant Invisible Solid - 4-in-1 Deodorant For Men, Blocks Sweat, 48-Hour Odor Protection, Quick-Drying, & Long-Lasting.1.png", 'right-guard-sport-men-2.webp'],
+
+  // Cetaphil Baby Daily Lotion
+  ["Images/Cetaphil/Cetaphil Baby Daily Lotion with Organic Calendula Vitamin E  Sweet Almond & Sunflower Oils.png",   'cetaphil-baby-daily-lotion-1.webp'],
+  ["Images/Cetaphil/Cetaphil Baby Daily Lotion with Organic Calendula Vitamin E  Sweet Almond & Sunflower Oils.1.png", 'cetaphil-baby-daily-lotion-2.webp'],
+  ["Images/Cetaphil/Cetaphil Baby Daily Lotion with Organic Calendula Vitamin E  Sweet Almond & Sunflower Oils.2.png", 'cetaphil-baby-daily-lotion-3.webp'],
+  ["Images/Cetaphil/Cetaphil Baby Daily Lotion with Organic Calendula Vitamin E  Sweet Almond & Sunflower Oils.3.png", 'cetaphil-baby-daily-lotion-4.webp'],
+
+  // CeraVe Baby Lotion
+  ["Images/CeraVe/CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free.png",   'cerave-baby-lotion-1.webp'],
+  ["Images/CeraVe/CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free 1.png", 'cerave-baby-lotion-2.webp'],
+  ["Images/CeraVe/CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free 2.png", 'cerave-baby-lotion-3.webp'],
+  ["Images/CeraVe/CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free 3.png", 'cerave-baby-lotion-4.webp'],
+  ["Images/CeraVe/CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free 4.png", 'cerave-baby-lotion-5.webp'],
 ];
 
 let converted = 0;

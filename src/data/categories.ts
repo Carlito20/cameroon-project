@@ -645,6 +645,18 @@ export const categories: Category[] = [
             quantity: 3,
             price: 4500
           },
+          {
+            name: "Cetaphil Baby Daily Lotion with Organic Calendula Vitamin E Sweet Almond & Sunflower Oils",
+            images: ['/images/products/cetaphil-baby-daily-lotion-1.webp', '/images/products/cetaphil-baby-daily-lotion-2.webp', '/images/products/cetaphil-baby-daily-lotion-3.webp', '/images/products/cetaphil-baby-daily-lotion-4.webp'],
+            quantity: 4,
+            price: 8500
+          },
+          {
+            name: "CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free",
+            images: ['/images/products/cerave-baby-lotion-1.webp', '/images/products/cerave-baby-lotion-2.webp', '/images/products/cerave-baby-lotion-3.webp', '/images/products/cerave-baby-lotion-4.webp', '/images/products/cerave-baby-lotion-5.webp'],
+            quantity: 3,
+            price: 8000
+          },
         ]
       },
       {
