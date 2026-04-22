@@ -1,43 +1,31 @@
 <script>
   import { onMount } from 'svelte';
+  import { categories } from '../data/categories.ts';
 
-  // Maps category display name → shop URL category ID
-  const CATEGORY_ID = {
-    "Kitchen":       "home-kitchen",
-    "Body Care":     "body-bath",
-    "Personal Care": "body-bath",
-    "Kids":          "kids",
-    "Health":        "health-wellness",
-    "Electronics":   "electronics",
-  };
+  // Recursively collect all in-stock products with images from a category's items
+  function collectProducts(items) {
+    const result = [];
+    for (const item of items) {
+      if (typeof item === 'string') continue;
+      if ('items' in item) {
+        result.push(...collectProducts(item.items));
+      } else {
+        const img = (item.images && item.images.length > 0) ? item.images[0] : item.image;
+        if (img && item.price && (item.quantity ?? 0) > 0) {
+          result.push({ name: item.name, price: item.price, stock: item.quantity, image: img });
+        }
+      }
+    }
+    return result;
+  }
 
-  // ── Full product pool (all have confirmed images) ──────────────────────
-  const POOL = [
-    { name: "Manual Pasta Maker Machine, 9 Adjustable Thickness Settings",                                                   short: "Manual Pasta Maker",                        price: 20000, stock: 2,  image: "/images/products/manual-pasta-maker-1.jpg",       category: "Kitchen"        },
-    { name: "Manual Food Chopper, Pull String Vegetable and Meat Mincer with Clear Container, Hand-Powered Kitchen Processor", short: "Manual Food Chopper",                       price: 8000,  stock: 11, image: "/images/products/manual-food-chopper.jpeg",       category: "Kitchen"        },
-    { name: "Dr Teal's Body Wash Relax and Relief with Eucalyptus Spearmint",                                                 short: "Dr Teal's Body Wash — Eucalyptus",          price: 5000,  stock: 3,  image: "/images/products/dr-teals-eucalyptus1.jpg",       category: "Body Care"      },
-    { name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Prebiotic Lemon Balm & Essential Oils",                                 short: "Dr Teal's Lotion — Lemon Balm",             price: 5000,  stock: 3,  image: "/images/products/dr-teals-lemon-balm1.jpg",       category: "Body Care"      },
-    { name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Coconut Oil & Essential Oils",                                          short: "Dr Teal's Lotion — Coconut Oil",            price: 5000,  stock: 3,  image: "/images/products/dr-teals-lotion-coconut1.jpg",   category: "Body Care"      },
-    { name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Lavender Essential Oil",                                                short: "Dr Teal's Lotion — Lavender",               price: 5000,  stock: 3,  image: "/images/products/dr-teals-lotion-lavender1.jpg",  category: "Body Care"      },
-    { name: "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",             short: "Dr Teal's Kids 3-in-1 Sleep Bath",          price: 4500,  stock: 3,  image: "/images/products/dr-teals-kids.jpg",              category: "Kids"           },
-    { name: "Aveeno Daily Moisturizing Body Lotion 18oz",                                                                     short: "Aveeno Daily Moisturizing Lotion 18oz",     price: 6000,  stock: 5,  image: "/images/products/aveeno-lotion.jpg",              category: "Body Care"      },
-    { name: "Jergens Ultra Healing Dry Skin Lotion, Hand and Body Moisturizer",                                               short: "Jergens Ultra Healing Lotion",              price: 6500,  stock: 3,  image: "/images/products/jergens-ultra1.jpg",             category: "Body Care"      },
-    { name: "Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil",                    short: "Jergens Hydrating Coconut Lotion",          price: 6500,  stock: 3,  image: "/images/products/jergens-coconut1.jpg",           category: "Body Care"      },
-    { name: "Jergens Shea Butter Hand and Body Lotion, Deep Conditioning Moisturizer",                                        short: "Jergens Shea Butter Lotion",                price: 6500,  stock: 3,  image: "/images/products/jergens-shea1.jpg",              category: "Body Care"      },
-    { name: "Olay Essential Botanicals Body Wash, Spiced Chai & Pear",                                                        short: "Olay Body Wash — Spiced Chai & Pear",       price: 3500,  stock: 11, image: "/images/products/olay-spiced-chai.jpg",           category: "Body Care"      },
-    { name: "Olay Essential Botanicals Body Wash, White Tea & Cucumber",                                                       short: "Olay Body Wash — White Tea & Cucumber",     price: 3500,  stock: 11, image: "/images/products/olay-white-tea.jpeg",            category: "Body Care"      },
-    { name: "Men's Electric Shaver 3 in 1 - Portable USB Rechargeable Shaver Featuring 3D Floating Blades and a Digital Display Suitable for Both Wet and Dry Shaving", short: "Men's Electric Shaver 3-in-1", price: 15000, stock: 6, image: "/images/products/mens-electric-shaver-1.jpeg", category: "Personal Care" },
-    { name: "LQT Men's Electric Shaver | Exquisite Packaging Box, USB Charging, Lithium Battery, Matte Texture, Essential for Men, Beard Trimming", short: "LQT Men's Electric Shaver",     price: 12000, stock: 2,  image: "/images/products/mens-shaver-matte-1.jpeg",       category: "Personal Care"  },
-    { name: "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation",                               short: "Acer OHR544 Wireless Headset",              price: 5500,  stock: 5,  image: "/images/products/acer-tws-headset-1.jpeg",        category: "Electronics"    },
-    { name: "Nokia Go Earbuds+ TWS-201",                                                                                      short: "Nokia Go Earbuds+ TWS-201",                 price: 8000,  stock: 9,  image: "/images/products/nokia-earbuds-1.jpeg",           category: "Electronics"    },
-    { name: "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation",                                    short: "Hyundai LP5t Wireless Headphones",          price: 7000,  stock: 10, image: "/images/products/hyundai-lp5t-1.jpeg",            category: "Electronics"    },
-    { name: "Portable Wireless Speaker, 15W Stereo, RGB Lighting, Suitable for Both Indoor and Outdoor Use",                  short: "Portable RGB Wireless Speaker 15W",         price: 6000,  stock: 3,  image: "/images/products/portable-speaker-rgb-1.jpeg",    category: "Electronics"    },
-    { name: "Rechargeable Arm Blood Pressure Monitor with Large LED Screen, Digital Blood Pressure Machine",                   short: "Arm Blood Pressure Monitor",                price: 15000, stock: 3,  image: "/images/products/arm-bp-monitor-1.jpeg",          category: "Health"         },
-  ];
+  // One pool per top-level category, filtered to categories that have products
+  const categoryPools = categories
+    .map(cat => ({ id: cat.id, name: cat.name, products: collectProducts(cat.items) }))
+    .filter(c => c.products.length > 0);
 
-  // ── One pick per category, rotates every 4 hours ─────────────────────
+  // Changes every 4 hours — 6 rotations per day
   function getSeed() {
-    // Changes every 4 hours — 6 rotations per day
     return Math.floor(Date.now() / (1000 * 60 * 60 * 4));
   }
 
@@ -45,15 +33,10 @@
 
   onMount(() => {
     const seed = getSeed();
-    const byCategory = {};
-    for (const p of POOL) {
-      if (!byCategory[p.category]) byCategory[p.category] = [];
-      byCategory[p.category].push(p);
-    }
-    // Each category uses a different prime offset so they don't start in sync
     const offsets = [0, 2, 5, 7, 11, 13];
-    featured = Object.values(byCategory).map((items, ci) => {
-      return items[(seed + offsets[ci % offsets.length]) % items.length];
+    featured = categoryPools.map((cat, ci) => {
+      const p = cat.products[(seed + offsets[ci % offsets.length]) % cat.products.length];
+      return { ...p, categoryId: cat.id };
     });
   });
 
@@ -78,10 +61,8 @@
     return Number(n).toLocaleString('fr-CM') + ' XAF';
   }
 
-  function shopLink(category, productName) {
-    const id = CATEGORY_ID[category];
-    const base = id ? `/shop?category=${id}` : '/shop';
-    return base + '&product=' + encodeURIComponent(productName);
+  function shopLink(categoryId, productName) {
+    return `/shop?category=${categoryId}&product=${encodeURIComponent(productName)}`;
   }
 </script>
 
@@ -98,11 +79,11 @@
     <div class="featured-grid">
       {#each featured as product, i}
         <div class="fp-card">
-          <a href={shopLink(product.category, product.name)} class="fp-img-wrap">
-            <img src={product.image} alt={product.short} loading="lazy">
+          <a href={shopLink(product.categoryId, product.name)} class="fp-img-wrap">
+            <img src={product.image} alt={product.name} loading="lazy">
           </a>
           <div class="fp-body">
-            <p class="fp-name">{product.short}</p>
+            <p class="fp-name">{product.name}</p>
             <p class="fp-price">{fmt(product.price)}</p>
             <button
               class="fp-add-btn"
