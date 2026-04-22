@@ -10,88 +10,33 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// ── Gmail SMTP sender ─────────────────────────────────────────────────────
-function smtp_send($to, $subject, $body, $replyTo = '') {
-    $username = 'americanselect2026@gmail.com';
-    $password = 'lbcltnfvnroxjexw';
-    $fromName = 'American Select';
+// ── Formspree endpoints ───────────────────────────────────────────────────
+const ENDPOINT_CONTACT    = 'https://formspree.io/f/xwvnreqa';
+const ENDPOINT_SUGGESTION = 'https://formspree.io/f/xqedaepd';
+const ENDPOINT_BULK       = 'https://formspree.io/f/xdalpogv';
 
-    $socket = @fsockopen('smtp.gmail.com', 587, $errno, $errstr, 30);
-    if (!$socket) return false;
-
-    stream_set_timeout($socket, 30);
-
-    $read = function() use ($socket) {
-        $data = '';
-        while ($line = fgets($socket, 512)) {
-            $data .= $line;
-            if (isset($line[3]) && $line[3] === ' ') break;
-        }
-        return $data;
-    };
-
-    $cmd = function($str) use ($socket) {
-        fwrite($socket, $str . "\r\n");
-    };
-
-    $read(); // 220 greeting
-
-    $cmd('EHLO americanselect.net');
-    $read();
-
-    $cmd('STARTTLS');
-    $read();
-
-    stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
-
-    $cmd('EHLO americanselect.net');
-    $read();
-
-    $cmd('AUTH LOGIN');
-    $read();
-
-    $cmd(base64_encode($username));
-    $read();
-
-    $cmd(base64_encode($password));
-    $resp = $read();
-    if (strpos($resp, '235') === false) {
-        fclose($socket);
-        return false;
-    }
-
-    $cmd("MAIL FROM:<{$username}>");
-    $read();
-
-    $cmd("RCPT TO:<{$to}>");
-    $read();
-
-    $cmd('DATA');
-    $read();
-
-    $subjectEncoded = '=?UTF-8?B?' . base64_encode($subject) . '?=';
-    $msg  = "From: {$fromName} <{$username}>\r\n";
-    $msg .= "To: {$to}\r\n";
-    $msg .= "Subject: {$subjectEncoded}\r\n";
-    if ($replyTo) $msg .= "Reply-To: {$replyTo}\r\n";
-    $msg .= "MIME-Version: 1.0\r\n";
-    $msg .= "Content-Type: text/plain; charset=UTF-8\r\n";
-    $msg .= "Date: " . date('r') . "\r\n";
-    $msg .= "\r\n";
-    $msg .= $body . "\r\n.";
-
-    $cmd($msg);
-    $read();
-
-    $cmd('QUIT');
-    fclose($socket);
-
-    return true;
+function forward_to_formspree($endpoint, $fields) {
+    $ch = curl_init($endpoint);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => http_build_query($fields),
+        CURLOPT_HTTPHEADER     => ['Accept: application/json'],
+        CURLOPT_TIMEOUT        => 15,
+    ]);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return $httpCode >= 200 && $httpCode < 300;
 }
 
-// ── Build email content ───────────────────────────────────────────────────
-$to   = 'americanselect2026@gmail.com';
-$type = $_POST['_type'] ?? 'contact';
+$type     = $_POST['_type'] ?? 'contact';
+$honeypot = trim($_POST['_gotcha'] ?? '');
+
+if (!empty($honeypot)) {
+    echo json_encode(['ok' => true]);
+    exit;
+}
 
 if ($type === 'bulk') {
     $name     = trim($_POST['name']     ?? '');
@@ -100,9 +45,6 @@ if ($type === 'bulk') {
     $products = trim($_POST['products'] ?? '');
     $timeline = trim($_POST['timeline'] ?? '');
     $message  = trim($_POST['message']  ?? '');
-    $honeypot = trim($_POST['_gotcha']  ?? '');
-
-    if (!empty($honeypot)) { echo json_encode(['ok' => true]); exit; }
 
     if (empty($name) || empty($phone) || empty($products)) {
         http_response_code(400);
@@ -110,15 +52,15 @@ if ($type === 'bulk') {
         exit;
     }
 
-    $subject = "Bulk Order Request from {$name} - American Select";
-    $body    = "NEW BULK ORDER REQUEST\n";
-    $body   .= "======================\n\n";
-    $body   .= "Name/Company: {$name}\n";
-    if ($email)    $body .= "Email:        {$email}\n";
-    $body   .= "Phone:        {$phone}\n";
-    if ($timeline) $body .= "Timeline:     {$timeline}\n";
-    $body   .= "\nProducts of Interest:\n{$products}\n";
-    if ($message)  $body .= "\nAdditional Info:\n{$message}\n";
+    $sent = forward_to_formspree(ENDPOINT_BULK, [
+        '_subject'  => "Bulk Order Request from {$name} - American Select",
+        'name'      => $name,
+        'email'     => $email,
+        'phone'     => $phone,
+        'timeline'  => $timeline,
+        'products'  => $products,
+        'message'   => $message,
+    ]);
 
 } elseif ($type === 'suggestion') {
     $name       = trim($_POST['name']       ?? 'Anonymous');
@@ -131,22 +73,19 @@ if ($type === 'bulk') {
         exit;
     }
 
-    $subject = 'New Suggestion - American Select';
-    $body    = "NEW SUGGESTION\n";
-    $body   .= "==============\n\n";
-    $body   .= "From:  {$name}\n";
-    if ($email) $body .= "Email: {$email}\n";
-    $body   .= "\nSuggestion:\n{$suggestion}\n";
+    $sent = forward_to_formspree(ENDPOINT_SUGGESTION, [
+        '_subject'   => 'New Suggestion - American Select',
+        'name'       => $name,
+        'email'      => $email,
+        'suggestion' => $suggestion,
+    ]);
 
 } else {
     $name     = trim($_POST['name']    ?? '');
     $email    = trim($_POST['email']   ?? '');
     $phone    = trim($_POST['phone']   ?? '');
-    $subjectF = trim($_POST['subject'] ?? '');
+    $subject  = trim($_POST['subject'] ?? '');
     $message  = trim($_POST['message'] ?? '');
-    $honeypot = trim($_POST['_gotcha'] ?? '');
-
-    if (!empty($honeypot)) { echo json_encode(['ok' => true]); exit; }
 
     if (empty($name) || empty($phone) || empty($message)) {
         http_response_code(400);
@@ -154,24 +93,19 @@ if ($type === 'bulk') {
         exit;
     }
 
-    $subject = "Contact Form: {$subjectF} - American Select";
-    $body    = "NEW CONTACT MESSAGE\n";
-    $body   .= "===================\n\n";
-    $body   .= "Name:    {$name}\n";
-    if ($email) $body .= "Email:   {$email}\n";
-    $body   .= "Phone:   {$phone}\n";
-    $body   .= "Subject: {$subjectF}\n";
-    $body   .= "\nMessage:\n{$message}\n";
+    $sent = forward_to_formspree(ENDPOINT_CONTACT, [
+        '_subject' => "Contact Form: {$subject} - American Select",
+        'name'     => $name,
+        'email'    => $email,
+        'phone'    => $phone,
+        'subject'  => $subject,
+        'message'  => $message,
+    ]);
 }
-
-$body .= "\n--\nSent from americanselect.net contact form";
-
-$replyTo = !empty($email) ? $email : '';
-$sent = smtp_send($to, $subject, $body, $replyTo);
 
 if ($sent) {
     echo json_encode(['ok' => true]);
 } else {
     http_response_code(500);
-    echo json_encode(['error' => 'Failed to send email. Please contact us on WhatsApp.']);
+    echo json_encode(['error' => 'Failed to send. Please contact us on WhatsApp.']);
 }
