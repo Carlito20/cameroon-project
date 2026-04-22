@@ -186,6 +186,29 @@ const web3formsKey = "76ebc4cd-2b2b-42d3-b14a-c27e0191a990";
 </BaseLayout>
 
 <script>
+  const fr = navigator.language.startsWith('fr');
+
+  const t = {
+    contactSending:       fr ? 'Envoi en cours...'              : 'Sending...',
+    contactSubmit:        fr ? 'Envoyer le message'             : 'Send Message',
+    contactSuccessTitle:  fr ? 'Message envoyé !'               : 'Message Sent!',
+    contactSuccessText:   fr
+      ? `Merci de nous avoir contactés ! Nous avons bien reçu votre message et vous répondrons dans les 24 heures. Pour toute urgence, appelez-nous ou contactez-nous sur WhatsApp au <a href="https://wa.me/237679457181">679 457 181</a> ou <a href="https://wa.me/237686271567">686 271 567</a>.`
+      : `Thank you for contacting American Select! We have received your message and will get back to you within 24 hours. For urgent inquiries, you can call or reach us on WhatsApp at <a href="https://wa.me/237679457181">679 457 181</a> or <a href="https://wa.me/237686271567">686 271 567</a>.`,
+    contactAnother:       fr ? 'Envoyer un autre message'       : 'Send Another Message',
+    contactError:         fr ? 'Une erreur s\'est produite. Veuillez réessayer.' : 'Something went wrong. Please try again.',
+
+    sugSending:           fr ? 'Envoi en cours...'              : 'Sending...',
+    sugSubmit:            fr ? 'Soumettre la suggestion'        : 'Submit Suggestion',
+    sugSuccessTitle:      fr ? 'Merci pour votre avis !'        : 'Thank You for Your Feedback!',
+    sugSuccessText:       fr
+      ? `Votre suggestion a bien été reçue et sera examinée par notre équipe. Vous pouvez également nous appeler ou nous contacter sur WhatsApp au <a href="https://wa.me/237679457181">679 457 181</a> ou <a href="https://wa.me/237686271567">686 271 567</a>.`
+      : `Your suggestion has been received and will be reviewed by our team. You can also call or reach us on WhatsApp at <a href="https://wa.me/237679457181">679 457 181</a> or <a href="https://wa.me/237686271567">686 271 567</a>.`,
+    sugAnother:           fr ? 'Soumettre une autre suggestion' : 'Submit Another Suggestion',
+    sugError:             fr ? 'Une erreur s\'est produite. Veuillez réessayer.' : 'Something went wrong. Please try again.',
+  };
+
+  // ── Contact form ──────────────────────────────────────────────────────
   const form = document.getElementById('contact-form');
   const successMsg = document.getElementById('contact-success');
   const formNote = document.getElementById('contact-form-note');
@@ -198,13 +221,13 @@ const web3formsKey = "76ebc4cd-2b2b-42d3-b14a-c27e0191a990";
     form.style.display = '';
     formNote.style.display = '';
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Send Message';
+    submitBtn.textContent = t.contactSubmit;
   });
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
+    submitBtn.textContent = t.contactSending;
 
     try {
       const res = await fetch(form.action, {
@@ -214,22 +237,25 @@ const web3formsKey = "76ebc4cd-2b2b-42d3-b14a-c27e0191a990";
       });
 
       if (res.ok) {
+        successMsg.querySelector('h3').textContent = t.contactSuccessTitle;
+        successMsg.querySelector('p').innerHTML = t.contactSuccessText;
+        sendAnotherBtn.textContent = t.contactAnother;
         form.style.display = 'none';
         formNote.style.display = 'none';
         successMsg.style.display = 'block';
       } else {
-        alert('Something went wrong. Please try again.');
+        alert(t.contactError);
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Send Message';
+        submitBtn.textContent = t.contactSubmit;
       }
     } catch {
-      alert('Something went wrong. Please try again.');
+      alert(t.contactError);
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Send Message';
+      submitBtn.textContent = t.contactSubmit;
     }
   });
 
-  // Suggestion form
+  // ── Suggestion form ───────────────────────────────────────────────────
   const sugForm = document.getElementById('suggestionForm');
   const sugSuccess = document.getElementById('suggestion-success');
   const sugSubmitBtn = document.getElementById('suggestion-submit-btn');
@@ -240,13 +266,13 @@ const web3formsKey = "76ebc4cd-2b2b-42d3-b14a-c27e0191a990";
     sugSuccess.style.display = 'none';
     sugForm.style.display = '';
     sugSubmitBtn.disabled = false;
-    sugSubmitBtn.textContent = 'Submit Suggestion';
+    sugSubmitBtn.textContent = t.sugSubmit;
   });
 
   sugForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     sugSubmitBtn.disabled = true;
-    sugSubmitBtn.textContent = 'Sending...';
+    sugSubmitBtn.textContent = t.sugSending;
 
     try {
       const res = await fetch(sugForm.action, {
@@ -256,17 +282,20 @@ const web3formsKey = "76ebc4cd-2b2b-42d3-b14a-c27e0191a990";
       });
 
       if (res.ok) {
+        sugSuccess.querySelector('h3').textContent = t.sugSuccessTitle;
+        sugSuccess.querySelector('p').innerHTML = t.sugSuccessText;
+        sugAnotherBtn.textContent = t.sugAnother;
         sugForm.style.display = 'none';
         sugSuccess.style.display = 'block';
       } else {
-        alert('Something went wrong. Please try again.');
+        alert(t.sugError);
         sugSubmitBtn.disabled = false;
-        sugSubmitBtn.textContent = 'Submit Suggestion';
+        sugSubmitBtn.textContent = t.sugSubmit;
       }
     } catch {
-      alert('Something went wrong. Please try again.');
+      alert(t.sugError);
       sugSubmitBtn.disabled = false;
-      sugSubmitBtn.textContent = 'Submit Suggestion';
+      sugSubmitBtn.textContent = t.sugSubmit;
     }
   });
 </script>
