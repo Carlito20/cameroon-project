@@ -50,10 +50,10 @@
       if (!byCategory[p.category]) byCategory[p.category] = [];
       byCategory[p.category].push(p);
     }
-    // Each category uses a different prime offset so they don't cycle in sync
-    const offsets = [1, 3, 5, 11, 13, 17];
+    // Each category uses a different prime offset so they don't start in sync
+    const offsets = [0, 2, 5, 7, 11, 13];
     featured = Object.values(byCategory).map((items, ci) => {
-      return items[(seed * offsets[ci % offsets.length]) % items.length];
+      return items[(seed + offsets[ci % offsets.length]) % items.length];
     });
   });
 
