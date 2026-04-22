@@ -2,12 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/contact.css';
 
-// IMPORTANT: Replace this with your actual Formspree form ID
-// 1. Go to https://formspree.io and create a free account
-// 2. Create a new form for "Contact Form"
-// 3. Copy the form ID and replace 'YOUR_FORMSPREE_ID' below
-const formspreeEndpoint = "https://formspree.io/f/xwvnreqa";
-const suggestionEndpoint = "https://formspree.io/f/xqedaepd";
+const contactEndpoint = "/api/contact.php";
 ---
 
 <BaseLayout title="Contact Us - Get in Touch">
@@ -77,9 +72,8 @@ const suggestionEndpoint = "https://formspree.io/f/xqedaepd";
 
         <div class="contact-form-wrapper">
           <h2>Send Us a Message</h2>
-          <form class="contact-form" id="contact-form" action={formspreeEndpoint} method="POST">
-            <!-- Email subject line -->
-            <input type="hidden" name="_subject" value="New Contact Form Message - American Select">
+          <form class="contact-form" id="contact-form" action={contactEndpoint} method="POST">
+            <input type="hidden" name="_type" value="contact">
 
             <div class="form-group">
               <label for="name">Your Name *</label>
@@ -126,8 +120,8 @@ const suggestionEndpoint = "https://formspree.io/f/xqedaepd";
         <h2 style="text-align: center; margin-bottom: 0.5rem;">We'd Love Your Feedback</h2>
         <p style="text-align: center; color: #666; margin-bottom: 2rem;">Help us improve your shopping experience. Share your ideas, product requests, or suggestions below. We review every submission and use your input to guide future updates.</p>
 
-        <form class="contact-form" id="suggestionForm" action={suggestionEndpoint} method="POST">
-          <input type="hidden" name="_subject" value="New Suggestion - American Select">
+        <form class="contact-form" id="suggestionForm" action={contactEndpoint} method="POST">
+          <input type="hidden" name="_type" value="suggestion">
           <div class="form-group">
             <label for="sug-name">Name (optional)</label>
             <input type="text" id="sug-name" name="name" placeholder="Your name">
