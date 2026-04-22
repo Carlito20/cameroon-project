@@ -10,13 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// ── Formspree endpoints ───────────────────────────────────────────────────
-const ENDPOINT_CONTACT    = 'https://formspree.io/f/xwvnreqa';
-const ENDPOINT_SUGGESTION = 'https://formspree.io/f/xqedaepd';
-const ENDPOINT_BULK       = 'https://formspree.io/f/xdalpogv';
+const WEB3FORMS_KEY = '76ebc4cd-2b2b-42d3-b14a-c27e0191a990';
 
-function forward_to_formspree($endpoint, $fields) {
-    $ch = curl_init($endpoint);
+function send_email($fields) {
+    $fields['access_key'] = WEB3FORMS_KEY;
+    $ch = curl_init('https://api.web3forms.com/submit');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
@@ -52,14 +50,15 @@ if ($type === 'bulk') {
         exit;
     }
 
-    $sent = forward_to_formspree(ENDPOINT_BULK, [
-        '_subject'  => "Bulk Order Request from {$name} - American Select",
+    $sent = send_email([
+        'subject'   => "Bulk Order Request from {$name} - American Select",
+        'from_name' => $name,
         'name'      => $name,
-        'email'     => $email,
+        'email'     => $email ?: 'not provided',
         'phone'     => $phone,
-        'timeline'  => $timeline,
+        'timeline'  => $timeline ?: 'not specified',
         'products'  => $products,
-        'message'   => $message,
+        'message'   => $message ?: 'none',
     ]);
 
 } elseif ($type === 'suggestion') {
@@ -73,19 +72,20 @@ if ($type === 'bulk') {
         exit;
     }
 
-    $sent = forward_to_formspree(ENDPOINT_SUGGESTION, [
-        '_subject'   => 'New Suggestion - American Select',
+    $sent = send_email([
+        'subject'    => 'New Suggestion - American Select',
+        'from_name'  => $name,
         'name'       => $name,
-        'email'      => $email,
+        'email'      => $email ?: 'not provided',
         'suggestion' => $suggestion,
     ]);
 
 } else {
-    $name     = trim($_POST['name']    ?? '');
-    $email    = trim($_POST['email']   ?? '');
-    $phone    = trim($_POST['phone']   ?? '');
-    $subject  = trim($_POST['subject'] ?? '');
-    $message  = trim($_POST['message'] ?? '');
+    $name    = trim($_POST['name']    ?? '');
+    $email   = trim($_POST['email']   ?? '');
+    $phone   = trim($_POST['phone']   ?? '');
+    $subject = trim($_POST['subject'] ?? '');
+    $message = trim($_POST['message'] ?? '');
 
     if (empty($name) || empty($phone) || empty($message)) {
         http_response_code(400);
@@ -93,13 +93,14 @@ if ($type === 'bulk') {
         exit;
     }
 
-    $sent = forward_to_formspree(ENDPOINT_CONTACT, [
-        '_subject' => "Contact Form: {$subject} - American Select",
-        'name'     => $name,
-        'email'    => $email,
-        'phone'    => $phone,
-        'subject'  => $subject,
-        'message'  => $message,
+    $sent = send_email([
+        'subject'   => "Contact Form: {$subject} - American Select",
+        'from_name' => $name,
+        'name'      => $name,
+        'email'     => $email ?: 'not provided',
+        'phone'     => $phone,
+        'topic'     => $subject,
+        'message'   => $message,
     ]);
 }
 
