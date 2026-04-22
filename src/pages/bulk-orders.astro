@@ -2,11 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/bulk-orders.css';
 
-// IMPORTANT: Replace this with your actual Formspree form ID
-// 1. Go to https://formspree.io and create a free account
-// 2. Create a new form for "Bulk Order Inquiries"
-// 3. Copy the form ID and replace 'YOUR_BULK_FORMSPREE_ID' below
-const formspreeEndpoint = "https://formspree.io/f/xdalpogv";
+const contactEndpoint = "/api/contact.php";
 ---
 
 <BaseLayout title="Bulk Orders - Special Pricing for Businesses">
@@ -134,8 +130,8 @@ const formspreeEndpoint = "https://formspree.io/f/xdalpogv";
           </a>
         </div>
 
-        <form class="bulk-form" action={formspreeEndpoint} method="POST">
-          <input type="hidden" name="_subject" value="New Bulk Order Request">
+        <form class="bulk-form" id="bulk-form" action={contactEndpoint} method="POST">
+          <input type="hidden" name="_type" value="bulk">
           <div class="form-group">
             <label for="name">Your Name / Company Name *</label>
             <input type="text" id="name" name="name" required>
@@ -160,13 +156,62 @@ const formspreeEndpoint = "https://formspree.io/f/xdalpogv";
             <label for="message">Additional Information</label>
             <textarea id="message" name="message" rows="4" placeholder="Any specific requirements or questions"></textarea>
           </div>
-          <!-- Honeypot field for spam protection -->
           <input type="text" name="_gotcha" style="display:none">
-          <button type="submit" class="btn">Request Quote</button>
+          <button type="submit" class="btn" id="bulk-submit-btn">Request Quote</button>
         </form>
-        <p class="form-note">We typically respond to bulk inquiries within 24-48 hours.</p>
+        <div id="bulk-success" style="display:none; text-align:center; padding: 2rem 1rem;">
+          <h3 style="color: #28a745; margin-bottom: 1rem;">Request Sent!</h3>
+          <p>Thank you for your bulk order inquiry! We will review your request and get back to you within 24-48 hours. For faster response, contact us on WhatsApp at <a href="https://wa.me/237679457181">679 457 181</a>.</p>
+          <button class="btn" id="bulk-another-btn" style="margin-top: 1.5rem;">Send Another Request</button>
+        </div>
+        <p class="form-note" id="bulk-form-note">We typically respond to bulk inquiries within 24-48 hours.</p>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const form = document.getElementById('bulk-form') as HTMLFormElement;
+  const successMsg = document.getElementById('bulk-success');
+  const formNote = document.getElementById('bulk-form-note');
+  const submitBtn = document.getElementById('bulk-submit-btn') as HTMLButtonElement;
+  const anotherBtn = document.getElementById('bulk-another-btn');
+
+  anotherBtn?.addEventListener('click', () => {
+    form.reset();
+    successMsg.style.display = 'none';
+    form.style.display = '';
+    formNote.style.display = '';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Request Quote';
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        form.style.display = 'none';
+        formNote.style.display = 'none';
+        successMsg.style.display = 'block';
+      } else {
+        alert('Something went wrong. Please try again or contact us on WhatsApp.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Request Quote';
+      }
+    } catch {
+      alert('Something went wrong. Please try again or contact us on WhatsApp.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Request Quote';
+    }
+  });
+</script>
 

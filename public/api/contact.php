@@ -13,7 +13,37 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $to = 'americanselect2026@gmail.com';
 $type = isset($_POST['_type']) ? $_POST['_type'] : 'contact';
 
-if ($type === 'suggestion') {
+if ($type === 'bulk') {
+    $name     = trim($_POST['name'] ?? '');
+    $email    = trim($_POST['email'] ?? '');
+    $phone    = trim($_POST['phone'] ?? '');
+    $products = trim($_POST['products'] ?? '');
+    $timeline = trim($_POST['timeline'] ?? '');
+    $message  = trim($_POST['message'] ?? '');
+    $honeypot = trim($_POST['_gotcha'] ?? '');
+
+    if (!empty($honeypot)) {
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
+    if (empty($name) || empty($phone) || empty($products)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Name, phone, and products are required']);
+        exit;
+    }
+
+    $subject = "Bulk Order Request from $name - American Select";
+    $body  = "NEW BULK ORDER REQUEST\n";
+    $body .= "======================\n\n";
+    $body .= "Name/Company: $name\n";
+    if ($email) $body .= "Email:        $email\n";
+    $body .= "Phone:        $phone\n";
+    if ($timeline) $body .= "Timeline:     $timeline\n";
+    $body .= "\nProducts of Interest:\n$products\n";
+    if ($message) $body .= "\nAdditional Info:\n$message\n";
+
+} elseif ($type === 'suggestion') {
     $name       = trim($_POST['name'] ?? 'Anonymous');
     $email      = trim($_POST['email'] ?? '');
     $suggestion = trim($_POST['suggestion'] ?? '');
