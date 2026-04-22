@@ -16,7 +16,7 @@ function smtp_send($to, $subject, $body, $replyTo = '') {
     $password = 'lbcltnfvnroxjexw';
     $fromName = 'American Select';
 
-    $socket = @stream_socket_client('ssl://smtp.gmail.com:465', $errno, $errstr, 30);
+    $socket = @fsockopen('smtp.gmail.com', 587, $errno, $errstr, 30);
     if (!$socket) return false;
 
     stream_set_timeout($socket, 30);
@@ -35,6 +35,14 @@ function smtp_send($to, $subject, $body, $replyTo = '') {
     };
 
     $read(); // 220 greeting
+
+    $cmd('EHLO americanselect.net');
+    $read();
+
+    $cmd('STARTTLS');
+    $read();
+
+    stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
 
     $cmd('EHLO americanselect.net');
     $read();
