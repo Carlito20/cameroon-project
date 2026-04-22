@@ -2,7 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/bulk-orders.css';
 
-const contactEndpoint = "/api/contact.php";
+const web3formsEndpoint = "https://api.web3forms.com/submit";
+const web3formsKey = "76ebc4cd-2b2b-42d3-b14a-c27e0191a990";
 ---
 
 <BaseLayout title="Bulk Orders - Special Pricing for Businesses">
@@ -130,8 +131,10 @@ const contactEndpoint = "/api/contact.php";
           </a>
         </div>
 
-        <form class="bulk-form" id="bulk-form" action={contactEndpoint} method="POST">
-          <input type="hidden" name="_type" value="bulk">
+        <form class="bulk-form" id="bulk-form" action={web3formsEndpoint} method="POST">
+          <input type="hidden" name="access_key" value={web3formsKey}>
+          <input type="hidden" name="subject" value="New Bulk Order Request - American Select">
+          <input type="hidden" name="from_name" value="American Select Website">
           <div class="form-group">
             <label for="name">Your Name / Company Name *</label>
             <input type="text" id="name" name="name" required>

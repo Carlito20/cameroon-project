@@ -2,7 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/contact.css';
 
-const contactEndpoint = "/api/contact.php";
+const web3formsEndpoint = "https://api.web3forms.com/submit";
+const web3formsKey = "76ebc4cd-2b2b-42d3-b14a-c27e0191a990";
 ---
 
 <BaseLayout title="Contact Us - Get in Touch">
@@ -72,8 +73,10 @@ const contactEndpoint = "/api/contact.php";
 
         <div class="contact-form-wrapper">
           <h2>Send Us a Message</h2>
-          <form class="contact-form" id="contact-form" action={contactEndpoint} method="POST">
-            <input type="hidden" name="_type" value="contact">
+          <form class="contact-form" id="contact-form" action={web3formsEndpoint} method="POST">
+            <input type="hidden" name="access_key" value={web3formsKey}>
+            <input type="hidden" name="subject" value="New Contact Message - American Select">
+            <input type="hidden" name="from_name" value="American Select Website">
 
             <div class="form-group">
               <label for="name">Your Name *</label>
@@ -120,8 +123,10 @@ const contactEndpoint = "/api/contact.php";
         <h2 style="text-align: center; margin-bottom: 0.5rem;">We'd Love Your Feedback</h2>
         <p style="text-align: center; color: #666; margin-bottom: 2rem;">Help us improve your shopping experience. Share your ideas, product requests, or suggestions below. We review every submission and use your input to guide future updates.</p>
 
-        <form class="contact-form" id="suggestionForm" action={contactEndpoint} method="POST">
-          <input type="hidden" name="_type" value="suggestion">
+        <form class="contact-form" id="suggestionForm" action={web3formsEndpoint} method="POST">
+          <input type="hidden" name="access_key" value={web3formsKey}>
+          <input type="hidden" name="subject" value="New Suggestion - American Select">
+          <input type="hidden" name="from_name" value="American Select Website">
           <div class="form-group">
             <label for="sug-name">Name (optional)</label>
             <input type="text" id="sug-name" name="name" placeholder="Your name">
