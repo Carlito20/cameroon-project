@@ -11,7 +11,6 @@ if (file_exists($jsonPath)) {
     $products = json_decode(file_get_contents($jsonPath), true) ?? [];
 }
 
-// Sort by name
 usort($products, fn($a, $b) => strcmp($a['name'] ?? '', $b['name'] ?? ''));
 
 function fmt_price($n) {
@@ -108,9 +107,54 @@ function fmt_price($n) {
     }
     .search-input::placeholder { color: #555; }
     .search-input:focus { outline: none; border-color: #d4af37; }
-    .select-all-wrap { display: flex; align-items: center; gap: 8px; color: #888; font-size: 13px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+    .select-all-wrap {
+      display: flex; align-items: center; gap: 8px;
+      color: #888; font-size: 13px; cursor: pointer;
+      -webkit-user-select: none; user-select: none;
+    }
     .select-all-wrap input[type=checkbox] { width: 18px; height: 18px; accent-color: #d4af37; cursor: pointer; }
-    .count-badge { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 20px; padding: 4px 12px; font-size: 12px; color: #888; }
+    .count-badge {
+      background: #1e1e1e; border: 1px solid #2a2a2a;
+      border-radius: 20px; padding: 4px 12px; font-size: 12px; color: #888;
+    }
+
+    /* ── Print mode toggle ───────────────────────────────────── */
+    .mode-row {
+      max-width: 1100px;
+      margin: 12px auto 0;
+      padding: 0 16px;
+      padding-left: calc(16px + env(safe-area-inset-left, 0px));
+      padding-right: calc(16px + env(safe-area-inset-right, 0px));
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mode-label { font-size: 12px; color: #666; margin-right: 4px; }
+    .mode-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #333;
+      background: transparent;
+      color: #666;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+      min-height: 36px;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .mode-btn.active {
+      background: #1e1e1e;
+      color: #d4af37;
+      border-color: #3a3010;
+    }
+    .mode-hint { font-size: 11px; color: #444; }
 
     /* ── Tag Grid (screen) ──────────────────────────────────── */
     .tag-grid {
@@ -139,55 +183,125 @@ function fmt_price($n) {
     .tag-card:hover { border-color: #444; background: #1c1c1c; }
     .tag-card.selected { border-color: #d4af37; background: #1c1810; }
     .tag-card-top { display: flex; align-items: flex-start; gap: 10px; }
-    .tag-card-top input[type=checkbox] { margin-top: 3px; width: 16px; height: 16px; accent-color: #d4af37; cursor: pointer; flex-shrink: 0; }
+    .tag-card-top input[type=checkbox] {
+      margin-top: 3px; width: 16px; height: 16px;
+      accent-color: #d4af37; cursor: pointer; flex-shrink: 0;
+    }
     .tag-name { font-size: 13px; font-weight: 600; color: #ddd; line-height: 1.4; }
     .tag-price { font-size: 18px; font-weight: 800; color: #d4af37; letter-spacing: 0.5px; }
+    .tag-store { font-size: 10px; color: #555; letter-spacing: 1px; text-transform: uppercase; }
     .tag-qty { font-size: 11px; color: #555; }
 
-    /* ── Empty / no-match ────────────────────────────────────── */
+    /* ── Empty ───────────────────────────────────────────────── */
     .empty { text-align: center; color: #444; padding: 60px 20px; font-size: 15px; }
 
-    /* ── Print styles ────────────────────────────────────────── */
+    /* ════════════════════════════════════════════════════════════
+       PRINT — A4 SHEET MODE (default)
+    ════════════════════════════════════════════════════════════ */
     @media print {
-      @page { margin: 10mm; size: A4; }
+      body.mode-sheet { font-family: Arial, sans-serif; background: #fff !important; color: #000 !important; }
+      body.mode-sheet header,
+      body.mode-sheet .controls,
+      body.mode-sheet .mode-row,
+      body.mode-sheet .no-print { display: none !important; }
 
-      body { background: #fff !important; color: #000 !important; font-family: Arial, sans-serif; }
-      header, .controls, .no-print { display: none !important; }
-
-      .tag-grid {
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
+      body.mode-sheet .tag-grid {
+        max-width: 100%; margin: 0; padding: 0;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 6mm;
       }
+      body.mode-sheet @page { size: A4; margin: 10mm; }
 
-      /* Hide unselected cards when printing */
-      .tag-card { display: none !important; }
-      .tag-card.selected { display: flex !important; }
-
-      /* Print tag appearance */
-      .tag-card.selected {
+      body.mode-sheet .tag-card { display: none !important; }
+      body.mode-sheet .tag-card.selected {
+        display: flex !important;
         background: #fff !important;
         border: 1.5px solid #000 !important;
         border-radius: 6px;
-        padding: 8mm 8mm 7mm;
-        gap: 5px;
+        padding: 7mm 7mm 6mm;
+        gap: 4px;
         page-break-inside: avoid;
         break-inside: avoid;
-        cursor: default;
+        flex-direction: column;
       }
-      .tag-card-top { gap: 0; }
-      .tag-card-top input[type=checkbox] { display: none !important; }
-      .tag-name { font-size: 11pt; font-weight: 700; color: #000 !important; line-height: 1.35; }
-      .tag-price { font-size: 17pt; font-weight: 900; color: #000 !important; }
-      .store-name { font-size: 8pt; color: #555; margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
-      .tag-qty { display: none !important; }
+      body.mode-sheet .tag-card-top input[type=checkbox] { display: none !important; }
+      body.mode-sheet .tag-card-top { gap: 0; }
+      body.mode-sheet .tag-name { font-size: 10pt; font-weight: 700; color: #000 !important; line-height: 1.35; }
+      body.mode-sheet .tag-price { font-size: 16pt; font-weight: 900; color: #000 !important; }
+      body.mode-sheet .tag-store { font-size: 7pt; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+      body.mode-sheet .tag-qty { display: none !important; }
+      body.mode-sheet .empty { display: none !important; }
+
+      /* ════════════════════════════════════════════════════════
+         PRINT — LABEL MODE (Phomemo M110, 57mm wide)
+      ════════════════════════════════════════════════════════ */
+      body.mode-label { font-family: Arial, sans-serif; background: #fff !important; color: #000 !important; }
+      body.mode-label header,
+      body.mode-label .controls,
+      body.mode-label .mode-row,
+      body.mode-label .no-print { display: none !important; }
+
+      body.mode-label .tag-grid {
+        max-width: 100%; margin: 0; padding: 0;
+        display: block;
+      }
+      body.mode-label .tag-card { display: none !important; }
+      body.mode-label .tag-card.selected {
+        display: flex !important;
+        flex-direction: column;
+        background: #fff !important;
+        border: none !important;
+        border-radius: 0;
+        padding: 3mm 3mm 2mm;
+        gap: 2px;
+        width: 51mm;
+        page-break-after: always;
+        break-after: page;
+      }
+      body.mode-label .tag-card.selected:last-child {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      body.mode-label .tag-card-top input[type=checkbox] { display: none !important; }
+      body.mode-label .tag-card-top { gap: 0; }
+      body.mode-label .tag-name {
+        font-size: 9pt;
+        font-weight: 700;
+        color: #000 !important;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      body.mode-label .tag-price {
+        font-size: 18pt;
+        font-weight: 900;
+        color: #000 !important;
+        margin-top: 2mm;
+        letter-spacing: 0.5px;
+      }
+      body.mode-label .tag-store {
+        font-size: 6pt;
+        color: #555;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-top: 1mm;
+        border-top: 0.5pt solid #ccc;
+        padding-top: 1mm;
+      }
+      body.mode-label .tag-qty { display: none !important; }
+      body.mode-label .empty { display: none !important; }
     }
   </style>
+
+  <!-- Dynamic @page size injected by JS based on selected mode -->
+  <style id="page-size-style">
+    @media print { @page { size: A4; margin: 10mm; } }
+  </style>
 </head>
-<body>
+<body class="mode-sheet">
 
 <header>
   <h1>Price Tags</h1>
@@ -207,6 +321,13 @@ function fmt_price($n) {
   <span class="count-badge" id="count-badge">0 selected</span>
 </div>
 
+<div class="mode-row no-print">
+  <span class="mode-label">Print on:</span>
+  <button class="mode-btn active" id="mode-sheet" onclick="setMode('sheet')">A4 Sheet (3 per row)</button>
+  <button class="mode-btn" id="mode-label" onclick="setMode('label')">Label Printer — Phomemo M110 (57mm)</button>
+  <span class="mode-hint" id="mode-hint">Multiple tags per page, cut apart after printing</span>
+</div>
+
 <div class="tag-grid" id="tag-grid">
 <?php foreach ($products as $p):
   $name  = htmlspecialchars($p['name'] ?? '');
@@ -220,7 +341,7 @@ function fmt_price($n) {
       <span class="tag-name"><?= $name ?></span>
     </div>
     <div class="tag-price"><?= $price ?></div>
-    <div class="store-name" style="font-size:10px;color:#555;letter-spacing:1px;text-transform:uppercase;">American Select</div>
+    <div class="tag-store">American Select</div>
     <div class="tag-qty">Stock: <?= $qty ?></div>
   </div>
 <?php endforeach; ?>
@@ -229,6 +350,26 @@ function fmt_price($n) {
 <div class="empty" id="empty-msg" style="display:none;">No products match your search.</div>
 
 <script>
+let currentMode = 'sheet';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.body.className = 'mode-' + mode;
+  document.getElementById('mode-sheet').classList.toggle('active', mode === 'sheet');
+  document.getElementById('mode-label').classList.toggle('active', mode === 'label');
+
+  const pageStyle = document.getElementById('page-size-style');
+  const hint = document.getElementById('mode-hint');
+
+  if (mode === 'label') {
+    pageStyle.textContent = '@media print { @page { size: 57mm 70mm; margin: 0; } }';
+    hint.textContent = 'One tag per label — make sure Phomemo M110 is set as your printer';
+  } else {
+    pageStyle.textContent = '@media print { @page { size: A4; margin: 10mm; } }';
+    hint.textContent = 'Multiple tags per page, cut apart after printing';
+  }
+}
+
 function toggleCard(card) {
   const cb = card.querySelector('.tag-check');
   cb.checked = !cb.checked;
@@ -253,7 +394,8 @@ function toggleSelectAll(checked) {
 function updateCount() {
   const n = document.querySelectorAll('.tag-card.selected').length;
   document.getElementById('count-badge').textContent = n + ' selected';
-  document.getElementById('print-btn').textContent = n > 0 ? 'Print ' + n + ' Tag' + (n !== 1 ? 's' : '') : 'Print Selected';
+  document.getElementById('print-btn').textContent =
+    n > 0 ? 'Print ' + n + ' Tag' + (n !== 1 ? 's' : '') : 'Print Selected';
 }
 
 function filterTags() {
