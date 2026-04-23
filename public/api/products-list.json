@@ -345,6 +345,16 @@
     "price": 4500
   },
   {
+    "name": "Cetaphil Baby Daily Lotion with Organic Calendula Vitamin E Sweet Almond & Sunflower Oils",
+    "quantity": 4,
+    "price": 8500
+  },
+  {
+    "name": "CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free",
+    "quantity": 3,
+    "price": 8000
+  },
+  {
     "name": "Febreze Air Freshener Spray, Odor-Fighting Room Spray, Linen & Sky",
     "quantity": 4,
     "price": 2000
@@ -763,15 +773,5 @@
     "name": "Rechargeable Digital Scale with USB Charging",
     "quantity": 4,
     "price": 10000
-  },
-  {
-    "name": "Cetaphil Baby Daily Lotion with Organic Calendula Vitamin E Sweet Almond & Sunflower Oils",
-    "quantity": 4,
-    "price": 8500
-  },
-  {
-    "name": "CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free",
-    "quantity": 3,
-    "price": 8000
   }
 ]
