@@ -26,7 +26,7 @@
 
   // Changes every 4 hours — 6 rotations per day
   function getSeed() {
-    return Math.floor(Date.now() / (1000 * 60 * 60 * 4));
+    return Math.floor(Date.now() / (1000 * 60 * 60 * 24));
   }
 
   let featured = [];
