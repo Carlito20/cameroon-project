@@ -54,13 +54,25 @@
     }
     .item-row {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 13px 20px; border-bottom: 1px solid #f5f5f5;
-      gap: 12px;
+      padding: 10px 20px; border-bottom: 1px solid #f5f5f5;
+      gap: 14px;
       animation: slideIn 0.25s ease;
     }
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(-6px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+    .item-img {
+      width: 64px; height: 64px; flex-shrink: 0;
+      border-radius: 8px; background: #f0f0f0;
+      object-fit: contain; padding: 4px;
+      display: block;
+    }
+    .item-img-placeholder {
+      width: 64px; height: 64px; flex-shrink: 0;
+      border-radius: 8px; background: #f0f0f0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; color: #ccc;
     }
     .item-name { font-size: 15px; font-weight: 600; color: #111; flex: 1; line-height: 1.3; }
     .item-qty  { font-size: 14px; color: #888; white-space: nowrap; }
@@ -236,6 +248,9 @@
     } else {
       itemsList.innerHTML = state.items.map(i => `
         <div class="item-row">
+          ${i.image
+            ? `<img class="item-img" src="${esc(i.image)}" alt="" loading="lazy">`
+            : `<div class="item-img-placeholder">🛍</div>`}
           <span class="item-name">${esc(i.name)}</span>
           <span class="item-qty">×${i.qty}</span>
           <span class="item-line">${i.price ? fmt(i.price * i.qty) : '—'}</span>

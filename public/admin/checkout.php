@@ -547,7 +547,7 @@ function addToCart(name, price, stock) {
       setScanStatus('⚠ Out of stock — 0 available for: ' + name.substring(0, 40), 'err');
       return;
     }
-    cart.push({ name, price, qty: 1, stock });
+    cart.push({ name, price, qty: 1, stock, image: catalogMap[name]?.images?.[0] || catalogMap[name]?.image || '' });
   }
   renderCart();
   broadcastDisplay();
@@ -580,7 +580,7 @@ function broadcastDisplay() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       active: cart.length > 0,
-      items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+      items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty, image: i.image || '' })),
       total,
       payment: selectedPayment
     })
