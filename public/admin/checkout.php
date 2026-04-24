@@ -451,7 +451,7 @@ if ($fromOrderId) {
       <span class="receipt-total-lbl">TOTAL</span>
       <span class="receipt-total-amt" id="receipt-total"></span>
     </div>
-    <div style="margin-top:10px;font-size:12px;color:#555;">Paid via: <span id="receipt-payment" style="color:#d4af37;font-weight:700;"></span></div>
+    <div style="margin-top:10px;font-size:12px;color:#555;">Paid via / Payé via : <span id="receipt-payment" style="color:#d4af37;font-weight:700;"></span></div>
     <div class="receipt-btns">
       <button class="btn-print" id="btn-print" onclick="printReceipt()">🖨 Print</button>
       <a class="btn-whatsapp" id="btn-whatsapp" href="#" target="_blank" rel="noopener">
@@ -768,7 +768,7 @@ function showReceipt(items) {
     html += `<div class="receipt-row">
       <div>
         <div class="receipt-item-name">${esc(item.name.length > 55 ? item.name.substring(0,55)+'…' : item.name)}</div>
-        <div class="receipt-item-meta">×${item.qty}  ·  ${item.price ? item.price.toLocaleString() + ' FCFA each' : ''}</div>
+        <div class="receipt-item-meta">×${item.qty}  ·  ${item.price ? item.price.toLocaleString() + ' FCFA each / l\'unité' : ''}</div>
       </div>
       <div class="receipt-item-amt">${item.price ? line.toLocaleString() + ' FCFA' : '—'}</div>
     </div>`;
@@ -786,7 +786,7 @@ function showReceipt(items) {
     waMsg += '- ' + item.name + '\n';
     waMsg += '  x' + item.qty + '  -  ' + (item.price ? line.toLocaleString() + ' FCFA' : '-') + '\n';
   });
-  waMsg += '\n*TOTAL: ' + total.toLocaleString() + ' FCFA*\nPaid via: ' + selectedPayment + '\n\nThank you for shopping with American Select!';
+  waMsg += '\n*TOTAL: ' + total.toLocaleString() + ' FCFA*\nPaid via / Payé via : ' + selectedPayment + '\n\nThank you for shopping with American Select!\nMerci de votre visite chez American Select !';
   document.getElementById('btn-whatsapp').href = 'https://wa.me/?text=' + encodeURIComponent(waMsg);
 
   // WhatsApp confirmation button
@@ -800,13 +800,14 @@ function showReceipt(items) {
       msgLines += `- ${item.name} x${item.qty}${item.price ? ' - ' + line.toLocaleString() + ' FCFA' : ''}\n`;
     });
     const waMsg =
-      `*Payment Received - American Select*\n` +
-      `Order Ref: ${document.getElementById('receipt-date').textContent}\n\n` +
+      `*Payment Received / Paiement Reçu - American Select*\n` +
+      `Order Ref / Réf : ${document.getElementById('receipt-date').textContent}\n\n` +
       msgLines +
       `\n*Total: ${total.toLocaleString()} FCFA*\n` +
-      `Paid via: ${selectedPayment}\n\n` +
+      `Paid via / Payé via : ${selectedPayment}\n\n` +
       `Thank you for shopping with American Select!\n` +
-      `Questions? Call/WhatsApp:\n` +
+      `Merci de votre visite chez American Select !\n` +
+      `Questions? Call/WhatsApp / Appelez/WhatsApp :\n` +
       `MTN: 679 457 181 | Orange: 686 271 567`;
     confirmBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}`;
     confirmBtn.style.display = 'flex';
@@ -831,6 +832,7 @@ function showReceipt(items) {
        <img src="/images/as-logo.jpeg" alt="American Select" style="height:72px;object-fit:contain;display:block;margin:0 auto 8px;">
        <h2 style="font-size:17px;letter-spacing:1px;margin-bottom:2px;">AMERICAN SELECT</h2>
        <p style="font-size:11px;color:#555;margin:0;">Quality Imports from the USA &amp; Canada</p>
+       <p style="font-size:10px;color:#777;margin:1px 0 0;font-style:italic;">Importations de qualité des USA &amp; Canada</p>
        <p style="font-size:11px;color:#555;margin:4px 0 0;">Yaoundé, Cameroon</p>
        <p style="font-size:11px;color:#555;margin:2px 0 0;">MTN: 679 457 181 &nbsp;|&nbsp; Orange: 686 271 567</p>
        <p style="font-size:11px;color:#555;margin:2px 0 0;">americanselect.net</p>
@@ -840,7 +842,7 @@ function showReceipt(items) {
     items.map(item => {
       const line = item.price * item.qty;
       return `<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
-        <div><div>${esc(item.name)}</div><div style="color:#888;">×${item.qty} @ ${item.price.toLocaleString()} FCFA</div></div>
+        <div><div>${esc(item.name)}</div><div style="color:#888;">×${item.qty} @ ${item.price.toLocaleString()} FCFA / l'unité</div></div>
         <div style="font-weight:bold;">${line.toLocaleString()} FCFA</div>
       </div>`;
     }).join('') +
@@ -848,9 +850,10 @@ function showReceipt(items) {
      <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:bold;">
        <span>TOTAL</span><span>${total.toLocaleString()} FCFA</span>
      </div>
-     <p style="margin-top:6px;font-size:12px;color:#888;">Paid via: ${selectedPayment}</p>
+     <p style="margin-top:6px;font-size:12px;color:#888;">Paid via / Payé via : ${selectedPayment}</p>
      <hr style="border:none;border-top:1px dashed #aaa;margin:14px 0 8px;">
-     <p style="text-align:center;font-size:11px;color:#888;margin:0;">Thank you for shopping with American Select!</p>`;
+     <p style="text-align:center;font-size:11px;color:#888;margin:0;">Thank you for shopping with American Select!</p>
+     <p style="text-align:center;font-size:11px;color:#888;margin:3px 0 0;font-style:italic;">Merci de votre visite chez American Select !</p>`;
 }
 
 // ── Thermal receipt via QZ Tray (ESC/POS, 80mm) ──────────
@@ -889,6 +892,7 @@ async function printReceiptThermal() {
   d += GS + '!\x00';         // normal size
   d += ESC + 'E\x00';        // bold off
   d += 'Quality Imports from USA & Canada' + LF;
+  d += 'Importations de qualite des USA & Canada' + LF;
   d += 'americanselect.net' + LF;
   d += 'MTN: 679 457 181  |  Orange: 686 271 567' + LF;
   d += 'Yaounde, Cameroon' + LF;
@@ -916,13 +920,15 @@ async function printReceiptThermal() {
   d += ESC + 'E\x01';        // bold on
   d += padLine('TOTAL', fmt(total)) + LF;
   d += ESC + 'E\x00';        // bold off
-  d += 'Paid via: ' + selectedPayment + LF;
+  d += 'Paid via / Paye via : ' + selectedPayment + LF;
 
   // ── Footer ────────────────────────────────────────────────
   d += dashes() + LF;
   d += ESC + 'a\x01';        // center
   d += 'Thank you for shopping with' + LF;
   d += 'American Select!' + LF;
+  d += 'Merci de votre visite chez' + LF;
+  d += 'American Select !' + LF;
   d += LF + LF + LF;
 
   // ── Cut ───────────────────────────────────────────────────
