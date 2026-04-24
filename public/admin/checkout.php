@@ -1206,7 +1206,23 @@ async function syncOfflineQueue() {
         if (!d.success) ok = false;
       } catch { ok = false; }
     }
-    if (!ok) remaining.push(sale);
+    if (ok) {
+      // Save to order history with the original sale timestamp
+      const saleTime = new Date(sale.timestamp).toISOString().replace('T', ' ').substring(0, 19);
+      fetch('/api/orders.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'pos_sale',
+          items: sale.items.map(i => ({ name: i.name, quantity: i.qty, price: i.price })),
+          total: sale.total,
+          payment_method: sale.payment,
+          sale_time: saleTime
+        })
+      }).catch(() => {});
+    } else {
+      remaining.push(sale);
+    }
   }
 
   saveOfflineQueue(remaining);

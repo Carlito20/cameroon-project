@@ -242,11 +242,19 @@ if ($action === 'pos_sale' && $method === 'POST') {
         echo json_encode(['error' => 'Invalid data']); exit;
     }
 
+    $saleTime = $data['sale_time'] ?? null;
+    if ($saleTime && !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $saleTime)) $saleTime = null;
+
     try {
         $pdo      = getPdo();
         $orderRef = 'POS-' . date('ymd') . '-' . strtoupper(substr(uniqid(), -5));
-        $pdo->prepare('INSERT INTO pending_orders (order_ref, customer_name, customer_phone, payment_method, items, total, status, completed_at) VALUES (?, ?, ?, ?, ?, ?, "completed", NOW())')
-            ->execute([$orderRef, $customerName ?: null, $customerPhone ?: null, $paymentMethod, json_encode($items), $total]);
+        if ($saleTime) {
+            $pdo->prepare('INSERT INTO pending_orders (order_ref, customer_name, customer_phone, payment_method, items, total, status, created_at, completed_at) VALUES (?, ?, ?, ?, ?, ?, "completed", ?, ?)')
+                ->execute([$orderRef, $customerName ?: null, $customerPhone ?: null, $paymentMethod, json_encode($items), $total, $saleTime, $saleTime]);
+        } else {
+            $pdo->prepare('INSERT INTO pending_orders (order_ref, customer_name, customer_phone, payment_method, items, total, status, completed_at) VALUES (?, ?, ?, ?, ?, ?, "completed", NOW())')
+                ->execute([$orderRef, $customerName ?: null, $customerPhone ?: null, $paymentMethod, json_encode($items), $total]);
+        }
 
         echo json_encode(['success' => true, 'order_ref' => $orderRef]);
     } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
