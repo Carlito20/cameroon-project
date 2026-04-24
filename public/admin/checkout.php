@@ -66,6 +66,13 @@ if ($fromOrderId) {
       -webkit-tap-highlight-color: transparent;
     }
     .back-btn:hover { color: #ccc; border-color: #555; }
+    .btn-display {
+      background: transparent; color: #6dbf6d; border: 1px solid #1a3a1a; border-radius: 6px;
+      padding: 7px 13px; font-size: 13px; font-weight: 700; cursor: pointer;
+      min-height: 44px; touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-display:hover { background: #0d1a0d; }
     .btn-new {
       background: transparent; color: #d4af37; border: 1px solid #3a3010; border-radius: 6px;
       padding: 7px 13px; font-size: 13px; font-weight: 700; cursor: pointer;
@@ -345,6 +352,7 @@ if ($fromOrderId) {
   <div><h1>AMERICAN SELECT</h1><span>POS Checkout</span></div>
   <div class="header-btns">
     <span class="drawer-status" id="drawer-status" title="Cash drawer connection via QZ Tray">⚫ Drawer</span>
+    <button class="btn-display" onclick="openCustomerDisplay()" title="Open customer-facing display">🖥 Customer Display</button>
     <button class="btn-new" id="btn-new" onclick="newSale()">＋ New Sale</button>
     <a href="dashboard.php" class="back-btn">← Dashboard</a>
   </div>
@@ -570,6 +578,18 @@ function removeItem(idx) {
   renderCart();
   broadcastDisplay();
   if (!cart.length) document.getElementById('btn-new').style.display = 'none';
+}
+
+// ── Open customer display as chromeless popup ─────────────
+let customerDisplayWin = null;
+function openCustomerDisplay() {
+  const w = screen.availWidth, h = screen.availHeight;
+  const features = `toolbar=no,menubar=no,location=no,status=no,scrollbars=no,resizable=yes,width=${w},height=${h},left=0,top=0`;
+  if (customerDisplayWin && !customerDisplayWin.closed) {
+    customerDisplayWin.focus();
+  } else {
+    customerDisplayWin = window.open('/admin/customer-display.php', 'CustomerDisplay', features);
+  }
 }
 
 // ── Broadcast to customer display ────────────────────────
