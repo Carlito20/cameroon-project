@@ -196,7 +196,7 @@ if ($fromOrderId) {
     .ci-stock-warn { font-size: 11px; color: #d4884a; margin-top: 2px; }
     .qty-ctrl { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .qty-btn {
-      width: 30px; height: 30px; min-width: 30px; min-height: 30px;
+      width: 44px; height: 44px; min-width: 44px; min-height: 44px;
       border-radius: 50%; background: #1a1a1a; border: 1px solid #2a2a2a;
       color: #ccc; font-size: 17px; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
@@ -268,6 +268,7 @@ if ($fromOrderId) {
       position: fixed; inset: 0; z-index: 300;
       background: rgba(0,0,0,0.93);
       -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
       display: none; align-items: center; justify-content: center;
       padding: 20px;
       padding-top: calc(20px + env(safe-area-inset-top, 0px));
@@ -317,6 +318,14 @@ if ($fromOrderId) {
       -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
     }
 
+    @media (max-width: 480px) {
+      .cart-item { flex-wrap: wrap; gap: 6px; }
+      .pay-methods { gap: 6px; }
+      .pay-btn { font-size: 12px; padding: 8px 10px; }
+      .receipt-card { padding: 20px 14px; }
+      .receipt-btns { gap: 8px; }
+      .btn-print, .btn-whatsapp, .btn-newsale, .btn-wa-confirm-receipt { font-size: 13px; padding: 10px; }
+    }
     @media print {
       body > *:not(.print-area) { display: none !important; }
       .print-area { display: block !important; color: #000; background: #fff; padding: 20px; }

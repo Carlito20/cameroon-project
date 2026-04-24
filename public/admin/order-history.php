@@ -142,6 +142,7 @@ function buildWaReceiptLink(array $o): string {
       -webkit-user-select: none; user-select: none;
     }
     .tab:hover:not([class*="tab-"]) { color: #ccc; border-color: #555; }
+    .tab:active { opacity: 0.75; }
     .tab-all       { background: #d4af37; color: #000; border-color: #d4af37; }
     .tab-completed { background: #0d1a0d; color: #6dbf6d; border-color: #1a3a1a; }
     .tab-cancelled { background: #1a0d0d; color: #e05c5c; border-color: #3a1a1a; }
@@ -233,6 +234,7 @@ function buildWaReceiptLink(array $o): string {
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.85);
       -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
       z-index: 200; display: none; align-items: center; justify-content: center;
       padding: 20px;
       padding-top: calc(20px + env(safe-area-inset-top, 0px));
@@ -289,6 +291,13 @@ function buildWaReceiptLink(array $o): string {
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    @media (max-width: 480px) {
+      .filter-tabs, .date-tabs { gap: 4px; }
+      .tab { font-size: 12px; padding: 7px 10px; }
+      table { font-size: 13px; }
+      th, td { padding: 8px 8px; }
+      .btn-print, .btn-wa, .btn-damaged, .btn-returned { font-size: 12px; padding: 8px 10px; }
+    }
     @media print {
       body > *:not(#print-area) { display: none !important; }
       #print-area { display: block !important; padding: 10mm 15mm; color: #000; background: #fff; }
