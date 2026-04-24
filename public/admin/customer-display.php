@@ -64,15 +64,15 @@
     }
     .item-img {
       width: 64px; height: 64px; flex-shrink: 0;
-      border-radius: 8px; background: #f0f0f0;
+      border-radius: 8px; background: transparent;
       object-fit: contain; padding: 4px;
       display: block;
+      opacity: 0;
+      transition: opacity 0.2s ease;
     }
-    .item-img-placeholder {
-      width: 64px; height: 64px; flex-shrink: 0;
-      border-radius: 8px; background: #f0f0f0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px; color: #ccc;
+    .item-img.loaded {
+      opacity: 1;
+      background: #f0f0f0;
     }
     .item-name { font-size: 15px; font-weight: 600; color: #111; flex: 1; line-height: 1.3; }
     .item-qty  { font-size: 14px; color: #888; white-space: nowrap; }
@@ -249,8 +249,8 @@
       itemsList.innerHTML = state.items.map(i => `
         <div class="item-row">
           ${i.image
-            ? `<img class="item-img" src="${esc(i.image)}" alt="" loading="lazy">`
-            : `<div class="item-img-placeholder">🛍</div>`}
+            ? `<img class="item-img" src="${esc(i.image)}" alt="" onload="this.classList.add('loaded')" onerror="this.style.display='none'">`
+            : ''}
           <span class="item-name">${esc(i.name)}</span>
           <span class="item-qty">×${i.qty}</span>
           <span class="item-line">${i.price ? fmt(i.price * i.qty) : '—'}</span>
