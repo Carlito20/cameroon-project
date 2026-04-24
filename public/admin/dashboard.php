@@ -16,15 +16,19 @@ if (file_exists($jsonPath)) {
 // Merge in manually-added custom products
 try {
     $pdoCustom = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-    $pdoCustom->exec("CREATE TABLE IF NOT EXISTS custom_products (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(500) NOT NULL UNIQUE, price INT NOT NULL DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
-    $customRows = $pdoCustom->query('SELECT name, price FROM custom_products')->fetchAll(PDO::FETCH_ASSOC);
+    $pdoCustom->exec("CREATE TABLE IF NOT EXISTS custom_products (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(500) NOT NULL UNIQUE, price INT NOT NULL DEFAULT 0, flagged_for_site TINYINT(1) NOT NULL DEFAULT 1, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
+    $customRows = $pdoCustom->query('SELECT name, price, flagged_for_site FROM custom_products')->fetchAll(PDO::FETCH_ASSOC);
     $existingNames = array_column($products, 'name');
+    $flaggedProducts = [];
     foreach ($customRows as $row) {
         if (!in_array($row['name'], $existingNames)) {
             $products[] = ['name' => $row['name'], 'price' => (int)$row['price']];
         }
+        if ($row['flagged_for_site']) {
+            $flaggedProducts[] = $row['name'];
+        }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) { $flaggedProducts = []; }
 
 // Load live DB stock
 $dbStock = [];
@@ -164,6 +168,26 @@ try {
       min-height: 44px;
     }
     .search-box:focus { border-color: #d4af37; }
+    .pending-site-banner {
+      background: #1a1400; border: 1px solid #3a2e00; border-radius: 10px;
+      padding: 16px 18px; margin-bottom: 20px;
+    }
+    .pending-site-banner h3 { color: #d4af37; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+    .pending-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid #2a2400; gap: 10px;
+    }
+    .pending-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .pending-item-name { font-size: 13px; color: #ccc; flex: 1; }
+    .pending-item-price { font-size: 12px; color: #888; white-space: nowrap; }
+    .done-btn {
+      background: transparent; color: #6dbf6d; border: 1px solid #1a3a1a;
+      border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; min-height: 36px;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .done-btn:hover { background: #0d1a0d; }
     .db-error {
       background: #2a0a0a;
       border: 1px solid #5c1a1a;
@@ -356,6 +380,19 @@ try {
     </div>
   <?php endif; ?>
 
+  <!-- Pending site addition banner -->
+  <?php if (!empty($flaggedProducts)): ?>
+  <div class="pending-site-banner" id="pending-site-banner">
+    <h3>⚠️ <?= count($flaggedProducts) ?> product<?= count($flaggedProducts) > 1 ? 's' : '' ?> need<?= count($flaggedProducts) === 1 ? 's' : '' ?> to be added to the site</h3>
+    <?php foreach ($flaggedProducts as $name): ?>
+    <div class="pending-item" id="pending-<?= htmlspecialchars(base64_encode($name)) ?>">
+      <span class="pending-item-name"><?= htmlspecialchars($name) ?></span>
+      <button class="done-btn" onclick="markDone(<?= htmlspecialchars(json_encode($name)) ?>, this)">✓ Added to Site</button>
+    </div>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
+
   <!-- Desktop Barcode Scanner -->
   <div class="scanner-section" id="scanner-section">
     <div class="scanner-header" onclick="toggleScanner()">
@@ -455,6 +492,30 @@ try {
 </div>
 
 <script>
+function markDone(productName, btn) {
+  btn.disabled = true; btn.textContent = 'Saving...';
+  fetch('/api/barcode.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'unflag_product', product_name: productName })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      const row = btn.closest('.pending-item');
+      row.style.opacity = '0'; row.style.transition = 'opacity 0.3s';
+      setTimeout(() => {
+        row.remove();
+        const banner = document.getElementById('pending-site-banner');
+        if (banner && banner.querySelectorAll('.pending-item').length === 0) banner.remove();
+      }, 300);
+    } else {
+      btn.disabled = false; btn.textContent = '✓ Added to Site';
+    }
+  })
+  .catch(() => { btn.disabled = false; btn.textContent = '✓ Added to Site'; });
+}
+
 function saveStock(btn) {
   const row = btn.closest('tr');
   const input = row.querySelector('.qty-input');

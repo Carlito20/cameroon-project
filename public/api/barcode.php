@@ -38,6 +38,7 @@ function getPdo() {
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(500) NOT NULL UNIQUE,
         price INT NOT NULL DEFAULT 0,
+        flagged_for_site TINYINT(1) NOT NULL DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
     return $pdo;
@@ -184,6 +185,19 @@ if ($method === 'POST') {
                     ->execute([$productName, 'received', $initQty, 0, $initQty, 'Initial stock — manually added']);
             }
             echo json_encode(['success' => true, 'quantity' => $initQty, 'price' => $price]);
+        } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
+        exit;
+    }
+
+    // Mark custom product as added to site (clear flag)
+    if ($action === 'unflag_product') {
+        $productName = trim($data['product_name'] ?? '');
+        if (!$productName) { echo json_encode(['error' => 'Missing product name']); exit; }
+        try {
+            $pdo = getPdo();
+            $pdo->prepare('UPDATE custom_products SET flagged_for_site = 0 WHERE name = ?')
+                ->execute([$productName]);
+            echo json_encode(['success' => true]);
         } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
         exit;
     }
