@@ -154,7 +154,18 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     .confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .divider { border:none; border-top:1px solid #1a1a1a; margin:16px 0; }
 
-    /* Assign form */
+    /* Assign / Create tabs */
+    .tab-row { display: flex; gap: 0; margin-bottom: 16px; border-radius: 8px; overflow: hidden; border: 1px solid #2a2a2a; }
+    .tab-btn {
+      flex: 1; padding: 10px 8px; background: #1a1a1a; color: #666; border: none;
+      font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; transition: background 0.15s, color 0.15s;
+    }
+    .tab-btn:first-child { border-right: 1px solid #2a2a2a; }
+    .tab-btn.active { background: #d4af37; color: #000; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
     .assign-label { font-size: 13px; color: #888; margin-bottom: 8px; display: block; }
     .assign-select {
       width: 100%; padding: 10px 12px; background: #1a1a1a; border: 1px solid #2a2a2a;
@@ -174,6 +185,14 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     }
     .assign-btn:hover { background: #e8c547; }
     .assign-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .new-product-input {
+      width: 100%; padding: 10px 12px; background: #1a1a1a; border: 1px solid #2a2a2a;
+      border-radius: 8px; color: #e0e0e0; font-size: 15px; outline: none;
+      -webkit-appearance: none; appearance: none; min-height: 44px; margin-bottom: 10px;
+      touch-action: manipulation;
+    }
+    .new-product-input:focus { border-color: #d4af37; }
+    .new-product-input::placeholder { color: #444; }
     .scan-again-btn {
       background: transparent; color: #666; border: 1px solid #2a2a2a; border-radius: 8px;
       padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer;
@@ -259,15 +278,37 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     <div class="result-label">Unknown Barcode</div>
     <div class="result-barcode" id="assign-barcode"></div>
     <hr class="divider">
-    <label class="assign-label">Assign this barcode to a product:</label>
-    <select class="assign-select" id="assign-select">
-      <option value="">— Select product —</option>
-      <?php foreach ($products as $p): ?>
-        <option value="<?= htmlspecialchars($p['name']) ?>"><?= htmlspecialchars($p['name']) ?></option>
-      <?php endforeach; ?>
-    </select>
-    <button class="assign-btn" onclick="assignBarcode()">Assign Product</button>
-    <button class="scan-again-btn" onclick="resetScanner()">📷 Scan Another</button>
+
+    <!-- Tabs -->
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-assign-btn" onclick="switchTab('assign')">Assign to Existing</button>
+      <button class="tab-btn" id="tab-create-btn" onclick="switchTab('create')">+ Create New Product</button>
+    </div>
+
+    <!-- Tab: Assign to existing -->
+    <div class="tab-pane active" id="tab-assign">
+      <label class="assign-label">Select a product to link this barcode to:</label>
+      <select class="assign-select" id="assign-select">
+        <option value="">— Select product —</option>
+        <?php foreach ($products as $p): ?>
+          <option value="<?= htmlspecialchars($p['name']) ?>"><?= htmlspecialchars($p['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+      <button class="assign-btn" onclick="assignBarcode()">Assign Product</button>
+    </div>
+
+    <!-- Tab: Create new product -->
+    <div class="tab-pane" id="tab-create">
+      <label class="assign-label">Product name:</label>
+      <input type="text" class="new-product-input" id="new-product-name" placeholder="e.g. Dove Body Wash 500ml" autocorrect="off" autocapitalize="words">
+      <label class="assign-label">Price (FCFA):</label>
+      <input type="number" class="new-product-input" id="new-product-price" placeholder="e.g. 3500" inputmode="numeric" min="0">
+      <label class="assign-label">Initial stock quantity:</label>
+      <input type="number" class="new-product-input" id="new-product-qty" placeholder="e.g. 5" inputmode="numeric" min="0" value="1">
+      <button class="assign-btn" id="create-product-btn" onclick="createNewProduct()">Create &amp; Assign Barcode</button>
+    </div>
+
+    <button class="scan-again-btn" onclick="resetScanner()" style="margin-top:10px;">📷 Scan Another</button>
   </div>
 </div>
 
@@ -400,6 +441,43 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     .catch(() => { setStatus('Network error', 'error'); btn.disabled = false; btn.textContent = 'Try Again'; });
   }
 
+  function switchTab(tab) {
+    document.getElementById('tab-assign').classList.toggle('active', tab === 'assign');
+    document.getElementById('tab-create').classList.toggle('active', tab === 'create');
+    document.getElementById('tab-assign-btn').classList.toggle('active', tab === 'assign');
+    document.getElementById('tab-create-btn').classList.toggle('active', tab === 'create');
+  }
+
+  function createNewProduct() {
+    const barcode = document.getElementById('assign-card').dataset.barcode;
+    const name    = document.getElementById('new-product-name').value.trim();
+    const price   = parseInt(document.getElementById('new-product-price').value, 10) || 0;
+    const qty     = parseInt(document.getElementById('new-product-qty').value, 10) || 0;
+    if (!name) { setStatus('Please enter a product name', 'error'); return; }
+    const btn = document.getElementById('create-product-btn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    fetch('/api/barcode.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'create_product', barcode, product_name: name, price, quantity: qty })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        setStatus('✓ "' + name + '" created — stock: ' + data.quantity, 'found');
+        document.getElementById('assign-card').classList.remove('visible');
+        document.getElementById('new-product-name').value = '';
+        document.getElementById('new-product-price').value = '';
+        document.getElementById('new-product-qty').value = '1';
+        btn.textContent = '✓ Created';
+      } else {
+        setStatus('Error: ' + (data.error || 'Failed'), 'error');
+        btn.disabled = false; btn.textContent = 'Create & Assign Barcode';
+      }
+    })
+    .catch(() => { setStatus('Network error', 'error'); btn.disabled = false; btn.textContent = 'Create & Assign Barcode'; });
+  }
+
   function assignBarcode() {
     const barcode = document.getElementById('assign-card').dataset.barcode;
     const productName = document.getElementById('assign-select').value;
@@ -429,6 +507,10 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     if (codeReader) { codeReader.reset(); codeReader = null; }
     document.getElementById('scanner-input').value = '';
     document.getElementById('scanner-input').focus();
+    // Reset tab back to assign
+    switchTab('assign');
+    const createBtn = document.getElementById('create-product-btn');
+    if (createBtn) { createBtn.disabled = false; createBtn.textContent = 'Create & Assign Barcode'; }
   }
 </script>
 </body>

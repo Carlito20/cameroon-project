@@ -13,6 +13,18 @@ $products = [];
 if (file_exists($jsonPath)) {
     $products = json_decode(file_get_contents($jsonPath), true) ?? [];
 }
+// Merge in manually-added custom products
+try {
+    $pdoCustom = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $pdoCustom->exec("CREATE TABLE IF NOT EXISTS custom_products (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(500) NOT NULL UNIQUE, price INT NOT NULL DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
+    $customRows = $pdoCustom->query('SELECT name, price FROM custom_products')->fetchAll(PDO::FETCH_ASSOC);
+    $existingNames = array_column($products, 'name');
+    foreach ($customRows as $row) {
+        if (!in_array($row['name'], $existingNames)) {
+            $products[] = ['name' => $row['name'], 'price' => (int)$row['price']];
+        }
+    }
+} catch (Exception $e) {}
 
 // Load live DB stock
 $dbStock = [];

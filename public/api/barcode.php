@@ -33,6 +33,13 @@ function getPdo() {
         note VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
+    // Manually-added products (no site deploy needed)
+    $pdo->exec("CREATE TABLE IF NOT EXISTS custom_products (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(500) NOT NULL UNIQUE,
+        price INT NOT NULL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
     return $pdo;
 }
 
@@ -44,12 +51,23 @@ function getCurrentStock($pdo, $productName) {
 }
 
 function getProductPrice($productName) {
+    // Check products-list.json first
     $jsonPath = __DIR__ . '/products-list.json';
-    if (!file_exists($jsonPath)) return 0;
-    $products = json_decode(file_get_contents($jsonPath), true) ?? [];
-    foreach ($products as $p) {
-        if ($p['name'] === $productName) return (int)($p['price'] ?? 0);
+    if (file_exists($jsonPath)) {
+        $products = json_decode(file_get_contents($jsonPath), true) ?? [];
+        foreach ($products as $p) {
+            if ($p['name'] === $productName) return (int)($p['price'] ?? 0);
+        }
     }
+    // Fall back to custom_products table
+    try {
+        global $pdoInstance;
+        if (!$pdoInstance) $pdoInstance = getPdo();
+        $stmt = $pdoInstance->prepare('SELECT price FROM custom_products WHERE name = ? LIMIT 1');
+        $stmt->execute([$productName]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) return (int)$row['price'];
+    } catch (Exception $e) {}
     return 0;
 }
 
@@ -136,6 +154,36 @@ if ($method === 'POST') {
                 ->execute([$productName, $txAction, $qty, $stockBefore, $stockAfter, $note ?: null]);
 
             echo json_encode(['success' => true, 'stock_before' => $stockBefore, 'stock_after' => $stockAfter]);
+        } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
+        exit;
+    }
+
+    // Create a brand-new product manually (no site deploy needed)
+    if ($action === 'create_product') {
+        $barcode     = trim($data['barcode'] ?? '');
+        $productName = trim($data['product_name'] ?? '');
+        $price       = (int)($data['price'] ?? 0);
+        $initQty     = (int)($data['quantity'] ?? 0);
+        if (!$productName) { echo json_encode(['error' => 'Product name is required']); exit; }
+        try {
+            $pdo = getPdo();
+            // Save to custom_products
+            $pdo->prepare('INSERT INTO custom_products (name, price) VALUES (?, ?) ON DUPLICATE KEY UPDATE price = VALUES(price)')
+                ->execute([$productName, $price]);
+            // Set initial stock
+            $pdo->prepare('INSERT INTO product_stock (product_name, quantity) VALUES (?, ?) ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)')
+                ->execute([$productName, $initQty]);
+            // Assign barcode if provided
+            if ($barcode) {
+                $pdo->prepare('INSERT INTO barcode_map (barcode, product_name) VALUES (?, ?) ON DUPLICATE KEY UPDATE product_name = VALUES(product_name)')
+                    ->execute([$barcode, $productName]);
+            }
+            // Log initial stock as received
+            if ($initQty > 0) {
+                $pdo->prepare('INSERT INTO stock_transactions (product_name, action, quantity, stock_before, stock_after, note) VALUES (?, ?, ?, ?, ?, ?)')
+                    ->execute([$productName, 'received', $initQty, 0, $initQty, 'Initial stock — manually added']);
+            }
+            echo json_encode(['success' => true, 'quantity' => $initQty, 'price' => $price]);
         } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
         exit;
     }
