@@ -230,6 +230,29 @@ if (in_array($action, ['damaged','returned']) && $method === 'POST') {
     exit;
 }
 
+// ── POS SALE — record in-store sale as completed (stock already deducted by barcode.php) ──
+if ($action === 'pos_sale' && $method === 'POST') {
+    $items         = $data['items'] ?? [];
+    $total         = (float)($data['total'] ?? 0);
+    $paymentMethod = substr(trim($data['payment_method'] ?? 'Cash'), 0, 50);
+    $customerName  = substr(trim($data['customer_name'] ?? ''), 0, 100);
+    $customerPhone = substr(trim($data['customer_phone'] ?? ''), 0, 30);
+
+    if (empty($items) || $total < 0) {
+        echo json_encode(['error' => 'Invalid data']); exit;
+    }
+
+    try {
+        $pdo      = getPdo();
+        $orderRef = 'POS-' . date('ymd') . '-' . strtoupper(substr(uniqid(), -5));
+        $pdo->prepare('INSERT INTO pending_orders (order_ref, customer_name, customer_phone, payment_method, items, total, status, completed_at) VALUES (?, ?, ?, ?, ?, ?, "completed", NOW())')
+            ->execute([$orderRef, $customerName ?: null, $customerPhone ?: null, $paymentMethod, json_encode($items), $total]);
+
+        echo json_encode(['success' => true, 'order_ref' => $orderRef]);
+    } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
+    exit;
+}
+
 // ── CLEAR ALL orders — remove before going live ───────────────────────────
 if ($action === 'clear_all' && $method === 'POST') {
     try {

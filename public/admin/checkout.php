@@ -732,6 +732,18 @@ async function doCheckout() {
         body: JSON.stringify({ action: 'complete', id: pendingOrderId, note: 'Processed via checkout' })
       }).catch(() => {});
       pendingOrderId = null;
+    } else {
+      // Direct POS sale — save to order history as completed
+      fetch('/api/orders.php', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'pos_sale',
+          items: snapshot.map(i => ({ name: i.name, quantity: i.qty, price: i.price })),
+          total: total,
+          payment_method: selectedPayment,
+          customer_phone: customerPhone || ''
+        })
+      }).catch(() => {});
     }
     showReceipt(snapshot);
   } else {

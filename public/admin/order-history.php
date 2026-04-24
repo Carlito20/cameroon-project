@@ -365,7 +365,14 @@ function buildWaReceiptLink(array $o): string {
     <div class="order-card <?= htmlspecialchars($o['status']) ?>">
       <div class="order-head">
         <div>
-          <div class="order-ref"><?= htmlspecialchars($o['order_ref']) ?></div>
+          <div class="order-ref">
+            <?= htmlspecialchars($o['order_ref']) ?>
+            <?php if (str_starts_with($o['order_ref'], 'POS-')): ?>
+              <span style="margin-left:6px;font-size:10px;font-weight:700;background:#1a2e1a;color:#6dbf6d;border:1px solid #2a4a2a;border-radius:4px;padding:1px 5px;vertical-align:middle;">IN-STORE</span>
+            <?php else: ?>
+              <span style="margin-left:6px;font-size:10px;font-weight:700;background:#0d1a2e;color:#7b9fd4;border:1px solid #1a3050;border-radius:4px;padding:1px 5px;vertical-align:middle;">ONLINE</span>
+            <?php endif; ?>
+          </div>
           <?php if ($o['customer_name']): ?>
             <div class="order-customer">👤 <?= htmlspecialchars($o['customer_name']) ?></div>
           <?php endif; ?>
