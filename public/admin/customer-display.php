@@ -270,19 +270,19 @@
         payPanel.classList.add('mtn');
         document.getElementById('pay-label').textContent  = 'MTN Mobile Money';
         document.getElementById('pay-number').textContent = '679 457 181';
-        document.getElementById('pay-send').textContent   = 'Send payment to this number';
+        document.getElementById('pay-send').textContent   = 'Send payment to this number / Envoyez le paiement à ce numéro';
         document.getElementById('pay-icon').textContent   = '🟡';
       } else if (method.includes('Orange')) {
         payPanel.classList.add('orange');
         document.getElementById('pay-label').textContent  = 'Orange Money';
         document.getElementById('pay-number').textContent = '686 271 567';
-        document.getElementById('pay-send').textContent   = 'Send payment to this number';
+        document.getElementById('pay-send').textContent   = 'Send payment to this number / Envoyez le paiement à ce numéro';
         document.getElementById('pay-icon').textContent   = '🟠';
       } else if (method.includes('Cash')) {
         payPanel.classList.add('cash');
-        document.getElementById('pay-label').textContent  = 'Cash Payment';
+        document.getElementById('pay-label').textContent  = 'Cash Payment / Paiement en espèces';
         document.getElementById('pay-number').textContent = fmt(state.total || 0);
-        document.getElementById('pay-send').textContent   = 'Amount due';
+        document.getElementById('pay-send').textContent   = 'Amount due / Montant dû';
         document.getElementById('pay-icon').textContent   = '💵';
       } else {
         payPanel.classList.add('other');
