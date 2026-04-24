@@ -768,13 +768,13 @@ function showReceipt(items) {
 
   // Build WhatsApp message
   const dateStr = document.getElementById('receipt-date').textContent;
-  let waMsg = '🧾 *AMERICAN SELECT*\n' + dateStr + '\n\n';
+  let waMsg = '*AMERICAN SELECT*\n' + dateStr + '\n\n';
   items.forEach(item => {
     const line = item.price * item.qty;
-    waMsg += '• ' + item.name + '\n';
-    waMsg += '  ×' + item.qty + '  ·  ' + (item.price ? line.toLocaleString() + ' FCFA' : '—') + '\n';
+    waMsg += '- ' + item.name + '\n';
+    waMsg += '  x' + item.qty + '  -  ' + (item.price ? line.toLocaleString() + ' FCFA' : '-') + '\n';
   });
-  waMsg += '\n*TOTAL: ' + total.toLocaleString() + ' FCFA*\n💳 Paid via: ' + selectedPayment + '\n\nThank you for shopping with American Select!';
+  waMsg += '\n*TOTAL: ' + total.toLocaleString() + ' FCFA*\nPaid via: ' + selectedPayment + '\n\nThank you for shopping with American Select!';
   document.getElementById('btn-whatsapp').href = 'https://wa.me/?text=' + encodeURIComponent(waMsg);
 
   // WhatsApp confirmation button
@@ -782,18 +782,17 @@ function showReceipt(items) {
   if (customerPhone) {
     let phone = customerPhone.replace(/\D/g, '');
     if (!phone.startsWith('237')) phone = '237' + phone;
-    const payIcon = selectedPayment.includes('MTN') ? '🟡' : selectedPayment.includes('Orange') ? '🟠' : '💵';
     let msgLines = '';
     items.forEach(item => {
       const line = item.price * item.qty;
-      msgLines += `• ${item.name} ×${item.qty}${item.price ? ' — ' + line.toLocaleString() + ' FCFA' : ''}\n`;
+      msgLines += `- ${item.name} x${item.qty}${item.price ? ' - ' + line.toLocaleString() + ' FCFA' : ''}\n`;
     });
     const waMsg =
-      `✅ *Payment Received — American Select*\n` +
+      `*Payment Received - American Select*\n` +
       `Order Ref: ${document.getElementById('receipt-date').textContent}\n\n` +
       msgLines +
       `\n*Total: ${total.toLocaleString()} FCFA*\n` +
-      `${payIcon} Paid via: ${selectedPayment}\n\n` +
+      `Paid via: ${selectedPayment}\n\n` +
       `Thank you for shopping with American Select!\n` +
       `Questions? Call/WhatsApp:\n` +
       `MTN: 679 457 181 | Orange: 686 271 567`;
