@@ -844,7 +844,7 @@ function showReceipt(items) {
        <img src="/images/as-logo.jpeg" alt="American Select" style="height:72px;object-fit:contain;display:block;margin:0 auto 8px;">
        <h2 style="font-size:17px;letter-spacing:1px;margin-bottom:2px;">AMERICAN SELECT</h2>
        <p style="font-size:11px;color:#555;margin:0;">Quality Imports from the USA &amp; Canada</p>
-       <p style="font-size:10px;color:#777;margin:1px 0 0;font-style:italic;">Importations de qualité des USA &amp; Canada</p>
+       <p style="font-size:10px;color:#777;margin:1px 0 0;font-style:italic;">Importations de qualité des États-Unis et Canada</p>
        <p style="font-size:11px;color:#555;margin:4px 0 0;">Yaoundé, Cameroon</p>
        <p style="font-size:11px;color:#555;margin:2px 0 0;">MTN: 679 457 181 &nbsp;|&nbsp; Orange: 686 271 567</p>
        <p style="font-size:11px;color:#555;margin:2px 0 0;">americanselect.net</p>
@@ -904,7 +904,7 @@ async function printReceiptThermal() {
   d += GS + '!\x00';         // normal size
   d += ESC + 'E\x00';        // bold off
   d += 'Quality Imports from USA & Canada' + LF;
-  d += 'Importations de qualite des USA & Canada' + LF;
+  d += 'Importations de qualite des Etats-Unis et Canada' + LF;
   d += 'americanselect.net' + LF;
   d += 'MTN: 679 457 181  |  Orange: 686 271 567' + LF;
   d += 'Yaounde, Cameroon' + LF;
