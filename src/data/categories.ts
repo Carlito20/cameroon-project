@@ -327,7 +327,7 @@ export const categories: Category[] = [
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Coconut Oil & Essential Oils",
-            images: ['/images/products/dr-teals-lotion-coconut1.webp', '/images/products/dr-teals-lotion-coconut2.webp'],
+            images: ['/images/products/dr-teals-lotion-coconut3.webp', '/images/products/dr-teals-lotion-coconut4.webp', '/images/products/dr-teals-lotion-coconut2.webp'],
             quantity: 3,
             price: 5000
           },
@@ -338,8 +338,8 @@ export const categories: Category[] = [
             price: 5000
           },
           {
-            name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Lavender Essential Oil",
-            images: ['/images/products/dr-teals-lotion-lavender1.webp', '/images/products/dr-teals-lotion-lavender2.webp'],
+            name: "Dr Teal's 24 Hour Moisture Body Lotion with Lavender Essential Oil",
+            images: ['/images/products/dr-teals-lotion-lavender1.webp', '/images/products/dr-teals-lotion-lavender2.webp', '/images/products/dr-teals-lotion-lavender3.webp'],
             quantity: 3,
             price: 5000
           },

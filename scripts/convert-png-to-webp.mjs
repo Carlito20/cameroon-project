@@ -68,6 +68,8 @@ const mappings = [
   // Dr Teal's Lotion - Coconut
   ["Images/Dr Teals/Dr Teal's 24 Hour Moisture+ Body Lotion, Coconut Oil & Essential Oils.png", 'dr-teals-lotion-coconut1.webp'],
   ["Images/Dr Teals/Dr Teal's 24 Hour Moisture+ Body Lotion, Coconut Oil & Essential Oils1.png", 'dr-teals-lotion-coconut2.webp'],
+  ["Images/Dr Teals/Dr Teal's Body Lotion, Moisture + Nourishing with Coconut Oil & Essential Oils.png", 'dr-teals-lotion-coconut3.webp'],
+  ["Images/Dr Teals/Dr Teal's Body Lotion, Moisture + Nourishing with Coconut Oil & Essential Oils1.png", 'dr-teals-lotion-coconut4.webp'],
 
   // Dr Teal's Lotion - Shea
   ["Images/Dr Teals/Dr Teal's Body Lotion, Shea Butter & Almond.png", 'dr-teals-lotion-shea1.webp'],
@@ -75,8 +77,9 @@ const mappings = [
   ["Images/Dr Teals/Dr Teal's Body Lotion, Shea Butter & Almond2.png", 'dr-teals-lotion-shea3.webp'],
 
   // Dr Teal's Lotion - Lavender
-  ["Images/Dr Teals/Dr Teal's 24 Hour Moisture+ Body Lotion, Lavender Essential Oil.png", 'dr-teals-lotion-lavender1.webp'],
-  ["Images/Dr Teals/Dr Teal's 24 Hour Moisture+ Body Lotion, Lavender Essential Oil1.png", 'dr-teals-lotion-lavender2.webp'],
+  ["Images/Dr Teals/Dr Teal's 24 Hour Moisture Body Lotion with Lavender Essential Oil.png", 'dr-teals-lotion-lavender1.webp'],
+  ["Images/Dr Teals/Dr Teal's 24 Hour Moisture Body Lotion with Lavender Essential Oil1.png", 'dr-teals-lotion-lavender2.webp'],
+  ["Images/Dr Teals/Dr Teal's 24 Hour Moisture Body Lotion with Lavender Essential Oil2.png", 'dr-teals-lotion-lavender3.webp'],
 
   // Vaseline Men Cooling
   ["Images/Vaceline/Vaseline Men Cooling Hydration 3-in-1 for Dry Skin Face, Hands & Body Lotion for Men with Menthol & Ultra-Hydrating Lipids.png", 'vaseline-men-cooling1.webp'],
