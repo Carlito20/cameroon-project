@@ -119,16 +119,25 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           if (footerBtn) footerBtn.style.display = 'flex';
         }
 
+        function showIOSBanner() {
+          const banner = document.getElementById('ios-install-banner');
+          if (banner) banner.classList.add('visible');
+        }
+
         function handleInstallClick() {
           if (deferredPrompt) {
-            // Android — trigger native prompt
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
           } else if (isIOS) {
-            // iOS — show the bottom banner with instructions
-            const banner = document.getElementById('ios-install-banner');
-            if (banner) banner.classList.add('visible');
+            showIOSBanner();
           }
+        }
+
+        function wireButtons() {
+          ['nav-install-btn', 'footer-install-btn'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.addEventListener('click', handleInstallClick);
+          });
         }
 
         // Android/Chrome — capture install prompt
@@ -138,22 +147,18 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           if (!isStandalone) showInstallButtons();
         });
 
-        // iOS Safari — always show buttons if not installed and not dismissed
-        if (isIOS && isSafari && !isStandalone) {
+        // iOS — show buttons for all iOS browsers, show banner on Safari only
+        if (isIOS && !isStandalone) {
           showInstallButtons();
-          if (!dismissed) {
-            const banner = document.getElementById('ios-install-banner');
-            if (banner) banner.classList.add('visible');
-          }
+          if (isSafari && !dismissed) showIOSBanner();
         }
 
-        // Wire up both buttons
-        document.addEventListener('DOMContentLoaded', () => {
-          ['nav-install-btn', 'footer-install-btn'].forEach(id => {
-            const btn = document.getElementById(id);
-            if (btn) btn.addEventListener('click', handleInstallClick);
-          });
-        });
+        // Wire buttons — handle case where DOMContentLoaded already fired
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', wireButtons);
+        } else {
+          wireButtons();
+        }
       })();
     </script>
   </body>
