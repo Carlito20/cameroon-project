@@ -374,10 +374,43 @@
     return `https://wa.me/${whatsappNumber}?text=${message}`;
   }
 
-  // Share product link
-  let sharedItem = null;
-  async function shareProduct(name) {
-    const url = window.location.origin + '/shop?search=' + encodeURIComponent(name);
+  function getWhatsAppShareLink(name) {
+    const shopUrl = window.location.origin + '/shop';
+    const text = 'Check out this product from American Select:\n\n*' + name + '*\n\n' + shopUrl + '\n\nSearch for: ' + name;
+    return 'https://wa.me/?text=' + encodeURIComponent(text);
+  }
+
+  // Share product dropdown
+  let shareMenuOpen = null;
+  let copiedItem = null;
+
+  function toggleShareMenu(name, e) {
+    e && e.stopPropagation();
+    shareMenuOpen = shareMenuOpen === name ? null : name;
+  }
+
+  function getShareUrl(name) {
+    // Use + for spaces so the URL stays clean when embedded in message text (avoids %2520 double-encoding)
+    return window.location.origin + '/shop?search=' + encodeURIComponent(name).replace(/%20/g, '+');
+  }
+
+  function getMailtoLink(name) {
+    const url = window.location.origin + '/shop?search=' + name;
+    const subject = encodeURIComponent('Check out: ' + name + ' — American Select');
+    const body = encodeURIComponent(name + '\n\n' + url);
+    return 'mailto:?subject=' + subject + '&body=' + body;
+  }
+
+  function getGmailLink(name) {
+    const url = window.location.origin + '/shop?search=' + name;
+    const subject = encodeURIComponent('Check out: ' + name + ' — American Select');
+    const body = encodeURIComponent(name + '\n\n' + url);
+    return 'https://mail.google.com/mail/?view=cm&fs=1&su=' + subject + '&body=' + body;
+  }
+
+  async function copyProductLink(name, e) {
+    e && e.stopPropagation();
+    const url = getShareUrl(name);
     try {
       await navigator.clipboard.writeText(url);
     } catch {
@@ -386,8 +419,9 @@
       document.body.appendChild(ta); ta.select();
       document.execCommand('copy'); document.body.removeChild(ta);
     }
-    sharedItem = name;
-    setTimeout(() => { sharedItem = null; }, 2000);
+    copiedItem = name;
+    shareMenuOpen = null;
+    setTimeout(() => { copiedItem = null; }, 2000);
   }
 
   // Track which items have been added to inquiry with their quantities
@@ -1025,6 +1059,8 @@
   }
 </script>
 
+<svelte:window on:click={() => { shareMenuOpen = null; }} />
+
 <!-- Category Filter and Search -->
 <div class="filter-container">
   <div class="filter-group">
@@ -1178,9 +1214,19 @@
                 >
                   WhatsApp
                 </a>
-                <button class="btn-share" title="Copy link" on:click={() => shareProduct(result.productName)}>
-                  {sharedItem === result.productName ? '✓' : '🔗'}
-                </button>
+                <div class="share-wrap">
+                  <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(result.productName, e)}>
+                    {copiedItem === result.productName ? '✓ Copied' : 'Share'}
+                  </button>
+                  {#if shareMenuOpen === result.productName}
+                  <div class="share-dropdown" on:click|stopPropagation>
+                    <a href={getGmailLink(result.productName)} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>📧 Gmail</a>
+                    <a href={getMailtoLink(result.productName)} class="share-option share-option-subtle" on:click={() => shareMenuOpen = null}>✉️ Other Email</a>
+                    <a href={getWhatsAppShareLink(result.productName)} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>💬 WhatsApp</a>
+                    <button class="share-option" on:click={(e) => copyProductLink(result.productName, e)}>🔗 {copiedItem === result.productName ? '✓ Copied!' : 'Copy Link'}</button>
+                  </div>
+                  {/if}
+                </div>
               </div>
             </div>
           </div>
@@ -1253,9 +1299,19 @@
                   {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
                 </button>
                 <a href={getWhatsAppLink(sp.product)} target="_blank" rel="noopener noreferrer" class="btn btn-small btn-whatsapp">WhatsApp</a>
-                <button class="btn-share" title="Copy link" on:click={() => shareProduct(sp.productName)}>
-                  {sharedItem === sp.productName ? '✓' : '🔗'}
-                </button>
+                <div class="share-wrap">
+                  <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(sp.productName, e)}>
+                    {copiedItem === sp.productName ? '✓ Copied' : 'Share'}
+                  </button>
+                  {#if shareMenuOpen === sp.productName}
+                  <div class="share-dropdown" on:click|stopPropagation>
+                    <a href={getGmailLink(sp.productName)} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>📧 Gmail</a>
+                    <a href={getMailtoLink(sp.productName)} class="share-option share-option-subtle" on:click={() => shareMenuOpen = null}>✉️ Other Email</a>
+                    <a href={getWhatsAppShareLink(sp.productName)} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>💬 WhatsApp</a>
+                    <button class="share-option" on:click={(e) => copyProductLink(sp.productName, e)}>🔗 {copiedItem === sp.productName ? '✓ Copied!' : 'Copy Link'}</button>
+                  </div>
+                  {/if}
+                </div>
               </div>
             </div>
           </div>
@@ -1360,9 +1416,19 @@
                                 >
                                   WhatsApp
                                 </a>
-                                <button class="btn-share" title="Copy link" on:click={() => shareProduct(getProductName(nestedProduct))}>
-                                  {sharedItem === getProductName(nestedProduct) ? '✓' : '🔗'}
-                                </button>
+                                <div class="share-wrap">
+                                  <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(getProductName(nestedProduct), e)}>
+                                    {copiedItem === getProductName(nestedProduct) ? '✓ Copied' : 'Share'}
+                                  </button>
+                                  {#if shareMenuOpen === getProductName(nestedProduct)}
+                                  <div class="share-dropdown" on:click|stopPropagation>
+                                    <a href={getGmailLink(getProductName(nestedProduct))} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>📧 Gmail</a>
+                                    <a href={getMailtoLink(getProductName(nestedProduct))} class="share-option share-option-subtle" on:click={() => shareMenuOpen = null}>✉️ Other Email</a>
+                                    <a href={getWhatsAppShareLink(getProductName(nestedProduct))} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>💬 WhatsApp</a>
+                                    <button class="share-option" on:click={(e) => copyProductLink(getProductName(nestedProduct), e)}>🔗 {copiedItem === getProductName(nestedProduct) ? '✓ Copied!' : 'Copy Link'}</button>
+                                  </div>
+                                  {/if}
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -1432,9 +1498,19 @@
                       >
                         WhatsApp
                       </a>
-                      <button class="btn-share" title="Copy link" on:click={() => shareProduct(getProductName(subItem))}>
-                        {sharedItem === getProductName(subItem) ? '✓' : '🔗'}
-                      </button>
+                      <div class="share-wrap">
+                        <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(getProductName(subItem), e)}>
+                          {copiedItem === getProductName(subItem) ? '✓ Copied' : 'Share'}
+                        </button>
+                        {#if shareMenuOpen === getProductName(subItem)}
+                        <div class="share-dropdown" on:click|stopPropagation>
+                          <a href={getGmailLink(getProductName(subItem))} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>📧 Gmail</a>
+                          <a href={getMailtoLink(getProductName(subItem))} class="share-option share-option-subtle" on:click={() => shareMenuOpen = null}>✉️ Other Email</a>
+                          <a href={getWhatsAppShareLink(getProductName(subItem))} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>💬 WhatsApp</a>
+                          <button class="share-option" on:click={(e) => copyProductLink(getProductName(subItem), e)}>🔗 {copiedItem === getProductName(subItem) ? '✓ Copied!' : 'Copy Link'}</button>
+                        </div>
+                        {/if}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1506,9 +1582,19 @@
                 >
                   WhatsApp
                 </a>
-                <button class="btn-share" title="Copy link" on:click={() => shareProduct(getProductName(item))}>
-                  {sharedItem === getProductName(item) ? '✓' : '🔗'}
-                </button>
+                <div class="share-wrap">
+                  <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(getProductName(item), e)}>
+                    {copiedItem === getProductName(item) ? '✓ Copied' : 'Share'}
+                  </button>
+                  {#if shareMenuOpen === getProductName(item)}
+                  <div class="share-dropdown" on:click|stopPropagation>
+                    <a href={getGmailLink(getProductName(item))} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>📧 Gmail</a>
+                    <a href={getMailtoLink(getProductName(item))} class="share-option share-option-subtle" on:click={() => shareMenuOpen = null}>✉️ Other Email</a>
+                    <a href={getWhatsAppShareLink(getProductName(item))} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>💬 WhatsApp</a>
+                    <button class="share-option" on:click={(e) => copyProductLink(getProductName(item), e)}>🔗 {copiedItem === getProductName(item) ? '✓ Copied!' : 'Copy Link'}</button>
+                  </div>
+                  {/if}
+                </div>
               </div>
 
             </div>
@@ -1592,9 +1678,19 @@
               {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : 'Add to Cart'}
             </button>
             <a href={getWhatsAppLink(productModal.product)} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">WhatsApp</a>
-            <button class="btn-share btn-share-modal" title="Copy link" on:click={() => shareProduct(productModal.productName)}>
-              {sharedItem === productModal.productName ? '✓ Copied!' : '🔗 Copy Link'}
-            </button>
+            <div class="share-wrap">
+              <button class="btn-share btn-share-modal" on:click|stopPropagation={(e) => toggleShareMenu(productModal.productName, e)}>
+                {copiedItem === productModal.productName ? '✓ Copied' : 'Share'}
+              </button>
+              {#if shareMenuOpen === productModal.productName}
+              <div class="share-dropdown share-dropdown-modal" on:click|stopPropagation>
+                <a href={getGmailLink(productModal.productName)} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>📧 Gmail</a>
+                <a href={getMailtoLink(productModal.productName)} class="share-option share-option-subtle" on:click={() => shareMenuOpen = null}>✉️ Other Email</a>
+                <a href={getWhatsAppShareLink(productModal.productName)} target="_blank" rel="noopener noreferrer" class="share-option" on:click={() => shareMenuOpen = null}>💬 WhatsApp</a>
+                <button class="share-option" on:click={(e) => copyProductLink(productModal.productName, e)}>🔗 {copiedItem === productModal.productName ? '✓ Copied!' : 'Copy Link'}</button>
+              </div>
+              {/if}
+            </div>
           </div>
           <a href="/shop?category={productModal.categoryId}" class="product-modal-view-all">View all in {productModal.categoryName} →</a>
         </div>
@@ -2691,11 +2787,17 @@
     background: #128C7E;
   }
 
+  .share-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
   .btn-share {
     background: transparent;
     border: 1px solid #ddd;
     border-radius: 6px;
-    padding: 4px 8px;
+    padding: 4px 10px;
     font-size: 0.85rem;
     cursor: pointer;
     color: #666;
@@ -2706,7 +2808,8 @@
     -webkit-user-select: none;
     user-select: none;
     transition: border-color 0.2s, color 0.2s;
-    flex-shrink: 0;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .btn-share:hover {
@@ -2718,6 +2821,71 @@
     padding: 8px 14px;
     font-size: 0.9rem;
     min-height: 40px;
+  }
+
+  .share-dropdown {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 150px;
+    z-index: 300;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  .share-dropdown-modal {
+    bottom: auto;
+    top: calc(100% + 6px);
+  }
+
+  .share-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #ccc;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    min-height: 40px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .share-option:hover {
+    background: #2a2a2a;
+    color: #fff;
+  }
+
+  .share-option-subtle {
+    color: #666;
+    font-size: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    min-height: 34px;
+    border-top: 1px solid #2a2a2a;
+  }
+
+  .share-option-subtle:hover {
+    color: #aaa;
   }
 
   .product-actions {
