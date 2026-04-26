@@ -80,6 +80,16 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
     <!-- WhatsApp floating button - appears on all pages -->
     <WhatsAppFloat />
 
+    <!-- iOS Chrome banner — tells user to switch to Safari -->
+    <div id="ios-chrome-banner" class="ios-install-banner">
+      <img src="/icons/icon-72x72.png" style="width:44px;height:44px;border-radius:10px;flex-shrink:0;" alt="">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:14px;color:#fff;">Open in Safari to install</div>
+        <div style="font-size:12px;color:#888;margin-top:2px;">Chrome on iPhone doesn't support app installation</div>
+      </div>
+      <button onclick="document.getElementById('ios-chrome-banner').classList.remove('visible');" style="background:transparent;border:none;color:#888;font-size:22px;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none;-webkit-user-select:none;user-select:none;">✕</button>
+    </div>
+
     <!-- iOS install banner -->
     <div id="ios-install-banner" class="ios-install-banner">
       <img src="/icons/icon-72x72.png" style="width:44px;height:44px;border-radius:10px;flex-shrink:0;" alt="">
@@ -100,6 +110,7 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
 
       (function() {
         const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const isIOSChrome = isIOS && /CriOS/i.test(navigator.userAgent);
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
         const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
         const dismissed = localStorage.getItem('pwa-banner-dismissed');
@@ -124,10 +135,17 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           if (banner) banner.classList.add('visible');
         }
 
+        function showIOSChromeBanner() {
+          const banner = document.getElementById('ios-chrome-banner');
+          if (banner) banner.classList.add('visible');
+        }
+
         function handleInstallClick() {
           if (deferredPrompt) {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+          } else if (isIOSChrome) {
+            showIOSChromeBanner();
           } else if (isIOS) {
             showIOSBanner();
           }
@@ -147,10 +165,14 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           if (!isStandalone) showInstallButtons();
         });
 
-        // iOS — show buttons for all iOS browsers, show banner on Safari only
+        // iOS — show buttons for all iOS browsers, show correct banner based on browser
         if (isIOS && !isStandalone) {
           showInstallButtons();
-          if (isSafari && !dismissed) showIOSBanner();
+          if (isIOSChrome) {
+            // Chrome on iOS can't install PWAs — show switch-to-Safari message
+          } else if (isSafari && !dismissed) {
+            showIOSBanner();
+          }
         }
 
         // Wire buttons — handle case where DOMContentLoaded already fired
