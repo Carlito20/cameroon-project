@@ -1,11 +1,10 @@
-const CACHE = 'american-select-v1';
+const CACHE = 'american-select-v2';
 
 const PRECACHE = [
   '/',
-  '/shop',
-  '/about',
-  '/contact',
-  '/how-to-order',
+  '/shop/',
+  '/about/',
+  '/contact/',
   '/api/products-list.json',
   '/images/as-logo.jpeg',
   '/icons/icon-192x192.png',
@@ -14,35 +13,35 @@ const PRECACHE = [
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting())
+    caches.open(CACHE)
+      .then(c => c.addAll(PRECACHE.map(url => new Request(url, { cache: 'reload' }))))
+      .then(() => self.skipWaiting())
+      .catch(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', e => {
-  // Skip non-GET, admin, and API mutation requests
   if (e.request.method !== 'GET') return;
   if (e.request.url.includes('/admin')) return;
   if (e.request.url.includes('/api/orders')) return;
 
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      const network = fetch(e.request).then(res => {
+    fetch(e.request)
+      .then(res => {
         if (res.ok && res.type === 'basic') {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return res;
-      });
-      // Return cache immediately, update in background
-      return cached || network;
-    })
+      })
+      .catch(() => caches.match(e.request).then(cached => cached || Response.error()))
   );
 });
