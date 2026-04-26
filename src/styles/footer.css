@@ -210,3 +210,52 @@
 }
 
 
+
+.footer-install {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.footer-install-icon { font-size: 28px; flex-shrink: 0; }
+.footer-install-text { flex: 1; min-width: 160px; }
+.footer-install-text strong { display: block; color: #fff; font-size: 15px; margin-bottom: 2px; }
+.footer-install-text p { margin: 0; color: #888; font-size: 13px; }
+.footer-install-btn {
+  background: #d4af37;
+  color: #111;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.footer-install-btn:hover { background: #e8c547; }
+@media (max-width: 480px) {
+  .footer-install { padding: 14px 16px; gap: 12px; }
+  .footer-install-btn { width: 100%; display: flex; justify-content: center; }
+}
+
+.footer-install-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 10px;
+  flex-shrink: 0;
+}

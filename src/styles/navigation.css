@@ -448,3 +448,42 @@
 
 
 
+
+.nav-install-btn {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  background: #d4af37;
+  color: #111;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.2s;
+}
+.nav-install-btn:hover { background: #e8c547; }
+@media (max-width: 480px) {
+  .nav-install-label { display: none; }
+  .nav-install-btn { padding: 6px 8px; }
+}
+
+.nav-install-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .nav-install-btn { display: none !important; }
+}
