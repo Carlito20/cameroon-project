@@ -258,6 +258,12 @@
       searchQuery = decodeURIComponent(searchParam);
     }
 
+    // ?s=slug from share links — convert dashes back to spaces
+    const slugParam = urlParams.get('s');
+    if (slugParam) {
+      searchQuery = slugParam.replace(/-/g, ' ');
+    }
+
     // If a specific product was linked (e.g. from Today's Picks), open its modal
     if (productParam) {
       const match = getAllProductsFlat().find(sp => sp.productName === productParam);
@@ -375,9 +381,17 @@
     return `https://wa.me/${whatsappNumber}?text=${message}`;
   }
 
+  function getProductSlug(name) {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function getProductShareUrl(name) {
+    return window.location.origin + '/shop?s=' + getProductSlug(name);
+  }
+
   function getWhatsAppShareLink(name) {
-    const shopUrl = window.location.origin + '/shop';
-    const text = 'Check out this product from American Select:\n\n*' + name + '*\n\n' + shopUrl + '\n\nSearch for: ' + name;
+    const url = getProductShareUrl(name);
+    const text = 'Check out this product from American Select:\n\n*' + name + '*\n\n' + url;
     return 'https://wa.me/?text=' + encodeURIComponent(text);
   }
 
@@ -396,14 +410,14 @@
   }
 
   function getMailtoLink(name) {
-    const url = window.location.origin + '/shop?search=' + name;
+    const url = getProductShareUrl(name);
     const subject = encodeURIComponent('Check out: ' + name + ' — American Select');
     const body = encodeURIComponent(name + '\n\n' + url);
     return 'mailto:?subject=' + subject + '&body=' + body;
   }
 
   function getGmailLink(name) {
-    const url = window.location.origin + '/shop?search=' + name;
+    const url = getProductShareUrl(name);
     const subject = encodeURIComponent('Check out: ' + name + ' — American Select');
     const body = encodeURIComponent(name + '\n\n' + url);
     return 'https://mail.google.com/mail/?view=cm&fs=1&su=' + subject + '&body=' + body;
@@ -411,7 +425,7 @@
 
   async function copyProductLink(name, e) {
     e && e.stopPropagation();
-    const url = getShareUrl(name);
+    const url = getProductShareUrl(name);
     try {
       await navigator.clipboard.writeText(url);
     } catch {
