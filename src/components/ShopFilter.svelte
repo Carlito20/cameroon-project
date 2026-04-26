@@ -2859,7 +2859,7 @@
     cursor: pointer;
     color: #666;
     white-space: nowrap;
-    min-height: 32px;
+    min-height: 44px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
@@ -2877,7 +2877,7 @@
   .btn-share-modal {
     padding: 8px 14px;
     font-size: 0.9rem;
-    min-height: 40px;
+    min-height: 44px;
   }
 
   .share-dropdown {
@@ -2896,6 +2896,7 @@
     box-shadow: 0 4px 16px rgba(0,0,0,0.6);
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
+    will-change: transform;
   }
 
   .share-dropdown-modal {
