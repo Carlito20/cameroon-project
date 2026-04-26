@@ -4,6 +4,7 @@
   // Props passed from Astro
   export let categories = [];
   export let whatsappNumber = "237679457181";
+  export let viewOnly = false;
 
   // Helper functions for product items
   function isSubCategory(item) {
@@ -1200,6 +1201,9 @@
                 <button class="qty-btn" on:click={() => incrementQty(result.productName, getRemainingStock(result.product))} disabled={selectedColors[result.productName] && result.colors && result.colors.length > 1 ? (displayQuantities[result.productName] || 1) >= (getColorRemaining(result.product, selectedColors[result.productName]) ?? 99) : getRemainingStock(result.product) != null && (displayQuantities[result.productName] || 1) >= getRemainingStock(result.product)}>+</button>
               </div>
               <div class="product-actions">
+                {#if viewOnly}
+                  <span class="btn btn-small btn-coming-soon">Coming Soon</span>
+                {:else}
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(result.product)]}
@@ -1217,6 +1221,7 @@
                 >
                   WhatsApp
                 </a>
+                {/if}
                 <div class="share-wrap">
                   <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(result.productName, e)}>
                     {copiedItem === result.productName ? '✓ Copied' : 'Share'}
@@ -1292,6 +1297,9 @@
                 <button class="qty-btn" on:click={() => incrementQty(sp.productName, getRemainingStock(sp.product))} disabled={selectedColors[sp.productName] && sp.colors && sp.colors.length > 1 ? (displayQuantities[sp.productName] || 1) >= (getColorRemaining(sp.product, selectedColors[sp.productName]) ?? 99) : getRemainingStock(sp.product) != null && (displayQuantities[sp.productName] || 1) >= getRemainingStock(sp.product)}>+</button>
               </div>
               <div class="product-actions">
+                {#if viewOnly}
+                  <span class="btn btn-small btn-coming-soon">Coming Soon</span>
+                {:else}
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(sp.product)]}
@@ -1302,6 +1310,7 @@
                   {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
                 </button>
                 <a href={getWhatsAppLink(sp.product)} target="_blank" rel="noopener noreferrer" class="btn btn-small btn-whatsapp">WhatsApp</a>
+                {/if}
                 <div class="share-wrap">
                   <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(sp.productName, e)}>
                     {copiedItem === sp.productName ? '✓ Copied' : 'Share'}
@@ -1402,6 +1411,9 @@
                                 <button class="qty-btn" on:click={() => incrementQty(getProductName(nestedProduct), getRemainingStock(nestedProduct))} disabled={selectedColors[getProductName(nestedProduct)] && getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1 ? (displayQuantities[getProductName(nestedProduct)] || 1) >= (getColorRemaining(nestedProduct, selectedColors[getProductName(nestedProduct)]) ?? 99) : getRemainingStock(nestedProduct) != null && (displayQuantities[getProductName(nestedProduct)] || 1) >= getRemainingStock(nestedProduct)}>+</button>
                               </div>
                               <div class="product-actions">
+                                {#if viewOnly}
+                                  <span class="btn btn-small btn-coming-soon">Coming Soon</span>
+                                {:else}
                                 <button
                                   class="btn btn-small btn-inquiry"
                                   class:added={addedItems[getDisplayName(nestedProduct)]}
@@ -1419,6 +1431,7 @@
                                 >
                                   WhatsApp
                                 </a>
+                                {/if}
                                 <div class="share-wrap">
                                   <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(getProductName(nestedProduct), e)}>
                                     {copiedItem === getProductName(nestedProduct) ? '✓ Copied' : 'Share'}
@@ -1484,6 +1497,9 @@
                       <button class="qty-btn" on:click={() => incrementQty(getProductName(subItem), getRemainingStock(subItem))} disabled={selectedColors[getProductName(subItem)] && getProductColors(subItem) && getProductColors(subItem).length > 1 ? (displayQuantities[getProductName(subItem)] || 1) >= (getColorRemaining(subItem, selectedColors[getProductName(subItem)]) ?? 99) : getRemainingStock(subItem) != null && (displayQuantities[getProductName(subItem)] || 1) >= getRemainingStock(subItem)}>+</button>
                     </div>
                     <div class="product-actions">
+                      {#if viewOnly}
+                        <span class="btn btn-small btn-coming-soon">Coming Soon</span>
+                      {:else}
                       <button
                         class="btn btn-small btn-inquiry"
                         class:added={addedItems[getDisplayName(subItem)]}
@@ -1501,6 +1517,7 @@
                       >
                         WhatsApp
                       </a>
+                      {/if}
                       <div class="share-wrap">
                         <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(getProductName(subItem), e)}>
                           {copiedItem === getProductName(subItem) ? '✓ Copied' : 'Share'}
@@ -1568,6 +1585,9 @@
                 <button class="qty-btn" on:click={() => incrementQty(getProductName(item), getRemainingStock(item))} disabled={selectedColors[getProductName(item)] && getProductColors(item) && getProductColors(item).length > 1 ? (displayQuantities[getProductName(item)] || 1) >= (getColorRemaining(item, selectedColors[getProductName(item)]) ?? 99) : getRemainingStock(item) != null && (displayQuantities[getProductName(item)] || 1) >= getRemainingStock(item)}>+</button>
               </div>
               <div class="product-actions">
+                {#if viewOnly}
+                  <span class="btn btn-small btn-coming-soon">Coming Soon</span>
+                {:else}
                 <button
                   class="btn btn-small btn-inquiry"
                   class:added={addedItems[getDisplayName(item)]}
@@ -1585,6 +1605,7 @@
                 >
                   WhatsApp
                 </a>
+                {/if}
                 <div class="share-wrap">
                   <button class="btn-share" on:click|stopPropagation={(e) => toggleShareMenu(getProductName(item), e)}>
                     {copiedItem === getProductName(item) ? '✓ Copied' : 'Share'}
@@ -1671,6 +1692,9 @@
             <button class="qty-btn" on:click={() => incrementQty(productModal.productName, getRemainingStock(productModal.product))} disabled={selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1 ? (displayQuantities[productModal.productName] || 1) >= (getColorRemaining(productModal.product, selectedColors[productModal.productName]) ?? 99) : getRemainingStock(productModal.product) != null && (displayQuantities[productModal.productName] || 1) >= getRemainingStock(productModal.product)}>+</button>
           </div>
           <div class="product-modal-actions">
+            {#if viewOnly}
+              <span class="btn btn-coming-soon">Coming Soon</span>
+            {:else}
             <button
               class="btn btn-inquiry"
               class:added={addedItems[getDisplayName(productModal.product)]}
@@ -1681,6 +1705,7 @@
               {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : 'Add to Cart'}
             </button>
             <a href={getWhatsAppLink(productModal.product)} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">WhatsApp</a>
+            {/if}
             <div class="share-wrap">
               <button class="btn-share btn-share-modal" on:click|stopPropagation={(e) => toggleShareMenu(productModal.productName, e)}>
                 {copiedItem === productModal.productName ? '✓ Copied' : 'Share'}
@@ -2788,6 +2813,17 @@
 
   .btn-whatsapp:hover {
     background: #128C7E;
+  }
+
+  .btn-coming-soon {
+    background: #1e1e1e;
+    color: #888;
+    border: 1px dashed #444;
+    cursor: default;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    letter-spacing: 0.3px;
   }
 
   .share-wrap {

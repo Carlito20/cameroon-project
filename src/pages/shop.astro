@@ -4,6 +4,7 @@ import { categories } from '../data/categories';
 import HowToOrderModal from '../components/HowToOrderModal.svelte';
 import ShopFilter from '../components/ShopFilter.svelte';
 import InquiryBasket from '../components/InquiryBasket.svelte';
+import { VIEW_ONLY, VIEW_ONLY_MESSAGE } from '../config';
 import '../styles/shop.css';
 
 const whatsappNumber = "237679457181";
@@ -11,6 +12,13 @@ const formspreeEndpoint = "https://formspree.io/f/xwvrbryr";
 ---
 
 <BaseLayout title="Shop - American Select">
+  {VIEW_ONLY && (
+    <div class="view-only-banner">
+      <span class="view-only-icon">🚚</span>
+      <span>{VIEW_ONLY_MESSAGE}</span>
+    </div>
+  )}
+
   <section class="shop-header">
     <div class="container shop-header-content">
       <h1>Shop Our Products</h1>
@@ -28,14 +36,17 @@ const formspreeEndpoint = "https://formspree.io/f/xwvrbryr";
         client:load
         categories={categories}
         whatsappNumber={whatsappNumber}
+        viewOnly={VIEW_ONLY}
       />
 
-      <!-- Inquiry Basket (Floating) -->
-      <InquiryBasket
-        client:load
-        whatsappNumber={whatsappNumber}
-        formspreeEndpoint={formspreeEndpoint}
-      />
+      <!-- Inquiry Basket (Floating) — hidden in view-only mode -->
+      {!VIEW_ONLY && (
+        <InquiryBasket
+          client:load
+          whatsappNumber={whatsappNumber}
+          formspreeEndpoint={formspreeEndpoint}
+        />
+      )}
     </div>
   </section>
 
@@ -52,4 +63,25 @@ const formspreeEndpoint = "https://formspree.io/f/xwvrbryr";
       </a>
     </div>
   </section>
+<style>
+  .view-only-banner {
+    background: #1a2a1a;
+    border-bottom: 1px solid #2a4a2a;
+    color: #6dbf6d;
+    text-align: center;
+    padding: 12px 20px;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    line-height: 1.4;
+  }
+  .view-only-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+</style>
 </BaseLayout>
