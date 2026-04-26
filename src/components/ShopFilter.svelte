@@ -1060,10 +1060,7 @@
   }
 </script>
 
-<svelte:window on:click={() => { shareMenuOpen = null; }} />
-{#if shareMenuOpen}
-  <div class="share-backdrop" on:click={() => shareMenuOpen = null} on:touchstart|passive={() => shareMenuOpen = null}></div>
-{/if}
+<svelte:window on:click={() => { shareMenuOpen = null; }} on:touchstart|passive={(e) => { if (shareMenuOpen && !e.target.closest('.share-wrap')) shareMenuOpen = null; }} />
 
 <!-- Category Filter and Search -->
 <div class="filter-container">
@@ -2923,13 +2920,6 @@
 
   .share-option-subtle:hover {
     color: #aaa;
-  }
-
-  .share-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 299;
-    -webkit-tap-highlight-color: transparent;
   }
 
   .product-actions {
