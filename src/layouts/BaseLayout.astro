@@ -115,10 +115,14 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
         const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
         const dismissed = localStorage.getItem('pwa-banner-dismissed');
 
+        // If running as installed app, mark as installed so Safari knows too
+        if (isStandalone) localStorage.setItem('pwa-installed', '1');
+        const alreadyInstalled = localStorage.getItem('pwa-installed');
+
         let deferredPrompt = null;
 
-        // Hide the entire footer install section if already running as installed app
-        if (isStandalone) {
+        // Hide footer install section if already installed or running as app
+        if (isStandalone || alreadyInstalled) {
           const section = document.getElementById('footer-install-section');
           if (section) section.style.display = 'none';
         }
@@ -165,11 +169,11 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           if (!isStandalone) showInstallButtons();
         });
 
-        // iOS — show buttons for all iOS browsers, show correct banner based on browser
-        if (isIOS && !isStandalone) {
+        // iOS — show buttons only if not already installed
+        if (isIOS && !isStandalone && !alreadyInstalled) {
           showInstallButtons();
           if (isIOSChrome) {
-            // Chrome on iOS can't install PWAs — show switch-to-Safari message
+            // Chrome on iOS can't install PWAs — show switch-to-Safari message on click
           } else if (isSafari && !dismissed) {
             showIOSBanner();
           }
