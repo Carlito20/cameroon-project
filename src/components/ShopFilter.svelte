@@ -238,7 +238,7 @@
     window.history.pushState({}, '', url);
   }
 
-  onMount(() => {
+  onMount(async () => {
     // Read category and search from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const categoryParam = urlParams.get('category');
@@ -258,10 +258,17 @@
       searchQuery = decodeURIComponent(searchParam);
     }
 
-    // ?s=slug from share links — convert dashes back to spaces
+    // ?s=slug from share links — match slug against real product names to get exact name
     const slugParam = urlParams.get('s');
     if (slugParam) {
-      searchQuery = slugParam.replace(/-/g, ' ');
+      try {
+        const res = await fetch('/api/products-list.json');
+        const products = await res.json();
+        const match = products.find(p => getProductSlug(p.name) === slugParam);
+        searchQuery = match ? match.name : slugParam.replace(/-/g, ' ');
+      } catch {
+        searchQuery = slugParam.replace(/-/g, ' ');
+      }
     }
 
     // If a specific product was linked (e.g. from Today's Picks), open its modal
