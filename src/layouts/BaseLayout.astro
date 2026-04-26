@@ -49,6 +49,25 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
       .navbar {
         padding-top: env(safe-area-inset-top, 0px);
       }
+      /* iOS install banner — hidden by default, shown by JS */
+      .ios-install-banner {
+        display: none;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        z-index: 9999;
+        background: #111;
+        color: #e0e0e0;
+        padding: 14px calc(16px + env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) calc(16px + env(safe-area-inset-left,0px));
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 -2px 12px rgba(0,0,0,0.4);
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        will-change: transform;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .ios-install-banner.visible { display: flex; }
     </style>
   </head>
   <body>
@@ -62,13 +81,13 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
     <WhatsAppFloat />
 
     <!-- iOS install banner -->
-    <div id="ios-install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#111;color:#e0e0e0;padding:14px 16px;padding-top:14px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-left:calc(16px + env(safe-area-inset-left,0px));padding-right:calc(16px + env(safe-area-inset-right,0px));display:flex;align-items:center;gap:12px;box-shadow:0 -2px 12px rgba(0,0,0,0.4);-webkit-transform:translateZ(0);transform:translateZ(0);will-change:transform;-webkit-user-select:none;user-select:none;">
+    <div id="ios-install-banner" class="ios-install-banner">
       <img src="/icons/icon-72x72.png" style="width:44px;height:44px;border-radius:10px;flex-shrink:0;" alt="">
       <div style="flex:1;min-width:0;">
         <div style="font-weight:700;font-size:14px;color:#fff;">Install American Select</div>
         <div style="font-size:12px;color:#888;margin-top:2px;">Tap <strong style="color:#d4af37;">Share</strong> then <strong style="color:#d4af37;">Add to Home Screen</strong></div>
       </div>
-      <button onclick="document.getElementById('ios-install-banner').style.display='none';localStorage.setItem('pwa-banner-dismissed','1');" style="background:transparent;border:none;color:#888;font-size:22px;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none;-webkit-user-select:none;user-select:none;">✕</button>
+      <button onclick="document.getElementById('ios-install-banner').classList.remove('visible');localStorage.setItem('pwa-banner-dismissed','1');" style="background:transparent;border:none;color:#888;font-size:22px;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none;-webkit-user-select:none;user-select:none;">✕</button>
     </div>
 
     <script is:inline>
@@ -108,7 +127,7 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           } else if (isIOS) {
             // iOS — show the bottom banner with instructions
             const banner = document.getElementById('ios-install-banner');
-            if (banner) banner.style.display = 'flex';
+            if (banner) banner.classList.add('visible');
           }
         }
 
@@ -124,7 +143,7 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           showInstallButtons();
           if (!dismissed) {
             const banner = document.getElementById('ios-install-banner');
-            if (banner) banner.style.display = 'flex';
+            if (banner) banner.classList.add('visible');
           }
         }
 
