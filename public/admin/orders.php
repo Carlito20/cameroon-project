@@ -662,7 +662,8 @@ function printOrderReceipt(id) {
       <img src="/images/as-logo.jpeg" alt="American Select" style="height:72px;object-fit:contain;display:block;margin:0 auto 8px;">
       <h2 style="font-size:17px;letter-spacing:1px;margin-bottom:2px;">AMERICAN SELECT</h2>
       <p style="font-size:11px;color:#555;margin:0;">Quality Imports from the USA &amp; Canada</p>
-      <p style="font-size:11px;color:#555;margin:4px 0 0;">Yaoundé, Cameroon</p>
+      <p style="font-size:10px;color:#777;margin:1px 0 0;font-style:italic;">Importations de qualité des États-Unis et Canada</p>
+      <p style="font-size:11px;color:#555;margin:4px 0 0;">Yaoundé, Cameroon / Cameroun</p>
       <p style="font-size:11px;color:#555;margin:2px 0 0;">MTN: 679 457 181 &nbsp;|&nbsp; Orange: 686 271 567</p>
       <p style="font-size:11px;color:#555;margin:2px 0 0;">americanselect.net</p>
     </div>
@@ -677,7 +678,7 @@ function printOrderReceipt(id) {
     <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:bold;">
       <span>TOTAL</span><span>${(o.total || total).toLocaleString()} FCFA</span>
     </div>
-    <p style="margin-top:6px;font-size:12px;color:#888;">${payIcon} Paid via / Paye par: ${esc(o.payment_method || 'N/A')}</p>
+    <p style="margin-top:6px;font-size:12px;color:#888;">${payIcon} Paid via / Payé via : ${esc(o.payment_method || 'N/A')}</p>
     ${o.payment_ref ? `<p style="font-size:12px;color:#888;">🔖 Transaction ID: <strong style="color:#222;">${esc(o.payment_ref)}</strong></p>` : ''}
     <hr style="border:none;border-top:1px dashed #aaa;margin:14px 0 8px;">
     <p style="text-align:center;font-size:11px;color:#888;">Thank you for shopping with American Select!</p>
