@@ -121,17 +121,12 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
 
         let deferredPrompt = null;
 
-        // Hide footer install section if already installed or running as app
-        if (isStandalone || alreadyInstalled) {
-          const section = document.getElementById('footer-install-section');
-          if (section) section.style.display = 'none';
-        }
-
-        function showInstallButtons() {
+        function showInstallUI() {
+          if (isStandalone || alreadyInstalled) return;
           const navBtn = document.getElementById('nav-install-btn');
-          const footerBtn = document.getElementById('footer-install-btn');
+          const section = document.getElementById('footer-install-section');
           if (navBtn) navBtn.style.display = 'inline-flex';
-          if (footerBtn) footerBtn.style.display = 'flex';
+          if (section) section.style.display = 'flex';
         }
 
         function showIOSBanner() {
@@ -162,24 +157,24 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           });
         }
 
-        // Android/Chrome — capture install prompt
+        // Android/Chrome — only show when Chrome confirms site is installable
         window.addEventListener('beforeinstallprompt', (e) => {
           e.preventDefault();
           deferredPrompt = e;
-          if (!isStandalone) showInstallButtons();
+          showInstallUI();
         });
 
-        // iOS — show buttons only if not already installed
+        // iOS — show only if not already installed
         if (isIOS && !isStandalone && !alreadyInstalled) {
-          showInstallButtons();
+          showInstallUI();
           if (isIOSChrome) {
-            // Chrome on iOS can't install PWAs — show switch-to-Safari message on click
+            // show message on click only
           } else if (isSafari && !dismissed) {
             showIOSBanner();
           }
         }
 
-        // Wire buttons — handle case where DOMContentLoaded already fired
+        // Wire buttons
         if (document.readyState === 'loading') {
           document.addEventListener('DOMContentLoaded', wireButtons);
         } else {
