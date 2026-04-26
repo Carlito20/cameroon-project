@@ -2925,7 +2925,8 @@
   .product-actions {
     display: flex;
     gap: 0.5rem;
-    flex-shrink: 0;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
   .btn-inquiry {

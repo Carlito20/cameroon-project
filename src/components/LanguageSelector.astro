@@ -18,11 +18,8 @@
 <div id="google_translate_element" style="display: none;"></div>
 
 <script is:inline>
-  // Track if Google Translate is ready
-  let googleTranslateReady = false;
   let translateSelect = null;
 
-  // Initialize Google Translate (hidden)
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
       pageLanguage: 'en',
@@ -30,17 +27,24 @@
       autoDisplay: false
     }, 'google_translate_element');
 
-    // Aggressively poll for combo box - check every 50ms
+    // Poll every 30ms until the select is ready, then cache it
     const checkReady = setInterval(() => {
-      translateSelect = document.querySelector('.goog-te-combo');
-      if (translateSelect) {
+      const sel = document.querySelector('.goog-te-combo');
+      if (sel) {
         clearInterval(checkReady);
-        googleTranslateReady = true;
+        translateSelect = sel;
       }
-    }, 50);
+    }, 30);
   }
 
-  // Handle language button clicks
+  function doTranslate(lang) {
+    // Refresh reference in case it was lost
+    if (!translateSelect) translateSelect = document.querySelector('.goog-te-combo');
+    if (!translateSelect) return;
+    translateSelect.value = lang;
+    translateSelect.dispatchEvent(new Event('change'));
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     const langBtns = document.querySelectorAll('.lang-btn');
 
@@ -49,24 +53,17 @@
         const lang = this.getAttribute('data-lang');
 
         // Immediate visual feedback
-        langBtns.forEach(b => b.classList.remove('active'));
+        langBtns.forEach(b => { b.classList.remove('active'); b.style.opacity = '0.6'; });
         this.classList.add('active');
+        this.style.opacity = '1';
 
-        // Instant language change - no loading state
-        if (translateSelect) {
-          translateSelect.value = lang;
-          translateSelect.dispatchEvent(new Event('change'));
-        } else if (googleTranslateReady) {
-          translateSelect = document.querySelector('.goog-te-combo');
-          if (translateSelect) {
-            translateSelect.value = lang;
-            translateSelect.dispatchEvent(new Event('change'));
-          }
-        }
+        doTranslate(lang);
+
+        // Restore opacity once translation settles
+        setTimeout(() => langBtns.forEach(b => { b.style.opacity = ''; }), 800);
       });
     });
 
-    // Check current language on load
     checkCurrentLanguage();
   });
 
@@ -85,7 +82,7 @@
 </script>
 
 <!-- Load Google Translate script with high priority -->
-<script is:inline src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+<script is:inline src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
 
 <style>
   .lang-toggle {
