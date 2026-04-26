@@ -168,12 +168,14 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           });
         }
 
-        // Android/Chrome — show banner + footer when Chrome confirms installable
+        // Android/Chrome — beforeinstallprompt only fires when app is NOT installed
+        // so if it fires, clear pwa-installed flag (handles uninstall case)
         window.addEventListener('beforeinstallprompt', (e) => {
           e.preventDefault();
           deferredPrompt = e;
+          localStorage.removeItem('pwa-installed');
           showInstallUI();
-          if (!dismissed && !alreadyInstalled) {
+          if (!dismissed) {
             const banner = document.getElementById('android-install-banner');
             if (banner) banner.classList.add('visible');
           }
