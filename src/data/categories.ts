@@ -239,7 +239,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E, 30 fl oz',
-            images: ['/images/products/suave-ocean-breeze-30oz.webp', '/images/products/suave-ocean-breeze-wash-1.webp', '/images/products/suave-ocean-breeze-wash-2.webp', '/images/products/suave-ocean-breeze-wash-3.webp'],
+            images: ['/images/products/suave-ocean-breeze-wash-1.webp', '/images/products/suave-ocean-breeze-wash-2.webp', '/images/products/suave-ocean-breeze-wash-3.webp'],
             quantity: 3,
             price: 5000
           },
