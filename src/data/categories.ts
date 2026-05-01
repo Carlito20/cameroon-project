@@ -6,6 +6,7 @@ export interface Product {
   quantity?: number;
   colors?: string[];
   colorQuantities?: Record<string, number>;
+  colorImages?: Record<string, string[]>;
 }
 
 export interface SubCategory {
@@ -540,7 +541,7 @@ export const categories: Category[] = [
         ]
       },
       {
-        name: 'Hair Care (shampoo, conditioner, oils)',
+        name: 'Hair Care (Shampoo, conditioner, oil, color)',
         items: [
           {
             name: 'Suave Keratin Infusion Smoothing Shampoo & Conditioner Set For Frizzy Hair',
@@ -616,6 +617,83 @@ export const categories: Category[] = [
             price: 10000,
             quantity: 2
           },
+          {
+            name: 'Revlon ColorSilk Permanent Hair Color with Bond Repair Complex',
+            price: 4500,
+            quantity: 3,
+            colors: ['#c0b89a', '#b8860b', '#c2185b', '#8b4513', '#800020', '#c0392b', '#6a0dad', '#5c0029', '#3d1c02', '#2c2c2c', '#e8dcb0'],
+            colorImages: {
+              '#c0b89a': [
+                '/images/products/revlon-colorsilk-82b-silver-blonde-1.webp',
+                '/images/products/revlon-colorsilk-82b-silver-blonde-2.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#b8860b': [
+                '/images/products/revlon-colorsilk-61-dark-blonde-1.webp',
+                '/images/products/revlon-colorsilk-61-dark-blonde-2.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#c2185b': [
+                '/images/products/revlon-colorsilk-56-radiant-raspberry-1.webp',
+                '/images/products/revlon-colorsilk-56-radiant-raspberry-2.webp',
+                '/images/products/revlon-colorsilk-56-radiant-raspberry-3.webp',
+                '/images/products/revlon-colorsilk-56-radiant-raspberry-4.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#8b4513': [
+                '/images/products/revlon-colorsilk-49-auburn-brown-1.webp',
+                '/images/products/revlon-colorsilk-49-auburn-brown-2.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#800020': [
+                '/images/products/revlon-colorsilk-48-burgundy-1.webp',
+                '/images/products/revlon-colorsilk-48-burgundy-2.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#c0392b': [
+                '/images/products/revlon-colorsilk-45-bright-auburn-1.webp',
+                '/images/products/revlon-colorsilk-45-bright-auburn-2.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#6a0dad': [
+                '/images/products/revlon-colorsilk-38-vibrant-violet-1.webp',
+                '/images/products/revlon-colorsilk-38-vibrant-violet-2.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#5c0029': [
+                '/images/products/revlon-colorsilk-34-deep-burgundy-1.webp',
+                '/images/products/revlon-colorsilk-34-deep-burgundy-2.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#3d1c02': [
+                '/images/products/revlon-colorsilk-20-brown-black-1.webp',
+                '/images/products/revlon-colorsilk-20-brown-black-2.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#2c2c2c': [
+                '/images/products/revlon-colorsilk-10-black-1.webp',
+                '/images/products/revlon-colorsilk-10-black-2.webp',
+                '/images/products/revlon-colorsilk-10-black-3.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+              '#e8dcb0': [
+                '/images/products/revlon-colorsilk-05-ash-blonde-1.webp',
+                '/images/products/revlon-colorsilk-05-ash-blonde-2.webp',
+                '/images/products/revlon-colorsilk-all-1.webp',
+                '/images/products/revlon-colorsilk-all-2.webp',
+              ],
+            }
+          }
         ]
       }
     ]

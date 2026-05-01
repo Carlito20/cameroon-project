@@ -17,12 +17,32 @@
 
   function getProductImage(item) {
     if (typeof item === 'string') return null;
-    // Return single image or first image from images array
-    return item.image || (item.images && item.images.length > 0 ? item.images[0] : null);
+    if (item.image) return item.image;
+    if (item.images && item.images.length > 0) return item.images[0];
+    if (item.colorImages) {
+      const firstKey = Object.keys(item.colorImages)[0];
+      return firstKey ? item.colorImages[firstKey][0] : null;
+    }
+    return null;
   }
 
   function getProductImages(item) {
     if (typeof item === 'string') return null;
+    if (item.images) return item.images;
+    if (item.image) return [item.image];
+    if (item.colorImages) {
+      const firstKey = Object.keys(item.colorImages)[0];
+      return firstKey ? item.colorImages[firstKey] : null;
+    }
+    return null;
+  }
+
+  function getActiveImages(item, productName) {
+    if (typeof item === 'string') return null;
+    const color = selectedColors[productName];
+    if (color && item.colorImages && item.colorImages[color]) {
+      return item.colorImages[color];
+    }
     return item.images || (item.image ? [item.image] : null);
   }
 
@@ -70,6 +90,16 @@
     '#e65100': 'Dark Orange',
     '#33691e': 'Olive Green',
     '#00bcd4': 'Cyan',
+    '#c0b89a': 'Silver Blonde',
+    '#b8860b': 'Dark Blonde',
+    '#c2185b': 'Radiant Raspberry',
+    '#8b4513': 'Auburn Brown',
+    '#800020': 'Burgundy',
+    '#c0392b': 'Bright Auburn',
+    '#6a0dad': 'Vibrant Violet',
+    '#5c0029': 'Deep Burgundy',
+    '#3d1c02': 'Brown Black',
+    '#e8dcb0': 'Ultra Light Ash Blonde',
   };
 
   function getColorName(hex) {
@@ -80,16 +110,13 @@
   let needsColorItems = {};
   let activeImageIndexes = {}; // productName -> image index driven by color selection
 
-  function selectColor(productName, color, colors) {
+  function selectColor(productName, color, imgIdx = 0) {
     if (selectedColors[productName] === color) {
       delete selectedColors[productName];
       delete activeImageIndexes[productName];
     } else {
       selectedColors[productName] = color;
-      if (colors) {
-        const idx = colors.indexOf(color);
-        if (idx !== -1) activeImageIndexes[productName] = idx;
-      }
+      activeImageIndexes[productName] = imgIdx;
     }
     selectedColors = selectedColors;
     activeImageIndexes = activeImageIndexes;
@@ -106,10 +133,7 @@
       return;
     }
     selectedColors[name] = colorHex;
-    if (colors) {
-      const idx = colors.indexOf(colorHex);
-      if (idx !== -1) activeImageIndexes[name] = idx;
-    }
+    activeImageIndexes[name] = productItem.colorImages ? 0 : (colors ? colors.indexOf(colorHex) : 0);
     selectedColors = selectedColors;
     activeImageIndexes = activeImageIndexes;
     addToInquiry(productItem, categoryName, stockQty, itemPrice);
@@ -163,6 +187,7 @@
             price: getProductPrice(item),
             quantity: getProductQuantity(item),
             images: getProductImages(item),
+            colorImages: item.colorImages || null,
             colors: getProductColors(item)
           });
         }
@@ -205,6 +230,15 @@
   // Reactive sorted search results
   $: sortedSearchResults = sortProducts(searchResults, sortBy);
 
+  function sortWithEmptySubcatsLast(items) {
+    return [...items].sort((a, b) => {
+      const aEmpty = isSubCategory(a) && a.items.length === 0;
+      const bEmpty = isSubCategory(b) && b.items.length === 0;
+      if (aEmpty === bEmpty) return 0;
+      return aEmpty ? 1 : -1;
+    });
+  }
+
   // Sort regular product items (for category/subcategory views)
   function sortItems(items, sort) {
     if (sort === 'default') return items;
@@ -238,7 +272,23 @@
     window.history.pushState({}, '', url);
   }
 
+  function preloadAllColorImages() {
+    function walk(items) {
+      items.forEach(item => {
+        if (item.items) { walk(item.items); return; }
+        if (item.colorImages) {
+          Object.values(item.colorImages).flat().forEach(src => {
+            const img = new Image();
+            img.src = src;
+          });
+        }
+      });
+    }
+    categories.forEach(cat => walk(cat.items));
+  }
+
   onMount(async () => {
+    preloadAllColorImages();
     // Read category and search from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const categoryParam = urlParams.get('category');
@@ -977,6 +1027,7 @@
               price: getProductPrice(item),
               quantity: getProductQuantity(item),
               images: imgs,
+              colorImages: item.colorImages || null,
               colors: getProductColors(item)
             });
           }
@@ -1051,6 +1102,10 @@
   let productModal = null;
   let modalImageIndex = 0;
 
+  $: modalImages = productModal
+    ? ((selectedColors[productModal.productName] && productModal.colorImages?.[selectedColors[productModal.productName]]) || productModal.images)
+    : null;
+
   function openProductModal(sp) {
     productModal = sp;
     modalImageIndex = 0;
@@ -1062,13 +1117,13 @@
   }
 
   function modalNextImage() {
-    if (!productModal) return;
-    modalImageIndex = (modalImageIndex + 1) % productModal.images.length;
+    if (!productModal || !modalImages) return;
+    modalImageIndex = (modalImageIndex + 1) % modalImages.length;
   }
 
   function modalPrevImage() {
-    if (!productModal) return;
-    modalImageIndex = (modalImageIndex - 1 + productModal.images.length) % productModal.images.length;
+    if (!productModal || !modalImages) return;
+    modalImageIndex = (modalImageIndex - 1 + modalImages.length) % modalImages.length;
   }
 
   function handleModalTouchEnd(e) {
@@ -1175,10 +1230,11 @@
         {#each sortedSearchResults as result (result.productName)}
           <div class="product-item" class:has-image={result.images} class:product-sold-out={isOutOfStock(result.product)}>
             {#if result.images}
+              {@const activeImgs = (selectedColors[result.productName] && result.colorImages?.[selectedColors[result.productName]]) || result.images}
               <div class="product-images">
-                <button class="product-image" on:click={() => openLightbox(result.images, result.productName)}>
-                  <img src={result.images[activeImageIndexes[result.productName] ?? 0]} alt={result.productName} />
-                                  </button>
+                <button class="product-image" on:click={() => openLightbox(activeImgs, result.productName)}>
+                  <img src={activeImgs[activeImageIndexes[result.productName] ?? 0]} alt={result.productName} />
+                </button>
               </div>
             {/if}
             <div class="product-info">
@@ -1197,7 +1253,7 @@
                       <span class="color-dots" class:shake={needsColorItems[result.productName]}>
                         {#each result.colors as color}
                           {@const soldOut = getColorRemaining(result.product, color) === 0}
-                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(result.productName, color, result.colors)}></button>
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[result.productName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(result.productName, color, result.colorImages ? 0 : result.colors.indexOf(color))}></button>
                         {/each}
                         {#if selectedColors[result.productName]}
                           <span class="color-label">{getColorName(selectedColors[result.productName])}</span>
@@ -1274,7 +1330,7 @@
           <div class="product-item has-image">
             <a href="/shop?category={sp.categoryId}" class="showcase-item-link" on:click|preventDefault={() => openProductModal(sp)}>
               <div class="product-images">
-                <img src={sp.images[activeImageIndexes[sp.productName] ?? 0]} alt={sp.productName} class="showcase-thumb" />
+                <img src={((selectedColors[sp.productName] && sp.colorImages?.[selectedColors[sp.productName]]) || sp.images)[activeImageIndexes[sp.productName] ?? 0]} alt={sp.productName} class="showcase-thumb" />
               </div>
               <div class="product-info">
                 <p class="product-category-tag">{sp.categoryName}{sp.subCategoryName ? ` › ${sp.subCategoryName}` : ''}</p>
@@ -1300,7 +1356,7 @@
                 <span class="color-dots" class:shake={needsColorItems[sp.productName]}>
                   {#each sp.colors as color}
                     {@const soldOut = getColorRemaining(sp.product, color) === 0}
-                    <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(sp.productName, color, sp.colors)}></button>
+                    <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[sp.productName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(sp.productName, color, sp.colorImages ? 0 : sp.colors.indexOf(color))}></button>
                   {/each}
                   {#if selectedColors[sp.productName]}
                     <span class="color-label">{getColorName(selectedColors[sp.productName])}</span>
@@ -1361,7 +1417,7 @@
       </div>
     </div>
     <div class="products-grid">
-      {#each category.items as item}
+      {#each sortWithEmptySubcatsLast(category.items) as item}
         {#if isSubCategory(item)}
           <!-- Sub-category -->
           <div class="subcategory-section" class:expanded={expandedSubCategories.has(item.name)} data-name={item.name}>
@@ -1374,7 +1430,7 @@
               {#if item.items.length === 0}
                 <p class="no-products">Products coming soon...</p>
               {/if}
-              {#each sortItems(item.items, sortBy) as subItem}
+              {#each sortWithEmptySubcatsLast(sortItems(item.items, sortBy)) as subItem}
                 {#if isSubCategory(subItem)}
                   <!-- Nested sub-category (e.g., Men/Women under Deodorants) -->
                   <div class="nested-subcategory" class:expanded={expandedSubCategories.has(subItem.name)} data-name={subItem.name}>
@@ -1385,11 +1441,13 @@
                     {#if expandedSubCategories.has(subItem.name)}
                       <div class="nested-subcategory-products">
                         {#each sortItems(subItem.items, sortBy) as nestedProduct}
+                          {@const nestedName = getProductName(nestedProduct)}
+                          {@const nestedActiveImgs = (selectedColors[nestedName] && nestedProduct.colorImages?.[selectedColors[nestedName]]) || getProductImages(nestedProduct)}
                           <div class="product-item" class:has-image={getProductImages(nestedProduct)} class:product-sold-out={isOutOfStock(nestedProduct)}>
                             {#if getProductImages(nestedProduct)}
                               <div class="product-images">
-                                <button class="product-image" on:click={() => openLightbox(getProductImages(nestedProduct), getProductName(nestedProduct))}>
-                                  <img src={getProductImages(nestedProduct)[activeImageIndexes[getProductName(nestedProduct)] ?? 0]} alt={getProductName(nestedProduct)} />
+                                <button class="product-image" on:click={() => openLightbox(nestedActiveImgs, nestedName)}>
+                                  <img src={nestedActiveImgs[activeImageIndexes[nestedName] ?? 0]} alt={nestedName} />
                                 </button>
                               </div>
                             {/if}
@@ -1406,8 +1464,7 @@
                                       <span class="color-dots" class:shake={needsColorItems[getProductName(nestedProduct)]}>
                                         {#each getProductColors(nestedProduct) as color}
                                           {@const soldOut = getColorRemaining(nestedProduct, color) === 0}
-                                          {@const nestedName = getProductName(nestedProduct)}
-                                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[nestedName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(nestedName, color, getProductColors(nestedProduct))}></button>
+                                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[nestedName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(nestedName, color, nestedProduct.colorImages ? 0 : getProductColors(nestedProduct).indexOf(color))}></button>
                                         {/each}
                                         {#if selectedColors[getProductName(nestedProduct)]}
                                           <span class="color-label">{getColorName(selectedColors[getProductName(nestedProduct)])}</span>
@@ -1471,12 +1528,14 @@
                     {/if}
                   </div>
                 {:else}
+                {@const subItemName = getProductName(subItem)}
+                {@const subActiveImgs = (selectedColors[subItemName] && subItem.colorImages?.[selectedColors[subItemName]]) || getProductImages(subItem)}
                 <div class="product-item" class:has-image={getProductImages(subItem)} class:product-sold-out={isOutOfStock(subItem)}>
                   {#if getProductImages(subItem)}
                     <div class="product-images">
-                      <button class="product-image" on:click={() => openLightbox(getProductImages(subItem), getProductName(subItem))}>
-                        <img src={getProductImages(subItem)[activeImageIndexes[getProductName(subItem)] ?? 0]} alt={getProductName(subItem)} />
-                                              </button>
+                      <button class="product-image" on:click={() => openLightbox(subActiveImgs, subItemName)}>
+                        <img src={subActiveImgs[activeImageIndexes[subItemName] ?? 0]} alt={subItemName} />
+                      </button>
                     </div>
                   {/if}
                   <div class="product-info">
@@ -1492,8 +1551,7 @@
                             <span class="color-dots" class:shake={needsColorItems[getProductName(subItem)]}>
                               {#each getProductColors(subItem) as color}
                                 {@const soldOut = getColorRemaining(subItem, color) === 0}
-                                {@const subItemName = getProductName(subItem)}
-                                <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[subItemName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(subItemName, color, getProductColors(subItem))}></button>
+                                <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[subItemName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(subItemName, color, subItem.colorImages ? 0 : getProductColors(subItem).indexOf(color))}></button>
                               {/each}
                               {#if selectedColors[getProductName(subItem)]}
                                 <span class="color-label">{getColorName(selectedColors[getProductName(subItem)])}</span>
@@ -1559,12 +1617,14 @@
           </div>
         {:else}
           <!-- Regular product item -->
+          {@const itemName = getProductName(item)}
+          {@const itemActiveImgs = (selectedColors[itemName] && item.colorImages?.[selectedColors[itemName]]) || getProductImages(item)}
           <div class="product-item" class:has-image={getProductImages(item)} class:product-sold-out={isOutOfStock(item)}>
             {#if getProductImages(item)}
               <div class="product-images">
-                <button class="product-image" on:click={() => openLightbox(getProductImages(item), getProductName(item))}>
-                  <img src={getProductImages(item)[activeImageIndexes[getProductName(item)] ?? 0]} alt={getProductName(item)} />
-                                  </button>
+                <button class="product-image" on:click={() => openLightbox(itemActiveImgs, itemName)}>
+                  <img src={itemActiveImgs[activeImageIndexes[itemName] ?? 0]} alt={itemName} />
+                </button>
               </div>
             {/if}
             <div class="product-info">
@@ -1580,8 +1640,7 @@
                       <span class="color-dots" class:shake={needsColorItems[getProductName(item)]}>
                         {#each getProductColors(item) as color}
                           {@const soldOut = getColorRemaining(item, color) === 0}
-                          {@const itemName = getProductName(item)}
-                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[itemName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(itemName, color, getProductColors(item))}></button>
+                          <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[itemName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => selectColor(itemName, color, item.colorImages ? 0 : getProductColors(item).indexOf(color))}></button>
                         {/each}
                         {#if selectedColors[getProductName(item)]}
                           <span class="color-label">{getColorName(selectedColors[getProductName(item)])}</span>
@@ -1657,17 +1716,17 @@
         <!-- Image Gallery -->
         <div class="product-modal-gallery">
           <img
-            src={productModal.images[modalImageIndex]}
+            src={modalImages[modalImageIndex]}
             alt={productModal.productName}
             class="product-modal-img"
             on:touchstart={handleTouchStart}
             on:touchend={handleModalTouchEnd}
           />
-          {#if productModal.images.length > 1}
+          {#if modalImages.length > 1}
             <button class="modal-nav modal-prev" on:click={modalPrevImage} aria-label="Previous image">‹</button>
             <button class="modal-nav modal-next" on:click={modalNextImage} aria-label="Next image">›</button>
             <div class="modal-dots">
-              {#each productModal.images as _, i}
+              {#each modalImages as _, i}
                 <button class="modal-dot" class:active={i === modalImageIndex} on:click={() => modalImageIndex = i} aria-label="Image {i + 1}"></button>
               {/each}
             </div>
@@ -1696,7 +1755,7 @@
               <span class="color-dots" class:shake={needsColorItems[productModal.productName]}>
                 {#each productModal.colors as color}
                   {@const soldOut = getColorRemaining(productModal.product, color) === 0}
-                  <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => { selectColor(productModal.productName, color, productModal.colors); const ci = productModal.colors.indexOf(color); if (ci !== -1 && ci < productModal.images.length) modalImageIndex = ci; }}></button>
+                  <button class="color-dot" style="background: {color};" title={getColorName(color)} class:selected={selectedColors[productModal.productName] === color} class:sold-out={soldOut} disabled={soldOut} on:click|stopPropagation={() => { const mi = productModal.colorImages ? 0 : productModal.colors.indexOf(color); selectColor(productModal.productName, color, mi); modalImageIndex = mi; }}></button>
                 {/each}
                 {#if selectedColors[productModal.productName]}
                   <span class="color-label">{getColorName(selectedColors[productModal.productName])}</span>
