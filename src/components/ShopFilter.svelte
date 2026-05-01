@@ -272,14 +272,27 @@
     window.history.pushState({}, '', url);
   }
 
+  // Strong-ref cache — prevents GC from evicting decoded images
+  const preloadCache = [];
+
   function preloadAllColorImages() {
     function walk(items) {
       items.forEach(item => {
         if (item.items) { walk(item.items); return; }
+        // Preload per-color image sets
         if (item.colorImages) {
           Object.values(item.colorImages).flat().forEach(src => {
             const img = new Image();
             img.src = src;
+            preloadCache.push(img);
+          });
+        }
+        // Preload images[] for products that use colors with a shared images array
+        if (item.colors && item.images && !item.colorImages) {
+          item.images.forEach(src => {
+            const img = new Image();
+            img.src = src;
+            preloadCache.push(img);
           });
         }
       });
@@ -2490,6 +2503,10 @@
     transform: scale(1.05);
   }
 
+  .product-image img, .showcase-thumb {
+    transition: opacity 0.1s ease;
+  }
+
   .product-image img {
     width: 100%;
     height: 100%;
@@ -2498,8 +2515,6 @@
     display: block;
   }
 
-
-  
   /* Lightbox styles */
   .lightbox-overlay {
     position: fixed;
