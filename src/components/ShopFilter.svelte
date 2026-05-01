@@ -1248,7 +1248,13 @@
               {#if result.quantity !== null && result.quantity !== undefined}
                 <p class="product-quantity">
                   {#if getProductQuantity(result.product) > 0}
-                    <span class="in-stock">In Stock: {getRemainingStock(result.product)}</span>
+                    {#if result.colors && result.colors.length > 1}
+                      {#if selectedColors[result.productName]}
+                        <span class="in-stock">In Stock: {getColorRemaining(result.product, selectedColors[result.productName])}</span>
+                      {/if}
+                    {:else}
+                      <span class="in-stock">In Stock: {getRemainingStock(result.product)}</span>
+                    {/if}
                     {#if result.colors}
                       <span class="color-dots" class:shake={needsColorItems[result.productName]}>
                         {#each result.colors as color}
@@ -1341,7 +1347,13 @@
                 {#if sp.quantity !== null && sp.quantity !== undefined}
                   <p class="product-quantity">
                     {#if getProductQuantity(sp.product) > 0}
-                      <span class="in-stock">In Stock: {getRemainingStock(sp.product)}</span>
+                      {#if sp.colors && sp.colors.length > 1}
+                        {#if selectedColors[sp.productName]}
+                          <span class="in-stock">In Stock: {getColorRemaining(sp.product, selectedColors[sp.productName])}</span>
+                        {/if}
+                      {:else}
+                        <span class="in-stock">In Stock: {getRemainingStock(sp.product)}</span>
+                      {/if}
                     {:else}
                       <span class="out-of-stock">Currently unavailable</span>
                     {/if}
@@ -1459,7 +1471,13 @@
                               {#if getProductQuantity(nestedProduct) !== null && getProductQuantity(nestedProduct) !== undefined}
                                 <p class="product-quantity">
                                   {#if getProductQuantity(nestedProduct) > 0}
-                                    <span class="in-stock">In Stock: {getRemainingStock(nestedProduct)}</span>
+                                    {#if getProductColors(nestedProduct) && getProductColors(nestedProduct).length > 1}
+                                      {#if selectedColors[getProductName(nestedProduct)]}
+                                        <span class="in-stock">In Stock: {getColorRemaining(nestedProduct, selectedColors[getProductName(nestedProduct)])}</span>
+                                      {/if}
+                                    {:else}
+                                      <span class="in-stock">In Stock: {getRemainingStock(nestedProduct)}</span>
+                                    {/if}
                                     {#if getProductColors(nestedProduct)}
                                       <span class="color-dots" class:shake={needsColorItems[getProductName(nestedProduct)]}>
                                         {#each getProductColors(nestedProduct) as color}
@@ -1546,7 +1564,13 @@
                     {#if getProductQuantity(subItem) !== null && getProductQuantity(subItem) !== undefined}
                       <p class="product-quantity">
                         {#if getProductQuantity(subItem) > 0}
-                          <span class="in-stock">In Stock: {getRemainingStock(subItem)}</span>
+                          {#if getProductColors(subItem) && getProductColors(subItem).length > 1}
+                            {#if selectedColors[getProductName(subItem)]}
+                              <span class="in-stock">In Stock: {getColorRemaining(subItem, selectedColors[getProductName(subItem)])}</span>
+                            {/if}
+                          {:else}
+                            <span class="in-stock">In Stock: {getRemainingStock(subItem)}</span>
+                          {/if}
                           {#if getProductColors(subItem)}
                             <span class="color-dots" class:shake={needsColorItems[getProductName(subItem)]}>
                               {#each getProductColors(subItem) as color}
@@ -1635,7 +1659,13 @@
               {#if getProductQuantity(item) !== null && getProductQuantity(item) !== undefined}
                 <p class="product-quantity">
                   {#if getProductQuantity(item) > 0}
-                    <span class="in-stock">In Stock: {getRemainingStock(item)}</span>
+                    {#if getProductColors(item) && getProductColors(item).length > 1}
+                      {#if selectedColors[getProductName(item)]}
+                        <span class="in-stock">In Stock: {getColorRemaining(item, selectedColors[getProductName(item)])}</span>
+                      {/if}
+                    {:else}
+                      <span class="in-stock">In Stock: {getRemainingStock(item)}</span>
+                    {/if}
                     {#if getProductColors(item)}
                       <span class="color-dots" class:shake={needsColorItems[getProductName(item)]}>
                         {#each getProductColors(item) as color}
@@ -1742,7 +1772,13 @@
           {#if productModal.quantity !== null && productModal.quantity !== undefined}
             <p class="product-modal-stock">
               {#if getProductQuantity(productModal.product) > 0}
-                <span class="in-stock">In Stock: {getRemainingStock(productModal.product)}</span>
+                {#if productModal.colors && productModal.colors.length > 1}
+                  {#if selectedColors[productModal.productName]}
+                    <span class="in-stock">In Stock: {getColorRemaining(productModal.product, selectedColors[productModal.productName])}</span>
+                  {/if}
+                {:else}
+                  <span class="in-stock">In Stock: {getRemainingStock(productModal.product)}</span>
+                {/if}
               {:else}
                 <span class="out-of-stock">Currently unavailable</span>
               {/if}
