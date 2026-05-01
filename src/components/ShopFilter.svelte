@@ -1112,6 +1112,28 @@
 
   onDestroy(() => stopShowcase());
 
+  // Collect all color image URLs so they can be rendered as hidden DOM
+  // elements — forces the browser to fully decode them into GPU memory
+  // for truly instant color switching (more effective than new Image())
+  function collectAllColorImageUrls() {
+    const urls = new Set();
+    function walk(items) {
+      items.forEach(item => {
+        if (item.items) { walk(item.items); return; }
+        if (item.colorImages) {
+          Object.values(item.colorImages).flat().forEach(src => urls.add(src));
+        }
+        if (item.colors && item.images && !item.colorImages) {
+          item.images.forEach(src => urls.add(src));
+        }
+      });
+    }
+    categories.forEach(cat => walk(cat.items));
+    return [...urls];
+  }
+
+  const allColorImageUrls = collectAllColorImageUrls();
+
   // ── Product Detail Modal ─────────────────────────────────────────────────
   let productModal = null;
   let modalImageIndex = 0;
@@ -1899,6 +1921,16 @@
         {isZoomed ? '🔍− Pinch out or scroll to zoom more' : '🔍+ Pinch / scroll to zoom'}
       </button>
     </div>
+  </div>
+{/if}
+
+<!-- Hidden preload container: forces browser to decode all color images
+     into GPU memory so color dot switching is instant -->
+{#if allColorImageUrls.length > 0}
+  <div aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;pointer-events:none;">
+    {#each allColorImageUrls as src}
+      <img {src} alt="" width="1" height="1" loading="eager" decoding="async" />
+    {/each}
   </div>
 {/if}
 
@@ -2804,8 +2836,8 @@
 
   .color-dot {
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     border: 2.5px solid #e0e0e0;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
@@ -2821,7 +2853,7 @@
     will-change: transform;
   }
 
-  /* Expand touch target to 44px for iOS/Android without changing visual size */
+  /* Touch target always ≥ 44px for iOS/Android */
   .color-dot::after {
     content: '';
     position: absolute;
@@ -2833,20 +2865,27 @@
   }
 
   .color-dot:hover {
-    transform: scale(1.25);
+    transform: scale(1.2);
     border-color: #aaa;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   }
 
   .color-dot:active {
-    transform: scale(0.9);
+    transform: scale(0.88);
     transition: transform 0.08s ease;
   }
 
   .color-dot.selected {
     border: 3px solid #2c3e50;
     box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.4);
-    transform: scale(1.2);
+    transform: scale(1.15);
+  }
+
+  @media (max-width: 768px) {
+    .color-dot {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   .color-dot.sold-out {
