@@ -213,6 +213,120 @@ const mappings = [
   ["Images/CeraVe/CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free 2.png", 'cerave-baby-lotion-3.webp'],
   ["Images/CeraVe/CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free 3.png", 'cerave-baby-lotion-4.webp'],
   ["Images/CeraVe/CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free 4.png", 'cerave-baby-lotion-5.webp'],
+
+  // Nair Hair Removal Creams
+  ["Images/Nair/Nair Body Cream Hair Remover, Soothing Aloe & Water Lily, Body Hair Removal Cream.png",                    'nair-aloe-water-lily-1.webp'],
+  ["Images/Nair/Nair Body Cream, Hair Removal Cream with Rich Cocoa Butter and Vitamin E for Body.png",   'nair-cocoa-butter-1.webp'],
+  ["Images/Nair/Nair Body Cream, Hair Removal Cream with Rich Cocoa Butter and Vitamin E for Body 1.png", 'nair-cocoa-butter-2.webp'],
+  ["Images/Nair/Nair Body Cream, Hair Removal Cream with Rich Cocoa Butter and Vitamin E for Body 2.png", 'nair-cocoa-butter-3.webp'],
+  ["Images/Nair/Nair Body Cream, Hair Removal Cream with Rich Cocoa Butter and Vitamin E for Body 3.png", 'nair-cocoa-butter-4.webp'],
+  ["Images/Nair/Nair Body Cream, Hair Removal Cream with Rich Cocoa Butter and Vitamin E for Body 4.png", 'nair-cocoa-butter-5.webp'],
+  ["Images/Nair/Nair Body Cream, Hair Removal Cream with Rich Cocoa Butter and Vitamin E for Body 5.png", 'nair-cocoa-butter-6.webp'],
+
+  // Degree Deodorants
+  ["Images/Degree/Degree Original Antiperspirant Deodorant Sheer Powder.png",      'degree-sheer-powder-deodorant-1.webp'],
+  ["Images/Degree/Degree Original Antiperspirant Deodorant Sheer Powder1.png",     'degree-sheer-powder-deodorant-2.webp'],
+  ["Images/Degree/Degree Original Antiperspirant Deodorant Sheer Powder2.png",     'degree-sheer-powder-deodorant-3.webp'],
+  ["Images/Degree/Degree Original Antiperspirant Deodorant Sheer Powder2.png2.png",'degree-sheer-powder-deodorant-4.webp'],
+
+  // Suave Women's Deodorants
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, 48hr Protection, Fresh.png",   'suave-women-fresh-deodorant-1.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, 48hr Protection, Fresh.1.png", 'suave-women-fresh-deodorant-2.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, 48hr Protection, Fresh.2.png", 'suave-women-fresh-deodorant-3.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, 48hr Protection, Fresh2.png",  'suave-women-fresh-deodorant-4.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, 48hr Protection, Powder.png",   'suave-women-powder-deodorant-1.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, 48hr Protection, Powder.1.png", 'suave-women-powder-deodorant-2.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, 48hr Protection, Powder.2.png", 'suave-women-powder-deodorant-3.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, 48hr Protection, Powder.3.png", 'suave-women-powder-deodorant-4.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, Wild Cherry Blossom.png",   'suave-women-cherry-blossom-deodorant-1.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, Wild Cherry Blossom 1.png", 'suave-women-cherry-blossom-deodorant-2.webp'],
+  ["Images/Suave/Suave Antiperspirant Deodorant For Women, Wild Cherry Blossom 2.png", 'suave-women-cherry-blossom-deodorant-3.webp'],
+  ["Images/Suave/Suave Antiperspirant Female Deodorant, 48hr Protection, Tropical Paradise.png",   'suave-women-tropical-deodorant-1.webp'],
+  ["Images/Suave/Suave Antiperspirant Female Deodorant, 48hr Protection, Tropical Paradise.1.png", 'suave-women-tropical-deodorant-2.webp'],
+  ["Images/Suave/Suave Antiperspirant Female Deodorant, 48hr Protection, Tropical Paradise.2.png", 'suave-women-tropical-deodorant-3.webp'],
+  ["Images/Suave/Suave Antiperspirant Female Deodorant, 48hr Protection, Tropical Paradise.3.png", 'suave-women-tropical-deodorant-4.webp'],
+
+  // Suave Kids
+  ["Images/Suave/Suave Kids Paw Patrol 3-in-1 Shampoo, Conditioner & Body Wash, Adventure Bay Breeze.png",     'suave-kids-paw-patrol-wash-1.webp'],
+  ["Images/Suave/Suave Kids Paw Patrol 3-in-1 Shampoo, Conditioner & Body Wash, Adventure Bay Breeze.1.png",   'suave-kids-paw-patrol-wash-2.webp'],
+  ["Images/Suave/Suave Kids Paw Patrol 3-in-1 Shampoo, Conditioner & Body Wash, Adventure Bay Breeze.2.png",   'suave-kids-paw-patrol-wash-3.webp'],
+  ["Images/Suave/Suave Kids Paw Patrol 3-in-1 Shampoo, Conditioner & Body Wash, Adventure Bay Breeze.3.png",   'suave-kids-paw-patrol-wash-4.webp'],
+
+  // AXE Men's Deodorants
+  ["Images/AXE/AXE Antiperspirant Deodorant for Men Essence 4 Count 48H Sweat & Odor Protection for Long Lasting Freshness, Black Pepper & Cedarwood 48 Hour.png",  'axe-essence-deodorant-1.webp'],
+  ["Images/AXE/AXE Antiperspirant Deodorant for Men Essence 4 Count 48H Sweat & Odor Protection for Long Lasting Freshness, Black Pepper & Cedarwood 48 Hour2.png", 'axe-essence-deodorant-2.webp'],
+  ["Images/AXE/AXE Antiperspirant Deodorant for Men Essence 4 Count 48H Sweat & Odor Protection for Long Lasting Freshness, Black Pepper & Cedarwood 48 Hour3.png", 'axe-essence-deodorant-3.webp'],
+  ["Images/AXE/AXE Antiperspirant Deodorant for Men Essence 4 Count 48H Sweat & Odor Protection for Long Lasting Freshness, Black Pepper & Cedarwood 48 Hour4.png", 'axe-essence-deodorant-4.webp'],
+  ["Images/AXE/AXE Apollo Antiperspirant Deodorant Stick For Men Sage & Cedarwood 48 Hr Anti Sweat Mens Deodorant.png",  'axe-apollo-deodorant-1.webp'],
+  ["Images/AXE/AXE Apollo Antiperspirant Deodorant Stick For Men Sage & Cedarwood 48 Hr Anti Sweat Mens Deodorant1.png", 'axe-apollo-deodorant-2.webp'],
+  ["Images/AXE/AXE Apollo Antiperspirant Deodorant Stick For Men Sage & Cedarwood 48 Hr Anti Sweat Mens Deodorant3.png", 'axe-apollo-deodorant-3.webp'],
+  ["Images/AXE/AXE Apollo Antiperspirant Deodorant Stick For Men Sage & Cedarwood 48 Hr Anti Sweat Mens Deodorant2.png", 'axe-apollo-deodorant-4.webp'],
+
+  // Suave Body Washes (new)
+  ["Images/Suave/Suave Wild Cherry Blossom Moisturizing Body Wash with Glycerin & Vitamin E.png",   'suave-wild-cherry-blossom-wash-1.webp'],
+  ["Images/Suave/Suave Wild Cherry Blossom Moisturizing Body Wash with Glycerin & Vitamin E.2.png", 'suave-wild-cherry-blossom-wash-2.webp'],
+  ["Images/Suave/Suave Wild Cherry Blossom Moisturizing Body Wash with Glycerin & Vitamin 1.png",   'suave-wild-cherry-blossom-wash-3.webp'],
+  ["Images/Suave/Suave Strawberry Delight.png",       'suave-strawberry-delight-wash-1.webp'],
+  ["Images/Suave/Suave Strawberry Delight.png1.png",  'suave-strawberry-delight-wash-2.webp'],
+  ["Images/Suave/Suave Strawberry Delight.png3.png",  'suave-strawberry-delight-wash-3.webp'],
+  ["Images/Suave/Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E.png",  'suave-ocean-breeze-wash-1.webp'],
+  ["Images/Suave/Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E2.png", 'suave-ocean-breeze-wash-2.webp'],
+  ["Images/Suave/Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E1.png", 'suave-ocean-breeze-wash-3.webp'],
+  ["Images/Suave/Suave Milk & Honey Moisturizing Body Wash with Glycerin & Vitamin E.png",  'suave-milk-honey-wash-1.webp'],
+  ["Images/Suave/Suave Milk & Honey Moisturizing Body Wash with Glycerin & Vitamin E2.png", 'suave-milk-honey-wash-2.webp'],
+  ["Images/Suave/Suave Milk & Honey Moisturizing Body Wash with Glycerin & Vitamin E1.png", 'suave-milk-honey-wash-3.webp'],
+
+  // St. Ives Body Washes
+  ["Images/St Ives/St. Ives Body Wash Pink Lemon and Mandarin Orange.png",       'st-ives-pink-lemon-wash-1.webp'],
+  ["Images/St Ives/St. Ives Body Wash Pink Lemon and Mandarin Orange.1.png",     'st-ives-pink-lemon-wash-2.webp'],
+  ["Images/St Ives/St. Ives Body Wash Pink Lemon and Mandarin Orange.2.png",     'st-ives-pink-lemon-wash-3.webp'],
+  ["Images/St Ives/St. Ives Body Wash Pink Lemon and Mandarin Orange.1.png3.png",'st-ives-pink-lemon-wash-4.webp'],
+  ["Images/St Ives/St. Ives Sea Salt & Pacific Kelp Exfoliating Body Wash.png",  'st-ives-sea-salt-wash-1.webp'],
+  ["Images/St Ives/St. Ives Sea Salt & Pacific Kelp Exfoliating Body Wash.png1.png", 'st-ives-sea-salt-wash-2.webp'],
+  ["Images/St Ives/St. Ives Sea Salt & Pacific Kelp Exfoliating Body Wash.png2.png", 'st-ives-sea-salt-wash-3.webp'],
+  ["Images/St Ives/St. Ives Soothing Body Wash , Oatmeal & Shea Butter, 22 fl oz.png", 'st-ives-oatmeal-shea-wash-1.webp'],
+  ["Images/St Ives/St. Ives Soothing Body Wash , Oatmeal & Shea Butter 2.png",   'st-ives-oatmeal-shea-wash-2.webp'],
+  ["Images/St Ives/St. Ives Soothing Body Wash , Oatmeal & Shea Butter 3.png",   'st-ives-oatmeal-shea-wash-3.webp'],
+
+  // St. Ives Lotions
+  ["Images/St Ives/St. Ives all lotions.png", 'st-ives-all-lotions.webp'],
+  ["Images/St Ives/St. Ives Coconut & Orchid Hand & Body Lotion, Softening Body Care for Dry Skin.png",     'st-ives-coconut-orchid-lotion-1.webp'],
+  ["Images/St Ives/St. Ives Coconut & Orchid Hand & Body Lotion, Softening Body Care for Dry Skin.png1.png",'st-ives-coconut-orchid-lotion-2.webp'],
+  ["Images/St Ives/St. Ives Coconut & Orchid Hand & Body Lotion, Softening Body Care for Dry Skin.png3.png",'st-ives-coconut-orchid-lotion-3.webp'],
+  ["Images/St Ives/St. Ives Hand & Body Lotion, Sweet Almond Oil, Restoring Body Care for Dry Skin.png",    'st-ives-sweet-almond-lotion-1.webp'],
+  ["Images/St Ives/St. Ives Oatmeal & Shea Butter Hand & Body Lotion, Moisturizing Body Care for Dry Skin.png",  'st-ives-oatmeal-shea-lotion-1.webp'],
+  ["Images/St Ives/St. Ives Oatmeal & Shea Butter Hand & Body Lotion, Moisturizing Body Care for Dry Skin1.png", 'st-ives-oatmeal-shea-lotion-2.webp'],
+  ["Images/St Ives/St. Ives Oatmeal & Shea Butter Hand & Body Lotion, Moisturizing Body Care for Dry Skin2.png", 'st-ives-oatmeal-shea-lotion-3.webp'],
+  ["Images/St Ives/St. Ives Renewing Hand & Body Lotion with Pump, Daily Moisturizer Collagen Elastin for Dry Skin, Made with 100% Natural Moisturizers.png",     'st-ives-renewing-collagen-lotion-1.webp'],
+  ["Images/St Ives/St. Ives Renewing Hand & Body Lotion with Pump, Daily Moisturizer Collagen Elastin for Dry Skin, Made with 100% Natural Moisturizers.png1.png",'st-ives-renewing-collagen-lotion-2.webp'],
+  ["Images/St Ives/St. Ives Renewing Hand & Body Lotion with Pump, Daily Moisturizer Collagen Elastin for Dry Skin, Made with 100% Natural Moisturizers.2.png",   'st-ives-renewing-collagen-lotion-3.webp'],
+  ["Images/St Ives/St. Ives Renewing Hand & Body Lotion with Pump, Daily Moisturizer Collagen Elastin for Dry Skin, Made with 100% Natural Moisturizers.png3.png",'st-ives-renewing-collagen-lotion-4.webp'],
+  ["Images/St Ives/St. Ives Rose & Argan Oil Hand & Body Lotion, Smoothing Body Care for Dry Skin.png",     'st-ives-rose-argan-lotion-1.webp'],
+  ["Images/St Ives/St. Ives Rose & Argan Oil Hand & Body Lotion, Smoothing Body Care for Dry Skin.png1.png",'st-ives-rose-argan-lotion-2.webp'],
+  ["Images/St Ives/St. Ives Rose & Argan Oil Hand & Body Lotion, Smoothing Body Care for Dry Skin2.png",    'st-ives-rose-argan-lotion-3.webp'],
+  ["Images/St Ives/St. Ives Vitamin E & Avocado Oil Hand & Body Lotion, Hydrating Body Care for Dry Skin.png",     'st-ives-vitamin-e-avocado-lotion-1.webp'],
+  ["Images/St Ives/St. Ives Vitamin E & Avocado Oil Hand & Body Lotion, Hydrating Body Care for Dry Skin.png1.png",'st-ives-vitamin-e-avocado-lotion-2.webp'],
+  ["Images/St Ives/St. Ives Vitamin E & Avocado Oil Hand & Body Lotion, Hydrating Body Care for Dry Skin.png3.png",'st-ives-vitamin-e-avocado-lotion-3.webp'],
+  ["Images/St Ives/St. Ives Vitamin E & Avocado Oil Hand & Body Lotion, Hydrating Body Care for Dry Skin.png2.png",'st-ives-vitamin-e-avocado-lotion-4.webp'],
+
+  // Cetaphil Face & Body Moisturizer Lotion
+  ["Images/Cetaphil/Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Lotion for All Skin Types, Suitable for Sensitive Skin.png",   'cetaphil-face-body-moisturizer-1.webp'],
+  ["Images/Cetaphil/Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Lotion for All Skin Types, Suitable for Sensitive Ski4.png",   'cetaphil-face-body-moisturizer-2.webp'],
+  ["Images/Cetaphil/Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Lotion for All Skin Types, Suitable for Sensitive Skin,1.png", 'cetaphil-face-body-moisturizer-3.webp'],
+  ["Images/Cetaphil/Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Lotion for All Skin Types, Suitable for Sensitive Skin2.png",  'cetaphil-face-body-moisturizer-4.webp'],
+  ["Images/Cetaphil/Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Lotion for All Skin Types, Suitable for Sensitive Skin3.png",  'cetaphil-face-body-moisturizer-5.webp'],
+
+  // CeraVe Daily Moisturizing Face & Body Lotion
+  ["Images/CeraVe/CeraVe Daily Moisturizing Face & Body Lotion for Normal to Dry Skin.png",       'cerave-daily-moisturizing-lotion-1.webp'],
+  ["Images/CeraVe/CeraVe Daily Moisturizing Face & Body Lotion for Normal to Dry Skin1.png",      'cerave-daily-moisturizing-lotion-2.webp'],
+  ["Images/CeraVe/CeraVe Daily Moisturizing Face & Body Lotion for Normal to Dry Skin1.png1.png", 'cerave-daily-moisturizing-lotion-3.webp'],
+
+  // CeraVe Moisturizing Cream for Face & Body
+  ["Images/CeraVe/CeraVe Moisturizing Cream for Face & Body Normal to Very Dry Skin .png",              'cerave-moisturizing-cream-1.webp'],
+  ["Images/CeraVe/CeraVe Moisturizing Cream for Face & Body Normal to Very Dry Skin with Pump .png1.png", 'cerave-moisturizing-cream-2.webp'],
+  ["Images/CeraVe/CeraVe Moisturizing Cream for Face & Body Normal to Very Dry Skin.png",               'cerave-moisturizing-cream-3.webp'],
+  ["Images/CeraVe/CeraVe Moisturizing Cream for Face & Body Normal to Very Dry Skin2.png",              'cerave-moisturizing-cream-4.webp'],
+  ["Images/CeraVe/CeraVe Moisturizing Cream for Face & Body Normal to Very Dry Skin4.png",              'cerave-moisturizing-cream-5.webp'],
 ];
 
 let converted = 0;

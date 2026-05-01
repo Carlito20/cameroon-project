@@ -238,6 +238,30 @@ export const categories: Category[] = [
             price: 3000
           },
           {
+            name: 'Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E',
+            images: ['/images/products/suave-ocean-breeze-wash-1.webp', '/images/products/suave-ocean-breeze-wash-2.webp', '/images/products/suave-ocean-breeze-wash-3.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
+            name: 'Suave Wild Cherry Blossom Moisturizing Body Wash with Glycerin & Vitamin E',
+            images: ['/images/products/suave-wild-cherry-blossom-wash-1.webp', '/images/products/suave-wild-cherry-blossom-wash-2.webp', '/images/products/suave-wild-cherry-blossom-wash-3.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
+            name: 'Suave Strawberry Delight Moisturizing Body Wash with Glycerin & Vitamin E',
+            images: ['/images/products/suave-strawberry-delight-wash-1.webp', '/images/products/suave-strawberry-delight-wash-2.webp', '/images/products/suave-strawberry-delight-wash-3.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
+            name: 'Suave Milk & Honey Moisturizing Body Wash with Glycerin & Vitamin E',
+            images: ['/images/products/suave-milk-honey-wash-1.webp', '/images/products/suave-milk-honey-wash-2.webp', '/images/products/suave-milk-honey-wash-3.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
             name: 'NIVEA MEN Maximum Hydration 3-in-1 Body Wash with Aloe Vera',
             images: ['/images/products/nivea-men-hydration1.webp', '/images/products/nivea-men-hydration2.webp', '/images/products/nivea-men-hydration3.webp', '/images/products/nivea-men-hydration4.webp', '/images/products/nivea-men-hydration5.webp'],
             quantity: 6,
@@ -248,6 +272,24 @@ export const categories: Category[] = [
             images: ['/images/products/irish-spring-soap-1.webp', '/images/products/irish-spring-soap-2.webp', '/images/products/irish-spring-soap-3.webp'],
             quantity: 40,
             price: 1300
+          },
+          {
+            name: 'St. Ives Body Wash Pink Lemon and Mandarin Orange',
+            images: ['/images/products/st-ives-pink-lemon-wash-1.webp', '/images/products/st-ives-pink-lemon-wash-2.webp', '/images/products/st-ives-pink-lemon-wash-3.webp', '/images/products/st-ives-pink-lemon-wash-4.webp'],
+            quantity: 3,
+            price: 4500
+          },
+          {
+            name: 'St. Ives Sea Salt & Pacific Kelp Exfoliating Body Wash',
+            images: ['/images/products/st-ives-sea-salt-wash-1.webp', '/images/products/st-ives-sea-salt-wash-2.webp', '/images/products/st-ives-sea-salt-wash-3.webp'],
+            quantity: 3,
+            price: 4500
+          },
+          {
+            name: 'St. Ives Soothing Body Wash, Oatmeal & Shea Butter, 22 fl oz',
+            images: ['/images/products/st-ives-oatmeal-shea-wash-1.webp', '/images/products/st-ives-oatmeal-shea-wash-2.webp', '/images/products/st-ives-oatmeal-shea-wash-3.webp'],
+            quantity: 3,
+            price: 4500
           }
         ]
       },
@@ -399,6 +441,60 @@ export const categories: Category[] = [
             price: 6500
           },
           {
+            name: 'St. Ives Coconut & Orchid Hand & Body Lotion, Softening Body Care for Dry Skin',
+            images: ['/images/products/st-ives-coconut-orchid-lotion-1.webp', '/images/products/st-ives-coconut-orchid-lotion-2.webp', '/images/products/st-ives-coconut-orchid-lotion-3.webp', '/images/products/st-ives-all-lotions.webp'],
+            quantity: 3,
+            price: 6000
+          },
+          {
+            name: 'St. Ives Hand & Body Lotion, Sweet Almond Oil, Restoring Body Care for Dry Skin',
+            images: ['/images/products/st-ives-sweet-almond-lotion-1.webp', '/images/products/st-ives-all-lotions.webp'],
+            quantity: 3,
+            price: 6000
+          },
+          {
+            name: 'St. Ives Oatmeal & Shea Butter Hand & Body Lotion, Moisturizing Body Care for Dry Skin',
+            images: ['/images/products/st-ives-oatmeal-shea-lotion-1.webp', '/images/products/st-ives-oatmeal-shea-lotion-2.webp', '/images/products/st-ives-oatmeal-shea-lotion-3.webp', '/images/products/st-ives-all-lotions.webp'],
+            quantity: 3,
+            price: 6000
+          },
+          {
+            name: 'St. Ives Renewing Hand & Body Lotion with Pump, Daily Moisturizer Collagen Elastin for Dry Skin, Made with 100% Natural Moisturizers',
+            images: ['/images/products/st-ives-renewing-collagen-lotion-1.webp', '/images/products/st-ives-renewing-collagen-lotion-2.webp', '/images/products/st-ives-renewing-collagen-lotion-3.webp', '/images/products/st-ives-renewing-collagen-lotion-4.webp', '/images/products/st-ives-all-lotions.webp'],
+            quantity: 4,
+            price: 6000
+          },
+          {
+            name: 'St. Ives Rose & Argan Oil Hand & Body Lotion, Smoothing Body Care for Dry Skin',
+            images: ['/images/products/st-ives-rose-argan-lotion-1.webp', '/images/products/st-ives-rose-argan-lotion-2.webp', '/images/products/st-ives-rose-argan-lotion-3.webp', '/images/products/st-ives-all-lotions.webp'],
+            quantity: 3,
+            price: 6000
+          },
+          {
+            name: 'St. Ives Vitamin E & Avocado Oil Hand & Body Lotion, Hydrating Body Care for Dry Skin',
+            images: ['/images/products/st-ives-vitamin-e-avocado-lotion-1.webp', '/images/products/st-ives-vitamin-e-avocado-lotion-2.webp', '/images/products/st-ives-vitamin-e-avocado-lotion-3.webp', '/images/products/st-ives-vitamin-e-avocado-lotion-4.webp', '/images/products/st-ives-all-lotions.webp'],
+            quantity: 3,
+            price: 6000
+          },
+          {
+            name: 'Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Lotion for All Skin Types, Suitable for Sensitive Skin',
+            images: ['/images/products/cetaphil-face-body-moisturizer-1.webp', '/images/products/cetaphil-face-body-moisturizer-2.webp', '/images/products/cetaphil-face-body-moisturizer-3.webp', '/images/products/cetaphil-face-body-moisturizer-4.webp', '/images/products/cetaphil-face-body-moisturizer-5.webp'],
+            quantity: 4,
+            price: 10000
+          },
+          {
+            name: 'CeraVe Daily Moisturizing Face & Body Lotion for Normal to Dry Skin',
+            images: ['/images/products/cerave-daily-moisturizing-lotion-1.webp', '/images/products/cerave-daily-moisturizing-lotion-2.webp', '/images/products/cerave-daily-moisturizing-lotion-3.webp'],
+            quantity: 4,
+            price: 10000
+          },
+          {
+            name: 'CeraVe Moisturizing Cream for Face & Body Normal to Very Dry Skin',
+            images: ['/images/products/cerave-moisturizing-cream-1.webp', '/images/products/cerave-moisturizing-cream-2.webp', '/images/products/cerave-moisturizing-cream-3.webp', '/images/products/cerave-moisturizing-cream-4.webp', '/images/products/cerave-moisturizing-cream-5.webp'],
+            quantity: 4,
+            price: 10000
+          },
+          {
             name: 'Lubriderm Fragrance Free Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Face, Hand & Body Lotion for Sensitive Skin, Hydrating Lotion for Healthier-Looking Skin',
             images: ['/images/products/lubriderm-pro-ceramide1.webp', '/images/products/lubriderm-pro-ceramide2.webp', '/images/products/lubriderm-pro-ceramide3.webp', '/images/products/lubriderm-ingredients.webp'],
             quantity: 8,
@@ -427,6 +523,8 @@ export const categories: Category[] = [
               { name: 'Victory 3.3 oz EDT For Men', image: '/images/products/victory-edt-men.webp', price: 5000, quantity: 2 },
               { name: 'Hercules Paris 3.4 oz EDP For Men', image: '/images/products/hercules-paris-edp-men.webp', price: 5000, quantity: 6 },
               { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.webp', price: 3000, quantity: 10 },
+              { name: 'AXE Antiperspirant Deodorant for Men Essence, 48H Sweat & Odor Protection, Black Pepper & Cedarwood', images: ['/images/products/axe-essence-deodorant-1.webp', '/images/products/axe-essence-deodorant-2.webp', '/images/products/axe-essence-deodorant-3.webp', '/images/products/axe-essence-deodorant-4.webp'], price: 3000, quantity: 4 },
+              { name: 'AXE Apollo Antiperspirant Deodorant Stick For Men, Sage & Cedarwood, 48 Hr Anti Sweat', images: ['/images/products/axe-apollo-deodorant-1.webp', '/images/products/axe-apollo-deodorant-2.webp', '/images/products/axe-apollo-deodorant-3.webp', '/images/products/axe-apollo-deodorant-4.webp'], price: 3000, quantity: 4 },
               { name: 'Right Guard Sport Fresh Scent Antiperspirant & Deodorant Invisible Solid 4-in-1 For Men, 48-Hour Odor Protection', images: ['/images/products/right-guard-sport-men-1.webp', '/images/products/right-guard-sport-men-2.webp'], price: 2000, quantity: 6 },
               { name: 'Loveryblack Affinity At Midnight Pheromone Perfume (Unisex)', images: ['/images/products/loveryblack-at-midnight-unisex-1.webp', '/images/products/loveryblack-at-midnight-unisex-2.webp', '/images/products/loveryblack-at-midnight-unisex-3.webp', '/images/products/loveryblack-at-midnight-unisex-4.webp'], price: 10000, quantity: 2 },
               { name: 'Loveryblack Affinity For Him Pheromone Cologne', images: ['/images/products/loveryblack-for-him-1.webp', '/images/products/loveryblack-for-him-2.webp', '/images/products/loveryblack-for-him-3.webp', '/images/products/loveryblack-for-him-4.webp'], price: 10000, quantity: 2 },
@@ -455,6 +553,11 @@ export const categories: Category[] = [
             name: 'Women',
             items: [
               { name: 'Lady Speed Stick 72HR Antiperspirant Deodorant for Women, Invisible Dry, Shower Fresh Scent, 2.3 oz', images: ['/images/products/lady-speed-stick-72hr-1.webp', '/images/products/lady-speed-stick-72hr-2.webp', '/images/products/lady-speed-stick-72hr-3.webp', '/images/products/lady-speed-stick-72hr-4.webp'], price: 1500, quantity: 8 },
+              { name: 'Suave Antiperspirant Deodorant For Women, 48hr Protection, Fresh', images: ['/images/products/suave-women-fresh-deodorant-1.webp', '/images/products/suave-women-fresh-deodorant-2.webp', '/images/products/suave-women-fresh-deodorant-3.webp', '/images/products/suave-women-fresh-deodorant-4.webp'], price: 2300, quantity: 4 },
+              { name: 'Suave Antiperspirant Deodorant For Women, 48hr Protection, Powder', images: ['/images/products/suave-women-powder-deodorant-1.webp', '/images/products/suave-women-powder-deodorant-2.webp', '/images/products/suave-women-powder-deodorant-3.webp', '/images/products/suave-women-powder-deodorant-4.webp'], price: 2300, quantity: 4 },
+              { name: 'Suave Antiperspirant Deodorant For Women, Wild Cherry Blossom', images: ['/images/products/suave-women-cherry-blossom-deodorant-1.webp', '/images/products/suave-women-cherry-blossom-deodorant-2.webp', '/images/products/suave-women-cherry-blossom-deodorant-3.webp'], price: 2300, quantity: 4 },
+              { name: 'Suave Antiperspirant Deodorant For Women, 48hr Protection, Tropical Paradise', images: ['/images/products/suave-women-tropical-deodorant-1.webp', '/images/products/suave-women-tropical-deodorant-2.webp', '/images/products/suave-women-tropical-deodorant-3.webp', '/images/products/suave-women-tropical-deodorant-4.webp'], price: 2300, quantity: 4 },
+              { name: 'Degree Original Antiperspirant Deodorant Sheer Powder', images: ['/images/products/degree-sheer-powder-deodorant-1.webp', '/images/products/degree-sheer-powder-deodorant-2.webp', '/images/products/degree-sheer-powder-deodorant-3.webp', '/images/products/degree-sheer-powder-deodorant-4.webp'], price: 3200, quantity: 4 },
               { name: 'Fantastic Pink 3.4 oz EDP For Women', image: '/images/products/fantastic-pink-edp-women.webp', price: 5000, quantity: 5 },
               { name: 'Fleur De Paris 3.4 oz EDP For Women', image: '/images/products/fleur-de-paris-edp-women.webp', price: 8000, quantity: 5 },
               { name: 'Lazell Night Bloom For Women EDP 3.4 oz', image: '/images/products/lazell-night-bloom-edp-women.webp', price: 8000, quantity: 7 },
@@ -514,7 +617,14 @@ export const categories: Category[] = [
       },
       {
         name: 'Feminine Care',
-        items: []
+        items: [
+          {
+            name: 'Nair Body Cream, Hair Removal Cream',
+            images: ['/images/products/nair-aloe-water-lily-1.webp', '/images/products/nair-cocoa-butter-1.webp', '/images/products/nair-cocoa-butter-2.webp', '/images/products/nair-cocoa-butter-3.webp', '/images/products/nair-cocoa-butter-4.webp', '/images/products/nair-cocoa-butter-5.webp', '/images/products/nair-cocoa-butter-6.webp'],
+            quantity: 7,
+            price: 4500
+          }
+        ]
       },
       {
         name: "Men's Grooming",
@@ -728,6 +838,12 @@ export const categories: Category[] = [
             images: ['/images/products/cetaphil-baby-daily-lotion-1.webp', '/images/products/cetaphil-baby-daily-lotion-2.webp', '/images/products/cetaphil-baby-daily-lotion-3.webp', '/images/products/cetaphil-baby-daily-lotion-4.webp'],
             quantity: 4,
             price: 8500
+          },
+          {
+            name: 'Suave Kids Paw Patrol 3-in-1 Shampoo, Conditioner & Body Wash, Adventure Bay Breeze',
+            images: ['/images/products/suave-kids-paw-patrol-wash-1.webp', '/images/products/suave-kids-paw-patrol-wash-2.webp', '/images/products/suave-kids-paw-patrol-wash-3.webp', '/images/products/suave-kids-paw-patrol-wash-4.webp'],
+            quantity: 4,
+            price: 4500
           },
           {
             name: "CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free",

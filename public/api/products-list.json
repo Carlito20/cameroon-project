@@ -140,6 +140,21 @@
     "price": 3000
   },
   {
+    "name": "Suave Wild Cherry Blossom Moisturizing Body Wash with Glycerin & Vitamin E",
+    "quantity": 3,
+    "price": 5000
+  },
+  {
+    "name": "Suave Strawberry Delight Moisturizing Body Wash with Glycerin & Vitamin E",
+    "quantity": 3,
+    "price": 5000
+  },
+  {
+    "name": "Suave Milk & Honey Moisturizing Body Wash with Glycerin & Vitamin E",
+    "quantity": 3,
+    "price": 5000
+  },
+  {
     "name": "NIVEA MEN Maximum Hydration 3-in-1 Body Wash with Aloe Vera",
     "quantity": 6,
     "price": 3500
@@ -148,6 +163,21 @@
     "name": "Irish Spring Original Clean Deodorant Bar Soap",
     "quantity": 40,
     "price": 1300
+  },
+  {
+    "name": "St. Ives Body Wash Pink Lemon and Mandarin Orange",
+    "quantity": 3,
+    "price": 4500
+  },
+  {
+    "name": "St. Ives Sea Salt & Pacific Kelp Exfoliating Body Wash",
+    "quantity": 3,
+    "price": 4500
+  },
+  {
+    "name": "St. Ives Soothing Body Wash, Oatmeal & Shea Butter, 22 fl oz",
+    "quantity": 3,
+    "price": 4500
   },
   {
     "name": "Olay Body Lotion Age Defying with Niacinamide Serum",
@@ -220,7 +250,7 @@
     "price": 5000
   },
   {
-    "name": "Dr Teal's 24 Hour Moisture+ Body Lotion, Lavender Essential Oil",
+    "name": "Dr Teal's 24 Hour Moisture Body Lotion with Lavender Essential Oil",
     "quantity": 3,
     "price": 5000
   },
@@ -270,6 +300,51 @@
     "price": 6500
   },
   {
+    "name": "St. Ives Coconut & Orchid Hand & Body Lotion, Softening Body Care for Dry Skin",
+    "quantity": 3,
+    "price": 6000
+  },
+  {
+    "name": "St. Ives Hand & Body Lotion, Sweet Almond Oil, Restoring Body Care for Dry Skin",
+    "quantity": 3,
+    "price": 6000
+  },
+  {
+    "name": "St. Ives Oatmeal & Shea Butter Hand & Body Lotion, Moisturizing Body Care for Dry Skin",
+    "quantity": 3,
+    "price": 6000
+  },
+  {
+    "name": "St. Ives Renewing Hand & Body Lotion with Pump, Daily Moisturizer Collagen Elastin for Dry Skin, Made with 100% Natural Moisturizers",
+    "quantity": 4,
+    "price": 6000
+  },
+  {
+    "name": "St. Ives Rose & Argan Oil Hand & Body Lotion, Smoothing Body Care for Dry Skin",
+    "quantity": 3,
+    "price": 6000
+  },
+  {
+    "name": "St. Ives Vitamin E & Avocado Oil Hand & Body Lotion, Hydrating Body Care for Dry Skin",
+    "quantity": 3,
+    "price": 6000
+  },
+  {
+    "name": "Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Lotion for All Skin Types, Suitable for Sensitive Skin",
+    "quantity": 4,
+    "price": 10000
+  },
+  {
+    "name": "CeraVe Daily Moisturizing Face & Body Lotion for Normal to Dry Skin",
+    "quantity": 4,
+    "price": 10000
+  },
+  {
+    "name": "CeraVe Moisturizing Cream for Face & Body Normal to Very Dry Skin",
+    "quantity": 4,
+    "price": 10000
+  },
+  {
     "name": "Lubriderm Fragrance Free Daily Moisture Lotion + Pro-Ceramide, Shea Butter & Glycerin, Face, Hand & Body Lotion for Sensitive Skin, Hydrating Lotion for Healthier-Looking Skin",
     "quantity": 8,
     "price": 10000
@@ -288,6 +363,11 @@
     "name": "Crest Pro-Health Advanced Mouthwash",
     "quantity": 9,
     "price": 4000
+  },
+  {
+    "name": "Nair Body Cream, Hair Removal Cream",
+    "quantity": 7,
+    "price": 4500
   },
   {
     "name": "Men's Electric Shaver 3 in 1 - Portable USB Rechargeable Shaver Featuring 3D Floating Blades and a Digital Display Suitable for Both Wet and Dry Shaving",
@@ -335,6 +415,66 @@
     "price": 10000
   },
   {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#c0b89a)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#b8860b)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#c2185b)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#8b4513)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#800020)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#c0392b)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#6a0dad)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#5c0029)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#3d1c02)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Black)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (#e8dcb0)",
+    "quantity": 1,
+    "price": 4500
+  },
+  {
+    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex",
+    "quantity": 3,
+    "price": 4500
+  },
+  {
     "name": "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",
     "quantity": 3,
     "price": 4500
@@ -348,6 +488,11 @@
     "name": "Cetaphil Baby Daily Lotion with Organic Calendula Vitamin E Sweet Almond & Sunflower Oils",
     "quantity": 4,
     "price": 8500
+  },
+  {
+    "name": "Suave Kids Paw Patrol 3-in-1 Shampoo, Conditioner & Body Wash, Adventure Bay Breeze",
+    "quantity": 4,
+    "price": 4500
   },
   {
     "name": "CeraVe Baby Lotion, Gentle Baby Skin Care with Ceramides, Niacinamide & Vitamin E, Fragrance, Paraben, Dye & Phthalates Free",
