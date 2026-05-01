@@ -1232,7 +1232,7 @@
             {#if result.images}
               {@const activeImgs = (selectedColors[result.productName] && result.colorImages?.[selectedColors[result.productName]]) || result.images}
               <div class="product-images">
-                <button class="product-image" on:click={() => openLightbox(activeImgs, result.productName)}>
+                <button class="product-image" on:click={() => openLightbox(activeImgs, result.productName + (selectedColors[result.productName] ? ` — ${getColorName(selectedColors[result.productName])}` : ''))}>
                   <img src={activeImgs[activeImageIndexes[result.productName] ?? 0]} alt={result.productName} />
                 </button>
               </div>
@@ -1446,7 +1446,7 @@
                           <div class="product-item" class:has-image={getProductImages(nestedProduct)} class:product-sold-out={isOutOfStock(nestedProduct)}>
                             {#if getProductImages(nestedProduct)}
                               <div class="product-images">
-                                <button class="product-image" on:click={() => openLightbox(nestedActiveImgs, nestedName)}>
+                                <button class="product-image" on:click={() => openLightbox(nestedActiveImgs, nestedName + (selectedColors[nestedName] ? ` — ${getColorName(selectedColors[nestedName])}` : ''))}>
                                   <img src={nestedActiveImgs[activeImageIndexes[nestedName] ?? 0]} alt={nestedName} />
                                 </button>
                               </div>
@@ -1533,7 +1533,7 @@
                 <div class="product-item" class:has-image={getProductImages(subItem)} class:product-sold-out={isOutOfStock(subItem)}>
                   {#if getProductImages(subItem)}
                     <div class="product-images">
-                      <button class="product-image" on:click={() => openLightbox(subActiveImgs, subItemName)}>
+                      <button class="product-image" on:click={() => openLightbox(subActiveImgs, subItemName + (selectedColors[subItemName] ? ` — ${getColorName(selectedColors[subItemName])}` : ''))}>
                         <img src={subActiveImgs[activeImageIndexes[subItemName] ?? 0]} alt={subItemName} />
                       </button>
                     </div>
@@ -1622,7 +1622,7 @@
           <div class="product-item" class:has-image={getProductImages(item)} class:product-sold-out={isOutOfStock(item)}>
             {#if getProductImages(item)}
               <div class="product-images">
-                <button class="product-image" on:click={() => openLightbox(itemActiveImgs, itemName)}>
+                <button class="product-image" on:click={() => openLightbox(itemActiveImgs, itemName + (selectedColors[itemName] ? ` — ${getColorName(selectedColors[itemName])}` : ''))}>
                   <img src={itemActiveImgs[activeImageIndexes[itemName] ?? 0]} alt={itemName} />
                 </button>
               </div>
