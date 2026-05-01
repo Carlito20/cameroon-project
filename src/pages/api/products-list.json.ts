@@ -46,7 +46,9 @@ export const GET: APIRoute = () => {
       const baseImage: string = item.images?.[0] ?? item.image ?? '';
 
       if (colors.length > 1) {
-        // Expand into one entry per color — no base entry
+        // Base entry first (preserves any existing barcode assigned to base name)
+        add(name, item.quantity ?? 0, price, baseImage);
+        // Then one entry per color
         for (const hex of colors) {
           const colorName = getColorName(hex);
           const qty = colorQuantities[hex] !== undefined
