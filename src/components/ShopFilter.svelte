@@ -938,7 +938,8 @@
   function addToInquiry(productItem, categoryName, stockQty, itemPrice) {
     const itemName = getProductName(productItem);
     const qty = getSelectedQty(itemName);
-    const itemImage = getProductImage(productItem);
+    const activeImgs = getActiveImages(productItem, itemName);
+    const itemImage = activeImgs ? activeImgs[0] : getProductImage(productItem);
     const selectedColor = selectedColors[itemName];
     const displayName = selectedColor ? `${itemName} (${getColorName(selectedColor)})` : itemName;
     const effectiveMax = selectedColor
