@@ -45,23 +45,21 @@ export const GET: APIRoute = () => {
       const colorQuantities: Record<string, number> = item.colorQuantities ?? {};
       const baseImage: string = item.images?.[0] ?? item.image ?? '';
 
-      if (colors.length > 1) {
-        // Base entry first (preserves any existing barcode assigned to base name)
+      if (colors.length > 1 && item.colorImages) {
+        // Each color is a distinct physical product with its own images (e.g. Revlon)
+        // Add base entry for safety, then one entry per color
         add(name, item.quantity ?? 0, price, baseImage);
-        // Then one entry per color
         for (const hex of colors) {
           const colorName = getColorName(hex);
           const qty = colorQuantities[hex] !== undefined
             ? colorQuantities[hex]
             : Math.ceil((item.quantity ?? 0) / colors.length);
-          const colorImg = item.colorImages?.[hex]?.[0] ?? baseImage;
+          const colorImg = item.colorImages[hex]?.[0] ?? baseImage;
           add(`${name} (${colorName})`, qty, price, colorImg);
         }
-      } else if (colors.length === 1) {
-        const colorName = getColorName(colors[0]);
-        add(name, item.quantity ?? 0, price, baseImage);
-        add(`${name} (${colorName})`, item.quantity ?? 0, price, baseImage);
       } else {
+        // Single entry regardless of color count — blenders, fans, speakers etc.
+        // all share one barcode across colors
         add(name, item.quantity ?? 0, price, baseImage);
       }
     }
