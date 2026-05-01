@@ -730,8 +730,13 @@ export const categories: Category[] = [
           {
             name: 'Revlon ColorSilk Permanent Hair Color with Bond Repair Complex',
             price: 4500,
-            quantity: 3,
+            quantity: 33,
             colors: ['#c0b89a', '#b8860b', '#c2185b', '#8b4513', '#800020', '#c0392b', '#6a0dad', '#5c0029', '#3d1c02', '#2c2c2c', '#e8dcb0'],
+            colorQuantities: {
+              '#c0b89a': 3, '#b8860b': 3, '#c2185b': 3, '#8b4513': 3,
+              '#800020': 3, '#c0392b': 3, '#6a0dad': 3, '#5c0029': 3,
+              '#3d1c02': 3, '#2c2c2c': 3, '#e8dcb0': 3
+            },
             colorImages: {
               '#c0b89a': [
                 '/images/products/revlon-colorsilk-82b-silver-blonde-1.webp',
