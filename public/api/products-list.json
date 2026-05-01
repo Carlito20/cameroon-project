@@ -50,11 +50,6 @@
     "price": 8000
   },
   {
-    "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice",
-    "quantity": 5,
-    "price": 8000
-  },
-  {
     "name": "Manual Chopper. No Need for Electricity (Pink)",
     "quantity": 2,
     "price": 10000
@@ -62,11 +57,6 @@
   {
     "name": "Manual Chopper. No Need for Electricity (Gray)",
     "quantity": 2,
-    "price": 10000
-  },
-  {
-    "name": "Manual Chopper. No Need for Electricity",
-    "quantity": 4,
     "price": 10000
   },
   {
@@ -470,11 +460,6 @@
     "price": 4500
   },
   {
-    "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex",
-    "quantity": 3,
-    "price": 4500
-  },
-  {
     "name": "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",
     "quantity": 3,
     "price": 4500
@@ -535,11 +520,6 @@
     "price": 5000
   },
   {
-    "name": "Smart Watch Compatible with iPhone & Android Devices",
-    "quantity": 4,
-    "price": 5000
-  },
-  {
     "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking (Black)",
     "quantity": 2,
     "price": 8000
@@ -552,11 +532,6 @@
   {
     "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking (Pink)",
     "quantity": 2,
-    "price": 8000
-  },
-  {
-    "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking",
-    "quantity": 6,
     "price": 8000
   },
   {
@@ -640,11 +615,6 @@
     "price": 3000
   },
   {
-    "name": "Rechargeable Portable Fan",
-    "quantity": 9,
-    "price": 3000
-  },
-  {
     "name": "Dark Grey USB Rechargeable Fan",
     "quantity": 4,
     "price": 3000
@@ -685,11 +655,6 @@
     "price": 12000
   },
   {
-    "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker",
-    "quantity": 5,
-    "price": 12000
-  },
-  {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Blue)",
     "quantity": 1,
     "price": 10000
@@ -707,11 +672,6 @@
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Cyan)",
     "quantity": 1,
-    "price": 10000
-  },
-  {
-    "name": "TG537 Portable Wireless Speaker - TWS Technology",
-    "quantity": 4,
     "price": 10000
   },
   {
@@ -735,11 +695,6 @@
     "price": 8000
   },
   {
-    "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets",
-    "quantity": 8,
-    "price": 8000
-  },
-  {
     "name": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation (Gray)",
     "quantity": 5,
     "price": 7000
@@ -747,11 +702,6 @@
   {
     "name": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation (White)",
     "quantity": 5,
-    "price": 7000
-  },
-  {
-    "name": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation",
-    "quantity": 10,
     "price": 7000
   },
   {
@@ -795,11 +745,6 @@
     "price": 5500
   },
   {
-    "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation",
-    "quantity": 5,
-    "price": 5500
-  },
-  {
     "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control (Purple)",
     "quantity": 2,
     "price": 5500
@@ -810,11 +755,6 @@
     "price": 5500
   },
   {
-    "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control",
-    "quantity": 3,
-    "price": 5500
-  },
-  {
     "name": "Nokia Go Earbuds+ TWS-201 (White)",
     "quantity": 5,
     "price": 8000
@@ -822,11 +762,6 @@
   {
     "name": "Nokia Go Earbuds+ TWS-201 (Black)",
     "quantity": 5,
-    "price": 8000
-  },
-  {
-    "name": "Nokia Go Earbuds+ TWS-201",
-    "quantity": 9,
     "price": 8000
   },
   {
@@ -892,11 +827,6 @@
   {
     "name": "45W High Quality Type-C Charger - Super Fast Charging (White)",
     "quantity": 20,
-    "price": 3500
-  },
-  {
-    "name": "45W High Quality Type-C Charger - Super Fast Charging",
-    "quantity": 40,
     "price": 3500
   },
   {

@@ -112,7 +112,6 @@ for (const p of products) {
   if (colors.length > 1) {
     const perColor = Math.ceil(p.quantity / colors.length);
     for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor, p.price);
-    add(p.name, p.quantity, p.price); // base entry too
   } else if (colors.length === 1) {
     add(p.name, p.quantity, p.price);
     add(`${p.name} (${getColorName(colors[0])})`, p.quantity, p.price);
