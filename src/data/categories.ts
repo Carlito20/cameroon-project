@@ -232,13 +232,13 @@ export const categories: Category[] = [
             price: 3000
           },
           {
-            name: 'Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E',
+            name: 'Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E, 18 fl oz',
             images: ['/images/products/suave-ocean-breeze1.webp', '/images/products/suave-ocean-breeze2.webp', '/images/products/suave-ocean-breeze3.webp', '/images/products/suave-ocean-breeze4.webp'],
             quantity: 6,
             price: 3000
           },
           {
-            name: 'Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E',
+            name: 'Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E, 30 fl oz',
             images: ['/images/products/suave-ocean-breeze-wash-1.webp', '/images/products/suave-ocean-breeze-wash-2.webp', '/images/products/suave-ocean-breeze-wash-3.webp'],
             quantity: 3,
             price: 5000
