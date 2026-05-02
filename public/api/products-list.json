@@ -125,9 +125,14 @@
     "price": 3000
   },
   {
-    "name": "Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E",
+    "name": "Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E, 18 fl oz",
     "quantity": 6,
     "price": 3000
+  },
+  {
+    "name": "Suave Ocean Breeze Moisturizing Body Wash with Glycerin & Vitamin E, 30 fl oz",
+    "quantity": 3,
+    "price": 5000
   },
   {
     "name": "Suave Wild Cherry Blossom Moisturizing Body Wash with Glycerin & Vitamin E",
@@ -255,7 +260,7 @@
     "price": 6500
   },
   {
-    "name": "Vaseline Men's Healing Moisture Hand & Body Lotion",
+    "name": "Vaseline Men Fast Absorbing 3-in-1 Face, Hands & Body Lotion For Men, For Dry Skin, Absorbs in Just 15 Seconds for Moisturized Skin",
     "quantity": 3,
     "price": 6500
   },

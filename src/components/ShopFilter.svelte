@@ -301,6 +301,7 @@
   }
 
   onMount(async () => {
+    document.getElementById('shop-skeleton')?.remove();
     preloadAllColorImages();
     // Read category and search from URL parameters
     const urlParams = new URLSearchParams(window.location.search);

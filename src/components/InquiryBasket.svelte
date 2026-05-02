@@ -378,12 +378,16 @@
           <button class="pay-method-btn" class:selected={selectedPayment === 'Cash'} on:click={() => selectPayment('Cash')}>💵 Cash</button>
           <button class="pay-method-btn" class:selected={selectedPayment === 'MTN MoMo'} on:click={() => selectPayment('MTN MoMo')}>🟡 MTN MoMo</button>
           <button class="pay-method-btn" class:selected={selectedPayment === 'Orange Money'} on:click={() => selectPayment('Orange Money')}>🟠 Orange Money</button>
+          <button class="pay-method-btn" class:selected={selectedPayment === 'Card'} on:click={() => selectPayment('Card')}>💳 Card</button>
         </div>
         {#if selectedPayment === 'MTN MoMo'}
           <div class="momo-info">📲 Send to: <strong>679 457 181</strong></div>
         {/if}
         {#if selectedPayment === 'Orange Money'}
           <div class="momo-info orange-momo-info">📲 Send to: <strong>686 271 567</strong></div>
+        {/if}
+        {#if selectedPayment === 'Card'}
+          <div class="momo-info card-info">💳 Our team will contact you to arrange card payment details.</div>
         {/if}
         {#if showValidation && !selectedPayment}
           <div class="field-error">Please select a payment method</div>
@@ -485,12 +489,16 @@
               <button class="pay-method-btn" class:selected={selectedPayment === 'Cash'} on:click={() => selectPayment('Cash')}>💵 Cash</button>
               <button class="pay-method-btn" class:selected={selectedPayment === 'MTN MoMo'} on:click={() => selectPayment('MTN MoMo')}>🟡 MTN MoMo</button>
               <button class="pay-method-btn" class:selected={selectedPayment === 'Orange Money'} on:click={() => selectPayment('Orange Money')}>🟠 Orange Money</button>
+              <button class="pay-method-btn" class:selected={selectedPayment === 'Card'} on:click={() => selectPayment('Card')}>💳 Card</button>
             </div>
             {#if selectedPayment === 'MTN MoMo'}
               <div class="momo-info">📲 Send to: <strong>679 457 181</strong></div>
             {/if}
             {#if selectedPayment === 'Orange Money'}
               <div class="momo-info orange-momo-info">📲 Send to: <strong>686 271 567</strong></div>
+            {/if}
+            {#if selectedPayment === 'Card'}
+              <div class="momo-info card-info">💳 Our team will contact you to arrange card payment details.</div>
             {/if}
             {#if showValidation && !selectedPayment}
               <div class="field-error">Please select a payment method</div>
@@ -1371,6 +1379,11 @@
     background: #fff4eb;
     border-color: #f07820;
     color: #7a3800;
+  }
+  .card-info {
+    background: #f0f4ff;
+    border-color: #4a6cf7;
+    color: #1a3080;
   }
 
 

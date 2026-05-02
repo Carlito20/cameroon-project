@@ -322,7 +322,7 @@ export const categories: Category[] = [
           },
           {
             name: 'Aveeno Daily Moisturizing Body Lotion 18oz',
-            image: '/images/products/aveeno-lotion.webp',
+            images: ['/images/products/aveeno-lotion.webp', '/images/products/aveeno-lotion2.webp', '/images/products/aveeno-lotion3.webp'],
             quantity: 4,
             price: 6000
           },
@@ -376,7 +376,7 @@ export const categories: Category[] = [
           },
           {
             name: "Dr Teal's 24 Hour Moisture+ Body Lotion, Shea Butter & Almond",
-            images: ['/images/products/dr-teals-lotion-shea1.webp', '/images/products/dr-teals-lotion-shea2.webp', '/images/products/dr-teals-lotion-shea3.webp'],
+            images: ['/images/products/dr-teals-lotion-shea1.webp', '/images/products/dr-teals-lotion-shea3.webp', '/images/products/dr-teals-lotion-shea2.webp'],
             quantity: 3,
             price: 5000
           },
@@ -394,12 +394,12 @@ export const categories: Category[] = [
           },
           {
             name: 'Vaseline Men Cooling Hydration 3-in-1 Face, Hands & Body Lotion with Menthol',
-            images: ['/images/products/vaseline-men-cooling1.webp', '/images/products/vaseline-men-cooling-new.webp', '/images/products/vaseline-men-cooling2.webp', '/images/products/vaseline-men-cooling3.webp'],
+            images: ['/images/products/vaseline-men-cooling1.webp', '/images/products/vaseline-men-cooling-new.webp', '/images/products/vaseline-men-cooling2.webp'],
             quantity: 4,
             price: 6500
           },
           {
-            name: "Vaseline Men's Healing Moisture Hand & Body Lotion",
+            name: "Vaseline Men Fast Absorbing 3-in-1 Face, Hands & Body Lotion For Men, For Dry Skin, Absorbs in Just 15 Seconds for Moisturized Skin",
             images: ['/images/products/vaseline-men-healing1.webp', '/images/products/vaseline-men-healing2.webp', '/images/products/vaseline-men-healing3.webp'],
             quantity: 3,
             price: 6500
@@ -522,7 +522,7 @@ export const categories: Category[] = [
               { name: 'Taj Max Exotic Bliss 3.4 oz Long-Lasting Perfume', image: '/images/products/taj-max-exotic-bliss.webp', price: 12000, quantity: 3 },
               { name: 'Victory 3.3 oz EDT For Men', image: '/images/products/victory-edt-men.webp', price: 5000, quantity: 2 },
               { name: 'Hercules Paris 3.4 oz EDP For Men', image: '/images/products/hercules-paris-edp-men.webp', price: 5000, quantity: 6 },
-              { name: 'Degree Men Black + White Ultraclear Deodorant', image: '/images/products/degree-men-black-white-ultraclear.webp', price: 3000, quantity: 10 },
+              { name: 'Degree Men Black + White Ultraclear Deodorant', images: ['/images/products/degree-men-black-white-ultraclear.webp', '/images/products/degree-men-black-white-ultraclear2.webp'], price: 3000, quantity: 10 },
               { name: 'AXE Antiperspirant Deodorant for Men Essence, 48H Sweat & Odor Protection, Black Pepper & Cedarwood', images: ['/images/products/axe-essence-deodorant-1.webp', '/images/products/axe-essence-deodorant-2.webp', '/images/products/axe-essence-deodorant-3.webp', '/images/products/axe-essence-deodorant-4.webp'], price: 3000, quantity: 4 },
               { name: 'AXE Apollo Antiperspirant Deodorant Stick For Men, Sage & Cedarwood, 48 Hr Anti Sweat', images: ['/images/products/axe-apollo-deodorant-1.webp', '/images/products/axe-apollo-deodorant-2.webp', '/images/products/axe-apollo-deodorant-3.webp', '/images/products/axe-apollo-deodorant-4.webp'], price: 3000, quantity: 4 },
               { name: 'Right Guard Sport Fresh Scent Antiperspirant & Deodorant Invisible Solid 4-in-1 For Men, 48-Hour Odor Protection', images: ['/images/products/right-guard-sport-men-1.webp', '/images/products/right-guard-sport-men-2.webp'], price: 2000, quantity: 6 },
@@ -552,7 +552,7 @@ export const categories: Category[] = [
           {
             name: 'Women',
             items: [
-              { name: 'Lady Speed Stick 72HR Antiperspirant Deodorant for Women, Invisible Dry, Shower Fresh Scent, 2.3 oz', images: ['/images/products/lady-speed-stick-72hr-1.webp', '/images/products/lady-speed-stick-72hr-2.webp', '/images/products/lady-speed-stick-72hr-3.webp', '/images/products/lady-speed-stick-72hr-4.webp'], price: 1500, quantity: 8 },
+              { name: 'Lady Speed Stick 72HR Antiperspirant Deodorant for Women, Invisible Dry, Shower Fresh Scent, 2.3 oz', images: ['/images/products/lady-speed-stick-72hr-2.webp', '/images/products/lady-speed-stick-72hr-3.webp', '/images/products/lady-speed-stick-72hr-4.webp'], price: 1500, quantity: 8 },
               { name: 'Suave Antiperspirant Deodorant For Women, 48hr Protection, Fresh', images: ['/images/products/suave-women-fresh-deodorant-1.webp', '/images/products/suave-women-fresh-deodorant-2.webp', '/images/products/suave-women-fresh-deodorant-3.webp', '/images/products/suave-women-fresh-deodorant-4.webp'], price: 2300, quantity: 4 },
               { name: 'Suave Antiperspirant Deodorant For Women, 48hr Protection, Powder', images: ['/images/products/suave-women-powder-deodorant-1.webp', '/images/products/suave-women-powder-deodorant-2.webp', '/images/products/suave-women-powder-deodorant-3.webp', '/images/products/suave-women-powder-deodorant-4.webp'], price: 2300, quantity: 4 },
               { name: 'Suave Antiperspirant Deodorant For Women, Wild Cherry Blossom', images: ['/images/products/suave-women-cherry-blossom-deodorant-1.webp', '/images/products/suave-women-cherry-blossom-deodorant-2.webp', '/images/products/suave-women-cherry-blossom-deodorant-3.webp'], price: 2300, quantity: 4 },

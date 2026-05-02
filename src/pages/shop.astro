@@ -31,6 +31,21 @@ const formspreeEndpoint = "https://formspree.io/f/xwvrbryr";
       <!-- How to Order Modal (Svelte Component) -->
       <HowToOrderModal client:load />
 
+      <!-- Skeleton loader — shown instantly, removed once ShopFilter hydrates -->
+      <div id="shop-skeleton">
+        <div class="skel-bar"></div>
+        <div class="skel-grid">
+          {Array.from({length: 12}).map(() => (
+            <div class="skel-card">
+              <div class="skel-img shimmer"></div>
+              <div class="skel-line shimmer"></div>
+              <div class="skel-line short shimmer"></div>
+              <div class="skel-btn shimmer"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <!-- Category Filter & Products (Svelte Component) -->
       <ShopFilter
         client:load
@@ -64,6 +79,68 @@ const formspreeEndpoint = "https://formspree.io/f/xwvrbryr";
     </div>
   </section>
 <style>
+  /* ── Skeleton loader ─────────────────────────────── */
+  #shop-skeleton { margin-top: 1rem; }
+
+  .skel-bar {
+    height: 48px;
+    border-radius: 10px;
+    background: #e8e8e8;
+    margin-bottom: 1.5rem;
+  }
+
+  .skel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  .skel-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    overflow: hidden;
+    padding: 0 0 1rem;
+  }
+
+  .skel-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #e8e8e8;
+    margin-bottom: 0.75rem;
+  }
+
+  .skel-line {
+    height: 14px;
+    border-radius: 6px;
+    background: #e8e8e8;
+    margin: 0.5rem 1rem;
+  }
+
+  .skel-line.short { width: 55%; }
+
+  .skel-btn {
+    height: 36px;
+    border-radius: 7px;
+    background: #e8e8e8;
+    margin: 0.75rem 1rem 0;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position: 600px 0; }
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 50%, #e8e8e8 75%);
+    background-size: 1200px 100%;
+    animation: shimmer 1.4s infinite linear;
+  }
+
+  @media (max-width: 1024px) { .skel-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px)  { .skel-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ── View-only banner ────────────────────────────── */
   .view-only-banner {
     background: #1a2a1a;
     border-bottom: 1px solid #2a4a2a;
