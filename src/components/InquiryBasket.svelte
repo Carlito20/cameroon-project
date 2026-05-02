@@ -387,7 +387,7 @@
           <div class="momo-info orange-momo-info">📲 Send to: <strong>686 271 567</strong></div>
         {/if}
         {#if selectedPayment === 'Card'}
-          <div class="momo-info card-info">💳 Our team will contact you to arrange card payment details.</div>
+          <div class="momo-info card-info">💳 Card payment coming soon — we are currently setting this up.</div>
         {/if}
         {#if showValidation && !selectedPayment}
           <div class="field-error">Please select a payment method</div>
@@ -498,7 +498,7 @@
               <div class="momo-info orange-momo-info">📲 Send to: <strong>686 271 567</strong></div>
             {/if}
             {#if selectedPayment === 'Card'}
-              <div class="momo-info card-info">💳 Our team will contact you to arrange card payment details.</div>
+              <div class="momo-info card-info">💳 Card payment coming soon — we are currently setting this up.</div>
             {/if}
             {#if showValidation && !selectedPayment}
               <div class="field-error">Please select a payment method</div>
