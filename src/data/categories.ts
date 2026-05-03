@@ -226,6 +226,12 @@ export const categories: Category[] = [
             price: 3000
           },
           {
+            name: 'Suave Cocoa Butter + Shea Moisturizing Body Wash with Glycerin & Vitamin E',
+            images: ['/images/products/suave-cocoa-shea-wash-1.webp', '/images/products/suave-cocoa-shea-wash-2.webp', '/images/products/suave-cocoa-shea-wash-3.webp', '/images/products/suave-cocoa-shea-wash-4.webp'],
+            quantity: 3,
+            price: 5000
+          },
+          {
             name: 'Suave Moisturizing Body Wash Sweet Pea & Violet with Vitamin E',
             images: ['/images/products/suave-sweet-pea1.webp', '/images/products/suave-sweet-pea2.webp', '/images/products/suave-sweet-pea3.webp', '/images/products/suave-sweet-pea4.webp'],
             quantity: 6,
