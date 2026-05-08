@@ -206,7 +206,7 @@ if ($fromOrderId) {
     .qty-btn:active { background: #2a2a2a; }
     .qty-num { font-size: 14px; font-weight: 700; min-width: 22px; text-align: center; }
     .remove-btn {
-      width: 30px; height: 30px; min-width: 30px; min-height: 30px;
+      width: 44px; height: 44px; min-width: 44px; min-height: 44px;
       border-radius: 50%; background: transparent; border: 1px solid #2a1a1a;
       color: #553333; font-size: 16px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;

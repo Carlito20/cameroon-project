@@ -373,9 +373,9 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <?php endif; ?>
       <div class="pr-actions">
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
-        <button class="btn-generate" onclick="generateBarcode(this, '<?= htmlspecialchars(addslashes($p['name'])) ?>')">⚡ Generate</button>
-        <input type="text" class="scan-input" placeholder="Scan or type barcode…" title="Scan manufacturer barcode" onkeydown="if(event.key==='Enter'){assignManual(this,'<?= htmlspecialchars(addslashes($p['name'])) ?>')}">
-        <button class="btn-scan-assign" onclick="assignManual(this.previousElementSibling, '<?= htmlspecialchars(addslashes($p['name'])) ?>')">✔ Assign</button>
+        <button class="btn-generate" onclick="generateBarcode(this, <?= json_encode($p['name']) ?>)">⚡ Generate</button>
+        <input type="text" class="scan-input" placeholder="Scan or type barcode…" title="Scan manufacturer barcode" onkeydown="if(event.key==='Enter'){assignManual(this,<?= json_encode($p['name']) ?>)}">
+        <button class="btn-scan-assign" onclick="assignManual(this.previousElementSibling, <?= json_encode($p['name']) ?>)">✔ Assign</button>
       </div>
     </div>
     <?php endforeach; ?>
