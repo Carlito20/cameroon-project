@@ -47,10 +47,13 @@
   }
 
   function getProductPrice(item) {
-    return typeof item === 'string' ? null : item.price;
+    if (typeof item === 'string') return null;
+    if (apiPrices[item.name] !== undefined) return apiPrices[item.name];
+    return item.price;
   }
 
   let apiStock = {};
+  let apiPrices = {};
 
   function getProductQuantity(item) {
     if (typeof item === 'string') return null;
@@ -153,7 +156,7 @@
   }
 
   function formatPrice(price) {
-    return price ? `${price.toLocaleString()} XAF` : null;
+    return price ? `${price.toLocaleString()} FCFA` : null;
   }
 
   function isImagePath(icon) {
@@ -208,8 +211,8 @@
     searchResults = results;
   }
 
-  // Reactive search - triggers when searchQuery or categories changes
-  $: performSearch(searchQuery), categories;
+  // Reactive search - triggers when searchQuery, categories, or live prices change
+  $: performSearch(searchQuery), categories, apiPrices;
 
   // Sort helper for product items
   function sortProducts(items, sort) {
@@ -348,6 +351,12 @@
       .then(r => r.json())
       .then(data => { apiStock = data; })
       .catch(() => {}); // silently fall back to categories.ts values
+
+    // Fetch live price overrides from API — overrides categories.ts prices
+    fetch('/api/price.php')
+      .then(r => r.json())
+      .then(data => { apiPrices = data; })
+      .catch(() => {}); // silently fall back to categories.ts prices
 
     // Listen for cart loaded from localStorage (on page refresh)
     const handleCartLoaded = (e) => {
