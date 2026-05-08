@@ -46,7 +46,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     body {
       background: #0a0a0a; color: #e0e0e0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      min-height: 100vh; min-height: -webkit-fill-available;
+      min-height: 100vh; min-height: -webkit-fill-available; min-height: 100dvh;
       -webkit-overflow-scrolling: touch; overflow-x: hidden;
     }
     header {

@@ -2180,7 +2180,6 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    will-change: transform;
   }
 
   .dropdown-option {
@@ -2590,9 +2589,9 @@
   }
 
   .lightbox-close {
-    position: absolute;
-    top: -44px;
-    right: 0;
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: calc(env(safe-area-inset-right, 0px) + 12px);
     background: rgba(0, 0, 0, 0.6);
     border: none;
     color: white;
@@ -2606,6 +2605,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1001;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
@@ -3054,9 +3054,6 @@
     min-width: 150px;
     z-index: 300;
     box-shadow: 0 4px 16px rgba(0,0,0,0.6);
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
   }
 
   .share-dropdown-modal {
@@ -3567,7 +3564,6 @@
     }
 
     .lightbox-close {
-      top: -50px;
       font-size: 3rem;
     }
 
@@ -3753,14 +3749,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
   }
 
   .showcase-nav-btn:hover,

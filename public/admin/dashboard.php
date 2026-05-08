@@ -80,6 +80,7 @@ try {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       min-height: 100vh;
       min-height: -webkit-fill-available;
+      min-height: 100dvh;
       -webkit-overflow-scrolling: touch;
       overflow-x: hidden;
     }

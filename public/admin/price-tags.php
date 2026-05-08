@@ -30,6 +30,7 @@ function fmt_price($n) {
       color: #e0e0e0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       min-height: 100vh;
+      min-height: 100dvh;
       -webkit-overflow-scrolling: touch;
     }
 
