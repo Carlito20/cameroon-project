@@ -585,7 +585,7 @@ function initQZ() {
     .then(() => qz.printers.find())
     .then(printers => {
       const thermal = printers.find(p =>
-        /volcora|thermal|receipt|pos|epson|star|citizen|bixolon/i.test(p)
+        /munbyn|volcora|thermal|receipt|pos|epson|star|citizen|bixolon/i.test(p)
       ) || printers[0] || null;
       qzPrinterName = thermal;
       qzReady = !!thermal;

@@ -324,7 +324,7 @@ function fmt_price($n) {
 <div class="mode-row no-print">
   <span class="mode-label">Print on:</span>
   <button class="mode-btn active" id="mode-sheet" onclick="setMode('sheet')">A4 Sheet (3 per row)</button>
-  <button class="mode-btn" id="mode-label" onclick="setMode('label')">Label Printer — Phomemo M110 (57mm)</button>
+  <button class="mode-btn" id="mode-label" onclick="setMode('label')">Label Printer — MUNBYN 130B</button>
   <span class="mode-hint" id="mode-hint">Multiple tags per page, cut apart after printing</span>
 </div>
 
@@ -363,7 +363,7 @@ function setMode(mode) {
 
   if (mode === 'label') {
     pageStyle.textContent = '@media print { @page { size: 57mm 70mm; margin: 0; } }';
-    hint.textContent = 'One tag per label — make sure Phomemo M110 is set as your printer';
+    hint.textContent = 'One tag per label — make sure MUNBYN 130B is set as your printer';
   } else {
     pageStyle.textContent = '@media print { @page { size: A4; margin: 10mm; } }';
     hint.textContent = 'Multiple tags per page, cut apart after printing';
