@@ -65,7 +65,6 @@ if ($fromOrderId) {
       padding-right: calc(20px + env(safe-area-inset-right, 0px));
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
-      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
     }
     header h1 { color: #d4af37; font-size: 17px; font-weight: 800; letter-spacing: 1px; }
     header span { color: #555; font-size: 12px; }
@@ -268,7 +267,6 @@ if ($fromOrderId) {
       position: fixed; inset: 0; z-index: 300;
       background: rgba(0,0,0,0.93);
       -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
       display: none; align-items: center; justify-content: center;
       padding: 20px;
       padding-top: calc(20px + env(safe-area-inset-top, 0px));
@@ -837,6 +835,7 @@ function showReceipt(items) {
   }
 
   document.getElementById('receipt-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
 
   // Cash drawer: auto-open on Cash payments, show manual button always for Cash
   const drawerBtn = document.getElementById('btn-open-drawer');
@@ -996,6 +995,7 @@ function newSale() {
   document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
   renderCart();
   document.getElementById('receipt-overlay').classList.remove('open');
+  document.body.style.overflow = '';
   document.getElementById('btn-wa-confirm').style.display = 'none';
   document.getElementById('btn-checkout').textContent = '✓  Checkout';
   document.getElementById('checkout-msg').textContent = '';

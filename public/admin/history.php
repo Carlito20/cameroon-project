@@ -78,7 +78,6 @@ $actionColors = [
       padding-right: calc(24px + env(safe-area-inset-right, 0px));
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
-      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
     }
     header h1 { color: #d4af37; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
     header span { color: #666; font-size: 13px; }
@@ -119,7 +118,7 @@ $actionColors = [
     .count-badge { background: #1a1a1a; color: #666; border-radius: 4px; padding: 4px 10px; font-size: 12px; }
     .db-error { background:#2a0a0a;border:1px solid #5c1a1a;color:#ff6b6b;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px; }
     .empty-state { text-align: center; padding: 60px 20px; color: #444; font-size: 15px; }
-    .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-x; }
+    .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-x pan-y; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     thead tr { background: #1a1a1a; }
     th { padding: 12px 14px; text-align: left; color: #888; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #222; }

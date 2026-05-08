@@ -27,7 +27,6 @@ $filter = $_GET['filter'] ?? 'pending';
       padding-right: calc(20px + env(safe-area-inset-right, 0px));
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
-      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
     }
     header h1 { color: #d4af37; font-size: 17px; font-weight: 800; letter-spacing: 1px; }
     header span { color: #555; font-size: 12px; }
@@ -486,12 +485,14 @@ function completeOrder(id) {
   completeTargetId = id;
   document.getElementById('payment-ref-input').value = '';
   document.getElementById('complete-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
   setTimeout(() => document.getElementById('payment-ref-input').focus(), 100);
 }
 
 function closeCompleteModal() {
   completeTargetId = null;
   document.getElementById('complete-overlay').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 async function confirmComplete() {
@@ -527,12 +528,14 @@ function openCancelModal(id) {
   cancelTargetId = id;
   document.getElementById('cancel-reason').value = '';
   document.getElementById('cancel-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
   setTimeout(() => document.getElementById('cancel-reason').focus(), 100);
 }
 
 function closeCancelModal() {
   cancelTargetId = null;
   document.getElementById('cancel-overlay').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 async function confirmCancel() {

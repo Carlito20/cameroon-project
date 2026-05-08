@@ -76,9 +76,6 @@ try {
       position: sticky;
       top: 0;
       z-index: 100;
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-      will-change: transform;
       -webkit-tap-highlight-color: transparent;
     }
     header h1 {

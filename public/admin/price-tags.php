@@ -49,9 +49,6 @@ function fmt_price($n) {
       position: sticky;
       top: 0;
       z-index: 100;
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-      will-change: transform;
     }
     header h1 { color: #d4af37; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
     .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

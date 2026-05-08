@@ -19,7 +19,7 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
       background: #0a0a0a; color: #e0e0e0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       min-height: 100vh; min-height: -webkit-fill-available;
-      -webkit-overflow-scrolling: touch; overflow-x: hidden; overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch; overflow-x: hidden;
     }
     header {
       background: #111; border-bottom: 1px solid #222;
@@ -29,7 +29,6 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
       padding-right: calc(24px + env(safe-area-inset-right, 0px));
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
-      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
     }
     header h1 { color: #d4af37; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
     header span { color: #666; font-size: 13px; }

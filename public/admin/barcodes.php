@@ -56,7 +56,6 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       padding-right: calc(20px + env(safe-area-inset-right, 0px));
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
-      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
     }
     header h1 { color: #d4af37; font-size: 17px; font-weight: 800; letter-spacing: 1px; }
     header span { color: #555; font-size: 12px; }
@@ -690,9 +689,11 @@ function updatePrintCount() {
     scanBtn.style.display = singleUnassigned ? '' : 'none';
     sheet.classList.add('open');
     backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
   } else {
     sheet.classList.remove('open');
     backdrop.classList.remove('open');
+    document.body.style.overflow = '';
   }
 }
 
@@ -702,6 +703,7 @@ function closeActionSheet() {
   document.querySelector('.btn-select-all').textContent = 'Select All';
   document.getElementById('action-sheet').classList.remove('open');
   document.getElementById('action-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 // ── Bulk generate barcodes for selected unassigned items ──

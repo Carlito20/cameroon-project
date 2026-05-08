@@ -101,7 +101,6 @@ function buildWaReceiptLink(array $o): string {
       padding-right: calc(20px + env(safe-area-inset-right, 0px));
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
-      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
     }
     header h1 { color: #d4af37; font-size: 17px; font-weight: 800; letter-spacing: 1px; }
     header span { color: #555; font-size: 12px; }
@@ -234,7 +233,6 @@ function buildWaReceiptLink(array $o): string {
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.85);
       -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
-      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
       z-index: 200; display: none; align-items: center; justify-content: center;
       padding: 20px;
       padding-top: calc(20px + env(safe-area-inset-top, 0px));
@@ -490,12 +488,14 @@ function openStatusModal(id, type) {
   btn.textContent = type === 'damaged' ? 'Mark Damaged' : 'Mark Returned';
   btn.className   = 'modal-btn-confirm ' + type;
   document.getElementById('status-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
   setTimeout(() => document.getElementById('modal-note').focus(), 100);
 }
 
 function closeStatusModal() {
   modalTargetId = null; modalTargetType = null;
   document.getElementById('status-modal').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 async function confirmStatusChange() {
