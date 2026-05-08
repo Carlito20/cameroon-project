@@ -45,6 +45,26 @@ try {
 } catch (Exception $e) {
     $dbError = $e->getMessage();
 }
+
+// Load live DB price overrides
+$dbPrices = [];
+try {
+    $pdoP = new PDO(
+        'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+        DB_USER, DB_PASS,
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+    );
+    $pdoP->exec("CREATE TABLE IF NOT EXISTS product_prices (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        product_name VARCHAR(500) NOT NULL UNIQUE,
+        price INT NOT NULL DEFAULT 0,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )");
+    $stmt2 = $pdoP->query('SELECT product_name, price FROM product_prices');
+    foreach ($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $dbPrices[$row['product_name']] = (int)$row['price'];
+    }
+} catch (Exception $e) { /* price table optional */ }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -266,6 +286,7 @@ try {
     }
     .qty-live { color: #d4af37; }
     .qty-default { color: #555; }
+    .price-live { color: #7b9fd4; }
     .qty-input {
       width: 80px;
       padding: 7px 10px;
@@ -282,6 +303,22 @@ try {
       min-height: 44px;
     }
     .qty-input:focus { border-color: #d4af37; }
+    .price-input {
+      width: 100px;
+      padding: 7px 10px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #e0e0e0;
+      font-size: 16px; /* 16px prevents iOS auto-zoom */
+      text-align: right;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      touch-action: manipulation;
+      min-height: 44px;
+    }
+    .price-input:focus { border-color: #7b9fd4; }
     .save-btn {
       padding: 7px 14px;
       background: #1a2a1a;
@@ -300,6 +337,39 @@ try {
     }
     .save-btn:hover { background: #1e361e; }
     .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .save-price-btn {
+      padding: 7px 14px;
+      background: #0d1a2a;
+      color: #7b9fd4;
+      border: 1px solid #1a2a40;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+      min-height: 44px;
+      min-width: 44px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .save-price-btn:hover { background: #1a2a3a; }
+    .save-price-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .reset-price-btn {
+      padding: 5px 10px;
+      background: transparent;
+      color: #555;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 36px;
+    }
+    .reset-price-btn:hover { color: #e05050; border-color: #3a1a1a; }
     .status-msg {
       font-size: 12px;
       margin-left: 8px;
@@ -320,9 +390,10 @@ try {
     }
 
     @media (max-width: 600px) {
-      .product-name { max-width: 180px; font-size: 13px; }
+      .product-name { max-width: 160px; font-size: 13px; }
       .qty-input { width: 64px; }
-      th, td { padding: 8px 8px; }
+      .price-input { width: 86px; }
+      th, td { padding: 8px 6px; }
     }
   </style>
 </head>
@@ -400,8 +471,9 @@ try {
         <th>#</th>
         <th>Product Name</th>
         <th>Qty</th>
-        <th>Action</th>
-        <th></th>
+        <th>Save Qty</th>
+        <th>Price (FCFA)</th>
+        <th>Save Price</th>
       </tr>
     </thead>
     <tbody>
@@ -411,13 +483,17 @@ try {
         $liveQty = $dbStock[$name] ?? null;
         $displayQty = $liveQty !== null ? $liveQty : $defaultQty;
         $isLive = $liveQty !== null;
+        $defaultPrice = (int)($product['price'] ?? 0);
+        $livePrice = $dbPrices[$name] ?? null;
+        $displayPrice = $livePrice !== null ? $livePrice : $defaultPrice;
+        $isPriceLive = $livePrice !== null;
       ?>
       <tr data-name="<?= htmlspecialchars(strtolower($name)) ?>">
         <td style="color:#555;font-size:12px;"><?= $i + 1 ?></td>
         <td class="product-name">
           <?= htmlspecialchars($name) ?>
           <div class="qty-source <?= $isLive ? 'qty-live' : 'qty-default' ?>">
-            <?= $isLive ? 'Live (DB)' : 'Default' ?>
+            Qty: <?= $isLive ? 'Live (DB)' : 'Default' ?>
           </div>
         </td>
         <td>
@@ -434,7 +510,31 @@ try {
           <button class="save-btn" onclick="saveStock(this)">Save</button>
           <span class="status-msg" id="status-<?= $i ?>"></span>
         </td>
-        <td></td>
+        <td>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <input
+              type="number"
+              class="price-input"
+              value="<?= $displayPrice ?>"
+              min="0"
+              data-name="<?= htmlspecialchars($name) ?>"
+              data-default="<?= $defaultPrice ?>"
+              data-original="<?= $displayPrice ?>"
+            >
+            <div class="qty-source <?= $isPriceLive ? 'price-live' : 'qty-default' ?>" id="price-src-<?= $i ?>">
+              <?= $isPriceLive ? 'Live (DB)' : 'Default' ?>
+            </div>
+          </div>
+        </td>
+        <td style="white-space:nowrap;">
+          <button class="save-price-btn" onclick="savePrice(this)">Save</button>
+          <?php if ($isPriceLive): ?>
+          <button class="reset-price-btn" id="reset-price-<?= $i ?>" onclick="resetPrice(this)" title="Reset to catalog default (<?= number_format($defaultPrice) ?> FCFA)" style="margin-left:4px;">↺</button>
+          <?php else: ?>
+          <button class="reset-price-btn" id="reset-price-<?= $i ?>" onclick="resetPrice(this)" title="Reset to catalog default (<?= number_format($defaultPrice) ?> FCFA)" style="margin-left:4px;display:none;">↺</button>
+          <?php endif; ?>
+          <span class="status-msg" id="price-status-<?= $i ?>"></span>
+        </td>
       </tr>
       <?php endforeach; ?>
     </tbody>
@@ -493,7 +593,7 @@ function saveStock(btn) {
     if (data.success) {
       input.dataset.original = quantity;
       const srcEl = row.querySelector('.qty-source');
-      srcEl.textContent = 'Live (DB)';
+      srcEl.textContent = 'Qty: Live (DB)';
       srcEl.className = 'qty-source qty-live';
       showStatus(statusEl, '✓ Saved', true);
     } else {
@@ -505,6 +605,79 @@ function saveStock(btn) {
     btn.disabled = false;
     btn.textContent = 'Save';
   });
+}
+
+function savePrice(btn) {
+  const row = btn.closest('tr');
+  const input = row.querySelector('.price-input');
+  const name = input.dataset.name;
+  const price = parseInt(input.value, 10);
+  const statusEl = row.querySelector('[id^="price-status-"]');
+
+  if (isNaN(price) || price < 0) {
+    showStatus(statusEl, 'Invalid price', false);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  fetch('/api/price.php', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, price })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      input.dataset.original = price;
+      const srcEl = row.querySelector('[id^="price-src-"]');
+      if (srcEl) { srcEl.textContent = 'Live (DB)'; srcEl.className = 'qty-source price-live'; }
+      const resetBtn = row.querySelector('.reset-price-btn');
+      if (resetBtn) resetBtn.style.display = '';
+      showStatus(statusEl, '✓ Saved', true);
+    } else {
+      showStatus(statusEl, data.error || 'Error', false);
+    }
+  })
+  .catch(() => showStatus(statusEl, 'Network error', false))
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = 'Save';
+  });
+}
+
+function resetPrice(btn) {
+  const row = btn.closest('tr');
+  const input = row.querySelector('.price-input');
+  const name = input.dataset.name;
+  const defaultPrice = parseInt(input.dataset.default, 10) || 0;
+  const statusEl = row.querySelector('[id^="price-status-"]');
+
+  btn.disabled = true;
+
+  fetch('/api/price.php', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'reset', name })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      input.value = defaultPrice;
+      input.dataset.original = defaultPrice;
+      const srcEl = row.querySelector('[id^="price-src-"]');
+      if (srcEl) { srcEl.textContent = 'Default'; srcEl.className = 'qty-source qty-default'; }
+      btn.style.display = 'none';
+      showStatus(statusEl, '↺ Reset', true);
+    } else {
+      showStatus(statusEl, data.error || 'Error', false);
+    }
+  })
+  .catch(() => showStatus(statusEl, 'Network error', false))
+  .finally(() => { btn.disabled = false; });
 }
 
 function showStatus(el, msg, ok) {

@@ -22,6 +22,19 @@ try {
 } catch (Exception $e) {}
 usort($products, fn($a, $b) => strcmp($a['name'], $b['name']));
 
+// Apply DB price overrides
+try {
+    $pdoP = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $pdoP->exec("CREATE TABLE IF NOT EXISTS product_prices (id INT AUTO_INCREMENT PRIMARY KEY, product_name VARCHAR(500) NOT NULL UNIQUE, price INT NOT NULL DEFAULT 0, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)");
+    $priceRows = $pdoP->query('SELECT product_name, price FROM product_prices')->fetchAll(PDO::FETCH_ASSOC);
+    $priceOverrides = [];
+    foreach ($priceRows as $r) { $priceOverrides[$r['product_name']] = (int)$r['price']; }
+    foreach ($products as &$p) {
+        if (isset($priceOverrides[$p['name']])) $p['price'] = $priceOverrides[$p['name']];
+    }
+    unset($p);
+} catch (Exception $e) {}
+
 // Pre-load order from pending_orders if from_order param given
 $preloadOrder = null;
 $fromOrderId  = (int)($_GET['from_order'] ?? 0);
