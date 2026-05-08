@@ -187,9 +187,10 @@ try {
     }
     .table-scroll {
       width: 100%;
-      overflow-x: auto;
+      overflow-x: scroll;
+      overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
+      overscroll-behavior-x: contain;
     }
     .toolbar {
       display: flex;
