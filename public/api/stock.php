@@ -76,9 +76,8 @@ if ($method === 'POST') {
         try {
             $pdo = getDB();
             $stmt = $pdo->prepare(
-                'INSERT INTO product_stock (product_name, quantity)
-                 VALUES (:name, :qty)
-                 ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)'
+                'INSERT IGNORE INTO product_stock (product_name, quantity)
+                 VALUES (:name, :qty)'
             );
             foreach ($products as $product) {
                 $stmt->execute([
