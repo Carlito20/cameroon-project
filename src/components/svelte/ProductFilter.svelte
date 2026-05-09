@@ -65,7 +65,7 @@
         <div class="product-card">
           <h3>{product.name}</h3>
           <p class="category">{categories.find(c => c.value === product.category)?.label}</p>
-          <p class="price">{product.price.toLocaleString()} XAF</p>
+          <p class="price">{product.price.toLocaleString()} FCFA</p>
           <button class="add-to-cart">Add to Cart</button>
         </div>
       {/each}

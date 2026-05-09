@@ -60,7 +60,7 @@ try {
 usort($products, fn($a, $b) => strcmp($a['name'] ?? '', $b['name'] ?? ''));
 
 function fmt_price($n) {
-    return number_format((float)$n, 0, '.', ' ') . ' XAF';
+    return number_format((float)$n, 0, '.', ' ') . ' FCFA';
 }
 ?>
 <!DOCTYPE html>

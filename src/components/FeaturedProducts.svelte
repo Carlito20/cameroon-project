@@ -76,7 +76,7 @@
   }
 
   function fmt(n) {
-    return Number(n).toLocaleString('fr-CM') + ' XAF';
+    return Number(n).toLocaleString('fr-CM') + ' FCFA';
   }
 
   function shopLink(categoryId, productName) {

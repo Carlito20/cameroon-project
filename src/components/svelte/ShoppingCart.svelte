@@ -78,7 +78,7 @@
             <div class="cart-item">
               <div class="item-info">
                 <h4>{item.name}</h4>
-                <p class="item-price">{item.price.toLocaleString()} XAF</p>
+                <p class="item-price">{item.price.toLocaleString()} FCFA</p>
               </div>
 
               <div class="item-controls">
@@ -111,7 +111,7 @@
         <div class="cart-footer">
           <div class="cart-total">
             <strong>Total:</strong>
-            <strong>{totalPrice.toLocaleString()} XAF</strong>
+            <strong>{totalPrice.toLocaleString()} FCFA</strong>
           </div>
           <button class="checkout-btn">Proceed to Checkout</button>
         </div>
@@ -125,13 +125,13 @@
   <h3>Demo: Add Items to Cart</h3>
   <div class="demo-products">
     <button on:click={() => addToCart({ id: 1, name: 'Dove Soap', price: 2500 })}>
-      Add Dove Soap (2,500 XAF)
+      Add Dove Soap (2,500 FCFA)
     </button>
     <button on:click={() => addToCart({ id: 2, name: 'Baby Diapers', price: 8000 })}>
-      Add Baby Diapers (8,000 XAF)
+      Add Baby Diapers (8,000 FCFA)
     </button>
     <button on:click={() => addToCart({ id: 3, name: 'Body Lotion', price: 3500 })}>
-      Add Body Lotion (3,500 XAF)
+      Add Body Lotion (3,500 FCFA)
     </button>
   </div>
 </div>
