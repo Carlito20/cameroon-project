@@ -31,13 +31,24 @@
 
   let featured = [];
 
-  onMount(() => {
+  onMount(async () => {
     const seed = getSeed();
     const offsets = [0, 2, 5, 7, 11, 13];
-    featured = categoryPools.map((cat, ci) => {
+    const picks = categoryPools.map((cat, ci) => {
       const p = cat.products[(seed + offsets[ci % offsets.length]) % cat.products.length];
       return { ...p, categoryId: cat.id };
     });
+
+    // Apply live DB price overrides
+    try {
+      const res = await fetch('/api/price.php');
+      if (res.ok) {
+        const overrides = await res.json();
+        picks.forEach(p => { if (overrides[p.name] != null) p.price = overrides[p.name]; });
+      }
+    } catch (_) {}
+
+    featured = picks;
   });
 
   // ── State & helpers ────────────────────────────────────────────────────
