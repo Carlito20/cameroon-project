@@ -5,11 +5,57 @@ if (empty($_SESSION['admin_logged_in'])) {
     exit;
 }
 
+require_once __DIR__ . '/../api/db.php';
+
 $jsonPath = __DIR__ . '/../api/products-list.json';
 $products = [];
 if (file_exists($jsonPath)) {
     $products = json_decode(file_get_contents($jsonPath), true) ?? [];
 }
+
+// Merge in custom products from DB
+try {
+    $pdoCustom = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $customRows = $pdoCustom->query('SELECT name, price FROM custom_products')->fetchAll(PDO::FETCH_ASSOC);
+    $existingNames = array_column($products, 'name');
+    foreach ($customRows as $row) {
+        if (!in_array($row['name'], $existingNames)) {
+            $products[] = ['name' => $row['name'], 'price' => (int)$row['price']];
+        }
+    }
+} catch (Exception $e) { /* custom_products table optional */ }
+
+// Apply live price overrides from DB
+try {
+    $pdoP = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $stmt = $pdoP->query('SELECT product_name, price FROM product_prices');
+    $dbPrices = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $dbPrices[$row['product_name']] = (int)$row['price'];
+    }
+    foreach ($products as &$p) {
+        if (isset($dbPrices[$p['name']])) {
+            $p['price'] = $dbPrices[$p['name']];
+        }
+    }
+    unset($p);
+} catch (Exception $e) { /* price overrides optional */ }
+
+// Load live stock from DB
+try {
+    $pdoS = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $stmtS = $pdoS->query('SELECT product_name, quantity FROM product_stock');
+    $dbStock = [];
+    foreach ($stmtS->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $dbStock[$row['product_name']] = (int)$row['quantity'];
+    }
+    foreach ($products as &$p) {
+        if (isset($dbStock[$p['name']])) {
+            $p['quantity'] = $dbStock[$p['name']];
+        }
+    }
+    unset($p);
+} catch (Exception $e) { /* stock optional */ }
 
 usort($products, fn($a, $b) => strcmp($a['name'] ?? '', $b['name'] ?? ''));
 
