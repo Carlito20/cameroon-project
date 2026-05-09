@@ -39,12 +39,19 @@
       return { ...p, categoryId: cat.id };
     });
 
-    // Apply live DB price overrides
+    // Apply live DB price and stock overrides
     try {
-      const res = await fetch('/api/price.php');
-      if (res.ok) {
-        const overrides = await res.json();
-        picks.forEach(p => { if (overrides[p.name] != null) p.price = overrides[p.name]; });
+      const [priceRes, stockRes] = await Promise.all([
+        fetch('/api/price.php'),
+        fetch('/api/stock.php?action=all'),
+      ]);
+      if (priceRes.ok) {
+        const prices = await priceRes.json();
+        picks.forEach(p => { if (prices[p.name] != null) p.price = prices[p.name]; });
+      }
+      if (stockRes.ok) {
+        const stock = await stockRes.json();
+        picks.forEach(p => { if (stock[p.name] != null) p.stock = stock[p.name]; });
       }
     } catch (_) {}
 
