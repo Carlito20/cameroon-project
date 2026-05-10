@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>American Select — A4 Flyer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fff;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* Gold decorative lines */
+    .gold-line-top {
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #d4af37, #f0cc60, #d4af37, transparent);
+    }
+    .gold-line-bottom {
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #d4af37, #f0cc60, #d4af37, transparent);
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    .header {
+      padding: 18px 24px 14px;
+      text-align: center;
+      position: relative;
+    }
+    .header::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 2px;
+      background: #d4af37;
+      margin: 10px auto 0;
+    }
+    .brand-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .flag-dot { width: 6px; height: 6px; border-radius: 50%; background: #d4af37; }
+    .flag-text { font-size: 9px; color: #d4af37; letter-spacing: 3px; text-transform: uppercase; font-weight: 600; }
+    .brand-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 36px;
+      font-weight: 900;
+      color: #d4af37;
+      letter-spacing: 4px;
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(212,175,55,0.3);
+    }
+    .tagline {
+      font-size: 9px;
+      color: #888;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    /* ── Hero banner ────────────────────────────────────────── */
+    .hero-banner {
+      background: linear-gradient(135deg, #1a1200 0%, #2a1e00 50%, #1a1200 100%);
+      border-top: 1px solid #3a2800;
+      border-bottom: 1px solid #3a2800;
+      padding: 10px 24px;
+      text-align: center;
+    }
+    .hero-banner h2 {
+      font-size: 13px;
+      color: #f5e6a0;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .hero-banner p {
+      font-size: 9px;
+      color: #a89060;
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Product Grid ───────────────────────────────────────── */
+    .grid-section {
+      padding: 14px 16px;
+      flex: 1;
+    }
+    .grid-title {
+      font-size: 8px;
+      color: #555;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .product-card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .product-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: linear-gradient(135deg, rgba(212,175,55,0.15), transparent) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .product-img-wrap {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 6px;
+    }
+    .product-info {
+      padding: 5px 6px 6px;
+      border-top: 1px solid #1e1e1e;
+    }
+    .product-category {
+      font-size: 6.5px;
+      color: #d4af37;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .product-name {
+      font-size: 7.5px;
+      color: #ccc;
+      line-height: 1.35;
+      font-weight: 500;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    .footer {
+      background: #111;
+      border-top: 1px solid #222;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .footer-label { font-size: 7px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+    .footer-value { font-size: 11px; color: #d4af37; font-weight: 700; letter-spacing: 0.5px; }
+
+    .footer-center {
+      text-align: center;
+      flex: 1;
+    }
+    .footer-center .brand-small {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 14px;
+      color: #d4af37;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .footer-center .footer-tagline {
+      font-size: 7px;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .footer-right {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: right;
+    }
+
+    /* ── Corner decorations ─────────────────────────────────── */
+    .corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+    }
+    .corner-tl { top: 8px; left: 8px; border-top: 2px solid #d4af37; border-left: 2px solid #d4af37; }
+    .corner-tr { top: 8px; right: 8px; border-top: 2px solid #d4af37; border-right: 2px solid #d4af37; }
+    .corner-bl { bottom: 8px; left: 8px; border-bottom: 2px solid #d4af37; border-left: 2px solid #d4af37; }
+    .corner-br { bottom: 8px; right: 8px; border-bottom: 2px solid #d4af37; border-right: 2px solid #d4af37; }
+
+    @media print {
+      html, body { width: 210mm; height: 297mm; }
+      .page { min-height: 297mm; }
+      @page { size: A4; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <!-- Corner decorations -->
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <div class="gold-line-top"></div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="brand-flag">
+      <div class="flag-dot"></div>
+      <span class="flag-text">USA &amp; Canada Imports</span>
+      <div class="flag-dot"></div>
+    </div>
+    <div class="brand-name">AMERICAN SELECT</div>
+    <div class="tagline">Quality Essentials · Imported with Care · Delivered to Cameroon</div>
+  </div>
+
+  <!-- Hero banner -->
+  <div class="hero-banner">
+    <h2>✦ Now Available in Cameroon ✦</h2>
+    <p>Authentic American &amp; Canadian brands — body care, electronics, perfumes, hair care &amp; more</p>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="grid-section">
+    <div class="grid-title">✦ &nbsp; Featured Products &nbsp; ✦</div>
+    <div class="product-grid">
+
+      <!-- Body Wash -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/olay-white-tea.webp" alt="Olay Body Wash" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Body Wash</div>
+          <div class="product-name">Olay Essential Botanicals Body Wash</div>
+        </div>
+      </div>
+
+      <!-- Body Lotion -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/cerave-daily-moisturizing-lotion-1.webp" alt="CeraVe Lotion" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Body Lotion</div>
+          <div class="product-name">CeraVe Daily Moisturizing Lotion</div>
+        </div>
+      </div>
+
+      <!-- Hair Care -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/revlon-colorsilk-38-vibrant-violet-1.webp" alt="Revlon ColorSilk" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Hair Care</div>
+          <div class="product-name">Revlon ColorSilk Permanent Hair Color</div>
+        </div>
+      </div>
+
+      <!-- Electronics -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/nokia-earbuds-1.webp" alt="Nokia Earbuds" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Electronics</div>
+          <div class="product-name">Nokia Go Earbuds+ TWS</div>
+        </div>
+      </div>
+
+      <!-- Perfumes -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/charm-spray-perfume1.webp" alt="Perfume" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Perfumes</div>
+          <div class="product-name">Charm Spray EDP For Women</div>
+        </div>
+      </div>
+
+      <!-- Men's Cologne -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/loveryblack-for-him-1.webp" alt="Cologne" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Men's Cologne</div>
+          <div class="product-name">Loveryblack Affinity Pheromone Cologne</div>
+        </div>
+      </div>
+
+      <!-- Baby & Kids -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/cerave-baby-lotion-1.webp" alt="Baby Lotion" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Kids &amp; Baby</div>
+          <div class="product-name">CeraVe Baby Lotion with Ceramides</div>
+        </div>
+      </div>
+
+      <!-- Personal Care -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/mens-electric-shaver-1.webp" alt="Shaver" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Personal Care</div>
+          <div class="product-name">Men's 3-in-1 Electric Shaver USB</div>
+        </div>
+      </div>
+
+      <!-- Body Mist -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/island-coconut-body-mist.webp" alt="Body Mist" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Body Mist</div>
+          <div class="product-name">Island Coconut Body Mist</div>
+        </div>
+      </div>
+
+      <!-- Kitchen -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/blender-380ml-1.webp" alt="Blender" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Kitchen</div>
+          <div class="product-name">Rechargeable Portable Blender Cup</div>
+        </div>
+      </div>
+
+      <!-- Household -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/febreze-japanese-cherry-blossom-1.webp" alt="Febreze" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Household</div>
+          <div class="product-name">Febreze Air Effects — Cherry Blossom</div>
+        </div>
+      </div>
+
+      <!-- Health -->
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="public/images/products/arm-bp-monitor-1.webp" alt="BP Monitor" onerror="this.style.display='none'">
+        </div>
+        <div class="product-info">
+          <div class="product-category">Health</div>
+          <div class="product-name">Rechargeable Arm Blood Pressure Monitor</div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+
+    <!-- Category tags row -->
+    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;justify-content:center;">
+      <span style="font-size:7px;color:#666;border:1px solid #2a2a2a;border-radius:20px;padding:2px 8px;">Body Care</span>
+      <span style="font-size:7px;color:#666;border:1px solid #2a2a2a;border-radius:20px;padding:2px 8px;">Electronics</span>
+      <span style="font-size:7px;color:#666;border:1px solid #2a2a2a;border-radius:20px;padding:2px 8px;">Perfumes &amp; Colognes</span>
+      <span style="font-size:7px;color:#666;border:1px solid #2a2a2a;border-radius:20px;padding:2px 8px;">Hair Care</span>
+      <span style="font-size:7px;color:#666;border:1px solid #2a2a2a;border-radius:20px;padding:2px 8px;">Baby &amp; Kids</span>
+      <span style="font-size:7px;color:#666;border:1px solid #2a2a2a;border-radius:20px;padding:2px 8px;">Kitchen Gadgets</span>
+      <span style="font-size:7px;color:#666;border:1px solid #2a2a2a;border-radius:20px;padding:2px 8px;">Health Devices</span>
+      <span style="font-size:7px;color:#666;border:1px solid #2a2a2a;border-radius:20px;padding:2px 8px;">Household</span>
+      <span style="font-size:7px;color:#666;border:1px solid #2a2a2a;border-radius:20px;padding:2px 8px;">Body Mist</span>
+    </div>
+  </div>
+
+  <!-- Contact bar -->
+  <div style="background:linear-gradient(90deg,#1a1200,#2a1e00,#1a1200);border-top:2px solid #d4af37;border-bottom:2px solid #d4af37;padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:32px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:16px;">📞</span>
+      <div>
+        <div style="font-size:7px;color:#888;letter-spacing:1px;text-transform:uppercase;">Call / WhatsApp</div>
+        <div style="font-size:14px;color:#fff;font-weight:800;letter-spacing:0.5px;">+237 679 457 181</div>
+      </div>
+    </div>
+    <div style="width:1px;height:28px;background:#3a2800;"></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:16px;">🌐</span>
+      <div>
+        <div style="font-size:7px;color:#888;letter-spacing:1px;text-transform:uppercase;">Shop Online</div>
+        <div style="font-size:14px;color:#d4af37;font-weight:800;letter-spacing:0.5px;">www.americanselect.net</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-label">Quality Imports</div>
+      <div class="footer-value">USA &amp; Canada</div>
+    </div>
+    <div class="footer-center">
+      <div class="brand-small">AMERICAN SELECT</div>
+      <div class="footer-tagline">Delivered in Cameroon · Prices may vary based on shipping</div>
+    </div>
+    <div class="footer-right">
+      <div class="footer-label">Order Today</div>
+      <div class="footer-value">WhatsApp Us</div>
+    </div>
+  </div>
+
+  <div class="gold-line-bottom"></div>
+</div>
+</body>
+</html>
