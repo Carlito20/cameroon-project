@@ -176,7 +176,10 @@ usort($products, fn($a,$b) => strcmp($a['name']??'',$b['name']??''));
 
 <header>
   <h1>📊 Sales Report</h1>
-  <a href="dashboard.php" class="btn btn-outline">← Dashboard</a>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="btn btn-outline" onclick="exportCSV()" title="Export current view to CSV">📥 Export CSV</button>
+    <a href="dashboard.php" class="btn btn-outline">← Dashboard</a>
+  </div>
 </header>
 
 <div class="page">
@@ -621,6 +624,81 @@ function showMsg(text, ok) {
   el.className = 'sale-msg ' + (ok ? 'sale-ok' : 'sale-err');
   el.style.display = 'block';
   if (ok) setTimeout(() => el.style.display = 'none', 4000);
+}
+
+// ── Export CSV ────────────────────────────────────────────────────────────────
+function exportCSV() {
+  if (!state.data) { alert('No data loaded yet.'); return; }
+
+  const lines = [];
+  const esc = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const fmtNum = n => Number(n).toLocaleString('fr-CM');
+  const fmtDatePlain = s => { if (!s) return ''; const d = new Date(s); return d.toLocaleDateString('en-GB') + ' ' + d.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); };
+
+  // ── Filter info ────────────────────────────────────────────────────────────
+  lines.push(esc('American Select — Sales Report'));
+  lines.push(esc('Generated: ' + new Date().toLocaleString('en-GB')));
+  const filterDesc = [
+    state.from && state.to ? `Date: ${state.from} to ${state.to}` : state.from ? `From: ${state.from}` : state.to ? `To: ${state.to}` : 'Date: All time',
+    state.search ? `Search: "${state.search}"` : '',
+    state.type !== 'all' ? `Type: ${state.type}` : '',
+  ].filter(Boolean).join(' | ');
+  lines.push(esc(filterDesc || 'No filters applied'));
+  lines.push('');
+
+  // ── Revenue Summary ────────────────────────────────────────────────────────
+  lines.push(esc('REVENUE SUMMARY'));
+  lines.push([esc('Period'), esc('Revenue (FCFA)'), esc('Sales Count')].join(','));
+  const periodLabels = { today: 'Today', week: 'This Week', month: 'This Month', all: 'All Time' };
+  for (const [key, label] of Object.entries(periodLabels)) {
+    const s = state.data.stats[key] || { revenue: 0, orders: 0 };
+    lines.push([esc(label), esc(fmtNum(s.revenue)), esc(s.orders)].join(','));
+  }
+  lines.push('');
+
+  // ── Top Selling Products ───────────────────────────────────────────────────
+  lines.push(esc('TOP SELLING PRODUCTS'));
+  lines.push([esc('Rank'), esc('Product'), esc('Units Sold'), esc('Revenue FCFA (Walk-in)')].join(','));
+  const tops = [...(state.data.top_products || [])];
+  if (state.sort === 'revenue') tops.sort((a,b) => b.total_revenue - a.total_revenue);
+  else if (state.sort === 'name') tops.sort((a,b) => a.product_name.localeCompare(b.product_name));
+  else tops.sort((a,b) => b.units_sold - a.units_sold);
+  tops.forEach((r, i) => {
+    lines.push([esc(i+1), esc(r.product_name), esc(r.units_sold), esc(r.total_revenue > 0 ? fmtNum(r.total_revenue) : 0)].join(','));
+  });
+  lines.push('');
+
+  // ── Walk-in Sales ──────────────────────────────────────────────────────────
+  if (state.type !== 'orders') {
+    lines.push(esc('WALK-IN SALES'));
+    lines.push([esc('Product'), esc('Qty'), esc('Unit Price (FCFA)'), esc('Total (FCFA)'), esc('Date'), esc('Note')].join(','));
+    (state.data.walk_in?.rows || []).forEach(r => {
+      lines.push([esc(r.product_name), esc(r.quantity), esc(fmtNum(r.unit_price)), esc(fmtNum(r.total)), esc(fmtDatePlain(r.sold_at)), esc(r.note || '')].join(','));
+    });
+    lines.push('');
+  }
+
+  // ── Website Orders ─────────────────────────────────────────────────────────
+  if (state.type !== 'walkin') {
+    lines.push(esc('WEBSITE ORDERS (COMPLETED)'));
+    lines.push([esc('Order Ref'), esc('Customer'), esc('Payment'), esc('Total (FCFA)'), esc('Date')].join(','));
+    (state.data.orders?.rows || []).forEach(r => {
+      lines.push([esc(r.order_ref || ''), esc(r.customer_name || 'Anonymous'), esc(r.payment_method || ''), esc(fmtNum(r.total)), esc(fmtDatePlain(r.completed_at))].join(','));
+    });
+  }
+
+  // ── Download ───────────────────────────────────────────────────────────────
+  const csv  = '﻿' + lines.join('\r\n'); // BOM for Excel UTF-8
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href     = url;
+  a.download = `AmericanSelect_Sales_${date}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ── Cancel walk-in sale ───────────────────────────────────────────────────────
