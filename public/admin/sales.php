@@ -303,6 +303,7 @@ usort($products, fn($a,$b) => strcmp($a['name']??'',$b['name']??''));
             <th onclick="localSort('walk','total',this)">Total <span class="sort-icon"></span></th>
             <th onclick="localSort('walk','sold_at',this)">Date <span class="sort-icon"></span></th>
             <th>Note</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="walk-table"><tr class="empty-row"><td colspan="6">Loading…</td></tr></tbody>
@@ -541,8 +542,9 @@ function renderWalk(wi) {
         <td style="color:#d4af37;font-weight:700;">${fmt(r.total)}</td>
         <td style="color:#555;">${fmtDate(r.sold_at)}</td>
         <td style="color:#555;">${r.note || '—'}</td>
+        <td><button onclick="cancelSale(${r.id})" style="background:transparent;border:1px solid #3a1a1a;color:#e05050;border-radius:5px;padding:4px 10px;font-size:11px;cursor:pointer;touch-action:manipulation;min-height:30px;">✕ Cancel</button></td>
       </tr>`).join('')
-    : '<tr class="empty-row"><td colspan="6">No walk-in sales for this filter.</td></tr>';
+    : '<tr class="empty-row"><td colspan="7">No walk-in sales for this filter.</td></tr>';
 
   const total = wi.total || 0;
   const pages = Math.ceil(total / state.perPage) || 1;
@@ -619,6 +621,17 @@ function showMsg(text, ok) {
   el.className = 'sale-msg ' + (ok ? 'sale-ok' : 'sale-err');
   el.style.display = 'block';
   if (ok) setTimeout(() => el.style.display = 'none', 4000);
+}
+
+// ── Cancel walk-in sale ───────────────────────────────────────────────────────
+async function cancelSale(id) {
+  if (!confirm('Cancel this walk-in sale? Stock will be restored.')) return;
+  try {
+    const res  = await fetch('/api/sales.php?id=' + id, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) { showMsg('✓ Sale cancelled and stock restored.', true); loadData(); }
+    else showMsg('Error: ' + (data.error || 'Failed'), false);
+  } catch(e) { showMsg('Network error', false); }
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
