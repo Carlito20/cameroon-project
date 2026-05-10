@@ -914,6 +914,12 @@ export const categories: Category[] = [
             price: 2000
           },
           {
+            name: 'Febreze Air Effects Air Freshener - Japanese Cherry Blossom',
+            images: ['/images/products/febreze-japanese-cherry-blossom-1.webp', '/images/products/febreze-japanese-cherry-blossom-2.webp'],
+            quantity: 3,
+            price: 3000
+          },
+          {
             name: 'Febreze Air Effects Air Freshener - Mountain Scent',
             images: ['/images/products/febreze-mountain-scent-1.webp', '/images/products/febreze-mountain-scent-2.webp'],
             quantity: 4,
