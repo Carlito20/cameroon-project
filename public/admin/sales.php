@@ -72,11 +72,20 @@ usort($products, fn($a,$b) => strcmp($a['name']??'',$b['name']??''));
     .quick-btns { display: flex; gap: 6px; flex-wrap: wrap; }
     .date-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     .date-inputs input[type=date] {
-      background: #1a1a1a; border: 1px solid #333; border-radius: 6px;
+      background: #2a2a2a; border: 1px solid #444; border-radius: 6px;
       color: #e0e0e0; font-size: 13px; padding: 7px 10px; min-height: 36px;
-      -webkit-appearance: none; appearance: none; outline: none;
+      outline: none; cursor: pointer;
+      color-scheme: dark;
     }
     .date-inputs input[type=date]:focus { border-color: #d4af37; }
+    .date-inputs input[type=date]::-webkit-calendar-picker-indicator {
+      filter: invert(1) brightness(1.5);
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    .date-inputs input[type=date]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+    }
     .search-wrap { flex: 1; min-width: 180px; }
     .search-input {
       width: 100%; background: #1a1a1a; border: 1px solid #333; border-radius: 6px;
