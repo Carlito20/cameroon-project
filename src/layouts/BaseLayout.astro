@@ -28,6 +28,14 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
     <meta name="apple-mobile-web-app-title" content="AmericanSelect" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YB1C1HC19"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9YB1C1HC19');
+    </script>
     <style is:inline>
       /* Critical mobile CSS - loaded immediately */
       html {
