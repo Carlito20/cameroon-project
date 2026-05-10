@@ -272,7 +272,7 @@ usort($products, fn($a,$b) => strcmp($a['name']??'',$b['name']??''));
           <th style="width:36px;">#</th>
           <th onclick="setSort('name',null)">Product <span class="sort-icon" id="sort-name-icon"></span></th>
           <th onclick="setSort('units',document.getElementById('sort-units'))">Units Sold <span class="sort-icon" id="sort-units-icon">▼</span></th>
-          <th onclick="setSort('revenue',document.getElementById('sort-revenue'))">Revenue <span class="sort-icon" id="sort-revenue-icon"></span></th>
+          <th onclick="setSort('revenue',document.getElementById('sort-revenue'))">Revenue (Walk-in) <span class="sort-icon" id="sort-revenue-icon"></span></th>
         </tr>
       </thead>
       <tbody id="top-table"><tr class="empty-row"><td colspan="4">Loading…</td></tr></tbody>
@@ -521,7 +521,7 @@ function renderTop(products) {
         <td style="color:#555;">${i+1}</td>
         <td title="${r.product_name}">${r.product_name.slice(0,55)}${r.product_name.length>55?'…':''}</td>
         <td><span class="badge badge-gold">${r.units_sold} units</span></td>
-        <td style="color:#d4af37;font-weight:700;">${r.revenue > 0 ? fmt(r.revenue) : '—'}</td>
+        <td style="color:#d4af37;font-weight:700;">${r.total_revenue > 0 ? fmt(r.total_revenue) : '—'}</td>
       </tr>`).join('')
     : '<tr class="empty-row"><td colspan="4">No sales data for this filter.</td></tr>';
 }

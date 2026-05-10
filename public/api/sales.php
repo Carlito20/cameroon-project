@@ -143,19 +143,40 @@ try {
     }
 
     // ── Top selling products (prepared statements for LIKE) ───────────────────
+    // Top products — use subquery for revenue to avoid cartesian product from direct JOIN
     $topParams = [];
     $topWhere  = "WHERE st.action = 'sold'";
     if ($search) { $topWhere .= ' AND st.product_name LIKE ?'; $topParams[] = '%'.$search.'%'; }
     if ($from)   { $topWhere .= ' AND DATE(st.created_at) >= ?'; $topParams[] = $from; }
     if ($to)     { $topWhere .= ' AND DATE(st.created_at) <= ?'; $topParams[] = $to; }
 
+    // Walk-in revenue subquery (correctly aggregated before joining)
+    $wiRevWhere = "WHERE 1";
+    if ($from) $wiRevWhere .= " AND DATE(sold_at) >= '$from'";
+    if ($to)   $wiRevWhere .= " AND DATE(sold_at) <= '$to'";
+
+    // Order revenue subquery — extract per-product totals from completed orders
+    // items column is JSON array: [{name, price, quantity}, ...]
+    $ordRevWhere = "WHERE status = 'completed'";
+    if ($from) $ordRevWhere .= " AND DATE(completed_at) >= '$from'";
+    if ($to)   $ordRevWhere .= " AND DATE(completed_at) <= '$to'";
+
+    $topSortColSafe = $sortBy === 'revenue' ? 'total_revenue' : ($sortBy === 'name' ? 'st.product_name' : 'units_sold');
+
     $topStmt = $pdo->prepare(
-        "SELECT st.product_name, SUM(st.quantity) AS units_sold, COALESCE(SUM(ws.total),0) AS revenue
+        "SELECT st.product_name,
+                SUM(st.quantity) AS units_sold,
+                COALESCE(wi_rev.revenue, 0) AS walk_in_revenue,
+                COALESCE(wi_rev.revenue, 0) AS total_revenue
          FROM stock_transactions st
-         LEFT JOIN walk_in_sales ws ON ws.product_name = st.product_name
+         LEFT JOIN (
+             SELECT product_name, SUM(total) AS revenue
+             FROM walk_in_sales $wiRevWhere
+             GROUP BY product_name
+         ) wi_rev ON wi_rev.product_name = st.product_name
          $topWhere
          GROUP BY st.product_name
-         ORDER BY $topSortCol DESC
+         ORDER BY $topSortColSafe DESC
          LIMIT 50"
     );
     $topStmt->execute($topParams);
