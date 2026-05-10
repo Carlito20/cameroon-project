@@ -1054,6 +1054,12 @@ export const categories: Category[] = [
         name: 'Home Electronics',
         items: [
           {
+            name: 'Amazon Fire TV Stick 4K Select (newest model), start streaming in 4K, AI-powered search, and free & live TV',
+            images: ['/images/products/fire-tv-stick-4k-1.webp', '/images/products/fire-tv-stick-4k-2.webp', '/images/products/fire-tv-stick-4k-3.webp'],
+            quantity: 2,
+            price: 30000
+          },
+          {
             name: 'Rechargeable LED Torch/Flashlight With High Power Lamp',
             images: ['/images/products/torch1.webp', '/images/products/torch.webp', '/images/products/torch2.webp'],
             quantity: 15,
