@@ -49,21 +49,21 @@
     /* Header */
     .header {
       text-align: center;
-      padding: 32px 60px 18px;
+      padding: 18px 60px 10px;
       position: relative;
       flex-shrink: 0;
     }
     .eyebrow {
-      font-size: 12px;
+      font-size: 11px;
       color: #d4af37;
       letter-spacing: 5px;
       text-transform: uppercase;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       opacity: 0.8;
     }
     .brand {
-      font-size: 72px;
+      font-size: 58px;
       font-weight: 900;
       color: #d4af37;
       letter-spacing: 6px;
@@ -72,25 +72,26 @@
       font-family: Georgia, 'Times New Roman', serif;
     }
     .sub {
-      font-size: 13px;
+      font-size: 11px;
       color: #666;
       letter-spacing: 3px;
       text-transform: uppercase;
-      margin-top: 8px;
+      margin-top: 6px;
     }
     .divider {
       width: 80px;
       height: 2px;
       background: linear-gradient(90deg, transparent, #d4af37, transparent);
-      margin: 12px auto 0;
+      margin: 8px auto 0;
     }
 
     /* Product grid */
     .grid-wrap {
       flex: 1;
-      padding: 0 28px;
+      padding: 0 20px;
       display: flex;
       flex-direction: column;
+      min-height: 0;
     }
     .grid-label {
       font-size: 10px;
@@ -98,14 +99,15 @@
       letter-spacing: 3px;
       text-transform: uppercase;
       text-align: center;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: 12px;
+      gap: 8px;
       flex: 1;
+      min-height: 0;
     }
     .card {
       background: #111;
@@ -283,32 +285,32 @@
   </div>
 
   <!-- Contact bar -->
-  <div style="background:linear-gradient(90deg,#1a1200,#2a1e00,#1a1200);border-top:3px solid #d4af37;border-bottom:3px solid #d4af37;padding:22px 60px;display:flex;align-items:center;justify-content:center;gap:50px;">
-    <div style="display:flex;align-items:center;gap:14px;">
-      <span style="font-size:28px;">📞</span>
+  <div style="background:linear-gradient(90deg,#1a1200,#2a1e00,#1a1200);border-top:3px solid #d4af37;border-bottom:3px solid #d4af37;padding:14px 60px;display:flex;align-items:center;justify-content:center;gap:40px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:22px;">📞</span>
       <div>
-        <div style="font-size:11px;color:#888;letter-spacing:2px;text-transform:uppercase;">Call / WhatsApp</div>
-        <div style="font-size:26px;color:#ffffff;font-weight:800;letter-spacing:1px;margin-top:2px;">+237 679 457 181</div>
+        <div style="font-size:10px;color:#888;letter-spacing:2px;text-transform:uppercase;">Call / WhatsApp</div>
+        <div style="font-size:22px;color:#ffffff;font-weight:800;letter-spacing:1px;margin-top:1px;">+237 679 457 181</div>
       </div>
     </div>
-    <div style="width:2px;height:50px;background:linear-gradient(to bottom,transparent,#d4af37,transparent);"></div>
-    <div style="display:flex;align-items:center;gap:14px;">
-      <span style="font-size:28px;">🌐</span>
+    <div style="width:2px;height:40px;background:linear-gradient(to bottom,transparent,#d4af37,transparent);"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:22px;">🌐</span>
       <div>
-        <div style="font-size:11px;color:#888;letter-spacing:2px;text-transform:uppercase;">Shop Online</div>
-        <div style="font-size:26px;color:#d4af37;font-weight:800;letter-spacing:1px;margin-top:2px;">www.americanselect.net</div>
+        <div style="font-size:10px;color:#888;letter-spacing:2px;text-transform:uppercase;">Shop Online</div>
+        <div style="font-size:22px;color:#d4af37;font-weight:800;letter-spacing:1px;margin-top:1px;">www.americanselect.net</div>
       </div>
     </div>
   </div>
 
   <!-- Footer -->
-  <div class="footer">
+  <div class="footer" style="padding:10px 50px;flex-shrink:0;">
     <div class="f-item">
       <div class="f-label">Quality Imports</div>
       <div class="f-value" style="font-size:14px;">USA &amp; Canada</div>
     </div>
     <div class="f-item f-center">
-      <div class="f-brand">AMERICAN SELECT</div>
+      <div class="f-brand" style="font-size:18px;">AMERICAN SELECT</div>
       <div class="f-sub">Delivered in Cameroon</div>
     </div>
     <div class="f-item f-right">
