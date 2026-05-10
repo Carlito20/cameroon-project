@@ -12,6 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     if ($password === ADMIN_PASSWORD) {
         $_SESSION['admin_logged_in'] = true;
+        $_SESSION['admin_role'] = 'admin';
+        header('Location: dashboard.php');
+        exit;
+    } elseif ($password === '2026') {
+        $_SESSION['admin_logged_in'] = true;
+        $_SESSION['admin_role'] = 'employee';
         header('Location: dashboard.php');
         exit;
     } else {

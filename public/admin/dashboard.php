@@ -418,6 +418,9 @@ try {
         <a href="history.php" class="menu-item">📦 Stock History</a>
         <a href="price-tags.php" class="menu-item">🏷 Price Tags</a>
         <a href="barcodes.php" class="menu-item">🏷 Barcode Labels</a>
+        <?php if (($_SESSION['admin_role'] ?? '') === 'admin'): ?>
+        <a href="sales.php" class="menu-item" style="color:#d4af37;">📊 Sales Report</a>
+        <?php endif; ?>
         <hr class="menu-divider">
         <button class="menu-item" onclick="initializeAll(); closeMenu()">⚙ Initialize Stock</button>
         <hr class="menu-divider">
