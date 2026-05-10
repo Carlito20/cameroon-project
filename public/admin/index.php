@@ -146,8 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       document.getElementById('submit-btn').className    = isEmp ? 'emp-btn' : '';
       const input = document.getElementById('password');
       input.inputMode = isEmp ? 'numeric' : 'text';
-      input.pattern   = isEmp ? '[0-9]*' : '';
-      input.value     = '';
+      if (isEmp) input.setAttribute('pattern', '[0-9]*');
+      else       input.removeAttribute('pattern');
+      input.value = '';
       input.focus();
     }
   </script>
