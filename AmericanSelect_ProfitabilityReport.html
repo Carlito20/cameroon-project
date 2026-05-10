@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>American Select — Profitability Analysis Report</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #1a1a1a; background: #fff; padding: 40px; }
+    .cover { text-align: center; padding: 60px 0 40px; border-bottom: 3px solid #d4af37; margin-bottom: 36px; }
+    .cover h1 { font-size: 28px; font-weight: 800; color: #d4af37; letter-spacing: 2px; margin-bottom: 6px; }
+    .cover h2 { font-size: 16px; color: #555; font-weight: 400; margin-bottom: 20px; }
+    .cover .meta { font-size: 12px; color: #888; }
+
+    h3 { font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 28px 0 10px; border-left: 4px solid #d4af37; padding-left: 10px; }
+    h4 { font-size: 13px; font-weight: 700; color: #444; margin: 18px 0 8px; }
+    p  { margin-bottom: 8px; line-height: 1.6; color: #333; }
+
+    /* Summary cards */
+    .cards { display: flex; gap: 14px; margin: 14px 0 24px; }
+    .card { flex: 1; border: 1px solid #e0e0e0; border-radius: 8px; padding: 14px 16px; text-align: center; }
+    .card .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .card .value { font-size: 20px; font-weight: 800; color: #d4af37; }
+    .card .sub   { font-size: 11px; color: #888; margin-top: 4px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 10px 0 22px; font-size: 12px; }
+    th { background: #1a1a1a; color: #d4af37; padding: 8px 10px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; }
+    tr:nth-child(even) td { background: #fafafa; }
+    tr:last-child td { border-bottom: none; }
+    .green  { color: #2e7d32; font-weight: 700; }
+    .red    { color: #c62828; font-weight: 700; }
+    .orange { color: #e65100; font-weight: 700; }
+    .gold   { color: #b8860b; font-weight: 700; }
+
+    /* Action items */
+    .action-list { list-style: none; margin: 10px 0; }
+    .action-list li { padding: 8px 12px; border-left: 3px solid #d4af37; margin-bottom: 8px; background: #fffdf0; border-radius: 0 4px 4px 0; }
+    .action-list li strong { display: block; margin-bottom: 2px; }
+
+    /* Alert boxes */
+    .alert { border-radius: 6px; padding: 12px 14px; margin: 10px 0; }
+    .alert-green  { background: #f1f8f1; border: 1px solid #a5d6a7; }
+    .alert-red    { background: #fff3f3; border: 1px solid #ef9a9a; }
+    .alert-yellow { background: #fffde7; border: 1px solid #fff176; }
+
+    .page-break { page-break-after: always; }
+    .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e0e0e0; font-size: 11px; color: #aaa; text-align: center; }
+
+    .two-col { display: flex; gap: 20px; }
+    .two-col > div { flex: 1; }
+  </style>
+</head>
+<body>
+
+<!-- Cover -->
+<div class="cover">
+  <h1>AMERICAN SELECT</h1>
+  <h2>Profitability Analysis Report</h2>
+  <div class="meta">Generated: May 2026 &nbsp;|&nbsp; Exchange rate used: 1 USD = 600 FCFA &nbsp;|&nbsp; Confidential</div>
+</div>
+
+<!-- Financial Summary -->
+<h3>1. Financial Summary</h3>
+<div class="cards">
+  <div class="card">
+    <div class="label">Total Invested</div>
+    <div class="value">$5,483</div>
+    <div class="sub">3,289,842 FCFA</div>
+  </div>
+  <div class="card">
+    <div class="label">Revenue Potential</div>
+    <div class="value">$10,259</div>
+    <div class="sub">6,155,600 FCFA (if all stock sells)</div>
+  </div>
+  <div class="card">
+    <div class="label">Gross Profit</div>
+    <div class="value">$4,776</div>
+    <div class="sub">2,865,758 FCFA</div>
+  </div>
+  <div class="card">
+    <div class="label">Return on Investment</div>
+    <div class="value" style="color:#2e7d32;">87.1%</div>
+    <div class="sub">You nearly double your money</div>
+  </div>
+</div>
+
+<div class="alert alert-green">
+  <strong>Bottom line:</strong> The business has strong profit potential at 87.1% ROI. You need to sell approximately 52% of current stock to break even. Selling everything generates ~$4,776 gross profit before operating costs.
+</div>
+
+<div class="alert alert-yellow">
+  <strong>Note on net profit:</strong> Actual net profit after operating costs (packaging bags ~137,000 FCFA, website hosting, transport) is estimated at <strong>1,800,000–2,200,000 FCFA</strong> — still very strong.
+</div>
+
+<!-- Revenue by Category -->
+<h3>2. Revenue Potential by Category</h3>
+<table>
+  <thead><tr><th>Category</th><th>Units in Stock</th><th>Revenue (FCFA)</th><th>Revenue (USD)</th></tr></thead>
+  <tbody>
+    <tr><td>Electronics</td><td>289</td><td class="gold">1,759,000</td><td>$2,932</td></tr>
+    <tr><td>Perfumes &amp; Deodorants</td><td>206</td><td class="gold">1,225,600</td><td>$2,043</td></tr>
+    <tr><td>Body Lotion</td><td>130</td><td class="gold">1,040,500</td><td>$1,734</td></tr>
+    <tr><td>Body Wash</td><td>152</td><td class="gold">736,500</td><td>$1,228</td></tr>
+    <tr><td>Hair</td><td>45</td><td>357,000</td><td>$595</td></tr>
+    <tr><td>Personal Care</td><td>42</td><td>321,500</td><td>$536</td></tr>
+    <tr><td>Kitchen</td><td>47</td><td>290,500</td><td>$484</td></tr>
+    <tr><td>Household</td><td>19</td><td>108,000</td><td>$180</td></tr>
+    <tr><td>Kids &amp; Baby</td><td>7</td><td>59,500</td><td>$99</td></tr>
+    <tr><td><strong>TOTAL</strong></td><td><strong>967 units</strong></td><td><strong>6,155,600</strong></td><td><strong>$10,259</strong></td></tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<!-- Best performers -->
+<h3>3. Best Performing Products (Highest Margins)</h3>
+<table>
+  <thead><tr><th>Product</th><th>Cost (Temu/US)</th><th>Selling Price</th><th>Margin</th></tr></thead>
+  <tbody>
+    <tr><td>7-in-1 USB Hub</td><td>~$3.45/unit</td><td>8,000 FCFA ($13.33)</td><td class="green">+287%</td></tr>
+    <tr><td>Portable Blender Cup 380mL</td><td>~$4.05/unit</td><td>8,000 FCFA ($13.33)</td><td class="green">+229%</td></tr>
+    <tr><td>Miss Coco EDP For Women</td><td>~$3.41/unit</td><td>5,000 FCFA ($8.33)</td><td class="green">+144%</td></tr>
+    <tr><td>Dr Teal's Body Lotion</td><td>~$5.75/unit</td><td>8,000 FCFA ($13.33)</td><td class="green">+132%</td></tr>
+    <tr><td>Memory Cards (256GB)</td><td>~$4.04/card</td><td>6,000 FCFA ($10.00)</td><td class="green">+148%</td></tr>
+    <tr><td>Women's Perfumes (Funteze)</td><td>~$6.95/unit</td><td>10,000 FCFA ($16.67)</td><td class="green">+140%</td></tr>
+    <tr><td>Rechargeable Flashlight</td><td>~$3.89/unit</td><td>5,000 FCFA ($8.33)</td><td class="green">+114%</td></tr>
+    <tr><td>Power Bank 20,000mAh</td><td>~$6.28/unit</td><td>7,000 FCFA ($11.67)</td><td class="green">+86%</td></tr>
+    <tr><td>4-in-1 USB Card Reader</td><td>~$3.08/unit</td><td>3,500 FCFA ($5.83)</td><td class="green">+89%</td></tr>
+    <tr><td>High-end EDP (Rivoli Parfums)</td><td>~$15/unit</td><td>15,000 FCFA ($25.00)</td><td class="green">+67%</td></tr>
+    <tr><td>Suave Shampoo+Conditioner Set</td><td>~$6/pair</td><td>13,000 FCFA ($21.67)</td><td class="green">+261%</td></tr>
+    <tr><td>TRESemmé Shampoo+Conditioner Set</td><td>~$11/pair</td><td>15,000 FCFA ($25.00)</td><td class="green">+136%</td></tr>
+  </tbody>
+</table>
+
+<!-- Loss-makers -->
+<h3>4. Products Requiring Immediate Price Correction</h3>
+<div class="alert alert-red">
+  These items are currently priced below cost. Every sale loses money. Raise prices or stop reordering.
+</div>
+<table>
+  <thead><tr><th>Product</th><th>Actual Cost</th><th>Current Price</th><th>Recommended Price</th><th>Issue</th></tr></thead>
+  <tbody>
+    <tr><td>Rechargeable Fans (all colours)</td><td>~$11–14/unit</td><td>3,500 FCFA ($5.83)</td><td class="green">7,000 FCFA</td><td class="red">Losing ~$7/unit</td></tr>
+    <tr><td>JS59 Wireless Headphones</td><td>~$12–15/unit</td><td>2,500 FCFA ($4.17)</td><td class="green">6,500 FCFA</td><td class="red">Losing ~$10/unit</td></tr>
+    <tr><td>Monster Wireless Earbuds</td><td>~$12–15/unit</td><td>4,000 FCFA ($6.67)</td><td class="green">6,500 FCFA</td><td class="red">Losing ~$8/unit</td></tr>
+    <tr><td>Acer / Ace Headsets</td><td>~$10–15/unit</td><td>5,500 FCFA ($9.17)</td><td class="green">9,000 FCFA</td><td class="red">Losing ~$5/unit</td></tr>
+    <tr><td>Lovery Pheromone Perfumes</td><td>~$16.52/unit</td><td>10,000 FCFA ($16.67)</td><td class="green">13,000 FCFA</td><td class="orange">$0.15 profit only</td></tr>
+    <tr><td>TG537 Speakers</td><td>~$15.85/unit</td><td>10,000 FCFA ($16.67)</td><td class="green">13,000 FCFA</td><td class="orange">$0.82 profit only</td></tr>
+    <tr><td>USB Cables</td><td>~$1.70/cable</td><td>1,500 FCFA ($2.50)</td><td class="green">2,500 FCFA</td><td class="orange">$0.80 — too thin</td></tr>
+    <tr><td>45W Type-C Charger</td><td>~$4.96/unit</td><td>3,500 FCFA ($5.83)</td><td class="green">6,000 FCFA</td><td class="orange">$0.87 — too thin</td></tr>
+    <tr><td>CeraVe Moisturizing Cream</td><td>~$20 US retail</td><td>12,000 FCFA ($20.00)</td><td class="green">18,000 FCFA</td><td class="red">Selling at cost</td></tr>
+    <tr><td>Spin Mop + Bucket Set</td><td>~$40 US retail</td><td>20,000 FCFA ($33.33)</td><td class="green">35,000 FCFA</td><td class="red">Below US purchase price</td></tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<!-- Electronics note -->
+<h3>5. Electronics — Sourcing Context (Temu)</h3>
+<p>All electronics were sourced from <strong>Temu</strong> at 70–80% below US Amazon retail prices. This changes the profitability picture significantly versus the initial US-retail-based analysis.</p>
+<table>
+  <thead><tr><th>Product</th><th>Temu Cost Est.</th><th>Selling Price</th><th>Verdict</th></tr></thead>
+  <tbody>
+    <tr><td>Smartwatches (various)</td><td>~$6–12/unit</td><td>6,500–10,500 FCFA</td><td class="green">Good margin</td></tr>
+    <tr><td>Power Bank 20,000mAh</td><td>~$5–8/unit</td><td>7,000 FCFA</td><td class="green">Good margin</td></tr>
+    <tr><td>Speakers (TG192/TG667)</td><td>~$5–10/unit</td><td>8,500–12,000 FCFA</td><td class="green">Good margin</td></tr>
+    <tr><td>Nokia Earbuds</td><td>~$6–10/unit</td><td>10,000 FCFA</td><td class="green">Good margin</td></tr>
+    <tr><td>USB Hubs</td><td>~$3.45/unit</td><td>8,000 FCFA</td><td class="green">Excellent margin</td></tr>
+    <tr><td>Rechargeable Fans</td><td>~$3–5/unit</td><td>3,500 FCFA</td><td class="red">Very tight — raise to 7,000</td></tr>
+    <tr><td>JS59 Headphones</td><td>~$5–8/unit</td><td>2,500 FCFA</td><td class="red">Loss — raise to 6,500</td></tr>
+  </tbody>
+</table>
+
+<!-- Key risks -->
+<h3>6. Key Risks</h3>
+<div class="two-col">
+  <div>
+    <h4>Risk 1 — Sales Velocity</h4>
+    <p>You need to sell ~52% of stock to break even. The faster stock moves, the sooner profit is realized. Slow-moving items tie up capital.</p>
+
+    <h4>Risk 2 — No Sales Tracking</h4>
+    <p>Currently there is no record of what has been sold vs. what remains. Without this, it is impossible to know current profitability. <em>(Sales tracking has now been added to the admin panel.)</em></p>
+
+    <h4>Risk 3 — Loss-Making Items</h4>
+    <p>10 product lines are currently priced below their cost. Each sale on these products reduces overall profitability. These must be repriced immediately.</p>
+  </div>
+  <div>
+    <h4>Risk 4 — Lovery Pheromone Perfumes</h4>
+    <p>Cost ~$16.52/unit (Lovery vendor), selling at 10,000 FCFA (~$16.67). After any overhead, this is a loss. Raise to 13,000 FCFA or discontinue.</p>
+
+    <h4>Risk 5 — CeraVe / Premium Lotions</h4>
+    <p>CeraVe Moisturizing Cream costs ~$20 US retail. Currently priced at 12,000 FCFA ($20) — selling at purchase price. Needs to be 18,000–20,000 FCFA minimum.</p>
+
+    <h4>Risk 6 — Spin Mop</h4>
+    <p>Costs ~$40 US retail. Current price 20,000 FCFA ($33) is below purchase cost. Raise to 35,000–40,000 FCFA.</p>
+  </div>
+</div>
+
+<!-- Action Plan -->
+<h3>7. Action Plan — Priority Order</h3>
+<ul class="action-list">
+  <li>
+    <strong>1. Raise loss-making prices immediately (this week)</strong>
+    Fans → 7,000 FCFA | JS59 Headphones → 6,500 | Monster Earbuds → 6,500 | Acer/Ace Headsets → 9,000 | Cables → 2,500 | 45W Charger → 6,000 | Lovery Perfumes → 13,000 | TG537 Speakers → 13,000 | CeraVe Cream → 18,000 | Spin Mop → 35,000
+  </li>
+  <li>
+    <strong>2. Start tracking sales daily</strong>
+    Use the Sales Report in the admin panel to log every walk-in sale. This gives real revenue data to compare against expenses.
+  </li>
+  <li>
+    <strong>3. Reorder your best performers first</strong>
+    USB Hubs, Blender Cups, Power Banks, Dr Teal's Body Lotion, Women's Perfumes (Funteze), Memory Cards. These have 86–261% margins.
+  </li>
+  <li>
+    <strong>4. Do not reorder loss-makers</strong>
+    Fans, JS59 Headphones, TG537 Speakers — do not buy more until prices are corrected and confirmed profitable.
+  </li>
+  <li>
+    <strong>5. Consider product bundling</strong>
+    Bundle cables + charger (7,000 FCFA), or storage lids + garlic blender (8,000 FCFA) to improve perceived value and margin per transaction.
+  </li>
+  <li>
+    <strong>6. Review Lovery vendor pricing</strong>
+    At ~$16.52/unit landed cost, Lovery pheromone perfumes leave almost no margin. Negotiate better pricing or source from an alternative vendor.
+  </li>
+</ul>
+
+<!-- Expense Breakdown -->
+<h3>8. Expense Breakdown by Vendor</h3>
+<table>
+  <thead><tr><th>Vendor</th><th>Category</th><th>Amount Paid (USD)</th><th>Products</th></tr></thead>
+  <tbody>
+    <tr><td>Walmart</td><td>Inventory</td><td>$636</td><td>Body wash, lotion, hair care</td></tr>
+    <tr><td>Amazon.com</td><td>Inventory + Equipment</td><td>$839</td><td>Body care, deodorant, baby, printers</td></tr>
+    <tr><td>Temu</td><td>Electronics</td><td>~$1,050</td><td>Smartwatches, fans, speakers, cables, earbuds</td></tr>
+    <tr><td>Rivoli Parfums</td><td>Perfumes</td><td>$321</td><td>High-end EDP (Bleu de Rivoli, Legende, etc.)</td></tr>
+    <tr><td>Daspar</td><td>Perfumes</td><td>$251</td><td>Miss Coco, Lazell, pheromone</td></tr>
+    <tr><td>Lovery</td><td>Perfumes</td><td>$264</td><td>Loveryblack Affinity pheromone line</td></tr>
+    <tr><td>Funteze</td><td>Perfumes</td><td>$208</td><td>Women's spray perfumes (Sexy Rose, etc.)</td></tr>
+    <tr><td>MYS Wholesale</td><td>Colognes</td><td>$143</td><td>Men's colognes (Prism, Magic Code, etc.)</td></tr>
+    <tr><td>Shenzhen Boln</td><td>Chargers</td><td>$248</td><td>45W Type-C chargers (50 units)</td></tr>
+    <tr><td>Pingyang (Alibaba)</td><td>Packaging</td><td>$137</td><td>300 shopping bags</td></tr>
+    <tr><td>Lainy Home</td><td>Kitchen</td><td>$63</td><td>Manual food choppers</td></tr>
+    <tr><td>Trio Trading</td><td>Health</td><td>$53</td><td>Thermometers</td></tr>
+    <tr><td>Other / Costco</td><td>Inventory/Storage</td><td>$168</td><td>Storage, misc</td></tr>
+    <tr><td>Apparel Candy</td><td>Perfumes</td><td>$70</td><td>Paris Night cologne</td></tr>
+    <tr><td>Mia Fan (Alibaba)</td><td>Electronics</td><td>$58</td><td>Rechargeable flashlights</td></tr>
+    <tr><td><strong>TOTAL</strong></td><td></td><td><strong>$5,483</strong></td><td></td></tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  American Select — Confidential Business Report &nbsp;|&nbsp; May 2026 &nbsp;|&nbsp; For internal review only
+</div>
+
+</body>
+</html>
