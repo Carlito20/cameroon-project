@@ -1,6 +1,12 @@
 /* Tailwind CSS v4 Import */
 @import "tailwindcss";
 
+/* TEMPORARY: hide prices and add-to-cart until final pricing is confirmed */
+.product-price, .product-modal-price, .fp-price,
+.item-price, .total-price, .mobile-total-price,
+.cart-preview-price, .basket-total,
+.btn-inquiry, .fp-add-btn, .add-to-cart { display: none !important; }
+
 /* Your Custom Styles (work alongside Tailwind) */
 * {
   margin: 0;

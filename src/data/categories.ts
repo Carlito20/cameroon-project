@@ -327,10 +327,10 @@ export const categories: Category[] = [
             price: 10000
           },
           {
-            name: 'Aveeno Daily Moisturizing Body Lotion 18oz',
-            images: ['/images/products/aveeno-lotion.webp', '/images/products/aveeno-lotion2.webp', '/images/products/aveeno-lotion3.webp'],
-            quantity: 4,
-            price: 6000
+            name: 'Aveeno Daily Moisture Lotion, 24 fl oz',
+            images: ['/images/products/aveeno-24oz-2.webp', '/images/products/aveeno-24oz-3.webp', '/images/products/aveeno-24oz-1.webp'],
+            quantity: 6,
+            price: 12300
           },
           {
             name: 'Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil',
@@ -487,6 +487,18 @@ export const categories: Category[] = [
             images: ['/images/products/cetaphil-face-body-moisturizer-1.webp', '/images/products/cetaphil-face-body-moisturizer-2.webp', '/images/products/cetaphil-face-body-moisturizer-3.webp', '/images/products/cetaphil-face-body-moisturizer-4.webp', '/images/products/cetaphil-face-body-moisturizer-5.webp'],
             quantity: 4,
             price: 10000
+          },
+          {
+            name: 'Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Cream for Dry to Very Dry, Sensitive Skin, 16 oz, Fragrance Free',
+            images: ['/images/products/cetaphil-cream-16oz-1.webp', '/images/products/cetaphil-cream-16oz-2.webp', '/images/products/cetaphil-cream-16oz-3.webp'],
+            quantity: 3,
+            price: 10500
+          },
+          {
+            name: 'Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Cream for Dry to Very Dry, Sensitive Skin, 20 oz, Fragrance Free',
+            images: ['/images/products/cetaphil-cream-20oz-1.webp', '/images/products/cetaphil-cream-20oz-2.webp', '/images/products/cetaphil-cream-20oz-3.webp'],
+            quantity: 3,
+            price: 12900
           },
           {
             name: 'CeraVe Daily Moisturizing Face & Body Lotion for Normal to Dry Skin',
