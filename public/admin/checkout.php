@@ -508,6 +508,15 @@ const catalogMap = {};
 catalog.forEach(p => { catalogMap[p.name] = p; });
 
 let cart = []; // [{name, price, qty, stock}]
+
+// Restore in-progress cart if browser was closed mid-sale
+if (!<?= $preloadOrder ? 'true' : 'false' ?>) {
+  try {
+    const draft = JSON.parse(localStorage.getItem('as_cart_draft') || 'null');
+    if (Array.isArray(draft) && draft.length) { cart = draft; }
+  } catch {}
+}
+
 let busy = false;
 let cameraOn = false;
 let codeReader = null;
@@ -681,6 +690,8 @@ function renderCart() {
   document.getElementById('total-units').textContent = totalUnits + ' unit' + (totalUnits > 1 ? 's' : '');
   document.getElementById('total-price').textContent = totalPrice.toLocaleString() + ' FCFA';
 
+  saveCartDraft();
+
   const hasOverStock = cart.some(i => i.qty > i.stock);
   const btn = document.getElementById('btn-checkout');
   const msg = document.getElementById('checkout-msg');
@@ -723,6 +734,7 @@ async function doCheckout() {
   // ── OFFLINE: queue sale locally, show receipt, sync later ──
   if (!navigator.onLine) {
     queueOfflineSale(snapshot, total, selectedPayment);
+    clearCartDraft();
     busy = false;
     showReceipt(snapshot);
     return;
@@ -777,6 +789,7 @@ async function doCheckout() {
         })
       }).catch(() => {});
     }
+    clearCartDraft();
     showReceipt(snapshot);
   } else {
     btn.textContent = '✓  Checkout';
@@ -1000,6 +1013,7 @@ async function printReceipt() {
 // ── New Sale ─────────────────────────────────────────────
 function newSale() {
   cart = [];
+  clearCartDraft();
   busy = false;
   selectedPayment = '';
   customerPhone = '';
@@ -1166,10 +1180,20 @@ async function openCashDrawer(manual) {
 }
 
 // Init after QZ Tray script loads (defer)
-window.addEventListener('load', () => { setTimeout(initQZ, 300); });
+window.addEventListener('load', () => {
+  setTimeout(initQZ, 300);
+  if (cart.length) renderCart(); // show restored draft cart
+});
 
 // ── Offline queue ─────────────────────────────────────────
 const OFFLINE_QUEUE_KEY = 'as_offline_sales';
+const CART_DRAFT_KEY   = 'as_cart_draft';
+
+function saveCartDraft() {
+  if (cart.length) localStorage.setItem(CART_DRAFT_KEY, JSON.stringify(cart));
+  else             localStorage.removeItem(CART_DRAFT_KEY);
+}
+function clearCartDraft() { localStorage.removeItem(CART_DRAFT_KEY); }
 
 function loadOfflineQueue() {
   try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]'); } catch { return []; }
