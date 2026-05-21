@@ -6,6 +6,7 @@ if (empty($_SESSION['admin_logged_in'])) {
     header('Location: index.php');
     exit;
 }
+$isAdmin = ($_SESSION['admin_role'] ?? '') === 'admin';
 
 // Load products-list.json (built by Astro)
 $jsonPath = __DIR__ . '/../api/products-list.json';
@@ -404,7 +405,7 @@ try {
 <header>
   <div>
     <h1>AMERICAN SELECT</h1>
-    <span>Stock Management</span>
+    <span>Stock Management<?php if (!$isAdmin): ?> &nbsp;<span style="background:#1a2a1a;color:#6dbf6d;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:0.5px;">VIEW ONLY</span><?php endif; ?></span>
   </div>
   <div class="header-actions">
     <a href="orders.php" class="btn btn-outline" style="color:#d4af37;border-color:#3a3010;" id="orders-link">📦 Orders</a>
@@ -502,6 +503,7 @@ try {
           </div>
         </td>
         <td>
+          <?php if ($isAdmin): ?>
           <input
             type="number"
             class="qty-input"
@@ -510,12 +512,18 @@ try {
             data-name="<?= htmlspecialchars($name) ?>"
             data-original="<?= $displayQty ?>"
           >
+          <?php else: ?>
+          <span style="font-size:15px;font-weight:700;color:#d4af37;"><?= $displayQty ?></span>
+          <?php endif; ?>
         </td>
         <td>
+          <?php if ($isAdmin): ?>
           <button class="save-btn" onclick="saveStock(this)">Save</button>
           <span class="status-msg" id="status-<?= $i ?>"></span>
+          <?php endif; ?>
         </td>
         <td>
+          <?php if ($isAdmin): ?>
           <div style="display:flex;flex-direction:column;gap:4px;">
             <input
               type="number"
@@ -530,8 +538,12 @@ try {
               <?= $isPriceLive ? 'Live (DB)' : 'Default' ?>
             </div>
           </div>
+          <?php else: ?>
+          <span style="font-size:14px;font-weight:700;color:#7b9fd4;"><?= number_format($displayPrice) ?> FCFA</span>
+          <?php endif; ?>
         </td>
         <td style="white-space:nowrap;">
+          <?php if ($isAdmin): ?>
           <button class="save-price-btn" onclick="savePrice(this)">Save</button>
           <?php if ($isPriceLive): ?>
           <button class="reset-price-btn" id="reset-price-<?= $i ?>" onclick="resetPrice(this)" title="Reset to catalog default (<?= number_format($defaultPrice) ?> FCFA)" style="margin-left:4px;">↺</button>
@@ -539,6 +551,7 @@ try {
           <button class="reset-price-btn" id="reset-price-<?= $i ?>" onclick="resetPrice(this)" title="Reset to catalog default (<?= number_format($defaultPrice) ?> FCFA)" style="margin-left:4px;display:none;">↺</button>
           <?php endif; ?>
           <span class="status-msg" id="price-status-<?= $i ?>"></span>
+          <?php endif; ?>
         </td>
       </tr>
       <?php endforeach; ?>
@@ -749,9 +762,15 @@ document.addEventListener('click', closeMenu);
 // ── QZ Tray / Cash Drawer ─────────────────────────────────
 let qzReady = false;
 let qzPrinterName = null;
+let qzRetryTimer = null;
 
 function initQZ() {
-  if (typeof qz === 'undefined') return;
+  if (typeof qz === 'undefined') {
+    // Script not loaded yet — retry shortly
+    clearTimeout(qzRetryTimer);
+    qzRetryTimer = setTimeout(initQZ, 2000);
+    return;
+  }
   if (qz.websocket.isActive()) return;
   qz.security.setCertificatePromise(() => Promise.resolve(''));
   qz.security.setSignatureAlgorithm('SHA512');
@@ -765,8 +784,15 @@ function initQZ() {
       qzPrinterName = thermal;
       qzReady = !!thermal;
       updateDrawerLabel(qzReady);
+      clearTimeout(qzRetryTimer);
     })
-    .catch(() => { qzReady = false; updateDrawerLabel(false); });
+    .catch(() => {
+      qzReady = false;
+      updateDrawerLabel(false);
+      // Retry every 6 seconds — connects automatically once QZ Tray launches
+      clearTimeout(qzRetryTimer);
+      qzRetryTimer = setTimeout(initQZ, 6000);
+    });
 }
 
 function updateDrawerLabel(connected) {
@@ -774,20 +800,24 @@ function updateDrawerLabel(connected) {
   const btn = document.getElementById('btn-drawer');
   if (!lbl || !btn) return;
   if (connected) {
-    lbl.textContent = 'Drawer';
+    lbl.textContent = 'Drawer 🟢';
     btn.style.color = '#7b9fd4';
     btn.title = 'Open cash drawer (' + (qzPrinterName || 'printer') + ')';
   } else {
     lbl.textContent = 'Drawer ⚫';
     btn.style.color = '#444';
-    btn.title = 'Cash drawer offline — install & run QZ Tray (qz.io)';
+    btn.title = 'Cash drawer offline — install & run QZ Tray (qz.io). Click to retry.';
   }
 }
 
 async function openCashDrawer() {
   const lbl = document.getElementById('drawer-label');
   if (!qzReady || !qzPrinterName) {
-    if (lbl) { const t = lbl.textContent; lbl.textContent = 'Not connected'; setTimeout(() => { lbl.textContent = t; }, 2000); }
+    // Trigger a reconnect attempt when user clicks while offline
+    if (lbl) { lbl.textContent = 'Connecting…'; }
+    clearTimeout(qzRetryTimer);
+    initQZ();
+    setTimeout(() => { if (!qzReady) updateDrawerLabel(false); }, 3500);
     return;
   }
   try {

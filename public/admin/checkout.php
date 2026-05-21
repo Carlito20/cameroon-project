@@ -1109,10 +1109,15 @@ function pickProduct(el) {
 // ── QZ Tray / Cash Drawer ─────────────────────────────────
 let qzReady = false;
 let qzPrinterName = null;
+let qzRetryTimer = null;
 
 function initQZ() {
-  if (typeof qz === 'undefined') return; // QZ Tray not loaded yet — will retry via defer
-  if (qz.websocket.isActive()) return;   // Already connected
+  if (typeof qz === 'undefined') {
+    clearTimeout(qzRetryTimer);
+    qzRetryTimer = setTimeout(initQZ, 2000);
+    return;
+  }
+  if (qz.websocket.isActive()) return;
 
   // Suppress certificate errors for self-signed / no-cert setups
   qz.security.setCertificatePromise(() => Promise.resolve(''));
@@ -1129,10 +1134,14 @@ function initQZ() {
       qzPrinterName = thermal;
       qzReady = !!thermal;
       updateDrawerStatus(qzReady);
+      clearTimeout(qzRetryTimer);
     })
     .catch(() => {
       qzReady = false;
       updateDrawerStatus(false);
+      // Retry every 6 seconds — connects automatically once QZ Tray launches
+      clearTimeout(qzRetryTimer);
+      qzRetryTimer = setTimeout(initQZ, 6000);
     });
 }
 
@@ -1146,7 +1155,7 @@ function updateDrawerStatus(connected) {
   } else {
     el.textContent = '⚫ Drawer';
     el.style.color = '#555';
-    el.title = 'Cash drawer offline — install & run QZ Tray (qz.io)';
+    el.title = 'Cash drawer offline — install & run QZ Tray (qz.io). Retrying…';
   }
 }
 
