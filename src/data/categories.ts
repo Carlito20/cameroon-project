@@ -1195,7 +1195,7 @@ export const categories: Category[] = [
           {
             name: 'YISSVIC Rechargeable Electric Fly Swatter Foldable Bug Zapper',
             price: 10000,
-            quantity: 6,
+            quantity: 2,
             images: [
               '/images/products/yissvic-fly-swatter-1.webp',
               '/images/products/yissvic-fly-swatter-2.webp',
