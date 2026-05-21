@@ -993,9 +993,6 @@ export const categories: Category[] = [
             price: 0,
             quantity: 20,
             images: [
-              '/images/products/slider-bags-quart-1.webp',
-              '/images/products/slider-bags-quart-2.webp',
-              '/images/products/slider-bags-quart-3.webp',
               '/images/products/slider-bags-quart-4.webp'
             ]
           }
