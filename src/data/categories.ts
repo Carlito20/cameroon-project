@@ -90,8 +90,7 @@ export const categories: Category[] = [
             quantity: 20,
             images: [
               '/images/products/slider-bags-1gal-1.webp',
-              '/images/products/slider-bags-1gal-2.webp',
-              '/images/products/slider-bags-1gal-3.webp'
+              '/images/products/slider-bags-1gal-2.webp'
             ]
           },
           {
