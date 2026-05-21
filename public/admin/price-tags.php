@@ -357,45 +357,50 @@ function fmt_price($n) {
       body.mode-3x2 .tag-card.selected {
         display: flex !important;
         flex-direction: column;
-        justify-content: center;
+        justify-content: space-between;
         background: #fff !important;
-        border: none !important;
+        border: 1pt solid #000 !important;
         border-radius: 0;
         padding: 4mm 5mm;
-        gap: 2mm;
+        gap: 0;
         width: 76mm;
         height: 51mm;
         page-break-after: always;
         break-after: page;
+        overflow: hidden;
       }
       body.mode-3x2 .tag-card.selected:last-child {
         page-break-after: avoid;
         break-after: avoid;
       }
       body.mode-3x2 .tag-card-top { display: none !important; }
-      body.mode-3x2 .tag-price {
-        font-size: 24pt;
-        font-weight: 900;
-        color: #000 !important;
-        letter-spacing: 0.5px;
-      }
       body.mode-3x2 .tag-name {
+        order: 1;
         font-size: 9pt;
         font-weight: 700;
         color: #000 !important;
-        line-height: 1.35;
+        line-height: 1.4;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
+      body.mode-3x2 .tag-price {
+        order: 2;
+        font-size: 26pt;
+        font-weight: 900;
+        color: #000 !important;
+        letter-spacing: 0.5px;
+        line-height: 1;
+        margin: 2mm 0 1mm;
+      }
       body.mode-3x2 .tag-store {
-        font-size: 7pt;
+        order: 3;
+        font-size: 6.5pt;
         color: #555;
         letter-spacing: 1.5px;
         text-transform: uppercase;
-        margin-top: 2mm;
-        border-top: 0.5pt solid #ccc;
+        border-top: 0.5pt solid #bbb;
         padding-top: 1.5mm;
       }
       body.mode-3x2 .tag-qty { display: none !important; }
