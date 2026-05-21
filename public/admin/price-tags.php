@@ -278,71 +278,134 @@ function fmt_price($n) {
       body.mode-sheet .empty { display: none !important; }
 
       /* ════════════════════════════════════════════════════════
-         PRINT — LABEL MODE (Phomemo M110, 57mm wide)
+         PRINT — SHELF MODE (Munbyn 2" × 1" shelf labels)
       ════════════════════════════════════════════════════════ */
-      body.mode-label { font-family: Arial, sans-serif; background: #fff !important; color: #000 !important; }
-      body.mode-label header,
-      body.mode-label .controls,
-      body.mode-label .mode-row,
-      body.mode-label .no-print { display: none !important; }
+      body.mode-shelf { font-family: Arial, sans-serif; background: #fff !important; color: #000 !important; }
+      body.mode-shelf header,
+      body.mode-shelf .controls,
+      body.mode-shelf .mode-row,
+      body.mode-shelf .no-print { display: none !important; }
 
-      body.mode-label .tag-grid {
+      body.mode-shelf .tag-grid {
         max-width: 100%; margin: 0; padding: 0;
         display: block;
       }
-      body.mode-label .tag-card { display: none !important; }
-      body.mode-label .tag-card.selected {
+      body.mode-shelf .tag-card { display: none !important; }
+      body.mode-shelf .tag-card.selected {
         display: flex !important;
         flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
         background: #fff !important;
         border: none !important;
         border-radius: 0;
-        padding: 3mm 3mm 2mm;
-        gap: 2px;
+        padding: 2mm 3.5mm;
+        gap: 1.5mm;
         width: 51mm;
+        height: 25mm;
         page-break-after: always;
         break-after: page;
+        overflow: hidden;
       }
-      body.mode-label .tag-card.selected:last-child {
+      body.mode-shelf .tag-card.selected:last-child {
         page-break-after: avoid;
         break-after: avoid;
       }
-      body.mode-label .tag-card-top input[type=checkbox] { display: none !important; }
-      body.mode-label .tag-card-top { gap: 0; }
-      body.mode-label .tag-name {
-        font-size: 9pt;
+      body.mode-shelf .tag-card-top { display: none !important; }
+      body.mode-shelf .tag-price {
+        font-size: 14pt;
+        font-weight: 900;
+        color: #000 !important;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        line-height: 1;
+      }
+      body.mode-shelf .tag-name {
+        font-size: 6.5pt;
         font-weight: 700;
         color: #000 !important;
         line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      body.mode-shelf .tag-store {
+        font-size: 5pt;
+        color: #777;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-top: 0.5mm;
+      }
+      body.mode-shelf .tag-qty { display: none !important; }
+      body.mode-shelf .empty { display: none !important; }
+
+      /* ════════════════════════════════════════════════════════
+         PRINT — 3×2 MODE (Munbyn 3" × 2" product labels)
+      ════════════════════════════════════════════════════════ */
+      body.mode-3x2 { font-family: Arial, sans-serif; background: #fff !important; color: #000 !important; }
+      body.mode-3x2 header,
+      body.mode-3x2 .controls,
+      body.mode-3x2 .mode-row,
+      body.mode-3x2 .no-print { display: none !important; }
+
+      body.mode-3x2 .tag-grid {
+        max-width: 100%; margin: 0; padding: 0;
+        display: block;
+      }
+      body.mode-3x2 .tag-card { display: none !important; }
+      body.mode-3x2 .tag-card.selected {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;
+        background: #fff !important;
+        border: none !important;
+        border-radius: 0;
+        padding: 4mm 5mm;
+        gap: 2mm;
+        width: 76mm;
+        height: 51mm;
+        page-break-after: always;
+        break-after: page;
+      }
+      body.mode-3x2 .tag-card.selected:last-child {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      body.mode-3x2 .tag-card-top { display: none !important; }
+      body.mode-3x2 .tag-price {
+        font-size: 24pt;
+        font-weight: 900;
+        color: #000 !important;
+        letter-spacing: 0.5px;
+      }
+      body.mode-3x2 .tag-name {
+        font-size: 9pt;
+        font-weight: 700;
+        color: #000 !important;
+        line-height: 1.35;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-      body.mode-label .tag-price {
-        font-size: 18pt;
-        font-weight: 900;
-        color: #000 !important;
-        margin-top: 2mm;
-        letter-spacing: 0.5px;
-      }
-      body.mode-label .tag-store {
-        font-size: 6pt;
+      body.mode-3x2 .tag-store {
+        font-size: 7pt;
         color: #555;
         letter-spacing: 1.5px;
         text-transform: uppercase;
-        margin-top: 1mm;
+        margin-top: 2mm;
         border-top: 0.5pt solid #ccc;
-        padding-top: 1mm;
+        padding-top: 1.5mm;
       }
-      body.mode-label .tag-qty { display: none !important; }
-      body.mode-label .empty { display: none !important; }
+      body.mode-3x2 .tag-qty { display: none !important; }
+      body.mode-3x2 .empty { display: none !important; }
     }
   </style>
 
   <!-- Dynamic @page size injected by JS based on selected mode -->
   <style id="page-size-style">
-    @media print { @page { size: A4; margin: 10mm; } }
+    @page { size: A4; margin: 10mm; }
   </style>
 </head>
 <body class="mode-sheet">
@@ -368,7 +431,8 @@ function fmt_price($n) {
 <div class="mode-row no-print">
   <span class="mode-label">Print on:</span>
   <button class="mode-btn active" id="mode-sheet" onclick="setMode('sheet')">A4 Sheet (3 per row)</button>
-  <button class="mode-btn" id="mode-label" onclick="setMode('label')">Label Printer — MUNBYN 130B</button>
+  <button class="mode-btn" id="mode-shelf" onclick="setMode('shelf')">2"×1" Label (Shelf)</button>
+  <button class="mode-btn" id="mode-3x2" onclick="setMode('3x2')">3"×2" Label (Product)</button>
   <span class="mode-hint" id="mode-hint">Multiple tags per page, cut apart after printing</span>
 </div>
 
@@ -382,11 +446,10 @@ function fmt_price($n) {
   <div class="tag-card" data-name="<?= strtolower($name) ?>" onclick="toggleCard(this)">
     <div class="tag-card-top">
       <input type="checkbox" class="tag-check" onclick="event.stopPropagation(); syncCheck(this)" onchange="updateCount()">
-      <span class="tag-name"><?= $name ?></span>
     </div>
     <div class="tag-price"><?= $price ?></div>
+    <div class="tag-name"><?= $name ?></div>
     <div class="tag-store">American Select</div>
-    <div class="tag-qty">Stock: <?= $qty ?></div>
   </div>
 <?php endforeach; ?>
 </div>
@@ -400,16 +463,20 @@ function setMode(mode) {
   currentMode = mode;
   document.body.className = 'mode-' + mode;
   document.getElementById('mode-sheet').classList.toggle('active', mode === 'sheet');
-  document.getElementById('mode-label').classList.toggle('active', mode === 'label');
+  document.getElementById('mode-shelf').classList.toggle('active', mode === 'shelf');
+  document.getElementById('mode-3x2').classList.toggle('active', mode === '3x2');
 
   const pageStyle = document.getElementById('page-size-style');
   const hint = document.getElementById('mode-hint');
 
-  if (mode === 'label') {
-    pageStyle.textContent = '@media print { @page { size: 57mm 70mm; margin: 0; } }';
-    hint.textContent = 'One tag per label — make sure MUNBYN 130B is set as your printer';
+  if (mode === 'shelf') {
+    pageStyle.textContent = '@page { size: 51mm 25mm; margin: 0; }';
+    hint.textContent = 'One tag per label — load 2"×1" labels on your Munbyn';
+  } else if (mode === '3x2') {
+    pageStyle.textContent = '@page { size: 76mm 51mm; margin: 0; }';
+    hint.textContent = 'One tag per label — load 3"×2" labels on your Munbyn';
   } else {
-    pageStyle.textContent = '@media print { @page { size: A4; margin: 10mm; } }';
+    pageStyle.textContent = '@page { size: A4; margin: 10mm; }';
     hint.textContent = 'Multiple tags per page, cut apart after printing';
   }
 }
