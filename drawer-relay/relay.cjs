@@ -43,14 +43,22 @@ async function openDrawer() {
       try {
         // Get all printers
         const printers = await qzCall(ws, 'printers.find', {});
-        const list = Array.isArray(printers) ? printers : [printers];
-        console.log('Printers:', list);
+        const list = Array.isArray(printers) ? printers : (printers ? [printers] : []);
+        console.log('Printers found:', list);
 
-        const printer = list.find(p =>
+        // Try to match known thermal/receipt printer names
+        let printer = list.find(p =>
           /munbyn|volcora|thermal|receipt|pos|epson|star|citizen|bixolon/i.test(String(p))
-        ) || list[0];
+        );
 
-        if (!printer) throw new Error('No printer found. Available: ' + list.join(', '));
+        // Fallback: use the system default printer
+        if (!printer) {
+          const defaultPrinter = await qzCall(ws, 'printers.getDefault', {});
+          console.log('Default printer:', defaultPrinter);
+          if (defaultPrinter) printer = defaultPrinter;
+        }
+
+        if (!printer) throw new Error('No printer found. Available: [' + list.join(' | ') + ']');
 
         console.log('Sending drawer command to:', printer);
 
