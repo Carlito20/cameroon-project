@@ -1106,43 +1106,22 @@ function pickProduct(el) {
     .catch(() => addToCart(name, price, catalogMap[name]?.quantity ?? 99));
 }
 
-// ── QZ Tray / Cash Drawer ─────────────────────────────────
-let qzReady = false;
-let qzPrinterName = null;
-let qzRetryTimer = null;
+// ── Cash Drawer via local relay (http://localhost:3099) ───────────────────────
+const RELAY = 'http://localhost:3099';
+let drawerReady = false;
+let relayRetryTimer = null;
 
-function initQZ() {
-  if (typeof qz === 'undefined') {
-    clearTimeout(qzRetryTimer);
-    qzRetryTimer = setTimeout(initQZ, 2000);
-    return;
+async function checkRelay() {
+  try {
+    const r = await fetch(RELAY + '/status', { signal: AbortSignal.timeout(2000) });
+    const data = await r.json();
+    drawerReady = data.ok === true;
+  } catch {
+    drawerReady = false;
   }
-  if (qz.websocket.isActive()) return;
-
-  // Suppress certificate errors for self-signed / no-cert setups
-  qz.security.setCertificatePromise(() => Promise.resolve(''));
-  qz.security.setSignatureAlgorithm('SHA512');
-  qz.security.setSignaturePromise(() => Promise.resolve(''));
-
-  qz.websocket.connect({ host: 'localhost', usingSecure: true, port: { secure: [8181] }, retries: 2, delay: 1 })
-    .then(() => qz.printers.find())
-    .then(printers => {
-      // Prefer a known thermal/receipt printer name; fall back to first
-      const thermal = printers.find(p =>
-        /munbyn|volcora|thermal|receipt|pos|epson|star|citizen|bixolon/i.test(p)
-      ) || printers[0] || null;
-      qzPrinterName = thermal;
-      qzReady = !!thermal;
-      updateDrawerStatus(qzReady);
-      clearTimeout(qzRetryTimer);
-    })
-    .catch(() => {
-      qzReady = false;
-      updateDrawerStatus(false);
-      // Retry every 6 seconds — connects automatically once QZ Tray launches
-      clearTimeout(qzRetryTimer);
-      qzRetryTimer = setTimeout(initQZ, 6000);
-    });
+  updateDrawerStatus(drawerReady);
+  clearTimeout(relayRetryTimer);
+  if (!drawerReady) relayRetryTimer = setTimeout(checkRelay, 6000);
 }
 
 function updateDrawerStatus(connected) {
@@ -1151,47 +1130,44 @@ function updateDrawerStatus(connected) {
   if (connected) {
     el.textContent = '🟢 Drawer';
     el.style.color = '#6dbf6d';
-    el.title = 'Cash drawer ready via QZ Tray (' + (qzPrinterName || 'printer') + ')';
+    el.title = 'Cash drawer ready';
   } else {
     el.textContent = '⚫ Drawer';
     el.style.color = '#555';
-    el.title = 'Cash drawer offline — install & run QZ Tray (qz.io). Retrying…';
+    el.title = 'Cash drawer offline — start DrawerRelay on this machine.';
   }
 }
 
 // openCashDrawer(manual): if manual=true, show feedback; if false, silent
 async function openCashDrawer(manual) {
-  if (!qzReady || !qzPrinterName) {
+  if (!drawerReady) {
     if (manual) {
       const el = document.getElementById('drawer-status');
-      const orig = el ? el.textContent : '';
       if (el) { el.textContent = '⚠ Not connected'; el.style.color = '#d4884a'; }
       setTimeout(() => updateDrawerStatus(false), 2500);
     }
     return;
   }
   try {
-    const config = qz.configs.create(qzPrinterName, { raw: true });
-    // ESC/POS: ESC p 0 25 250 — open cash drawer on pin 2
-    await qz.print(config, [{ type: 'raw', format: 'command', data: '\x1B\x70\x00\x19\xFA' }]);
+    const r = await fetch(RELAY + '/drawer', { method: 'POST', signal: AbortSignal.timeout(8000) });
+    const data = await r.json();
     if (manual) {
       const el = document.getElementById('drawer-status');
-      if (el) { el.textContent = '✓ Opened'; el.style.color = '#6dbf6d'; }
-      setTimeout(() => updateDrawerStatus(true), 1500);
+      if (el) { el.textContent = data.ok ? '✓ Opened' : '⚠ Error'; el.style.color = data.ok ? '#6dbf6d' : '#e05c5c'; }
+      setTimeout(() => updateDrawerStatus(drawerReady), 1500);
     }
   } catch(e) {
     if (manual) {
       const el = document.getElementById('drawer-status');
       if (el) { el.textContent = '⚠ Error'; el.style.color = '#e05c5c'; }
-      setTimeout(() => updateDrawerStatus(qzReady), 2500);
+      setTimeout(() => updateDrawerStatus(drawerReady), 2500);
     }
   }
 }
 
-// Init after QZ Tray script loads (defer)
 window.addEventListener('load', () => {
-  setTimeout(initQZ, 300);
-  if (cart.length) renderCart(); // show restored draft cart
+  setTimeout(checkRelay, 500);
+  if (cart.length) renderCart();
 });
 
 // ── Offline queue ─────────────────────────────────────────

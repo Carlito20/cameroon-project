@@ -759,40 +759,23 @@ document.addEventListener('click', closeMenu);
     }).catch(() => {});
 })();
 
-// ── QZ Tray / Cash Drawer ─────────────────────────────────
-let qzReady = false;
-let qzPrinterName = null;
-let qzRetryTimer = null;
+// ── Cash Drawer via local relay (http://localhost:3099) ───────────────────────
+// Relay bypasses browser cert/PNA issues by handling QZ Tray connection server-side
+const RELAY = 'http://localhost:3099';
+let drawerReady = false;
+let relayRetryTimer = null;
 
-function initQZ() {
-  if (typeof qz === 'undefined') {
-    // Script not loaded yet — retry shortly
-    clearTimeout(qzRetryTimer);
-    qzRetryTimer = setTimeout(initQZ, 2000);
-    return;
+async function checkRelay() {
+  try {
+    const r = await fetch(RELAY + '/status', { signal: AbortSignal.timeout(2000) });
+    const data = await r.json();
+    drawerReady = data.ok === true;
+  } catch {
+    drawerReady = false;
   }
-  if (qz.websocket.isActive()) return;
-  qz.security.setCertificatePromise(() => Promise.resolve(''));
-  qz.security.setSignatureAlgorithm('SHA512');
-  qz.security.setSignaturePromise(() => Promise.resolve(''));
-  qz.websocket.connect({ host: 'localhost', usingSecure: true, port: { secure: [8181] }, retries: 2, delay: 1 })
-    .then(() => qz.printers.find())
-    .then(printers => {
-      const thermal = printers.find(p =>
-        /munbyn|volcora|thermal|receipt|pos|epson|star|citizen|bixolon/i.test(p)
-      ) || printers[0] || null;
-      qzPrinterName = thermal;
-      qzReady = !!thermal;
-      updateDrawerLabel(qzReady);
-      clearTimeout(qzRetryTimer);
-    })
-    .catch(() => {
-      qzReady = false;
-      updateDrawerLabel(false);
-      // Retry every 6 seconds — connects automatically once QZ Tray launches
-      clearTimeout(qzRetryTimer);
-      qzRetryTimer = setTimeout(initQZ, 6000);
-    });
+  updateDrawerLabel(drawerReady);
+  clearTimeout(relayRetryTimer);
+  if (!drawerReady) relayRetryTimer = setTimeout(checkRelay, 6000);
 }
 
 function updateDrawerLabel(connected) {
@@ -802,34 +785,34 @@ function updateDrawerLabel(connected) {
   if (connected) {
     lbl.textContent = 'Drawer 🟢';
     btn.style.color = '#7b9fd4';
-    btn.title = 'Open cash drawer (' + (qzPrinterName || 'printer') + ')';
+    btn.title = 'Open cash drawer';
   } else {
     lbl.textContent = 'Drawer ⚫';
     btn.style.color = '#444';
-    btn.title = 'Cash drawer offline — install & run QZ Tray (qz.io). Click to retry.';
+    btn.title = 'Cash drawer offline — start DrawerRelay on this machine. Click to retry.';
   }
 }
 
 async function openCashDrawer() {
   const lbl = document.getElementById('drawer-label');
-  if (!qzReady || !qzPrinterName) {
-    // Trigger a reconnect attempt when user clicks while offline
+  if (!drawerReady) {
     if (lbl) { lbl.textContent = 'Connecting…'; }
-    clearTimeout(qzRetryTimer);
-    initQZ();
-    setTimeout(() => { if (!qzReady) updateDrawerLabel(false); }, 3500);
+    await checkRelay();
     return;
   }
+  const orig = lbl ? lbl.textContent : '';
+  if (lbl) lbl.textContent = 'Opening…';
   try {
-    const config = qz.configs.create(qzPrinterName, { raw: true });
-    await qz.print(config, [{ type: 'raw', format: 'command', data: '\x1B\x70\x00\x19\xFA' }]);
-    if (lbl) { lbl.textContent = '✓ Opened'; setTimeout(() => updateDrawerLabel(true), 1500); }
-  } catch(e) {
-    if (lbl) { lbl.textContent = 'Error'; setTimeout(() => updateDrawerLabel(qzReady), 2000); }
+    const r = await fetch(RELAY + '/drawer', { method: 'POST', signal: AbortSignal.timeout(8000) });
+    const data = await r.json();
+    if (lbl) { lbl.textContent = data.ok ? '✓ Opened' : '⚠ Error'; }
+  } catch {
+    if (lbl) lbl.textContent = '⚠ Error';
   }
+  setTimeout(() => updateDrawerLabel(drawerReady), 2000);
 }
 
-window.addEventListener('load', () => { setTimeout(initQZ, 300); });
+window.addEventListener('load', () => { setTimeout(checkRelay, 500); });
 
 function filterTable(query) {
   const lower = query.toLowerCase();
