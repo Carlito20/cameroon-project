@@ -378,7 +378,7 @@ if ($fromOrderId) {
     .offline-sync-btn:hover { background: #6a4000; }
   </style>
 </head>
-<script src="https://cdn.jsdelivr.net/npm/qz-tray@2.2.4/qz-tray.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/qz-tray@2.2.6/qz-tray.js" defer></script>
 <body>
 <header>
   <div><h1>AMERICAN SELECT</h1><span>POS Checkout</span></div>
