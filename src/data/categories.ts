@@ -1036,7 +1036,7 @@ export const categories: Category[] = [
           {
             name: 'Grabber Reacher Tool – Foldable Litter Picker with 360° Rotating Jaw & Magnet, Mobility Aid',
             price: 0,
-            quantity: 6,
+            quantity: 7,
             images: [
               '/images/products/grabber-reacher-tool-1.webp',
               '/images/products/grabber-reacher-tool-2.webp',
