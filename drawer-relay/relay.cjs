@@ -41,24 +41,30 @@ async function openDrawer() {
 
     ws.on('open', async () => {
       try {
-        // Get all printers
-        const printers = await qzCall(ws, 'printers.find', {});
-        const list = Array.isArray(printers) ? printers : (printers ? [printers] : []);
-        console.log('Printers found:', list);
+        // Try each candidate until one works
+        const candidates = [
+          'POS-80C',
+          'Munbyn ITPP047P', 'Munbyn ITPP130',
+        ];
 
-        // Try to match known thermal/receipt printer names
-        let printer = list.find(p =>
-          /munbyn|volcora|thermal|receipt|pos|epson|star|citizen|bixolon/i.test(String(p))
-        );
+        // Also add any detected printers
+        let detected = [];
+        try {
+          const found = await qzCall(ws, 'printers.find', {});
+          detected = Array.isArray(found) ? found : (found ? [found] : []);
+          console.log('Detected printers:', detected);
+          const def = await qzCall(ws, 'printers.getDefault', {});
+          if (def && !detected.includes(def)) detected.unshift(def);
+          console.log('Default printer:', def);
+        } catch(e) { console.log('Printer list error:', e.message); }
 
-        // Fallback: use the system default printer
-        if (!printer) {
-          const defaultPrinter = await qzCall(ws, 'printers.getDefault', {});
-          console.log('Default printer:', defaultPrinter);
-          if (defaultPrinter) printer = defaultPrinter;
-        }
+        // Combine: detected first, then hardcoded fallbacks
+        const allCandidates = [...new Set([...detected, ...candidates])];
+        const printer = allCandidates.find(p =>
+          /munbyn|pos|volcora|thermal|receipt|epson|star|citizen|bixolon/i.test(String(p))
+        ) || detected[0] || 'POS-80C';
 
-        if (!printer) throw new Error('No printer found. Available: [' + list.join(' | ') + ']');
+        console.log('Using printer:', printer);
 
         console.log('Sending drawer command to:', printer);
 
