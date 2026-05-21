@@ -775,7 +775,7 @@ function initQZ() {
   qz.security.setCertificatePromise(() => Promise.resolve(''));
   qz.security.setSignatureAlgorithm('SHA512');
   qz.security.setSignaturePromise(() => Promise.resolve(''));
-  qz.websocket.connect({ host: 'localhost', usingSecure: false, port: { insecure: [8181] }, retries: 2, delay: 1 })
+  qz.websocket.connect({ host: 'localhost', usingSecure: true, port: { secure: [8181] }, retries: 2, delay: 1 })
     .then(() => qz.printers.find())
     .then(printers => {
       const thermal = printers.find(p =>
