@@ -1040,7 +1040,8 @@ export const categories: Category[] = [
             images: [
               '/images/products/grabber-reacher-tool-1.webp',
               '/images/products/grabber-reacher-tool-2.webp',
-              '/images/products/grabber-reacher-tool-3.webp'
+              '/images/products/grabber-reacher-tool-3.webp',
+              '/images/products/grabber-reacher-tool-4.webp'
             ]
           }
         ]
