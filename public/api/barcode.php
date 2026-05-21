@@ -10,6 +10,17 @@ if (empty($_SESSION['admin_logged_in'])) {
     exit;
 }
 
+// Employees can do transactions (checkout) but not barcode management
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_SESSION['admin_role'] ?? '') !== 'admin') {
+    $body = json_decode(file_get_contents('php://input'), true);
+    $restrictedActions = ['assign', 'unassign', 'add_product', 'unflag_product'];
+    if (in_array($body['action'] ?? '', $restrictedActions)) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Admin access required']);
+        exit;
+    }
+}
+
 function getPdo() {
     $pdo = new PDO(
         'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',

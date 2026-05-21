@@ -759,10 +759,10 @@ async function doCheckout() {
         })
       });
       const d = await res.json();
-      results.push({ item, ok: !!d.success });
+      results.push({ item, ok: !!d.success, error: d.error });
       if (!d.success) allOk = false;
-    } catch {
-      results.push({ item, ok: false });
+    } catch(e) {
+      results.push({ item, ok: false, error: e.message });
       allOk = false;
     }
   }
@@ -794,7 +794,8 @@ async function doCheckout() {
   } else {
     btn.textContent = '✓  Checkout';
     btn.disabled = false;
-    msg.textContent = '⚠ Some items failed — check connection and try again';
+    const firstErr = results.find(r => !r.ok);
+    msg.textContent = '⚠ Failed: ' + (firstErr?.error || 'check connection and try again');
     msg.className = 'checkout-msg err';
   }
 }
