@@ -1207,8 +1207,11 @@ export const categories: Category[] = [
             price: 0,
             quantity: 4,
             images: [
-              '/images/products/yissvic-fly-swatter-4.webp',
-              '/images/products/yissvic-fly-swatter-5.webp'
+              '/images/products/yissvic-fly-swatter-v2-1.webp',
+              '/images/products/yissvic-fly-swatter-v2-2.webp',
+              '/images/products/yissvic-fly-swatter-v2-3.webp',
+              '/images/products/yissvic-fly-swatter-v2-4.webp',
+              '/images/products/yissvic-fly-swatter-v2-5.webp'
             ]
           }
         ]
