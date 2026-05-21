@@ -9,7 +9,6 @@ const path = require('path');
 
 const PORT = 3099;
 const ORIGIN = 'https://americanselect.net';
-const PRINTER = 'POS-80C';
 const PS_SCRIPT = path.join(__dirname, 'rawprint.ps1');
 
 function addCors(res) {
@@ -21,7 +20,8 @@ function addCors(res) {
 
 function openDrawer() {
   return new Promise((resolve, reject) => {
-    const cmd = `powershell -NoProfile -NonInteractive -File "${PS_SCRIPT}" -printerName "${PRINTER}"`;
+    const cmd = `powershell -NoProfile -NonInteractive -File "${PS_SCRIPT}"`;
+
     exec(cmd, { timeout: 10000 }, (err, stdout, stderr) => {
       if (err) {
         reject(new Error(stderr || err.message));
@@ -64,7 +64,7 @@ const server = createServer(async (req, res) => {
 server.listen(PORT, '127.0.0.1', () => {
   console.log('========================================');
   console.log(' American Select - Cash Drawer Relay');
-  console.log(' Printer: ' + PRINTER);
+  console.log(' Printer: auto-detect');
   console.log(' Running on http://localhost:' + PORT);
   console.log(' Keep this window open (or minimised)');
   console.log('========================================');

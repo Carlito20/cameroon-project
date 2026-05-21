@@ -1,4 +1,4 @@
-param([string]$printerName = "POS-80C")
+param([string]$printerName = "")
 
 Add-Type @"
 using System;
@@ -26,6 +26,25 @@ public class Spooler {
     }
 }
 "@
+
+# Auto-detect printer if not specified
+if (-not $printerName) {
+    $all = Get-Printer | Select-Object -ExpandProperty Name
+    Write-Host "Available printers: $($all -join ', ')"
+
+    # Try to find a thermal/receipt printer
+    $printerName = $all | Where-Object { $_ -match 'POS|thermal|receipt|munbyn|epson|star|citizen|bixolon' } | Select-Object -First 1
+
+    # Fall back to default printer
+    if (-not $printerName) {
+        $printerName = (Get-WmiObject -Query "SELECT * FROM Win32_Printer WHERE Default=True").Name
+        Write-Host "Using default printer: $printerName"
+    } else {
+        Write-Host "Using matched printer: $printerName"
+    }
+}
+
+if (-not $printerName) { Write-Error "No printer found"; exit 1 }
 
 $h = [IntPtr]::Zero
 if (-not [Spooler]::OpenPrinter($printerName, [ref]$h, [IntPtr]::Zero)) {
