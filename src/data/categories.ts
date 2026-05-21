@@ -1044,18 +1044,6 @@ export const categories: Category[] = [
               '/images/products/grabber-reacher-tool-2.webp',
               '/images/products/grabber-reacher-tool-3.webp'
             ]
-          },
-          {
-            name: 'YISSVIC Electric Fly Swatter Bug Zapper Racket, Dual Modes with UV Mosquito Light, Rechargeable',
-            price: 10000,
-            quantity: 4,
-            images: [
-              '/images/products/yissvic-fly-swatter-1.webp',
-              '/images/products/yissvic-fly-swatter-2.webp',
-              '/images/products/yissvic-fly-swatter-3.webp',
-              '/images/products/yissvic-fly-swatter-4.webp',
-              '/images/products/yissvic-fly-swatter-5.webp'
-            ]
           }
         ]
       }
@@ -1204,6 +1192,25 @@ export const categories: Category[] = [
               '/images/products/dark-grey-usb-fan2.webp'
             ]
           },
+          {
+            name: 'YISSVIC Rechargeable Electric Fly Swatter Foldable Bug Zapper',
+            price: 10000,
+            quantity: 6,
+            images: [
+              '/images/products/yissvic-fly-swatter-1.webp',
+              '/images/products/yissvic-fly-swatter-2.webp',
+              '/images/products/yissvic-fly-swatter-3.webp'
+            ]
+          },
+          {
+            name: 'YISSVIC Electric Fly Swatter Bug Zapper Racket, Dual Modes with UV Mosquito Light, Rechargeable',
+            price: 0,
+            quantity: 4,
+            images: [
+              '/images/products/yissvic-fly-swatter-4.webp',
+              '/images/products/yissvic-fly-swatter-5.webp'
+            ]
+          }
         ]
       },
       {
