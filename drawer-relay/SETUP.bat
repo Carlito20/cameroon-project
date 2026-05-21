@@ -16,7 +16,7 @@ echo.
 echo Step 2: Adding to Windows startup...
 set SCRIPT_DIR=%~dp0
 set STARTUP=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup
-powershell -Command "$s=(New-Object -COM WScript.Shell).CreateShortcut('%STARTUP%\DrawerRelay.lnk');$s.TargetPath='node';$s.Arguments='"%SCRIPT_DIR%relay.mjs"';$s.WorkingDirectory='%SCRIPT_DIR%';$s.WindowStyle=7;$s.Save()"
+powershell -Command "$s=(New-Object -COM WScript.Shell).CreateShortcut('%STARTUP%\DrawerRelay.lnk');$s.TargetPath='node';$s.Arguments='"%SCRIPT_DIR%relay.cjs"';$s.WorkingDirectory='%SCRIPT_DIR%';$s.WindowStyle=7;$s.Save()"
 
 echo.
 echo ============================================
@@ -26,6 +26,6 @@ echo  every time Windows starts.
 echo.
 echo  Starting relay now...
 echo ============================================
-start "Cash Drawer Relay" /MIN node "%SCRIPT_DIR%relay.mjs"
+start "Cash Drawer Relay" /MIN node "%SCRIPT_DIR%relay.cjs"
 echo Done. The relay is running in the background.
 pause
