@@ -1,13 +1,16 @@
 /**
  * American Select — Cash Drawer Relay
- * Standalone — no Node.js required (built with pkg/SEA)
+ * Sends ESC/POS drawer command directly via Windows print spooler.
+ * No QZ Tray required.
  */
 const { createServer } = require('http');
-const WebSocket = require('ws');
+const { execFile, exec } = require('child_process');
+const path = require('path');
 
 const PORT = 3099;
 const ORIGIN = 'https://americanselect.net';
-const ESC_POS_DRAWER = '\x1B\x70\x00\x19\xFA';
+const PRINTER = 'POS-80C';
+const PS_SCRIPT = path.join(__dirname, 'rawprint.ps1');
 
 function addCors(res) {
   res.setHeader('Access-Control-Allow-Origin', ORIGIN);
@@ -16,75 +19,18 @@ function addCors(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
-function qzCall(ws, call, params) {
+function openDrawer() {
   return new Promise((resolve, reject) => {
-    const uid = 'uid-' + Date.now();
-    const handler = (data) => {
-      try {
-        const msg = JSON.parse(data);
-        if (msg.uid === uid) {
-          ws.off('message', handler);
-          if (msg.error) reject(new Error(msg.error));
-          else resolve(msg.result);
-        }
-      } catch {}
-    };
-    ws.on('message', handler);
-    ws.send(JSON.stringify({ call, params, timestamp: Date.now(), uid }));
-    setTimeout(() => { ws.off('message', handler); reject(new Error('QZ Tray timeout')); }, 8000);
-  });
-}
-
-async function openDrawer() {
-  return new Promise((resolve, reject) => {
-    const ws = new WebSocket('wss://localhost:8181', { rejectUnauthorized: false });
-
-    ws.on('open', async () => {
-      try {
-        // Try each candidate until one works
-        const candidates = [
-          'POS-80C',
-          'Munbyn ITPP047P', 'Munbyn ITPP130',
-        ];
-
-        // Also add any detected printers
-        let detected = [];
-        try {
-          const found = await qzCall(ws, 'printers.find', {});
-          detected = Array.isArray(found) ? found : (found ? [found] : []);
-          console.log('Detected printers:', detected);
-          const def = await qzCall(ws, 'printers.getDefault', {});
-          if (def && !detected.includes(def)) detected.unshift(def);
-          console.log('Default printer:', def);
-        } catch(e) { console.log('Printer list error:', e.message); }
-
-        // Combine: detected first, then hardcoded fallbacks
-        const allCandidates = [...new Set([...detected, ...candidates])];
-        const printer = allCandidates.find(p =>
-          /munbyn|pos|volcora|thermal|receipt|epson|star|citizen|bixolon/i.test(String(p))
-        ) || detected[0] || 'POS-80C';
-
-        console.log('Using printer:', printer);
-
-        console.log('Sending drawer command to:', printer);
-
-        // Send drawer command
-        await qzCall(ws, 'print', {
-          printer: { name: printer },
-          options: { raw: true },
-          data: [{ type: 'raw', format: 'command', data: ESC_POS_DRAWER }]
-        });
-
-        ws.close();
-        resolve({ ok: true, printer });
-      } catch (e) {
-        ws.close();
-        reject(e);
+    const cmd = `powershell -NoProfile -NonInteractive -File "${PS_SCRIPT}" -printerName "${PRINTER}"`;
+    exec(cmd, { timeout: 10000 }, (err, stdout, stderr) => {
+      if (err) {
+        reject(new Error(stderr || err.message));
+      } else if (stdout.includes('OK:')) {
+        resolve(stdout.trim());
+      } else {
+        reject(new Error(stdout || 'Unknown error'));
       }
     });
-
-    ws.on('error', (e) => reject(new Error('QZ Tray not running: ' + e.message)));
-    setTimeout(() => { ws.close(); reject(new Error('QZ Tray connection timeout')); }, 10000);
   });
 }
 
@@ -95,7 +41,7 @@ const server = createServer(async (req, res) => {
   if (req.method === 'POST' && req.url === '/drawer') {
     try {
       const result = await openDrawer();
-      console.log('Drawer opened:', result.printer);
+      console.log('Drawer opened:', result);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true }));
     } catch (e) {
@@ -118,6 +64,7 @@ const server = createServer(async (req, res) => {
 server.listen(PORT, '127.0.0.1', () => {
   console.log('========================================');
   console.log(' American Select - Cash Drawer Relay');
+  console.log(' Printer: ' + PRINTER);
   console.log(' Running on http://localhost:' + PORT);
   console.log(' Keep this window open (or minimised)');
   console.log('========================================');
