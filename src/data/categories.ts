@@ -83,6 +83,24 @@ export const categories: Category[] = [
               '/images/products/storage-lids-1000-1.webp',
               '/images/products/storage-lids-2.webp'
             ]
+          },
+          {
+            name: 'Air Tight Food Storage Container with Lid, 550ml',
+            price: 0,
+            quantity: 10,
+            images: [
+              '/images/products/airtight-container-550ml-1.webp',
+              '/images/products/airtight-container-550ml-2.webp'
+            ]
+          },
+          {
+            name: 'Air Tight Food Storage Container with Lid, 650ml',
+            price: 0,
+            quantity: 10,
+            images: [
+              '/images/products/airtight-container-650ml-1.webp',
+              '/images/products/airtight-container-650ml-2.webp'
+            ]
           }
         ]
       },
@@ -630,6 +648,15 @@ export const categories: Category[] = [
             images: ['/images/products/crest-mouthwash-1.webp', '/images/products/crest-mouthwash-2.webp'],
             quantity: 9,
             price: 4000
+          },
+          {
+            name: 'Crest Complete Toothpaste',
+            price: 0,
+            quantity: 10,
+            images: [
+              '/images/products/crest-complete-toothpaste-1.webp',
+              '/images/products/crest-complete-toothpaste-2.webp'
+            ]
           }
         ]
       },
@@ -941,7 +968,38 @@ export const categories: Category[] = [
       },
       {
         name: 'Trash Bags & Storage Bags',
-        items: []
+        items: [
+          {
+            name: '1-Gallon Slider Zipper Storage Bags, Freezer & Dishwasher Safe',
+            price: 0,
+            quantity: 20,
+            images: [
+              '/images/products/slider-bags-1gal-1.webp',
+              '/images/products/slider-bags-1gal-2.webp',
+              '/images/products/slider-bags-1gal-3.webp'
+            ]
+          },
+          {
+            name: '2.5-Gallon Slider Zipper Storage Bags, Extra Large Freezer Bags',
+            price: 0,
+            quantity: 20,
+            images: [
+              '/images/products/slider-bags-2_5gal-1.webp',
+              '/images/products/slider-bags-2_5gal-2.webp'
+            ]
+          },
+          {
+            name: 'Quart Slider Zipper Storage Bags, Freezer & Sandwich Bags',
+            price: 0,
+            quantity: 20,
+            images: [
+              '/images/products/slider-bags-quart-1.webp',
+              '/images/products/slider-bags-quart-2.webp',
+              '/images/products/slider-bags-quart-3.webp',
+              '/images/products/slider-bags-quart-4.webp'
+            ]
+          }
+        ]
       },
       {
         name: 'Cleaning Tools (sponges, mops, brushes)',
@@ -956,6 +1014,38 @@ export const categories: Category[] = [
               '/images/products/spin-mop-bucket-3.webp',
               '/images/products/spin-mop-bucket-4.webp',
               '/images/products/spin-mop-bucket-5.webp'
+            ]
+          },
+          {
+            name: 'O-Cedar EasyWring Microfiber Spin Mop & Bucket Floor Cleaning System',
+            price: 0,
+            quantity: 3,
+            images: [
+              '/images/products/ocedar-spin-mop-1.webp',
+              '/images/products/ocedar-spin-mop-2.webp',
+              '/images/products/ocedar-spin-mop-3.webp',
+              '/images/products/ocedar-spin-mop-4.webp',
+              '/images/products/ocedar-spin-mop-5.webp',
+              '/images/products/ocedar-spin-mop-6.webp'
+            ]
+          },
+          {
+            name: 'Mop Head Replacements for O-Cedar EasyWring Spin Mop, Microfiber Refills',
+            price: 0,
+            quantity: 4,
+            images: [
+              '/images/products/ocedar-mop-head-1.webp',
+              '/images/products/ocedar-mop-head-2.webp'
+            ]
+          },
+          {
+            name: 'Grabber Reacher Tool – Foldable Litter Picker with 360° Rotating Jaw & Magnet, Mobility Aid',
+            price: 0,
+            quantity: 6,
+            images: [
+              '/images/products/grabber-reacher-tool-1.webp',
+              '/images/products/grabber-reacher-tool-2.webp',
+              '/images/products/grabber-reacher-tool-3.webp'
             ]
           }
         ]
@@ -1106,13 +1196,15 @@ export const categories: Category[] = [
             ]
           },
           {
-            name: 'YISSVIC Rechargeable Electric Fly Swatter Foldable Bug Zapper',
+            name: 'YISSVIC Electric Fly Swatter Bug Zapper Racket, Dual Modes with UV Mosquito Light, Rechargeable',
             price: 10000,
-            quantity: 6,
+            quantity: 4,
             images: [
               '/images/products/yissvic-fly-swatter-1.webp',
               '/images/products/yissvic-fly-swatter-2.webp',
-              '/images/products/yissvic-fly-swatter-3.webp'
+              '/images/products/yissvic-fly-swatter-3.webp',
+              '/images/products/yissvic-fly-swatter-4.webp',
+              '/images/products/yissvic-fly-swatter-5.webp'
             ]
           }
         ]
