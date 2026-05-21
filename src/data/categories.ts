@@ -85,6 +85,33 @@ export const categories: Category[] = [
             ]
           },
           {
+            name: '1-Gallon Slider Zipper Storage Bags, Freezer & Dishwasher Safe',
+            price: 0,
+            quantity: 20,
+            images: [
+              '/images/products/slider-bags-1gal-1.webp',
+              '/images/products/slider-bags-1gal-2.webp',
+              '/images/products/slider-bags-1gal-3.webp'
+            ]
+          },
+          {
+            name: '2.5-Gallon Slider Zipper Storage Bags, Extra Large Freezer Bags',
+            price: 0,
+            quantity: 20,
+            images: [
+              '/images/products/slider-bags-2_5gal-1.webp',
+              '/images/products/slider-bags-2_5gal-2.webp'
+            ]
+          },
+          {
+            name: 'Quart Slider Zipper Storage Bags, Freezer & Sandwich Bags',
+            price: 0,
+            quantity: 20,
+            images: [
+              '/images/products/slider-bags-quart-4.webp'
+            ]
+          },
+          {
             name: 'Air Tight Food Storage Container with Lid, 550ml',
             price: 0,
             quantity: 10,
@@ -968,35 +995,7 @@ export const categories: Category[] = [
       },
       {
         name: 'Trash Bags & Storage Bags',
-        items: [
-          {
-            name: '1-Gallon Slider Zipper Storage Bags, Freezer & Dishwasher Safe',
-            price: 0,
-            quantity: 20,
-            images: [
-              '/images/products/slider-bags-1gal-1.webp',
-              '/images/products/slider-bags-1gal-2.webp',
-              '/images/products/slider-bags-1gal-3.webp'
-            ]
-          },
-          {
-            name: '2.5-Gallon Slider Zipper Storage Bags, Extra Large Freezer Bags',
-            price: 0,
-            quantity: 20,
-            images: [
-              '/images/products/slider-bags-2_5gal-1.webp',
-              '/images/products/slider-bags-2_5gal-2.webp'
-            ]
-          },
-          {
-            name: 'Quart Slider Zipper Storage Bags, Freezer & Sandwich Bags',
-            price: 0,
-            quantity: 20,
-            images: [
-              '/images/products/slider-bags-quart-4.webp'
-            ]
-          }
-        ]
+        items: []
       },
       {
         name: 'Cleaning Tools (sponges, mops, brushes)',
