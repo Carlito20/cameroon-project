@@ -84,6 +84,7 @@ for (const [slug, files] of mappings) {
 
     try {
       await sharp(srcPath)
+        .flatten({ background: { r: 255, g: 255, b: 255 } }) // flatten transparency → white bg
         .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true, kernel: 'lanczos3' })
         .webp({ quality: 90 })
         .toFile(destPath);
