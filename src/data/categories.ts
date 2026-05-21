@@ -680,8 +680,8 @@ export const categories: Category[] = [
             price: 0,
             quantity: 10,
             images: [
-              '/images/products/crest-complete-toothpaste-1.webp',
-              '/images/products/crest-complete-toothpaste-2.webp'
+              '/images/products/crest-complete-toothpaste-2.webp',
+              '/images/products/crest-complete-toothpaste-1.webp'
             ]
           }
         ]
