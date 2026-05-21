@@ -20,7 +20,7 @@ function addCors(res) {
 
 function openDrawer() {
   return new Promise((resolve, reject) => {
-    const cmd = `powershell -NoProfile -NonInteractive -File "${PS_SCRIPT}"`;
+    const cmd = `powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${PS_SCRIPT}"`;
 
     exec(cmd, { timeout: 10000 }, (err, stdout, stderr) => {
       if (err) {
