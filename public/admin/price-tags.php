@@ -296,15 +296,14 @@ function fmt_price($n) {
         background: #fff !important;
         border: none !important;
         border-radius: 0;
-        padding: 1.5mm 3mm;
-        width: 51mm;
-        height: 25mm;
-        max-height: 25mm;
+        padding: 2mm 2.5mm;
+        width: 25mm;
+        height: 51mm;
+        min-height: 51mm;
+        max-height: 51mm;
         overflow: hidden;
         box-sizing: border-box;
-        /* Rotate landscape content to fit portrait label feed */
-        transform: translateX(25mm) rotate(90deg);
-        transform-origin: 0 0;
+        text-align: center;
         page-break-after: always;
         break-after: page;
       }
@@ -314,32 +313,33 @@ function fmt_price($n) {
       }
       body.mode-shelf .tag-card-top { display: none !important; }
       body.mode-shelf .tag-price {
-        font-size: 13pt;
+        font-size: 14pt;
         font-weight: 900;
         color: #000 !important;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
         line-height: 1.1;
         display: block;
+        margin-top: 2mm;
+        word-break: break-all;
       }
       body.mode-shelf .tag-name {
-        font-size: 6pt;
+        font-size: 5.5pt;
         font-weight: 700;
         color: #000 !important;
-        line-height: 1.25;
+        line-height: 1.3;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        max-height: 9mm;
+        margin-top: 2mm;
+        text-align: left;
       }
       body.mode-shelf .tag-store {
-        font-size: 4.5pt;
+        font-size: 4pt;
         color: #777;
         letter-spacing: 1px;
         text-transform: uppercase;
         display: block;
-        margin-top: 1mm;
+        margin-top: 2mm;
       }
       body.mode-shelf .tag-qty { display: none !important; }
       body.mode-shelf .empty { display: none !important; }
@@ -481,7 +481,7 @@ function setMode(mode) {
 
   if (mode === 'shelf') {
     pageStyle.textContent = '@page { size: 25mm 51mm; margin: 0; }';
-    hint.textContent = 'One tag per label — load 2"×1" labels on your Munbyn';
+    hint.textContent = 'One tag per label — load 2"×1" labels on your Munbyn (portrait feed)';
   } else if (mode === '3x2') {
     pageStyle.textContent = '@page { size: 76mm 51mm; margin: 0; }';
     hint.textContent = 'One tag per label — load 3"×2" labels on your Munbyn';

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>2x1 Label Preview</title>
+  <style>
+    body { background: #1a1a1a; font-family: Arial, sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+    h2 { color: #d4af37; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; width: 100%; margin-bottom: 0; }
+    p { color: #666; font-size: 11px; width: 100%; margin: 4px 0 16px; }
+
+    .label {
+      display: block;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 2mm 2.5mm;
+      width: 25mm;
+      height: 51mm;
+      max-height: 51mm;
+      overflow: hidden;
+      box-sizing: border-box;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .price {
+      font-size: 14pt;
+      font-weight: 900;
+      color: #000;
+      line-height: 1.1;
+      display: block;
+      margin-top: 2mm;
+      word-break: break-all;
+    }
+    .name {
+      font-size: 5.5pt;
+      font-weight: 700;
+      color: #000;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-top: 2mm;
+      text-align: left;
+    }
+    .store {
+      font-size: 4pt;
+      color: #777;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 2mm;
+    }
+  </style>
+</head>
+<body>
+  <h2>2" × 1" Shelf Label Samples (Portrait — 25mm × 51mm)</h2>
+  <p>Labels print portrait, stick them vertically on the shelf edge</p>
+
+  <div class="label">
+    <span class="price">2 500 FCFA</span>
+    <span class="name">Aveeno Daily Moisturizing Lotion 18oz Body Lotion</span>
+    <span class="store">American Select</span>
+  </div>
+
+  <div class="label">
+    <span class="price">1 800 FCFA</span>
+    <span class="name">CeraVe Moisturizing Cream 12oz</span>
+    <span class="store">American Select</span>
+  </div>
+
+  <div class="label">
+    <span class="price">950 FCFA</span>
+    <span class="name">Degree Men Black + White Ultraclear Deodorant 2.7oz</span>
+    <span class="store">American Select</span>
+  </div>
+
+  <div class="label">
+    <span class="price">10 000 FCFA</span>
+    <span class="name">YISSVIC Electric Fly Swatter Bug Zapper Racket Dual Modes UV Mosquito Light</span>
+    <span class="store">American Select</span>
+  </div>
+
+</body>
+</html>
