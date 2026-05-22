@@ -162,13 +162,13 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     .btn-do-export:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-do-export:not(:disabled):hover { background: #143020; }
     .scan-input {
-      width: 160px; padding: 6px 10px; background: #0d1a0d; border: 1px solid #1a3a1a;
-      border-radius: 6px; color: #e0e0e0; font-size: 13px; outline: none;
+      width: 190px; padding: 6px 10px; background: #0d1a0d; border: 1px solid #1a3a1a;
+      border-radius: 6px; color: #e0e0e0; outline: none;
       min-height: 36px; -webkit-appearance: none; appearance: none;
-      touch-action: manipulation; font-size: 16px;
+      touch-action: manipulation; font-size: 14px;
     }
-    .scan-input:focus { border-color: #6dbf6d; }
-    .scan-input::placeholder { color: #445; }
+    .scan-input:focus { border-color: #6dbf6d; box-shadow: 0 0 0 2px rgba(109,191,109,0.2); }
+    .scan-input::placeholder { color: #556; }
     .btn-scan-assign {
       padding: 7px 12px; background: #0d2010; color: #6dbf6d;
       border: 1px solid #1a4020; border-radius: 6px; font-size: 12px; font-weight: 700;
@@ -415,7 +415,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
   <div class="section-head" id="unassigned-head">⚠ No Barcode Yet (<?= count($unassigned) ?>)</div>
   <div id="unassigned-list">
     <?php foreach ($unassigned as $p): ?>
-    <div class="product-row no-barcode" data-name="<?= htmlspecialchars($p['name']) ?>">
+    <div class="product-row no-barcode" data-name="<?= htmlspecialchars($p['name']) ?>" onclick="this.querySelector('.scan-input')?.focus()" style="cursor:pointer">
       <input type="checkbox" class="pr-check" data-name="<?= htmlspecialchars($p['name']) ?>" data-barcode="" onchange="updatePrintCount()">
       <div class="pr-name"><?= htmlspecialchars($p['name']) ?></div>
       <?php if ($p['price']): ?>
@@ -424,9 +424,8 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <div class="pr-actions">
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
         <?php if ($isAdmin): ?>
-        <button class="btn-generate" onclick="generateBarcode(this, <?= json_encode($p['name']) ?>)">⚡ Generate</button>
-        <input type="text" class="scan-input" placeholder="Scan or type barcode…" title="Scan manufacturer barcode" onkeydown="if(event.key==='Enter'){assignManual(this,<?= json_encode($p['name']) ?>)}">
-        <button class="btn-scan-assign" onclick="assignManual(this.previousElementSibling, <?= json_encode($p['name']) ?>)">✔ Assign</button>
+        <button class="btn-generate" onclick="event.stopPropagation();generateBarcode(this, <?= json_encode($p['name']) ?>)">⚡ Generate</button>
+        <input type="text" class="scan-input" placeholder="📷 Scan barcode…" title="Click row then scan — auto-assigns on scan" onclick="event.stopPropagation()" onkeydown="if(event.key==='Enter'){event.preventDefault();assignManual(this,<?= json_encode($p['name']) ?>)}">
         <?php endif; ?>
       </div>
     </div>
@@ -573,8 +572,9 @@ async function generateBarcode(btn, productName) {
 // ── Assign manufacturer/scanned barcode manually ────────
 async function assignManual(input, productName) {
   const barcode = input.value.trim();
-  if (!barcode) { input.focus(); showToast('Scan or enter a barcode first', 'err'); return; }
+  if (!barcode) { input.focus(); showToast('Scan or type a barcode first', 'err'); return; }
   input.disabled = true;
+  input.value = '⏳ Assigning…';
   try {
     const res = await fetch('/api/barcode.php', {
       method: 'POST',
@@ -583,17 +583,50 @@ async function assignManual(input, productName) {
     });
     const data = await res.json();
     if (data.success) {
-      showToast('✓ Barcode assigned', 'ok');
-      setTimeout(() => location.reload(), 800);
+      showToast('✓ ' + productName.split(',')[0].substring(0, 40) + ' assigned', 'ok');
+      // Update row in place — no page reload
+      const row = input.closest('.product-row');
+      row.classList.remove('no-barcode');
+      row.classList.add('has-barcode');
+      row.style.cursor = '';
+      row.onclick = null;
+      // Replace actions with barcode value + unassign button
+      const actions = row.querySelector('.pr-actions');
+      actions.innerHTML = `
+        <button class="btn-preview" onclick="previewBarcode('${esc(barcode)}','${esc(productName)}')">👁 Preview</button>
+        <button class="btn-unassign" onclick="unassignBarcode(this,'${esc(productName)}')">✕ Unassign</button>`;
+      // Add barcode value under product name
+      const nameDiv = row.querySelector('.pr-name');
+      if (!nameDiv.querySelector('.pr-barcode-val')) {
+        const bv = document.createElement('div');
+        bv.className = 'pr-barcode-val';
+        bv.textContent = barcode;
+        nameDiv.appendChild(bv);
+      }
+      // Update checkbox barcode data
+      const cb = row.querySelector('.pr-check');
+      if (cb) { cb.dataset.barcode = barcode; updatePrintCount(); }
+      // Move row to assigned list
+      const assignedList = document.getElementById('assigned-list');
+      if (assignedList) {
+        assignedList.prepend(row);
+        document.getElementById('assigned-head').style.display = '';
+      }
     } else {
       input.disabled = false;
+      input.value = '';
+      input.focus();
       showToast('Error: ' + (data.error || 'Failed'), 'err');
     }
   } catch {
     input.disabled = false;
+    input.value = '';
+    input.focus();
     showToast('Network error', 'err');
   }
 }
+
+function esc(s) { return String(s).replace(/'/g,"\'").replace(/"/g,'&quot;'); }
 
 // ── Unassign barcode from product ───────────────────────
 async function unassignBarcode(btn, productName) {
