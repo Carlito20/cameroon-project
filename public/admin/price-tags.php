@@ -292,20 +292,20 @@ function fmt_price($n) {
       }
       body.mode-shelf .tag-card { display: none !important; }
       body.mode-shelf .tag-card.selected {
-        display: flex !important;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
+        display: block !important;
+        position: relative;
         background: #fff !important;
         border: none !important;
         border-radius: 0;
-        padding: 2mm 3.5mm;
-        gap: 1.5mm;
+        padding: 1.5mm 3mm;
         width: 51mm;
         height: 25mm;
+        min-height: 25mm;
+        max-height: 25mm;
         page-break-after: always;
         break-after: page;
         overflow: hidden;
+        box-sizing: border-box;
       }
       body.mode-shelf .tag-card.selected:last-child {
         page-break-after: avoid;
@@ -313,29 +313,32 @@ function fmt_price($n) {
       }
       body.mode-shelf .tag-card-top { display: none !important; }
       body.mode-shelf .tag-price {
-        font-size: 14pt;
+        font-size: 13pt;
         font-weight: 900;
         color: #000 !important;
         letter-spacing: 0.5px;
         white-space: nowrap;
-        line-height: 1;
+        line-height: 1.1;
+        display: block;
       }
       body.mode-shelf .tag-name {
-        font-size: 6.5pt;
+        font-size: 6pt;
         font-weight: 700;
         color: #000 !important;
-        line-height: 1.3;
+        line-height: 1.25;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        max-height: 9mm;
       }
       body.mode-shelf .tag-store {
-        font-size: 5pt;
+        font-size: 4.5pt;
         color: #777;
         letter-spacing: 1px;
         text-transform: uppercase;
-        margin-top: 0.5mm;
+        display: block;
+        margin-top: 1mm;
       }
       body.mode-shelf .tag-qty { display: none !important; }
       body.mode-shelf .empty { display: none !important; }
