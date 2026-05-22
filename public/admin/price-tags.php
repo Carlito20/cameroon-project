@@ -358,19 +358,20 @@ function fmt_price($n) {
       }
       body.mode-3x2 .tag-card { display: none !important; }
       body.mode-3x2 .tag-card.selected {
-        display: flex !important;
-        flex-direction: column;
-        justify-content: space-between;
+        display: block !important;
+        position: relative;
         background: #fff !important;
         border: 1pt solid #000 !important;
         border-radius: 0;
         padding: 4mm 5mm;
-        gap: 0;
         width: 76mm;
         height: 51mm;
+        min-height: 51mm;
+        max-height: 51mm;
         page-break-after: always;
         break-after: page;
         overflow: hidden;
+        box-sizing: border-box;
       }
       body.mode-3x2 .tag-card.selected:last-child {
         page-break-after: avoid;
