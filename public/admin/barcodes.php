@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../api/db.php';
 session_start();
 if (empty($_SESSION['admin_logged_in'])) { header('Location: index.php'); exit; }
+$isAdmin = ($_SESSION['admin_role'] ?? '') === 'admin';
 
 // Load products
 $jsonPath = __DIR__ . '/../api/products-list.json';
@@ -314,6 +315,53 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     .toast.ok { border-color: #1a3a1a; color: #6dbf6d; }
     .toast.err { border-color: #3a1a1a; color: #e05c5c; }
 
+    /* Quick Scan modal */
+    .qs-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 500;
+      display: none; align-items: flex-end; justify-content: center;
+      -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .qs-overlay.open { display: flex; }
+    .qs-modal {
+      background: #161616; border: 1px solid #2a2a2a; border-radius: 18px 18px 0 0;
+      padding: 20px 16px calc(28px + env(safe-area-inset-bottom, 0px));
+      width: 100%; max-width: 520px;
+    }
+    .qs-handle { width: 36px; height: 4px; background: #333; border-radius: 4px; margin: 0 auto 16px; }
+    .qs-title { font-size: 15px; font-weight: 800; color: #ccc; margin-bottom: 4px; }
+    .qs-sub { font-size: 12px; color: #555; margin-bottom: 16px; }
+    .qs-input {
+      width: 100%; padding: 13px 14px; background: #1a1a1a;
+      border: 2px solid #2a2a2a; border-radius: 8px; color: #e0e0e0;
+      font-size: 16px; outline: none; -webkit-appearance: none; appearance: none;
+      min-height: 50px; touch-action: manipulation; margin-bottom: 12px;
+    }
+    .qs-input:focus { border-color: #7b9fd4; }
+    .qs-select {
+      width: 100%; padding: 13px 14px; background: #1a1a1a;
+      border: 2px solid #2a2a2a; border-radius: 8px; color: #e0e0e0;
+      font-size: 15px; outline: none; -webkit-appearance: none; appearance: none;
+      min-height: 50px; touch-action: manipulation; margin-bottom: 14px;
+    }
+    .qs-select:focus { border-color: #7b9fd4; }
+    .qs-status { font-size: 13px; color: #555; min-height: 18px; margin-bottom: 12px; }
+    .qs-status.ok { color: #6dbf6d; }
+    .qs-status.err { color: #e05c5c; }
+    .qs-btns { display: flex; gap: 8px; }
+    .btn-qs-assign {
+      flex: 2; padding: 13px; background: #7b9fd4; color: #000; border: none;
+      border-radius: 8px; font-size: 15px; font-weight: 800; cursor: pointer;
+      min-height: 50px; touch-action: manipulation; -webkit-user-select: none; user-select: none;
+    }
+    .btn-qs-assign:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-qs-cancel {
+      flex: 1; padding: 13px; background: transparent; color: #666;
+      border: 1px solid #2a2a2a; border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer; min-height: 50px; touch-action: manipulation;
+      -webkit-user-select: none; user-select: none;
+    }
+
     /* ── PRINT STYLES ── */
     @media print {
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -328,6 +376,9 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
   <div><h1>AMERICAN SELECT</h1><span>Barcode Labels</span></div>
   <div class="header-btns">
     <a href="dashboard.php" class="back-btn">← Dashboard</a>
+    <?php if ($isAdmin): ?>
+    <button class="btn-print-all" onclick="openQuickScan()" style="background:#1a2a40;color:#7b9fd4;border:1px solid #2a3a60;">📷 Quick Scan</button>
+    <?php endif; ?>
   </div>
 </header>
 
@@ -372,9 +423,11 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <?php endif; ?>
       <div class="pr-actions">
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
+        <?php if ($isAdmin): ?>
         <button class="btn-generate" onclick="generateBarcode(this, <?= json_encode($p['name']) ?>)">⚡ Generate</button>
         <input type="text" class="scan-input" placeholder="Scan or type barcode…" title="Scan manufacturer barcode" onkeydown="if(event.key==='Enter'){assignManual(this,<?= json_encode($p['name']) ?>)}">
         <button class="btn-scan-assign" onclick="assignManual(this.previousElementSibling, <?= json_encode($p['name']) ?>)">✔ Assign</button>
+        <?php endif; ?>
       </div>
     </div>
     <?php endforeach; ?>
@@ -400,7 +453,9 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <div class="pr-actions">
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
         <button class="btn-preview" onclick="previewBarcode('<?= htmlspecialchars(addslashes($bc)) ?>', '<?= htmlspecialchars(addslashes($p['name'])) ?>')">👁 Preview</button>
+        <?php if ($isAdmin): ?>
         <button class="btn-unassign" onclick="unassignBarcode(this, '<?= htmlspecialchars(addslashes($p['name'])) ?>')">✕ Unassign</button>
+        <?php endif; ?>
       </div>
     </div>
     <?php endforeach; ?>
@@ -416,9 +471,13 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
   <div class="action-sheet-handle"></div>
   <div class="action-sheet-title" id="action-sheet-title">0 products selected</div>
   <div class="action-btns">
+    <?php if ($isAdmin): ?>
     <button class="action-btn action-btn-scan" id="btn-scan-assign" onclick="openScanModal()">📷 &nbsp;Scan to Assign Barcode</button>
+    <?php endif; ?>
     <button class="action-btn action-btn-print" onclick="printSelected()">🖨 &nbsp;Print Labels</button>
+    <?php if ($isAdmin): ?>
     <button class="action-btn action-btn-generate" id="btn-bulk-generate" onclick="generateSelected()">⚡ &nbsp;Generate Barcodes</button>
+    <?php endif; ?>
     <button class="action-btn action-btn-export" onclick="exportPNG()">📥 &nbsp;Export PNG</button>
     <button class="action-btn action-btn-cancel" onclick="closeActionSheet()">✕ &nbsp;Cancel</button>
   </div>
@@ -444,6 +503,29 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     <div class="scan-modal-btns">
       <button class="btn-modal-assign" id="btn-modal-assign" onclick="doScanAssign()">✔ Assign</button>
       <button class="btn-modal-cancel" onclick="closeScanModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Scan modal -->
+<div class="qs-overlay" id="qs-overlay" onclick="if(event.target===this)closeQuickScan()">
+  <div class="qs-modal">
+    <div class="qs-handle"></div>
+    <div class="qs-title">📷 Quick Scan & Assign</div>
+    <div class="qs-sub">Scan the barcode on the packaging, then pick the product to assign it to.</div>
+    <input type="text" class="qs-input" id="qs-barcode-input"
+           placeholder="Scan or type barcode…"
+           autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text">
+    <select class="qs-select" id="qs-product-select">
+      <option value="">— Select product —</option>
+      <?php foreach ($products as $p): ?>
+        <option value="<?= htmlspecialchars($p['name']) ?>"><?= htmlspecialchars($p['name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+    <div class="qs-status" id="qs-status"></div>
+    <div class="qs-btns">
+      <button class="btn-qs-assign" id="btn-qs-assign" onclick="doQuickAssign()">✔ Assign</button>
+      <button class="btn-qs-cancel" onclick="closeQuickScan()">Cancel</button>
     </div>
   </div>
 </div>
@@ -573,22 +655,21 @@ function printSelected() {
 
   if (!labels.length) { showToast('No valid labels — generate barcodes first', 'err'); return; }
 
-  // Build print HTML — Phomemo M110, 40×30mm labels
+  // Build print HTML — Munbyn 2"×1" labels (25mm × 51mm portrait)
   const sheet = document.getElementById('print-sheet');
   sheet.innerHTML = `
     <style>
       @page {
-        size: 40mm 30mm;
+        size: 25mm 51mm;
         margin: 0;
       }
       body { margin: 0; padding: 0; }
-      .label-grid {
-        display: block;
-        width: 100%;
-      }
+      .label-grid { display: block; width: 100%; }
       .label {
-        width: 40mm;
-        height: 30mm;
+        width: 25mm;
+        height: 51mm;
+        min-height: 51mm;
+        max-height: 51mm;
         box-sizing: border-box;
         padding: 1.5mm 1.5mm 1mm;
         text-align: center;
@@ -602,18 +683,18 @@ function printSelected() {
         justify-content: center;
       }
       .label:last-child { page-break-after: avoid; break-after: avoid; }
-      .label svg { width: 38mm; height: auto; max-height: 14mm; display: block; }
+      .label svg { width: 22mm; height: auto; max-height: 22mm; display: block; }
       .label-name {
-        font-size: 6pt;
+        font-size: 5pt;
         color: #000;
         margin-top: 1mm;
         line-height: 1.2;
         word-break: break-word;
-        max-height: 3.6em;
+        max-height: 10mm;
         overflow: hidden;
         width: 100%;
       }
-      .label-brand { font-size: 6.5pt; font-weight: bold; color: #000; margin-bottom: 1mm; }
+      .label-brand { font-size: 5pt; font-weight: bold; color: #000; margin-bottom: 1mm; }
     </style>
     <div class="label-grid" id="label-grid"></div>`;
 
@@ -627,8 +708,8 @@ function printSelected() {
       <div class="label-name">${esc(lbl.name)}</div>`;
     grid.appendChild(div);
     JsBarcode(`#lbl-svg-${i}`, lbl.barcode, {
-      format: 'CODE128', width: 1.2, height: 38,
-      displayValue: true, fontSize: 7, margin: 1
+      format: 'CODE128', width: 0.9, height: 45,
+      displayValue: true, fontSize: 6, margin: 0
     });
   });
 
@@ -926,6 +1007,58 @@ function stopModalCamera() {
   modalCameraOn = false;
   document.getElementById('modal-camera-wrap').classList.remove('visible');
   document.getElementById('modal-camera-btn').classList.remove('active');
+}
+
+// ── Quick Scan & Assign ───────────────────────────────────
+function openQuickScan() {
+  document.getElementById('qs-barcode-input').value = '';
+  document.getElementById('qs-product-select').value = '';
+  document.getElementById('qs-status').textContent = '';
+  document.getElementById('qs-status').className = 'qs-status';
+  document.getElementById('btn-qs-assign').disabled = false;
+  document.getElementById('qs-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('qs-barcode-input').focus(), 200);
+}
+
+function closeQuickScan() {
+  document.getElementById('qs-overlay').classList.remove('open');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('qs-barcode-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('qs-product-select').focus(); }
+  });
+});
+
+async function doQuickAssign() {
+  const barcode = document.getElementById('qs-barcode-input').value.trim();
+  const productName = document.getElementById('qs-product-select').value;
+  const status = document.getElementById('qs-status');
+  if (!barcode) { status.textContent = 'Please scan or enter a barcode'; status.className = 'qs-status err'; return; }
+  if (!productName) { status.textContent = 'Please select a product'; status.className = 'qs-status err'; return; }
+  const btn = document.getElementById('btn-qs-assign');
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const res = await fetch('/api/barcode.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'assign', barcode, product_name: productName })
+    });
+    const data = await res.json();
+    if (data.success) {
+      status.textContent = '✓ Barcode assigned!';
+      status.className = 'qs-status ok';
+      setTimeout(() => { closeQuickScan(); location.reload(); }, 700);
+    } else {
+      btn.disabled = false; btn.textContent = '✔ Assign';
+      status.textContent = 'Error: ' + (data.error || 'Failed');
+      status.className = 'qs-status err';
+    }
+  } catch {
+    btn.disabled = false; btn.textContent = '✔ Assign';
+    status.textContent = 'Network error';
+    status.className = 'qs-status err';
+  }
 }
 
 function showToast(msg, type) {

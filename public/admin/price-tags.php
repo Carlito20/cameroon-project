@@ -289,6 +289,8 @@ function fmt_price($n) {
       body.mode-shelf .tag-grid {
         max-width: 100%; margin: 0; padding: 0;
         display: block;
+        page-break-after: avoid;
+        break-after: avoid;
       }
       body.mode-shelf .tag-card { display: none !important; }
       body.mode-shelf .tag-card.selected {
@@ -356,6 +358,8 @@ function fmt_price($n) {
       body.mode-3x2 .tag-grid {
         max-width: 100%; margin: 0; padding: 0;
         display: block;
+        page-break-after: avoid;
+        break-after: avoid;
       }
       body.mode-3x2 .tag-card { display: none !important; }
       body.mode-3x2 .tag-card.selected {
