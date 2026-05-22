@@ -293,19 +293,20 @@ function fmt_price($n) {
       body.mode-shelf .tag-card { display: none !important; }
       body.mode-shelf .tag-card.selected {
         display: block !important;
-        position: relative;
         background: #fff !important;
         border: none !important;
         border-radius: 0;
         padding: 1.5mm 3mm;
         width: 51mm;
         height: 25mm;
-        min-height: 25mm;
         max-height: 25mm;
-        page-break-after: always;
-        break-after: page;
         overflow: hidden;
         box-sizing: border-box;
+        /* Rotate landscape content to fit portrait label feed */
+        transform: translateX(25mm) rotate(90deg);
+        transform-origin: 0 0;
+        page-break-after: always;
+        break-after: page;
       }
       body.mode-shelf .tag-card.selected:last-child {
         page-break-after: avoid;
@@ -479,7 +480,7 @@ function setMode(mode) {
   const hint = document.getElementById('mode-hint');
 
   if (mode === 'shelf') {
-    pageStyle.textContent = '@page { size: 51mm 25mm; margin: 0; }';
+    pageStyle.textContent = '@page { size: 25mm 51mm; margin: 0; }';
     hint.textContent = 'One tag per label — load 2"×1" labels on your Munbyn';
   } else if (mode === '3x2') {
     pageStyle.textContent = '@page { size: 76mm 51mm; margin: 0; }';
