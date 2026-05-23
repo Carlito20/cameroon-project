@@ -865,8 +865,8 @@ async function exportPNG() {
   if (!labels.length) return;
   showToast('Generating PNGs…', 'ok');
 
-  // Exact Munbyn 2"×1" at 203 DPI = 406×203px — import at 100% in Munbyn app, no scaling
-  const W = 406, H = 203;
+  // Exact Munbyn 2.01"×1.00" at 203 DPI = 408×203px — import at 100% in Munbyn app, no scaling
+  const W = 408, H = 203;
   const zip = labels.length > 1 ? new JSZip() : null;
 
   for (let i = 0; i < labels.length; i++) {
