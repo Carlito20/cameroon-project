@@ -863,8 +863,8 @@ async function exportPNG() {
   if (!labels.length) return;
   showToast('Generating PNGs…', 'ok');
 
-  // 2"×1" landscape at 203 DPI = 406×203px
-  const W = 406, H = 203;
+  // 2"×1" landscape at 300 DPI = 600×300px (higher DPI = thicker bars = more scannable)
+  const W = 600, H = 300;
   const zip = labels.length > 1 ? new JSZip() : null;
   const pad = 10;
 
@@ -875,8 +875,8 @@ async function exportPNG() {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     document.body.appendChild(svg);
     JsBarcode(svg, barcode, {
-      format: 'CODE128', width: 1.8, height: 70,
-      displayValue: true, fontSize: 13, margin: 3,
+      format: 'CODE128', width: 3, height: 80,
+      displayValue: true, fontSize: 14, margin: 8,
       background: '#ffffff', lineColor: '#000000'
     });
     const svgData = new XMLSerializer().serializeToString(svg);
