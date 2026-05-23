@@ -693,44 +693,39 @@ async function printToMunbyn() {
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, W, H);
-    const pad = 48;
+    const pad = 44;
 
-    // Store name at top — bigger and darker
-    ctx.fillStyle = '#111';
-    ctx.font = 'bold 46px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('AMERICAN SELECT', W / 2, 60);
-
-    // Top rule
-    ctx.strokeStyle = '#999'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(pad, 80); ctx.lineTo(W - pad, 80); ctx.stroke();
-
-    // Product name — moved down for breathing room
+    // Product name — big, fills top portion
     ctx.fillStyle = '#000';
-    ctx.font = 'bold 40px Arial';
+    ctx.font = 'bold 68px Arial';
     ctx.textAlign = 'left';
     const nameLines = wrapLines(name, W - pad * 2).slice(0, 3);
-    nameLines.forEach((l, i) => ctx.fillText(l, pad, 190 + i * 54));
+    nameLines.forEach((l, i) => ctx.fillText(l, pad, 88 + i * 82));
 
-    // Price — large, centered
-    ctx.font = 'bold 128px Arial';
+    // Divider below name
+    const divY = nameLines.length === 1 ? 130 : nameLines.length === 2 ? 214 : 298;
+    ctx.strokeStyle = '#aaa'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(pad, divY + 20); ctx.lineTo(W - pad, divY + 20); ctx.stroke();
+
+    // Price — very large, pushed to lower portion
+    ctx.font = 'bold 158px Arial';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#000';
-    ctx.fillText(price, W / 2, 440);
+    ctx.fillText(price, W / 2, 468);
 
     // Bottom rule
-    ctx.strokeStyle = '#bbb';
-    ctx.beginPath(); ctx.moveTo(pad, 468); ctx.lineTo(W - pad, 468); ctx.stroke();
+    ctx.strokeStyle = '#aaa';
+    ctx.beginPath(); ctx.moveTo(pad, 488); ctx.lineTo(W - pad, 488); ctx.stroke();
 
-    // Branding footer — bold and visible
-    ctx.font = 'bold 38px Arial';
-    ctx.fillStyle = '#222';
-    ctx.fillText('American Select', W / 2, 522);
+    // American Select branding — big and clear
+    ctx.font = 'bold 44px Arial';
+    ctx.fillStyle = '#111';
+    ctx.fillText('American Select', W / 2, 546);
 
     // Website
-    ctx.font = '24px Arial';
-    ctx.fillStyle = '#888';
-    ctx.fillText('americanselect.net', W / 2, 566);
+    ctx.font = '26px Arial';
+    ctx.fillStyle = '#777';
+    ctx.fillText('americanselect.net', W / 2, 582);
     ctx.textAlign = 'left';
   }
 
