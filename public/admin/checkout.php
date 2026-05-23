@@ -917,7 +917,7 @@ async function printReceiptThermal() {
     if (gap <= 0) return left.substring(0, W - right.length - 1) + ' ' + right;
     return left + ' '.repeat(gap) + right;
   }
-  function dashes() { return '-'.repeat(W); }
+  function dashes() { return '='.repeat(W); }
   function fmt(n) { return Number(n).toLocaleString() + ' FCFA'; }
 
   const now = new Date();
@@ -927,17 +927,17 @@ async function printReceiptThermal() {
 
   let d = '';
 
-  // Init + reset
+  // Init + reset, then bold ON for entire receipt — thermal paper
+  // needs bold to print dark; regular weight comes out faint
   d += ESC + '@';
+  d += ESC + 'E\x01';          // bold ON — stays on throughout
 
   // ── Header ────────────────────────────────────────────────
   d += ESC + 'a\x01';          // center
   d += LF;
-  d += ESC + 'E\x01';          // bold on
   d += GS + '!\x11';           // double width + height
   d += 'AMERICAN SELECT' + LF;
-  d += GS + '!\x00';           // normal size
-  d += ESC + 'E\x00';          // bold off
+  d += GS + '!\x00';           // normal size (bold still on)
   d += LF;
   d += 'Quality Imports from USA & Canada' + LF;
   d += 'americanselect.net' + LF;
@@ -957,35 +957,35 @@ async function printReceiptThermal() {
     const line = item.price * item.qty;
     total += line;
     const name = item.name.length > W ? item.name.substring(0, W - 1) + '~' : item.name;
-    d += ESC + 'E\x01';        // bold item name
+    d += GS + '!\x01';          // double height for item name (bold already on)
     d += name + LF;
-    d += ESC + 'E\x00';        // bold off
+    d += GS + '!\x00';          // normal height
     const meta = '  x' + item.qty + ' @ ' + (item.price ? item.price.toLocaleString() + ' FCFA' : '--');
     const amt  = item.price ? fmt(line) : '--';
     d += padLine(meta, amt) + LF;
-    d += LF;                    // blank line between items
+    d += LF;
   });
 
   // ── Total ─────────────────────────────────────────────────
   d += dashes() + LF;
-  d += ESC + 'E\x01';          // bold on
   d += GS + '!\x01';           // double height only (keeps 48-char width)
   d += padLine('  TOTAL', fmt(total)) + LF;
   d += GS + '!\x00';           // normal
-  d += ESC + 'E\x00';          // bold off
   d += LF;
-  d += 'Payment: ' + selectedPayment + LF;
+  d += padLine('Payment:', selectedPayment) + LF;
 
   // ── Footer ────────────────────────────────────────────────
   d += dashes() + LF;
   d += ESC + 'a\x01';          // center
   d += LF;
   d += 'Thank you for shopping with' + LF;
-  d += ESC + 'E\x01' + 'American Select!' + ESC + 'E\x00' + LF;
+  d += 'American Select!' + LF;
   d += LF;
   d += 'Merci de votre visite chez' + LF;
   d += 'American Select !' + LF;
   d += LF + LF + LF;
+
+  d += ESC + 'E\x00';          // bold off before cut
 
   // ── Partial cut ───────────────────────────────────────────
   d += GS + 'V\x42\x05';
