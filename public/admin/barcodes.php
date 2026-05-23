@@ -538,6 +538,8 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
 
 <!-- JsBarcode library -->
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<!-- QR code library for PNG export -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <!-- JSZip for PNG export -->
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
@@ -863,56 +865,56 @@ async function exportPNG() {
   if (!labels.length) return;
   showToast('Generating PNGs…', 'ok');
 
-  // 2"×1" landscape at 300 DPI = 600×300px (higher DPI = thicker bars = more scannable)
-  const W = 600, H = 300;
+  // Square label: 400×400px — QR code + name + brand
+  // QR codes tolerate scaling/printing imperfections (30% error correction)
+  const W = 400, H = 400;
   const zip = labels.length > 1 ? new JSZip() : null;
-  const pad = 10;
 
   for (let i = 0; i < labels.length; i++) {
     const { barcode, name } = labels[i];
 
-    // Render barcode to SVG
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    document.body.appendChild(svg);
-    JsBarcode(svg, barcode, {
-      format: 'CODE128', width: 3, height: 80,
-      displayValue: true, fontSize: 14, margin: 8,
-      background: '#ffffff', lineColor: '#000000'
+    // Generate QR code to a temp canvas
+    const qrCanvas = document.createElement('canvas');
+    await QRCode.toCanvas(qrCanvas, barcode, {
+      width: 300, margin: 2,
+      errorCorrectionLevel: 'H', // highest error correction
+      color: { dark: '#000000', light: '#ffffff' }
     });
-    const svgData = new XMLSerializer().serializeToString(svg);
-    document.body.removeChild(svg);
 
-    // Draw label on canvas
+    // Draw full label on main canvas
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, W, H);
 
-    // Barcode centered
-    await new Promise(resolve => {
-      const img = new Image();
-      img.onload = () => { ctx.drawImage(img, pad, 5, W - pad * 2, 145); resolve(); };
-      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
-    });
-
-    // Product name
+    // Brand at top
     ctx.fillStyle = '#000';
-    ctx.font = '11px Arial';
+    ctx.font = 'bold 22px Arial';
     ctx.textAlign = 'center';
+    ctx.fillText('AMERICAN SELECT', W / 2, 32);
+
+    // QR code centered
+    const qrSize = 260;
+    const qrX = (W - qrSize) / 2;
+    ctx.drawImage(qrCanvas, qrX, 44, qrSize, qrSize);
+
+    // Barcode value below QR
+    ctx.font = '14px monospace';
+    ctx.fillStyle = '#333';
+    ctx.fillText(barcode, W / 2, 322);
+
+    // Product name (wrapped)
+    ctx.font = '15px Arial';
+    ctx.fillStyle = '#000';
     const words = name.split(' ');
-    let line = '', y = 162;
+    let line = '', y = 350;
     for (const word of words) {
       const test = line ? line + ' ' + word : word;
-      if (ctx.measureText(test).width > W - 20) { ctx.fillText(line, W/2, y); y += 14; line = word; }
+      if (ctx.measureText(test).width > W - 20) { ctx.fillText(line, W/2, y); y += 20; line = word; }
       else line = test;
     }
     if (line) ctx.fillText(line, W/2, y);
-
-    // Brand bottom
-    ctx.font = 'bold 10px Arial';
-    ctx.fillStyle = '#555';
-    ctx.fillText('AMERICAN SELECT', W/2, 196);
 
     const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
     const fname = (i+1) + '_' + name.replace(/[^a-z0-9]/gi, '_').slice(0, 30) + '.png';
