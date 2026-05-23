@@ -421,7 +421,7 @@ function fmt_price($n) {
   <style id="page-size-style">
     @page { size: A4; margin: 10mm; }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body class="mode-sheet">
 
@@ -429,7 +429,7 @@ function fmt_price($n) {
   <h1>Price Tags</h1>
   <div class="header-actions">
     <button class="btn btn-gold no-print" id="print-btn" onclick="printSelected()">Print Selected</button>
-    <button class="btn btn-outline no-print" id="pdf-btn" onclick="downloadPDF()" style="color:#7b9fd4;border-color:#1a2a40;">⬇ Download PDF</button>
+    <button class="btn btn-outline no-print" id="pdf-btn" onclick="downloadPNGs()" style="color:#7b9fd4;border-color:#1a2a40;">⬇ Download Labels (PNG)</button>
     <a href="dashboard.php" class="btn btn-outline no-print">Dashboard</a>
     <a href="logout.php" class="btn btn-danger no-print">Logout</a>
   </div>
@@ -545,8 +545,8 @@ function printSelected() {
 
 updateCount();
 
-// ── Download PDF for Munbyn label printing ──────────────
-function downloadPDF() {
+// ── Download PNG labels for Munbyn app import ──────────
+async function downloadPNGs() {
   const selected = [...document.querySelectorAll('.tag-card.selected')];
   if (selected.length === 0) { alert('Select at least one product first.'); return; }
 
@@ -554,55 +554,108 @@ function downloadPDF() {
   btn.textContent = '⏳ Generating…';
   btn.disabled = true;
 
+  const DPI = 203; // Munbyn ITPP130 resolution
   const mode = currentMode;
-  // Label dimensions in mm
-  const W = mode === '3x2' ? 76 : 25;
-  const H = mode === '3x2' ? 51 : 51;
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: [W, H], orientation: 'portrait' });
+  // Label size in pixels at 203 DPI
+  const PW = mode === '3x2' ? Math.round(3 * DPI) : Math.round(1 * DPI); // 609 or 203
+  const PH = mode === '3x2' ? Math.round(2 * DPI) : Math.round(2 * DPI); // 406 or 406
 
-  selected.forEach((card, i) => {
-    if (i > 0) doc.addPage([W, H]);
+  const canvas = document.createElement('canvas');
+  canvas.width = PW;
+  canvas.height = PH;
+  const ctx = canvas.getContext('2d');
 
-    const price = card.querySelector('.tag-price')?.textContent?.trim() || '';
-    const name  = card.querySelector('.tag-name')?.textContent?.trim() || '';
-    const store = 'AMERICAN SELECT';
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    let lines = [];
+    for (const word of words) {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else { line = test; }
+    }
+    if (line) lines.push(line);
+    lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+    return lines.length;
+  }
+
+  function drawLabel(price, name) {
+    ctx.clearRect(0, 0, PW, PH);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, PW, PH);
+
+    const pad = Math.round(0.08 * DPI); // ~8% of inch padding
 
     if (mode === '3x2') {
-      // 3×2: name top, price middle, store bottom
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
-      const nameLines = doc.splitTextToSize(name, 66);
-      doc.text(nameLines, 5, 8);
+      // Name at top
+      ctx.fillStyle = '#000';
+      ctx.font = `bold ${Math.round(0.1 * DPI)}px Arial`;
+      const nameLines = wrapText(ctx, name, pad, Math.round(0.2 * DPI), PW - pad * 2, Math.round(0.13 * DPI));
 
-      doc.setFontSize(22);
-      doc.text(price, 5, 32);
+      // Price in middle
+      ctx.font = `bold ${Math.round(0.28 * DPI)}px Arial`;
+      ctx.fillText(price, pad, Math.round(0.7 * DPI));
 
-      doc.setDrawColor(180); doc.setLineWidth(0.3);
-      doc.line(5, 39, 71, 39);
+      // Divider
+      ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad, Math.round(0.78 * DPI)); ctx.lineTo(PW - pad, Math.round(0.78 * DPI)); ctx.stroke();
 
-      doc.setFontSize(6); doc.setFont('helvetica', 'normal');
-      doc.text(store, 5, 43);
+      // Store
+      ctx.font = `${Math.round(0.07 * DPI)}px Arial`;
+      ctx.fillStyle = '#555';
+      ctx.fillText('AMERICAN SELECT', pad, Math.round(0.88 * DPI));
     } else {
-      // 2×1 portrait: price top, name middle, store bottom
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
-      doc.text(price, W / 2, 14, { align: 'center' });
+      // 2×1: price centered top, name below, store bottom
+      ctx.fillStyle = '#000';
+      ctx.font = `bold ${Math.round(0.2 * DPI)}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.fillText(price, PW / 2, Math.round(0.3 * DPI));
 
-      doc.setFontSize(6);
-      const nameLines = doc.splitTextToSize(name, W - 4);
-      doc.text(nameLines.slice(0, 4), 2, 24);
+      ctx.font = `bold ${Math.round(0.075 * DPI)}px Arial`;
+      ctx.textAlign = 'left';
+      wrapText(ctx, name, pad, Math.round(0.45 * DPI), PW - pad * 2, Math.round(0.11 * DPI));
 
-      doc.setFontSize(4.5); doc.setFont('helvetica', 'normal');
-      doc.text(store, W / 2, 47, { align: 'center' });
+      ctx.font = `${Math.round(0.06 * DPI)}px Arial`;
+      ctx.fillStyle = '#777';
+      ctx.textAlign = 'center';
+      ctx.fillText('AMERICAN SELECT', PW / 2, Math.round(0.92 * DPI));
     }
-  });
+    ctx.textAlign = 'left';
+  }
 
-  const filename = 'price-tags-' + mode + '-' + selected.length + 'labels.pdf';
-  doc.save(filename);
+  // Single label — direct download
+  if (selected.length === 1) {
+    const card = selected[0];
+    const price = card.querySelector('.tag-price')?.textContent?.trim() || '';
+    const name  = card.querySelector('.tag-name')?.textContent?.trim() || '';
+    drawLabel(price, name);
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'label-' + name.substring(0, 30).replace(/[^a-z0-9]/gi, '_') + '.png';
+    a.click();
+  } else {
+    // Multiple labels — zip them
+    const zip = new JSZip();
+    for (let i = 0; i < selected.length; i++) {
+      const card = selected[i];
+      const price = card.querySelector('.tag-price')?.textContent?.trim() || '';
+      const name  = card.querySelector('.tag-name')?.textContent?.trim() || '';
+      drawLabel(price, name);
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+      const fname = (i + 1) + '-' + name.substring(0, 25).replace(/[^a-z0-9]/gi, '_') + '.png';
+      zip.file(fname, blob);
+    }
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zipBlob);
+    a.download = 'labels-' + selected.length + '.zip';
+    a.click();
+  }
 
-  btn.textContent = '⬇ Download PDF';
+  btn.textContent = '⬇ Download Labels (PNG)';
   btn.disabled = false;
 }
 </script>
