@@ -15,6 +15,31 @@
     "price": 3000
   },
   {
+    "name": "1-Gallon Slider Zipper Storage Bags, Freezer & Dishwasher Safe",
+    "quantity": 20,
+    "price": 0
+  },
+  {
+    "name": "2.5-Gallon Slider Zipper Storage Bags, Extra Large Freezer Bags",
+    "quantity": 20,
+    "price": 0
+  },
+  {
+    "name": "Quart Slider Zipper Storage Bags, Freezer & Sandwich Bags",
+    "quantity": 20,
+    "price": 0
+  },
+  {
+    "name": "Air Tight Food Storage Container with Lid, 550ml",
+    "quantity": 10,
+    "price": 0
+  },
+  {
+    "name": "Air Tight Food Storage Container with Lid, 650ml",
+    "quantity": 10,
+    "price": 0
+  },
+  {
     "name": "Manual Food Chopper, Pull String Vegetable and Meat Mincer with Clear Container, Hand-Powered Kitchen Processor",
     "quantity": 11,
     "price": 8000
@@ -200,9 +225,9 @@
     "price": 10000
   },
   {
-    "name": "Aveeno Daily Moisturizing Body Lotion 18oz",
-    "quantity": 5,
-    "price": 6000
+    "name": "Aveeno Daily Moisture Lotion, 24 fl oz",
+    "quantity": 6,
+    "price": 12300
   },
   {
     "name": "Jergens Hydrating Coconut Body Lotion, Hand and Body Moisturizer, Infused with Coconut Oil",
@@ -335,6 +360,16 @@
     "price": 10000
   },
   {
+    "name": "Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Cream for Dry to Very Dry, Sensitive Skin, 16 oz, Fragrance Free",
+    "quantity": 3,
+    "price": 10500
+  },
+  {
+    "name": "Cetaphil Face & Body Moisturizer, Hydrating Moisturizing Cream for Dry to Very Dry, Sensitive Skin, 20 oz, Fragrance Free",
+    "quantity": 3,
+    "price": 12900
+  },
+  {
     "name": "CeraVe Daily Moisturizing Face & Body Lotion for Normal to Dry Skin",
     "quantity": 4,
     "price": 10000
@@ -363,6 +398,11 @@
     "name": "Crest Pro-Health Advanced Mouthwash",
     "quantity": 9,
     "price": 4000
+  },
+  {
+    "name": "Crest Complete Toothpaste",
+    "quantity": 10,
+    "price": 0
   },
   {
     "name": "Nair Body Cream, Hair Removal Cream",
@@ -525,6 +565,21 @@
     "price": 15000
   },
   {
+    "name": "O-Cedar EasyWring Microfiber Spin Mop & Bucket Floor Cleaning System",
+    "quantity": 3,
+    "price": 0
+  },
+  {
+    "name": "Mop Head Replacements for O-Cedar EasyWring Spin Mop, Microfiber Refills",
+    "quantity": 4,
+    "price": 0
+  },
+  {
+    "name": "Grabber Reacher Tool – Foldable Litter Picker with 360° Rotating Jaw & Magnet, Mobility Aid",
+    "quantity": 6,
+    "price": 0
+  },
+  {
     "name": "Smart Watch Compatible with iPhone & Android Devices (Pink)",
     "quantity": 2,
     "price": 5000
@@ -648,6 +703,11 @@
     "name": "YISSVIC Rechargeable Electric Fly Swatter Foldable Bug Zapper",
     "quantity": 6,
     "price": 10000
+  },
+  {
+    "name": "YISSVIC Electric Fly Swatter Bug Zapper Racket, Dual Modes with UV Mosquito Light, Rechargeable",
+    "quantity": 4,
+    "price": 0
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Green)",

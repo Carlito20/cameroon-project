@@ -49,11 +49,16 @@ if ($method === 'GET' && $action === 'all') {
     exit;
 }
 
-// POST — requires session auth
+// POST — requires admin role
 if ($method === 'POST') {
     if (empty($_SESSION['admin_logged_in'])) {
         http_response_code(401);
         echo json_encode(['error' => 'Not authenticated']);
+        exit;
+    }
+    if (($_SESSION['admin_role'] ?? '') !== 'admin') {
+        http_response_code(403);
+        echo json_encode(['error' => 'Admin access required']);
         exit;
     }
 

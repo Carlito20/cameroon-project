@@ -43,6 +43,11 @@ if ($method === 'POST') {
         echo json_encode(['error' => 'Not authenticated']);
         exit;
     }
+    if (($_SESSION['admin_role'] ?? '') !== 'admin') {
+        http_response_code(403);
+        echo json_encode(['error' => 'Admin access required']);
+        exit;
+    }
 
     $body = json_decode(file_get_contents('php://input'), true);
     $action = $body['action'] ?? 'save';

@@ -7,6 +7,7 @@
     "start": "astro dev",
     "watermark": "node scripts/add-watermark-all.mjs",
     "remove-bg": "node scripts/remove-backgrounds.mjs",
+    "remove-bg-today": "node scripts/remove-bg-today.mjs",
     "reprocess-bg": "node scripts/reprocess-backgrounds.mjs",
     "update-refs": "node scripts/update-image-refs.mjs",
     "convert-webp": "node scripts/convert-png-to-webp.mjs",
