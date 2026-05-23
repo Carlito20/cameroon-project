@@ -858,43 +858,57 @@ async function renderLabel(barcode, name) {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, W, H);
 
-  ctx.fillStyle = '#111';
-  ctx.font = 'bold 50px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('AMERICAN SELECT', W / 2, 58);
+  // ── Product name — big, top of label ──────────────────
+  ctx.fillStyle = '#000';
+  ctx.font = 'bold 64px Arial';
+  ctx.textAlign = 'left';
+  const words = name.split(' ');
+  let line = '', lines = [];
+  for (const word of words) {
+    const test = line ? line + ' ' + word : word;
+    if (ctx.measureText(test).width > W - 80 && line) {
+      lines.push(line); line = word;
+      if (lines.length >= 2) { lines[1] += (lines[1] ? ' ' : '') + word; break; }
+    } else line = test;
+  }
+  if (line && lines.length < 2) lines.push(line);
+  lines.slice(0, 2).forEach((l, i) => ctx.fillText(l, 40, 74 + i * 76));
 
-  // Divider
+  // Divider below name
+  const divY = lines.length === 1 ? 108 : 182;
   ctx.strokeStyle = '#bbb'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(40, 76); ctx.lineTo(W - 40, 76); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(40, divY); ctx.lineTo(W - 40, divY); ctx.stroke();
 
+  // ── Barcode ───────────────────────────────────────────
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   document.body.appendChild(svg);
   JsBarcode(svg, barcode, {
-    format: 'CODE128', width: 4, height: 250,
+    format: 'CODE128', width: 4, height: 210,
     displayValue: true, fontSize: 28, margin: 4,
     background: '#ffffff', lineColor: '#000000'
   });
   const svgData = new XMLSerializer().serializeToString(svg);
   document.body.removeChild(svg);
 
-  // Barcode shifted down and vertically centered
+  const barcodeTop = divY + 14;
   await new Promise(resolve => {
     const img = new Image();
-    img.onload = () => { ctx.drawImage(img, 20, 110, W - 40, 360); resolve(); };
+    img.onload = () => { ctx.drawImage(img, 20, barcodeTop, W - 40, 480 - barcodeTop); resolve(); };
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   });
 
-  ctx.font = 'bold 24px Arial';
-  ctx.fillStyle = '#333';
+  // ── American Select footer ────────────────────────────
+  ctx.strokeStyle = '#bbb';
+  ctx.beginPath(); ctx.moveTo(40, 488); ctx.lineTo(W - 40, 488); ctx.stroke();
+
+  ctx.font = 'bold 44px Arial';
+  ctx.fillStyle = '#111';
   ctx.textAlign = 'center';
-  const words = name.split(' ');
-  let line = '', y = 498;
-  for (const word of words) {
-    const test = line ? line + ' ' + word : word;
-    if (ctx.measureText(test).width > W - 40) { ctx.fillText(line, W / 2, y); y += 30; line = word; }
-    else line = test;
-  }
-  if (line && y <= 590) ctx.fillText(line, W / 2, y);
+  ctx.fillText('American Select', W / 2, 544);
+
+  ctx.font = '26px Arial';
+  ctx.fillStyle = '#777';
+  ctx.fillText('americanselect.net', W / 2, 582);
 
   return canvas.toDataURL('image/png');
 }
