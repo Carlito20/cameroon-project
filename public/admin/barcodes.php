@@ -376,6 +376,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
   <div><h1>AMERICAN SELECT</h1><span>Barcode Labels</span></div>
   <div class="header-btns">
     <a href="dashboard.php" class="back-btn">← Dashboard</a>
+    <button class="btn-print-all" onclick="exportPNG()" style="background:#0d1a2e;color:#7b9fd4;border:1px solid #1a2a50;">⬇ Download PNG</button>
     <?php if ($isAdmin): ?>
     <button class="btn-print-all" onclick="openQuickScan()" style="background:#1a2a40;color:#7b9fd4;border:1px solid #2a3a60;">📷 Quick Scan</button>
     <?php endif; ?>
@@ -474,6 +475,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     <button class="action-btn action-btn-scan" id="btn-scan-assign" onclick="openScanModal()">📷 &nbsp;Scan to Assign Barcode</button>
     <?php endif; ?>
     <button class="action-btn action-btn-print" onclick="printSelected()">🖨 &nbsp;Print Labels</button>
+    <button class="action-btn" style="background:#0d1a2e;color:#7b9fd4;border:1px solid #1a2a50;" onclick="exportPNG()">⬇ &nbsp;Download PNG (Munbyn app)</button>
     <?php if ($isAdmin): ?>
     <button class="action-btn action-btn-generate" id="btn-bulk-generate" onclick="generateSelected()">⚡ &nbsp;Generate Barcodes</button>
     <?php endif; ?>
@@ -843,87 +845,97 @@ async function generateSelected() {
   setTimeout(() => location.reload(), 600);
 }
 
-// ── Export selected labels as PNG images in a ZIP ────────
+// ── Export selected labels as PNG images ─────────────────
 async function exportPNG() {
   const checked = [...document.querySelectorAll('.pr-check:checked')];
-  if (!checked.length) return;
+  if (!checked.length) { showToast('Select products first', 'err'); return; }
 
   const labels = [];
   checked.forEach(cb => {
     const row = cb.closest('.product-row');
-    const qty = parseInt(row.querySelector('.qty-input').value, 10) || 1;
+    const qty = parseInt(row.querySelector('.qty-input')?.value || 1, 10) || 1;
     const name = cb.dataset.name;
     const barcode = cb.dataset.barcode;
-    if (!barcode) { showToast('Generate barcodes first for all selected items', 'err'); return; }
+    if (!barcode) { showToast('Generate barcodes first for: ' + name.substring(0,25), 'err'); return; }
     for (let i = 0; i < qty; i++) labels.push({ barcode, name });
   });
 
   if (!labels.length) return;
-  showToast('Generating PNG images…', 'ok');
+  showToast('Generating PNGs…', 'ok');
 
-  // 40×30mm at 203 DPI = 320×240px
-  const W = 320, H = 240;
-  const zip = new JSZip();
+  // 2"×1" landscape at 203 DPI = 406×203px
+  const W = 406, H = 203;
+  const zip = labels.length > 1 ? new JSZip() : null;
+  const pad = 10;
 
   for (let i = 0; i < labels.length; i++) {
     const { barcode, name } = labels[i];
 
-    // Render barcode SVG
+    // Render barcode to SVG
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     document.body.appendChild(svg);
-    JsBarcode(svg, barcode, { format: 'CODE128', width: 1.5, height: 80, displayValue: true, fontSize: 14, margin: 4 });
+    JsBarcode(svg, barcode, {
+      format: 'CODE128', width: 1.8, height: 70,
+      displayValue: true, fontSize: 13, margin: 3,
+      background: '#ffffff', lineColor: '#000000'
+    });
     const svgData = new XMLSerializer().serializeToString(svg);
     document.body.removeChild(svg);
 
-    // Draw on canvas
+    // Draw label on canvas
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, W, H);
 
-    // Brand text
-    ctx.fillStyle = '#000000';
-    ctx.font = 'bold 18px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('AMERICAN SELECT', W / 2, 22);
-
-    // Barcode image from SVG
+    // Barcode centered
     await new Promise(resolve => {
       const img = new Image();
-      img.onload = () => {
-        ctx.drawImage(img, 10, 28, W - 20, 150);
-        resolve();
-      };
+      img.onload = () => { ctx.drawImage(img, pad, 5, W - pad * 2, 145); resolve(); };
       img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
     });
 
-    // Product name (wrapped)
-    ctx.font = '13px Arial';
-    ctx.fillStyle = '#000000';
+    // Product name
+    ctx.fillStyle = '#000';
+    ctx.font = '11px Arial';
     ctx.textAlign = 'center';
     const words = name.split(' ');
-    let line = '', y = 192;
+    let line = '', y = 162;
     for (const word of words) {
       const test = line ? line + ' ' + word : word;
-      if (ctx.measureText(test).width > W - 16) {
-        ctx.fillText(line, W / 2, y); y += 16; line = word;
-      } else { line = test; }
+      if (ctx.measureText(test).width > W - 20) { ctx.fillText(line, W/2, y); y += 14; line = word; }
+      else line = test;
     }
-    if (line) ctx.fillText(line, W / 2, y);
+    if (line) ctx.fillText(line, W/2, y);
 
-    // Add to zip
+    // Brand bottom
+    ctx.font = 'bold 10px Arial';
+    ctx.fillStyle = '#555';
+    ctx.fillText('AMERICAN SELECT', W/2, 196);
+
     const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-    const filename = name.replace(/[^a-z0-9]/gi, '_').slice(0, 40) + (labels.length > 1 ? `_${i+1}` : '') + '.png';
-    zip.file(filename, blob);
+    const fname = (i+1) + '_' + name.replace(/[^a-z0-9]/gi, '_').slice(0, 30) + '.png';
+
+    if (zip) {
+      zip.file(fname, blob);
+    } else {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fname;
+      a.click();
+    }
   }
 
-  const zipBlob = await zip.generateAsync({ type: 'blob' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(zipBlob);
-  a.download = 'barcode-labels.zip';
-  a.click();
-  showToast('✓ PNG labels exported', 'ok');
+  if (zip) {
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zipBlob);
+    a.download = 'barcode-labels-' + labels.length + '.zip';
+    a.click();
+  }
+
+  showToast('✓ ' + labels.length + ' PNG label' + (labels.length > 1 ? 's' : '') + ' downloaded', 'ok');
 }
 
 // ── Scan-to-assign modal ──────────────────────────────────
