@@ -937,7 +937,8 @@ async function printReceiptThermal() {
   d += LF;
   d += GS + '!\x11';           // double width + height
   d += 'AMERICAN SELECT' + LF;
-  d += GS + '!\x00';           // normal size (bold still on)
+  d += GS + '!\x00';           // normal size
+  d += ESC + 'E\x01';          // re-assert bold (GS! reset clears it on some printers)
   d += LF;
   d += 'Quality Imports from USA & Canada' + LF;
   d += 'americanselect.net' + LF;
@@ -957,9 +958,10 @@ async function printReceiptThermal() {
     const line = item.price * item.qty;
     total += line;
     const name = item.name.length > W ? item.name.substring(0, W - 1) + '~' : item.name;
-    d += GS + '!\x01';          // double height for item name (bold already on)
+    d += GS + '!\x01';          // double height for item name
     d += name + LF;
     d += GS + '!\x00';          // normal height
+    d += ESC + 'E\x01';         // re-assert bold
     const meta = '  x' + item.qty + ' @ ' + (item.price ? item.price.toLocaleString() + ' FCFA' : '--');
     const amt  = item.price ? fmt(line) : '--';
     d += padLine(meta, amt) + LF;
@@ -971,6 +973,7 @@ async function printReceiptThermal() {
   d += GS + '!\x01';           // double height only (keeps 48-char width)
   d += padLine('  TOTAL', fmt(total)) + LF;
   d += GS + '!\x00';           // normal
+  d += ESC + 'E\x01';          // re-assert bold
   d += LF;
   d += padLine('Payment:', selectedPayment) + LF;
 
