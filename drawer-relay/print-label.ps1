@@ -23,13 +23,10 @@ try {
     $captured = $img
     $pd.add_PrintPage({
         param($s, $e)
-        # Convert page bounds (1/100 inch) to device pixels using actual printer DPI
-        # so the canvas fills the full label regardless of printer DPI (203, 300, etc.)
-        $dpiX = $e.Graphics.DpiX
-        $dpiY = $e.Graphics.DpiY
-        $pageW = [float]($e.PageBounds.Width  * $dpiX / 100.0)
-        $pageH = [float]($e.PageBounds.Height * $dpiY / 100.0)
-        $dst = New-Object System.Drawing.RectangleF(0, 0, $pageW, $pageH)
+        # dst width=200 fills the full 3" label width at this printer's DPI.
+        # dst height=133 = 200 * (2/3) preserves the 3:2 label aspect ratio so
+        # the full canvas height maps to the full 2" label height.
+        $dst = New-Object System.Drawing.RectangleF(0, 0, 200, 133)
         $src = New-Object System.Drawing.RectangleF(0, 0, $captured.Width, $captured.Height)
         $e.Graphics.DrawImage($captured, $dst, $src, [System.Drawing.GraphicsUnit]::Pixel)
         $e.HasMorePages = $false
