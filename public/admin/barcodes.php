@@ -865,56 +865,55 @@ async function exportPNG() {
   if (!labels.length) return;
   showToast('Generating PNGs…', 'ok');
 
-  // Square label: 400×400px — QR code + name + brand
-  // QR codes tolerate scaling/printing imperfections (30% error correction)
-  const W = 400, H = 400;
+  // Exact Munbyn 2"×1" at 203 DPI = 406×203px — import at 100% in Munbyn app, no scaling
+  const W = 406, H = 203;
   const zip = labels.length > 1 ? new JSZip() : null;
 
   for (let i = 0; i < labels.length; i++) {
     const { barcode, name } = labels[i];
 
-    // Generate QR code to a temp canvas
-    const qrCanvas = document.createElement('canvas');
-    await QRCode.toCanvas(qrCanvas, barcode, {
-      width: 300, margin: 2,
-      errorCorrectionLevel: 'H', // highest error correction
-      color: { dark: '#000000', light: '#ffffff' }
-    });
-
-    // Draw full label on main canvas
+    // Draw label canvas
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, W, H);
 
-    // Brand at top
+    // Brand top
     ctx.fillStyle = '#000';
-    ctx.font = 'bold 22px Arial';
+    ctx.font = 'bold 13px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('AMERICAN SELECT', W / 2, 32);
+    ctx.fillText('AMERICAN SELECT', W / 2, 14);
 
-    // QR code centered
-    const qrSize = 260;
-    const qrX = (W - qrSize) / 2;
-    ctx.drawImage(qrCanvas, qrX, 44, qrSize, qrSize);
+    // Render CODE128 barcode to SVG then draw on canvas
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    JsBarcode(svg, barcode, {
+      format: 'CODE128', width: 2, height: 100,
+      displayValue: true, fontSize: 14, margin: 2,
+      background: '#ffffff', lineColor: '#000000'
+    });
+    const svgData = new XMLSerializer().serializeToString(svg);
+    document.body.removeChild(svg);
 
-    // Barcode value below QR
-    ctx.font = '14px monospace';
-    ctx.fillStyle = '#333';
-    ctx.fillText(barcode, W / 2, 322);
+    await new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => { ctx.drawImage(img, 5, 18, W - 10, 155); resolve(); };
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    });
 
-    // Product name (wrapped)
-    ctx.font = '15px Arial';
+    // Product name
+    ctx.font = '10px Arial';
     ctx.fillStyle = '#000';
+    ctx.textAlign = 'center';
     const words = name.split(' ');
-    let line = '', y = 350;
+    let line = '', y = 183;
     for (const word of words) {
       const test = line ? line + ' ' + word : word;
-      if (ctx.measureText(test).width > W - 20) { ctx.fillText(line, W/2, y); y += 20; line = word; }
+      if (ctx.measureText(test).width > W - 10) { ctx.fillText(line, W/2, y); y += 12; line = word; }
       else line = test;
     }
-    if (line) ctx.fillText(line, W/2, y);
+    if (line && y <= 200) ctx.fillText(line, W/2, y);
 
     const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
     const fname = (i+1) + '_' + name.replace(/[^a-z0-9]/gi, '_').slice(0, 30) + '.png';
