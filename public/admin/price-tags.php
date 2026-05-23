@@ -421,6 +421,7 @@ function fmt_price($n) {
   <style id="page-size-style">
     @page { size: A4; margin: 10mm; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
 <body class="mode-sheet">
 
@@ -428,6 +429,7 @@ function fmt_price($n) {
   <h1>Price Tags</h1>
   <div class="header-actions">
     <button class="btn btn-gold no-print" id="print-btn" onclick="printSelected()">Print Selected</button>
+    <button class="btn btn-outline no-print" id="pdf-btn" onclick="downloadPDF()" style="color:#7b9fd4;border-color:#1a2a40;">⬇ Download PDF</button>
     <a href="dashboard.php" class="btn btn-outline no-print">Dashboard</a>
     <a href="logout.php" class="btn btn-danger no-print">Logout</a>
   </div>
@@ -542,6 +544,67 @@ function printSelected() {
 }
 
 updateCount();
+
+// ── Download PDF for Munbyn label printing ──────────────
+function downloadPDF() {
+  const selected = [...document.querySelectorAll('.tag-card.selected')];
+  if (selected.length === 0) { alert('Select at least one product first.'); return; }
+
+  const btn = document.getElementById('pdf-btn');
+  btn.textContent = '⏳ Generating…';
+  btn.disabled = true;
+
+  const mode = currentMode;
+  // Label dimensions in mm
+  const W = mode === '3x2' ? 76 : 25;
+  const H = mode === '3x2' ? 51 : 51;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: [W, H], orientation: 'portrait' });
+
+  selected.forEach((card, i) => {
+    if (i > 0) doc.addPage([W, H]);
+
+    const price = card.querySelector('.tag-price')?.textContent?.trim() || '';
+    const name  = card.querySelector('.tag-name')?.textContent?.trim() || '';
+    const store = 'AMERICAN SELECT';
+
+    if (mode === '3x2') {
+      // 3×2: name top, price middle, store bottom
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      const nameLines = doc.splitTextToSize(name, 66);
+      doc.text(nameLines, 5, 8);
+
+      doc.setFontSize(22);
+      doc.text(price, 5, 32);
+
+      doc.setDrawColor(180); doc.setLineWidth(0.3);
+      doc.line(5, 39, 71, 39);
+
+      doc.setFontSize(6); doc.setFont('helvetica', 'normal');
+      doc.text(store, 5, 43);
+    } else {
+      // 2×1 portrait: price top, name middle, store bottom
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.text(price, W / 2, 14, { align: 'center' });
+
+      doc.setFontSize(6);
+      const nameLines = doc.splitTextToSize(name, W - 4);
+      doc.text(nameLines.slice(0, 4), 2, 24);
+
+      doc.setFontSize(4.5); doc.setFont('helvetica', 'normal');
+      doc.text(store, W / 2, 47, { align: 'center' });
+    }
+  });
+
+  const filename = 'price-tags-' + mode + '-' + selected.length + 'labels.pdf';
+  doc.save(filename);
+
+  btn.textContent = '⬇ Download PDF';
+  btn.disabled = false;
+}
 </script>
 </body>
 </html>
