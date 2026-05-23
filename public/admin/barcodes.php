@@ -849,47 +849,52 @@ async function generateSelected() {
   setTimeout(() => location.reload(), 600);
 }
 
-// ── Render one label to a base64 PNG (408×203px @ 203 DPI) ─
+// ── Render one label to a base64 PNG (900×600px = 3"×2" @ 300 DPI) ─
 async function renderLabel(barcode, name) {
-  const W = 408, H = 203;
+  const W = 900, H = 600;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, W, H);
 
-  ctx.fillStyle = '#000';
-  ctx.font = 'bold 13px Arial';
+  ctx.fillStyle = '#111';
+  ctx.font = 'bold 50px Arial';
   ctx.textAlign = 'center';
-  ctx.fillText('AMERICAN SELECT', W / 2, 14);
+  ctx.fillText('AMERICAN SELECT', W / 2, 58);
+
+  // Divider
+  ctx.strokeStyle = '#bbb'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(40, 76); ctx.lineTo(W - 40, 76); ctx.stroke();
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   document.body.appendChild(svg);
   JsBarcode(svg, barcode, {
-    format: 'CODE128', width: 2, height: 100,
-    displayValue: true, fontSize: 14, margin: 2,
+    format: 'CODE128', width: 4, height: 250,
+    displayValue: true, fontSize: 28, margin: 4,
     background: '#ffffff', lineColor: '#000000'
   });
   const svgData = new XMLSerializer().serializeToString(svg);
   document.body.removeChild(svg);
 
+  // Barcode shifted down and vertically centered
   await new Promise(resolve => {
     const img = new Image();
-    img.onload = () => { ctx.drawImage(img, 5, 18, W - 10, 155); resolve(); };
+    img.onload = () => { ctx.drawImage(img, 20, 110, W - 40, 360); resolve(); };
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   });
 
-  ctx.font = '10px Arial';
-  ctx.fillStyle = '#000';
+  ctx.font = 'bold 24px Arial';
+  ctx.fillStyle = '#333';
   ctx.textAlign = 'center';
   const words = name.split(' ');
-  let line = '', y = 183;
+  let line = '', y = 498;
   for (const word of words) {
     const test = line ? line + ' ' + word : word;
-    if (ctx.measureText(test).width > W - 10) { ctx.fillText(line, W / 2, y); y += 12; line = word; }
+    if (ctx.measureText(test).width > W - 40) { ctx.fillText(line, W / 2, y); y += 30; line = word; }
     else line = test;
   }
-  if (line && y <= 200) ctx.fillText(line, W / 2, y);
+  if (line && y <= 590) ctx.fillText(line, W / 2, y);
 
   return canvas.toDataURL('image/png');
 }

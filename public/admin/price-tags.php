@@ -695,37 +695,42 @@ async function printToMunbyn() {
     ctx.fillRect(0, 0, W, H);
     const pad = 48;
 
-    // Store name at top
-    ctx.fillStyle = '#555';
-    ctx.font = 'bold 28px Arial';
+    // Store name at top — bigger and darker
+    ctx.fillStyle = '#111';
+    ctx.font = 'bold 46px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('AMERICAN SELECT', W / 2, 48);
+    ctx.fillText('AMERICAN SELECT', W / 2, 60);
 
     // Top rule
-    ctx.strokeStyle = '#ccc'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(pad, 64); ctx.lineTo(W - pad, 64); ctx.stroke();
+    ctx.strokeStyle = '#999'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(pad, 80); ctx.lineTo(W - pad, 80); ctx.stroke();
 
-    // Product name — up to 3 lines
+    // Product name — moved down for breathing room
     ctx.fillStyle = '#000';
     ctx.font = 'bold 40px Arial';
     ctx.textAlign = 'left';
     const nameLines = wrapLines(name, W - pad * 2).slice(0, 3);
-    nameLines.forEach((l, i) => ctx.fillText(l, pad, 118 + i * 54));
+    nameLines.forEach((l, i) => ctx.fillText(l, pad, 190 + i * 54));
 
     // Price — large, centered
-    ctx.font = 'bold 130px Arial';
+    ctx.font = 'bold 128px Arial';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#000';
-    ctx.fillText(price, W / 2, 460);
+    ctx.fillText(price, W / 2, 440);
 
     // Bottom rule
-    ctx.strokeStyle = '#ccc';
-    ctx.beginPath(); ctx.moveTo(pad, 486); ctx.lineTo(W - pad, 486); ctx.stroke();
+    ctx.strokeStyle = '#bbb';
+    ctx.beginPath(); ctx.moveTo(pad, 468); ctx.lineTo(W - pad, 468); ctx.stroke();
+
+    // Branding footer — bold and visible
+    ctx.font = 'bold 38px Arial';
+    ctx.fillStyle = '#222';
+    ctx.fillText('American Select', W / 2, 522);
 
     // Website
-    ctx.font = '26px Arial';
+    ctx.font = '24px Arial';
     ctx.fillStyle = '#888';
-    ctx.fillText('americanselect.net', W / 2, 545);
+    ctx.fillText('americanselect.net', W / 2, 566);
     ctx.textAlign = 'left';
   }
 
