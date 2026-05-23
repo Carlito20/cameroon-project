@@ -376,6 +376,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
   <div><h1>AMERICAN SELECT</h1><span>Barcode Labels</span></div>
   <div class="header-btns">
     <a href="dashboard.php" class="back-btn">← Dashboard</a>
+    <button class="btn-print-all" onclick="printToMunbyn()" style="background:#0d2010;color:#6dbf6d;border:1px solid #1a4020;">🖨 Print to Munbyn</button>
     <button class="btn-print-all" onclick="exportPNG()" style="background:#0d1a2e;color:#7b9fd4;border:1px solid #1a2a50;">⬇ Download PNG</button>
     <?php if ($isAdmin): ?>
     <button class="btn-print-all" onclick="openQuickScan()" style="background:#1a2a40;color:#7b9fd4;border:1px solid #2a3a60;">📷 Quick Scan</button>
@@ -474,8 +475,9 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     <?php if ($isAdmin): ?>
     <button class="action-btn action-btn-scan" id="btn-scan-assign" onclick="openScanModal()">📷 &nbsp;Scan to Assign Barcode</button>
     <?php endif; ?>
-    <button class="action-btn action-btn-print" onclick="printSelected()">🖨 &nbsp;Print Labels</button>
-    <button class="action-btn" style="background:#0d1a2e;color:#7b9fd4;border:1px solid #1a2a50;" onclick="exportPNG()">⬇ &nbsp;Download PNG (Munbyn app)</button>
+    <button class="action-btn action-btn-print" onclick="printSelected()">🖨 &nbsp;Print Labels (browser)</button>
+    <button class="action-btn" style="background:#0d2010;color:#6dbf6d;border:1px solid #1a4020;" onclick="printToMunbyn()">🖨 &nbsp;Print to Munbyn (direct)</button>
+    <button class="action-btn" style="background:#0d1a2e;color:#7b9fd4;border:1px solid #1a2a50;" onclick="exportPNG()">⬇ &nbsp;Download PNG</button>
     <?php if ($isAdmin): ?>
     <button class="action-btn action-btn-generate" id="btn-bulk-generate" onclick="generateSelected()">⚡ &nbsp;Generate Barcodes</button>
     <?php endif; ?>
@@ -845,6 +847,42 @@ async function generateSelected() {
     } catch { showToast('Network error', 'err'); }
   }
   setTimeout(() => location.reload(), 600);
+}
+
+// ── Print barcodes directly to Munbyn via relay ──────────
+async function printToMunbyn() {
+  const checked = [...document.querySelectorAll('.pr-check:checked')];
+  if (!checked.length) { showToast('Select products first', 'err'); return; }
+
+  const labels = [];
+  checked.forEach(cb => {
+    const barcode = cb.dataset.barcode;
+    const name = cb.dataset.name;
+    const qty = parseInt(cb.closest('.product-row')?.querySelector('.qty-input')?.value || 1, 10) || 1;
+    if (!barcode) { showToast('Generate barcode first for: ' + name.substring(0,20), 'err'); return; }
+    for (let i = 0; i < qty; i++) labels.push({ barcode, name });
+  });
+
+  if (!labels.length) return;
+  showToast('Sending to Munbyn printer…', 'ok');
+
+  let ok = 0, fail = 0;
+  for (const { barcode, name } of labels) {
+    try {
+      const r = await fetch('http://localhost:3099/barcode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ barcode, name })
+      });
+      const d = await r.json();
+      if (d.ok) ok++; else { fail++; showToast('Error: ' + d.error, 'err'); }
+    } catch {
+      fail++;
+      showToast('Relay not running — start DrawerRelay on this machine', 'err');
+      break;
+    }
+  }
+  if (ok > 0) showToast('✓ ' + ok + ' label' + (ok > 1 ? 's' : '') + ' sent to Munbyn', 'ok');
 }
 
 // ── Export selected labels as PNG images ─────────────────
