@@ -429,7 +429,8 @@ function fmt_price($n) {
   <h1>Price Tags</h1>
   <div class="header-actions">
     <button class="btn btn-gold no-print" id="print-btn" onclick="printSelected()">Print Selected</button>
-    <button class="btn btn-outline no-print" id="pdf-btn" onclick="downloadPNGs()" style="color:#7b9fd4;border-color:#1a2a40;">⬇ Download Labels (PNG)</button>
+    <button class="btn btn-outline no-print" id="munbyn-btn" onclick="printToMunbyn()" style="color:#6dbf6d;border-color:#1a3020;">&#9889; Print to Munbyn</button>
+    <button class="btn btn-outline no-print" id="pdf-btn" onclick="downloadPNGs()" style="color:#7b9fd4;border-color:#1a2a40;">&#11015; Download Labels (PNG)</button>
     <a href="dashboard.php" class="btn btn-outline no-print">Dashboard</a>
     <a href="logout.php" class="btn btn-danger no-print">Logout</a>
   </div>
@@ -657,6 +658,109 @@ async function downloadPNGs() {
 
   btn.textContent = '⬇ Download Labels (PNG)';
   btn.disabled = false;
+}
+
+// ── Direct print to Munbyn via relay ─────────────────────
+async function printToMunbyn() {
+  const selected = [...document.querySelectorAll('.tag-card.selected')];
+  if (selected.length === 0) { alert('Select at least one product to print.'); return; }
+
+  const btn = document.getElementById('munbyn-btn');
+  const orig = btn.textContent;
+  btn.disabled = true;
+
+  // 3"×2" at 300 DPI
+  const W = 900, H = 600;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  function wrapLines(text, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let line = '';
+    for (const word of words) {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line); line = word;
+      } else line = test;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  function drawPriceTag(price, name) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+    const pad = 48;
+
+    // Store name at top
+    ctx.fillStyle = '#555';
+    ctx.font = 'bold 28px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('AMERICAN SELECT', W / 2, 48);
+
+    // Top rule
+    ctx.strokeStyle = '#ccc'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(pad, 64); ctx.lineTo(W - pad, 64); ctx.stroke();
+
+    // Product name — up to 3 lines
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 40px Arial';
+    ctx.textAlign = 'left';
+    const nameLines = wrapLines(name, W - pad * 2).slice(0, 3);
+    nameLines.forEach((l, i) => ctx.fillText(l, pad, 118 + i * 54));
+
+    // Price — large, centered
+    ctx.font = 'bold 130px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#000';
+    ctx.fillText(price, W / 2, 460);
+
+    // Bottom rule
+    ctx.strokeStyle = '#ccc';
+    ctx.beginPath(); ctx.moveTo(pad, 486); ctx.lineTo(W - pad, 486); ctx.stroke();
+
+    // Website
+    ctx.font = '26px Arial';
+    ctx.fillStyle = '#888';
+    ctx.fillText('americanselect.net', W / 2, 545);
+    ctx.textAlign = 'left';
+  }
+
+  let printed = 0, failed = 0;
+  for (let i = 0; i < selected.length; i++) {
+    const card = selected[i];
+    const price = card.querySelector('.tag-price')?.textContent?.trim() || '';
+    const name  = card.querySelector('.tag-name')?.textContent?.trim()  || '';
+    btn.textContent = 'Printing ' + (i + 1) + '/' + selected.length + '…';
+
+    drawPriceTag(price, name);
+    const image = canvas.toDataURL('image/png');
+
+    try {
+      const r = await fetch('http://localhost:3099/barcode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image })
+      });
+      if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || r.status); }
+      printed++;
+    } catch(e) {
+      failed++;
+      console.error('Label print failed for', name, e.message);
+    }
+  }
+
+  if (failed === 0) {
+    btn.textContent = '✓ Printed ' + printed;
+    btn.style.color = '#6dbf6d';
+  } else {
+    btn.textContent = '⚠ ' + printed + ' ok, ' + failed + ' failed';
+    btn.style.color = '#e05c5c';
+  }
+  setTimeout(() => { btn.textContent = orig; btn.style.color = ''; btn.disabled = false; }, 3000);
 }
 </script>
 </body>

@@ -17,16 +17,16 @@ try {
     $pd.PrinterSettings.PrinterName = $printer
     $pd.DefaultPageSettings.Margins = New-Object System.Drawing.Printing.Margins(0, 0, 0, 0)
 
-    # Match paper size to image dimensions (units: 1/100 inch)
-    $dpi = if ($img.HorizontalResolution -gt 0) { $img.HorizontalResolution } else { 203 }
-    $w100 = [int]($img.Width  / $dpi * 100)
-    $h100 = [int]($img.Height / $dpi * 100)
-    $pd.DefaultPageSettings.PaperSize = New-Object System.Drawing.Printing.PaperSize("Label", $w100, $h100)
+    # Fixed 3" x 2" label size (units: 1/100 inch)
+    $pd.DefaultPageSettings.PaperSize = New-Object System.Drawing.Printing.PaperSize("Label", 300, 200)
 
     $captured = $img
     $pd.add_PrintPage({
         param($s, $e)
-        $e.Graphics.DrawImage($captured, $e.PageBounds)
+        # Specify source in Pixel units so GDI+ scales correctly regardless of printer DPI
+        $dst = New-Object System.Drawing.RectangleF(0, 0, 200, 100)
+        $src = New-Object System.Drawing.RectangleF(0, 0, $captured.Width, $captured.Height)
+        $e.Graphics.DrawImage($captured, $dst, $src, [System.Drawing.GraphicsUnit]::Pixel)
         $e.HasMorePages = $false
     }.GetNewClosure())
 

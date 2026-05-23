@@ -903,7 +903,7 @@ function showReceipt(items) {
      <p style="text-align:center;font-size:11px;color:#888;margin:3px 0 0;font-style:italic;">Merci de votre visite chez American Select !</p>`;
 }
 
-// ── Thermal receipt via QZ Tray (ESC/POS, 80mm) ──────────
+// ── Thermal receipt via relay (ESC/POS, 80mm) ────────────
 async function printReceiptThermal() {
   const W = 48; // characters per line on 80mm normal font
   const ESC = '\x1B', GS = '\x1D', LF = '\x0A';
@@ -928,27 +928,29 @@ async function printReceiptThermal() {
 
   let d = '';
 
-  // Init
+  // Init + reset
   d += ESC + '@';
 
   // ── Header ────────────────────────────────────────────────
-  d += ESC + 'a\x01';        // center
-  d += ESC + 'E\x01';        // bold on
-  d += GS + '!\x11';         // double width + height
+  d += ESC + 'a\x01';          // center
+  d += LF;
+  d += ESC + 'E\x01';          // bold on
+  d += GS + '!\x11';           // double width + height
   d += 'AMERICAN SELECT' + LF;
-  d += GS + '!\x00';         // normal size
-  d += ESC + 'E\x00';        // bold off
+  d += GS + '!\x00';           // normal size
+  d += ESC + 'E\x00';          // bold off
+  d += LF;
   d += 'Quality Imports from USA & Canada' + LF;
-  d += 'Importations de qualite des Etats-Unis et Canada' + LF;
   d += 'americanselect.net' + LF;
-  d += 'MTN: 679 457 181  |  Orange: 686 271 567' + LF;
+  d += 'Tel: 679 457 181  |  686 271 567' + LF;
   d += 'Yaounde, Cameroon' + LF;
 
   // ── Date ──────────────────────────────────────────────────
-  d += ESC + 'a\x00';        // left
+  d += ESC + 'a\x00';          // left
   d += dashes() + LF;
   d += center(dateStr) + LF;
   d += dashes() + LF;
+  d += LF;
 
   // ── Items ─────────────────────────────────────────────────
   let total = 0;
@@ -956,58 +958,73 @@ async function printReceiptThermal() {
     const line = item.price * item.qty;
     total += line;
     const name = item.name.length > W ? item.name.substring(0, W - 1) + '~' : item.name;
+    d += ESC + 'E\x01';        // bold item name
     d += name + LF;
+    d += ESC + 'E\x00';        // bold off
     const meta = '  x' + item.qty + ' @ ' + (item.price ? item.price.toLocaleString() + ' FCFA' : '--');
     const amt  = item.price ? fmt(line) : '--';
     d += padLine(meta, amt) + LF;
+    d += LF;                    // blank line between items
   });
 
   // ── Total ─────────────────────────────────────────────────
   d += dashes() + LF;
-  d += ESC + 'E\x01';        // bold on
-  d += padLine('TOTAL', fmt(total)) + LF;
-  d += ESC + 'E\x00';        // bold off
-  d += 'Paid via / Paye via : ' + selectedPayment + LF;
+  d += ESC + 'E\x01';          // bold on
+  d += GS + '!\x01';           // double height only (keeps 48-char width)
+  d += padLine('  TOTAL', fmt(total)) + LF;
+  d += GS + '!\x00';           // normal
+  d += ESC + 'E\x00';          // bold off
+  d += LF;
+  d += 'Payment: ' + selectedPayment + LF;
 
   // ── Footer ────────────────────────────────────────────────
   d += dashes() + LF;
-  d += ESC + 'a\x01';        // center
+  d += ESC + 'a\x01';          // center
+  d += LF;
   d += 'Thank you for shopping with' + LF;
-  d += 'American Select!' + LF;
+  d += ESC + 'E\x01' + 'American Select!' + ESC + 'E\x00' + LF;
+  d += LF;
   d += 'Merci de votre visite chez' + LF;
   d += 'American Select !' + LF;
   d += LF + LF + LF;
 
-  // ── Cut ───────────────────────────────────────────────────
-  d += GS + 'V\x42\x05';    // partial cut
+  // ── Partial cut ───────────────────────────────────────────
+  d += GS + 'V\x42\x05';
 
-  const config = qz.configs.create(qzPrinterName, { raw: true });
-  await qz.print(config, [{ type: 'raw', format: 'plain', data: d }]);
+  // Convert to base64 and send to local relay
+  const bytes = new Uint8Array(d.length);
+  for (let i = 0; i < d.length; i++) bytes[i] = d.charCodeAt(i) & 0xff;
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  const b64 = btoa(binary);
+
+  const resp = await fetch('http://localhost:3099/receipt', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data: b64 })
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error || 'Relay error ' + resp.status);
+  }
 }
 
 async function printReceipt() {
   const btn = document.getElementById('btn-print');
-  if (qzReady && qzPrinterName) {
-    // ── Direct thermal print (silent, no dialog) ───────────
-    const orig = btn ? btn.textContent : '';
-    if (btn) { btn.textContent = 'Printing…'; btn.disabled = true; }
-    try {
-      await printReceiptThermal();
-      if (btn) { btn.textContent = '✓ Printed'; btn.style.color = '#6dbf6d'; }
-      setTimeout(() => {
-        if (btn) { btn.textContent = orig; btn.style.color = ''; btn.disabled = false; }
-      }, 2000);
-    } catch(e) {
-      if (btn) { btn.textContent = '⚠ Error — retry'; btn.style.color = '#e05c5c'; btn.disabled = false; }
-      setTimeout(() => {
-        if (btn) { btn.textContent = orig; btn.style.color = ''; }
-      }, 3000);
-    }
-  } else {
-    // ── Browser print fallback ─────────────────────────────
+  const orig = btn ? btn.textContent : '';
+  if (btn) { btn.textContent = 'Printing…'; btn.disabled = true; }
+  try {
+    await printReceiptThermal();
+    if (btn) { btn.textContent = '✓ Printed'; btn.style.color = '#6dbf6d'; }
+    setTimeout(() => {
+      if (btn) { btn.textContent = orig; btn.style.color = ''; btn.disabled = false; }
+    }, 2000);
+  } catch(e) {
+    // Relay unavailable — fall back to browser print
     document.getElementById('print-area').style.display = 'block';
     window.print();
     document.getElementById('print-area').style.display = 'none';
+    if (btn) { btn.textContent = orig; btn.style.color = ''; btn.disabled = false; }
   }
 }
 

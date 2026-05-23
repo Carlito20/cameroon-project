@@ -14,6 +14,7 @@ const PORT = 3099;
 const ORIGIN = 'https://americanselect.net';
 const PS_DRAWER = path.join(__dirname, 'rawprint.ps1');
 const PS_LABEL  = path.join(__dirname, 'print-label.ps1');
+const PS_RAW    = path.join(__dirname, 'print-raw.ps1');
 const DRAWER_PRINTER = 'POS-80C';
 
 // Auto-detect Munbyn printer name at startup (handles ITPP130, IPP139, etc.)
@@ -55,6 +56,20 @@ function openDrawer() {
       if (err) reject(new Error(stderr || err.message));
       else if (stdout.includes('OK:')) resolve();
       else reject(new Error(stderr || stdout || 'Drawer command failed'));
+    });
+  });
+}
+
+// ── Print raw ESC/POS bytes to receipt printer ───────────
+function printRaw(filePath, printer) {
+  return new Promise((resolve, reject) => {
+    execFile('powershell', [
+      '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass',
+      '-File', PS_RAW, '-filePath', filePath, '-printer', printer
+    ], { timeout: 15000 }, (err, stdout, stderr) => {
+      if (err) reject(new Error(stderr || err.message));
+      else if (stdout.includes('OK:')) resolve();
+      else reject(new Error(stderr || stdout || 'Print failed'));
     });
   });
 }
@@ -107,6 +122,24 @@ const server = createServer(async (req, res) => {
       res.end(JSON.stringify({ ok: true }));
     } catch (e) {
       console.error('[barcode] error:', e.message);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: e.message }));
+    }
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/receipt') {
+    try {
+      const body = await readBody(req);
+      if (!body.data) throw new Error('Missing receipt data');
+      const tmpFile = path.join(tmpdir(), 'receipt_' + Date.now() + '.bin');
+      writeFileSync(tmpFile, Buffer.from(body.data, 'base64'));
+      try { await printRaw(tmpFile, DRAWER_PRINTER); } finally { try { unlinkSync(tmpFile); } catch {} }
+      console.log('[receipt] printed');
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true }));
+    } catch (e) {
+      console.error('[receipt] error:', e.message);
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: false, error: e.message }));
     }
