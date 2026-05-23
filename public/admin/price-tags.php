@@ -715,17 +715,17 @@ async function printToMunbyn() {
 
     // Bottom rule
     ctx.strokeStyle = '#aaa';
-    ctx.beginPath(); ctx.moveTo(pad, 488); ctx.lineTo(W - pad, 488); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad, 466); ctx.lineTo(W - pad, 466); ctx.stroke();
 
     // American Select branding — big and clear
     ctx.font = 'bold 44px Arial';
     ctx.fillStyle = '#111';
-    ctx.fillText('American Select', W / 2, 546);
+    ctx.fillText('American Select', W / 2, 516);
 
     // Website
     ctx.font = '26px Arial';
     ctx.fillStyle = '#777';
-    ctx.fillText('americanselect.net', W / 2, 582);
+    ctx.fillText('americanselect.net', W / 2, 552);
     ctx.textAlign = 'left';
   }
 

@@ -893,22 +893,22 @@ async function renderLabel(barcode, name) {
   const barcodeTop = divY + 14;
   await new Promise(resolve => {
     const img = new Image();
-    img.onload = () => { ctx.drawImage(img, 20, barcodeTop, W - 40, 480 - barcodeTop); resolve(); };
+    img.onload = () => { ctx.drawImage(img, 20, barcodeTop, W - 40, 460 - barcodeTop); resolve(); };
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   });
 
   // ── American Select footer ────────────────────────────
   ctx.strokeStyle = '#bbb';
-  ctx.beginPath(); ctx.moveTo(40, 488); ctx.lineTo(W - 40, 488); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(40, 468); ctx.lineTo(W - 40, 468); ctx.stroke();
 
   ctx.font = 'bold 44px Arial';
   ctx.fillStyle = '#111';
   ctx.textAlign = 'center';
-  ctx.fillText('American Select', W / 2, 544);
+  ctx.fillText('American Select', W / 2, 516);
 
   ctx.font = '26px Arial';
   ctx.fillStyle = '#777';
-  ctx.fillText('americanselect.net', W / 2, 582);
+  ctx.fillText('americanselect.net', W / 2, 552);
 
   return canvas.toDataURL('image/png');
 }
