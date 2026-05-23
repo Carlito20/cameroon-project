@@ -7,7 +7,7 @@ set VBSFILE=%STARTUP%\AS-DrawerRelay.vbs
 
 (
 echo Set WshShell = CreateObject^("WScript.Shell"^)
-echo WshShell.Run "node ""C:\AmericanSelect\drawer-relay\relay.cjs""", 0, False
+echo WshShell.Run "node ""%~dp0relay.cjs""", 0, False
 ) > "%VBSFILE%"
 
 echo Installed to startup folder.

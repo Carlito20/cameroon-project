@@ -944,7 +944,7 @@ async function printToMunbyn() {
     } catch {
       fail++;
       showToast('Relay not running — start DrawerRelay on this machine', 'err');
-      break;
+      continue;
     }
   }
   if (ok > 0) showToast('✓ ' + ok + ' label' + (ok > 1 ? 's' : '') + ' sent to Munbyn', 'ok');
