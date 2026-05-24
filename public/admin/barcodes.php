@@ -453,9 +453,9 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <?php endif; ?>
       <div class="pr-actions">
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
-        <button class="btn-preview" onclick="previewBarcode('<?= htmlspecialchars(addslashes($bc)) ?>', '<?= htmlspecialchars(addslashes($p['name'])) ?>')">👁 Preview</button>
+        <button class="btn-preview" onclick="previewBarcode(<?= json_encode($bc) ?>, <?= json_encode($p['name']) ?>)">👁 Preview</button>
         <?php if ($isAdmin): ?>
-        <button class="btn-unassign" onclick="unassignBarcode(this, '<?= htmlspecialchars(addslashes($p['name'])) ?>')">✕ Unassign</button>
+        <button class="btn-unassign" onclick="unassignBarcode(this, <?= json_encode($p['name']) ?>)">✕ Unassign</button>
         <?php endif; ?>
       </div>
     </div>

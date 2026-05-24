@@ -84,10 +84,14 @@
 
   function nextSlide() {
     currentSlide = (currentSlide + 1) % slides.length;
+    stopAutoPlay();
+    startAutoPlay();
   }
 
   function prevSlide() {
     currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+    stopAutoPlay();
+    startAutoPlay();
   }
 
   function goToSlide(index) {

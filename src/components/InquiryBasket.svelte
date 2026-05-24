@@ -518,9 +518,9 @@
 
           <div class="basket-actions">
             <button class="clear-btn" on:click={clearAll}>Clear</button>
-            <button class="send-btn" on:click={tryOrder}>
+            <button class="send-btn" on:click={tryOrder} disabled={isSending}>
               <span class="whatsapp-icon">💬</span>
-              Order via WhatsApp
+              {isSending ? 'Saving order…' : 'Order via WhatsApp'}
             </button>
           </div>
         </div>

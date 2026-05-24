@@ -12,7 +12,10 @@ const outputPath = resolve(__dirname, '../public/api/products-list.json');
 const url = 'https://americanselect.net/api/products-list.json';
 
 try {
-  const res = await fetch(url);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  const res = await fetch(url, { signal: controller.signal });
+  clearTimeout(timer);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.text();
   JSON.parse(data); // validate it's real JSON before overwriting
