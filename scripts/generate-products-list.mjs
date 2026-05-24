@@ -100,7 +100,7 @@ const add = (name, qty, price) => {
     result.push({
       name,
       quantity: ex?.quantity !== undefined ? ex.quantity : qty,
-      price:    price ?? ex?.price ?? undefined,
+      price:    ex?.price ?? price ?? undefined,
     });
   }
 };
