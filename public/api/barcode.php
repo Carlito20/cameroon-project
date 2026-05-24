@@ -63,7 +63,16 @@ function getCurrentStock($pdo, $productName) {
 }
 
 function getProductPrice($productName) {
-    // Check products-list.json first
+    global $pdoInstance;
+    if (!$pdoInstance) $pdoInstance = getPdo();
+    // product_prices table always wins (set via admin panel)
+    try {
+        $stmt = $pdoInstance->prepare('SELECT price FROM product_prices WHERE product_name = ? LIMIT 1');
+        $stmt->execute([$productName]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) return (int)$row['price'];
+    } catch (Exception $e) {}
+    // Fall back to products-list.json
     $jsonPath = __DIR__ . '/products-list.json';
     if (file_exists($jsonPath)) {
         $products = json_decode(file_get_contents($jsonPath), true) ?? [];
@@ -73,8 +82,6 @@ function getProductPrice($productName) {
     }
     // Fall back to custom_products table
     try {
-        global $pdoInstance;
-        if (!$pdoInstance) $pdoInstance = getPdo();
         $stmt = $pdoInstance->prepare('SELECT price FROM custom_products WHERE name = ? LIMIT 1');
         $stmt->execute([$productName]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
