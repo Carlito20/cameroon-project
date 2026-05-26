@@ -21,6 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!file_exists($stateFile)) {
         echo json_encode(['items' => [], 'total' => 0, 'payment' => '', 'active' => false, 'updated' => 0]);
     } else {
-        echo file_get_contents($stateFile);
+        $state = json_decode(file_get_contents($stateFile), true);
+        // Auto-clear display after 30 minutes of inactivity
+        if (!empty($state['updated']) && (time() - $state['updated']) > 1800) {
+            $empty = ['items' => [], 'total' => 0, 'payment' => '', 'active' => false, 'updated' => 0];
+            file_put_contents($stateFile, json_encode($empty));
+            echo json_encode($empty);
+        } else {
+            echo json_encode($state);
+        }
     }
 }
