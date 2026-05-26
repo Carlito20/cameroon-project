@@ -453,10 +453,13 @@ if ($fromOrderId) {
         <button class="pay-btn" data-method="Cash" onclick="selectPayment(this)">💵 Cash</button>
         <button class="pay-btn" data-method="MTN Mobile Money" onclick="selectPayment(this)">🟡 MTN MoMo</button>
         <button class="pay-btn" data-method="Orange Money" onclick="selectPayment(this)">🟠 Orange Money</button>
-        <button class="pay-btn" data-method="Other" onclick="selectPayment(this)">💳 Other</button>
+        <button class="pay-btn" data-method="Card" onclick="selectPayment(this)">💳 Card</button>
       </div>
       <div id="momo-info" style="display:none;background:#1a1500;border:1px solid #3a3000;border-radius:8px;padding:10px 14px;margin-top:8px;font-size:13px;color:#f0c040;">
         📲 Send to: <strong style="font-size:15px;letter-spacing:1px;">679 457 181</strong>
+      </div>
+      <div id="card-info" style="display:none;background:#0d1a2a;border:1px solid #1a3a5c;border-radius:8px;padding:10px 14px;margin-top:8px;font-size:13px;color:#5b9bd5;">
+        💳 Card payment is coming soon — this service is not yet available. Please ask the customer to use Cash, MTN MoMo, or Orange Money.
       </div>
       <div class="phone-label">Customer Phone <span style="color:#444;font-weight:400;">(optional — for WhatsApp confirmation)</span></div>
       <input type="tel" class="phone-input" id="customer-phone" placeholder="e.g. 677 123 456" inputmode="tel" autocomplete="tel" oninput="customerPhone=this.value.trim()">
@@ -713,6 +716,8 @@ function selectPayment(el) {
   selectedPayment = el.dataset.method;
   const momoInfo = document.getElementById('momo-info');
   if (momoInfo) momoInfo.style.display = selectedPayment === 'MTN Mobile Money' ? 'block' : 'none';
+  const cardInfo = document.getElementById('card-info');
+  if (cardInfo) cardInfo.style.display = selectedPayment === 'Card' ? 'block' : 'none';
   renderCart();
   broadcastDisplay();
 }
