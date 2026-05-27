@@ -376,6 +376,34 @@ if ($fromOrderId) {
       -webkit-user-select: none; user-select: none;
     }
     .offline-sync-btn:hover { background: #6a4000; }
+
+    /* ── Cash change calculator ── */
+    .cash-calc {
+      background: #0d1a0d; border: 1px solid #1a3a1a; border-radius: 8px;
+      padding: 12px 14px; margin-top: 8px;
+    }
+    .cash-calc-label {
+      font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+    }
+    .cash-given-input {
+      width: 100%; padding: 10px 14px; background: #1a1a1a;
+      border: 2px solid #2a3a2a; border-radius: 8px; color: #e0e0e0;
+      font-size: 18px; font-weight: 700; outline: none;
+      -webkit-appearance: none; appearance: none;
+      min-height: 48px; touch-action: manipulation;
+    }
+    .cash-given-input:focus { border-color: #4a7a4a; }
+    .change-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 10px; padding-top: 10px; border-top: 1px solid #1a3a1a;
+    }
+    .change-lbl { font-size: 13px; color: #6dbf6d; font-weight: 600; }
+    .change-amt { font-size: 26px; font-weight: 800; color: #6dbf6d; }
+    .change-insufficient {
+      margin-top: 8px; padding: 8px 12px; background: #2a1010;
+      border: 1px solid #4a1a1a; border-radius: 6px;
+      font-size: 13px; color: #e05c5c; text-align: center; display: none;
+    }
   </style>
 </head>
 <body>
@@ -460,6 +488,19 @@ if ($fromOrderId) {
       </div>
       <div id="card-info" style="display:none;background:#0d1a2a;border:1px solid #1a3a5c;border-radius:8px;padding:10px 14px;margin-top:8px;font-size:13px;color:#5b9bd5;">
         💳 Card payment is coming soon — this service is not yet available. Please ask the customer to use Cash, MTN MoMo, or Orange Money.
+      </div>
+      <div id="cash-info" class="cash-calc" style="display:none;">
+        <div class="cash-calc-label">Amount Given by Customer (FCFA)</div>
+        <input type="number" class="cash-given-input" id="cash-given"
+               placeholder="Enter amount…" inputmode="numeric" min="0"
+               oninput="updateCashChange()">
+        <div class="change-row" id="change-row" style="display:none;">
+          <span class="change-lbl">Change Due</span>
+          <span class="change-amt" id="change-amt">0 FCFA</span>
+        </div>
+        <div class="change-insufficient" id="change-insufficient">
+          ⚠ Amount given is less than the total
+        </div>
       </div>
       <div class="phone-label">Customer Phone <span style="color:#444;font-weight:400;">(optional — for WhatsApp confirmation)</span></div>
       <input type="tel" class="phone-input" id="customer-phone" placeholder="e.g. 677 123 456" inputmode="tel" autocomplete="tel" oninput="customerPhone=this.value.trim()">
@@ -693,6 +734,7 @@ function renderCart() {
   document.getElementById('total-price').textContent = totalPrice.toLocaleString() + ' FCFA';
 
   saveCartDraft();
+  if (selectedPayment === 'Cash') updateCashChange();
 
   const hasOverStock = cart.some(i => i.qty > i.stock);
   const btn = document.getElementById('btn-checkout');
@@ -718,8 +760,39 @@ function selectPayment(el) {
   if (momoInfo) momoInfo.style.display = selectedPayment === 'MTN Mobile Money' ? 'block' : 'none';
   const cardInfo = document.getElementById('card-info');
   if (cardInfo) cardInfo.style.display = selectedPayment === 'Card' ? 'block' : 'none';
+  const cashInfo = document.getElementById('cash-info');
+  if (cashInfo) {
+    cashInfo.style.display = selectedPayment === 'Cash' ? 'block' : 'none';
+    if (selectedPayment !== 'Cash') {
+      document.getElementById('cash-given').value = '';
+      document.getElementById('change-row').style.display = 'none';
+      document.getElementById('change-insufficient').style.display = 'none';
+    }
+  }
   renderCart();
   broadcastDisplay();
+}
+
+function updateCashChange() {
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const given = parseFloat(document.getElementById('cash-given').value) || 0;
+  const changeRow = document.getElementById('change-row');
+  const changeAmt = document.getElementById('change-amt');
+  const insufficient = document.getElementById('change-insufficient');
+  if (!given) {
+    changeRow.style.display = 'none';
+    insufficient.style.display = 'none';
+    return;
+  }
+  const change = given - total;
+  if (change < 0) {
+    changeRow.style.display = 'none';
+    insufficient.style.display = 'block';
+  } else {
+    changeRow.style.display = 'flex';
+    changeAmt.textContent = change.toLocaleString() + ' FCFA';
+    insufficient.style.display = 'none';
+  }
 }
 
 // ── Checkout ─────────────────────────────────────────────
