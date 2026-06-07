@@ -33,5 +33,68 @@ receipts/test-*.png
 
 # Build zip
 americanselect-site.zip
+checkout-deploy.zip
 
-americanselect-site.zip
+# Backup files
+*.bak
+
+# One-off utility/analysis scripts in root
+check-expenses.mjs
+check-nullsub-rows.mjs
+export-pricing.mjs
+extract-all-prices.mjs
+generate-loan.mjs
+generate-profit-analysis.mjs
+inspect-expenses.mjs
+read-full.mjs
+summarize-data.mjs
+update-pricing-analysis.mjs
+
+# Local working/preview files
+label-preview.html
+store-layout.html
+store-layout.pdf
+store-visual.html
+store-visual.pdf
+preview-qr.html
+business-card-new.html
+
+# Raw source images (large, processed separately)
+Images/Today/
+Images/new png/
+Images/AXE/
+Images/Aveeno/
+Images/Barcodes/
+Images/CeraVe/
+Images/Cetaphil/
+Images/Degree/
+Images/Deodorants/
+Images/Dr Teals/
+Images/Electronics/
+Images/Febreze*/
+Images/Nair/
+Images/Price Tags/
+Images/Revlon/
+Images/St Ives/
+Images/Suave/
+Images/Vaceline/
+Images/Jergens/
+Images/NIVEA/
+Images/Olay/
+Images/Lubriderm/
+
+# Receipts (PDFs, raw scans)
+receipts/processed/*.pdf
+receipts/processed/*.jpeg
+receipts/processed/*.png
+receipts/processed/*.jpg
+receipts/*.pdf
+receipts/Receipt*.pdf
+
+# Misc local files
+AmericanSelect_LivePricingAnalysis.xlsx
+orig-pricing-check.xlsx
+Loan_Payment_Breakdown.xlsx
+"American Select – Business Card.pdf"
+"Images/American Select .jpg"
+"Images/American Select — A4 Flyer.pdf"
