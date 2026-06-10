@@ -168,9 +168,32 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
         const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
         const dismissed = localStorage.getItem('pwa-banner-dismissed');
 
-        // If running as installed app, mark as installed so Safari knows too
-        if (isStandalone) localStorage.setItem('pwa-installed', '1');
-        const alreadyInstalled = localStorage.getItem('pwa-installed');
+        // Cookies are shared between iOS Safari and the installed PWA (localStorage is NOT).
+        // We use a cookie so that Safari knows the app is already installed.
+        function getCookie(name) {
+          return document.cookie.split(';').some(function(c) { return c.trim().startsWith(name + '='); });
+        }
+        function setCookie(name) {
+          var d = new Date();
+          d.setFullYear(d.getFullYear() + 2);
+          document.cookie = name + '=1; expires=' + d.toUTCString() + '; path=/; SameSite=Lax';
+        }
+        function markInstalled() {
+          localStorage.setItem('pwa-installed', '1');
+          setCookie('pwa-installed');
+        }
+        function hideInstallUI() {
+          var navBtn = document.getElementById('nav-install-btn');
+          var section = document.getElementById('footer-install-section');
+          if (navBtn) navBtn.style.display = 'none';
+          if (section) section.style.display = 'none';
+        }
+
+        // If running as installed app, mark as installed
+        if (isStandalone) markInstalled();
+
+        // Check both localStorage (Android) and cookie (covers iOS cross-context)
+        var alreadyInstalled = localStorage.getItem('pwa-installed') || getCookie('pwa-installed');
 
         let deferredPrompt = null;
 
@@ -210,16 +233,25 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
           });
         }
 
-        // Android/Chrome — beforeinstallprompt only fires when app is NOT installed
-        // so if it fires, clear pwa-installed flag (handles uninstall case)
+        // Fires on Android/Chrome after the user accepts the install
+        window.addEventListener('appinstalled', () => {
+          markInstalled();
+          hideInstallUI();
+          const banner = document.getElementById('android-install-banner');
+          if (banner) banner.classList.remove('visible');
+        });
+
+        // beforeinstallprompt only fires when the app is NOT installed.
+        // Do NOT show the banner if we already know the app is installed.
         window.addEventListener('beforeinstallprompt', (e) => {
           e.preventDefault();
           deferredPrompt = e;
-          localStorage.removeItem('pwa-installed');
-          showInstallUI();
-          if (!dismissed) {
-            const banner = document.getElementById('android-install-banner');
-            if (banner) banner.classList.add('visible');
+          if (!alreadyInstalled) {
+            showInstallUI();
+            if (!dismissed) {
+              const banner = document.getElementById('android-install-banner');
+              if (banner) banner.classList.add('visible');
+            }
           }
         });
 
@@ -233,7 +265,7 @@ const { title, description = 'Quality essentials for everyday life - Imported wi
                 deferredPrompt.userChoice.then(choice => {
                   const banner = document.getElementById('android-install-banner');
                   if (banner) banner.classList.remove('visible');
-                  if (choice.outcome === 'accepted') localStorage.setItem('pwa-installed', '1');
+                  if (choice.outcome === 'accepted') markInstalled();
                   deferredPrompt = null;
                 });
               }
