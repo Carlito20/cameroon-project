@@ -962,7 +962,8 @@
     const itemName = getProductName(productItem);
     const qty = getSelectedQty(itemName);
     const activeImgs = getActiveImages(productItem, itemName);
-    const itemImage = activeImgs ? activeImgs[0] : getProductImage(productItem);
+    const colorIdx = activeImageIndexes[itemName] ?? 0;
+    const itemImage = activeImgs ? (activeImgs[colorIdx] ?? activeImgs[0]) : getProductImage(productItem);
     const selectedColor = selectedColors[itemName];
     const displayName = selectedColor ? `${itemName} (${getColorName(selectedColor)})` : itemName;
     const effectiveMax = selectedColor
@@ -977,7 +978,9 @@
         quantity: qty,
         maxStock: effectiveMax,
         price: itemPrice || 0,
-        image: itemImage
+        image: itemImage,
+        color: selectedColor || null,
+        colorName: selectedColor ? getColorName(selectedColor) : null
       }
     });
     window.dispatchEvent(event);

@@ -352,7 +352,13 @@
               </button>
             {/if}
             <div class="item-details">
-              <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.name}</button>
+              <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.colorName ? item.name.replace(` (${item.colorName})`, '') : item.name}</button>
+              {#if item.color && item.colorName}
+                <span class="item-color-tag">
+                  <span class="item-color-dot" style="background:{item.color}"></span>
+                  {item.colorName}
+                </span>
+              {/if}
               {#if item.price}
                 <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
               {/if}
@@ -462,7 +468,13 @@
                 </button>
               {/if}
               <div class="item-details">
-                <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.name}</button>
+                <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.colorName ? item.name.replace(` (${item.colorName})`, '') : item.name}</button>
+                {#if item.color && item.colorName}
+                  <span class="item-color-tag">
+                    <span class="item-color-dot" style="background:{item.color}"></span>
+                    {item.colorName}
+                  </span>
+                {/if}
                 {#if item.price}
                   <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
                 {/if}
@@ -1210,6 +1222,28 @@
   .cart-preview-close:hover {
     background: #f0a500;
     color: #111111;
+  }
+
+  .item-color-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #444;
+    background: #f4f4f4;
+    border-radius: 20px;
+    padding: 2px 8px 2px 4px;
+    width: fit-content;
+  }
+
+  .item-color-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.15);
+    display: inline-block;
   }
 
   .item-category {

@@ -1223,6 +1223,7 @@ export const categories: Category[] = [
             price: 12000,
             quantity: 5,
             colors: ['#2e7d32', '#1565c0', '#c62828', '#2c2c2c', '#4a5240'],
+            colorQuantities: { '#2e7d32': 1, '#1565c0': 1, '#c62828': 1, '#2c2c2c': 1, '#4a5240': 1 },
             images: [
               '/images/products/tg192-speaker-1.webp',
               '/images/products/tg192-speaker-4.webp',
