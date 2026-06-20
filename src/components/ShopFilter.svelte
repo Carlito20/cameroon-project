@@ -48,7 +48,7 @@
 
   function getProductPrice(item) {
     if (typeof item === 'string') return null;
-    if (apiPrices[item.name] !== undefined) return apiPrices[item.name];
+    if (apiPrices[item.name] !== undefined && apiPrices[item.name] > 0) return apiPrices[item.name];
     return item.price;
   }
 
