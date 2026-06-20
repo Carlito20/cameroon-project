@@ -4,7 +4,6 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: transform 0.3s ease, opacity 0.3s ease;
   /* Clear iPhone notch / Dynamic Island */
   padding-top: env(safe-area-inset-top, 0px);
   -webkit-transform: translateZ(0);
@@ -12,12 +11,6 @@
   will-change: transform;
 }
 
-/* Hide navbar on scroll */
-.navbar.navbar-hidden {
-  transform: translateY(-100%);
-  opacity: 0;
-  pointer-events: none;
-}
 
 .nav-content {
   display: flex;
