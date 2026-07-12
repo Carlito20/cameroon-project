@@ -1,4 +1,10 @@
-param([string]$imagePath = "", [string]$printer = "")
+param(
+    [string]$imagePath = "",
+    [string]$printer = "",
+    [int]$widthHundredths = 300,
+    [int]$heightHundredths = 200,
+    [double]$scaleFactor = 0.6667
+)
 
 Add-Type -AssemblyName System.Drawing
 
@@ -17,16 +23,22 @@ try {
     $pd.PrinterSettings.PrinterName = $printer
     $pd.DefaultPageSettings.Margins = New-Object System.Drawing.Printing.Margins(0, 0, 0, 0)
 
-    # Fixed 3" x 2" label size (units: 1/100 inch)
-    $pd.DefaultPageSettings.PaperSize = New-Object System.Drawing.Printing.PaperSize("Label", 300, 200)
+    # Label size (units: 1/100 inch), e.g. 300x200 = 3"x2", 200x100 = 2"x1"
+    $pd.DefaultPageSettings.PaperSize = New-Object System.Drawing.Printing.PaperSize("Label", $widthHundredths, $heightHundredths)
+
+    # This printer/driver combo doesn't map DrawImage's destRect 1:1 to the
+    # requested paper size — a ~2/3 scale factor was reverse-engineered for
+    # the original 3"x2" label (300 hundredths-inch requested -> 200 wide
+    # destRect prints edge-to-edge). Reuse that same ratio for other label
+    # sizes; if a new label size prints too small/large, adjust -scaleFactor.
+    $destW = $widthHundredths * $scaleFactor
+    $destH = $destW * ($img.Height / $img.Width)
+    Write-Host "INFO:paper=${widthHundredths}x${heightHundredths} dest=${destW}x${destH}"
 
     $captured = $img
     $pd.add_PrintPage({
         param($s, $e)
-        # dst width=200 fills the full 3" label width at this printer's DPI.
-        # dst height=133 = 200 * (2/3) preserves the 3:2 label aspect ratio so
-        # the full canvas height maps to the full 2" label height.
-        $dst = New-Object System.Drawing.RectangleF(0, 0, 200, 133)
+        $dst = New-Object System.Drawing.RectangleF(0, 0, $destW, $destH)
         $src = New-Object System.Drawing.RectangleF(0, 0, $captured.Width, $captured.Height)
         $e.Graphics.DrawImage($captured, $dst, $src, [System.Drawing.GraphicsUnit]::Pixel)
         $e.HasMorePages = $false

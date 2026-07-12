@@ -75,7 +75,9 @@ function printRaw(filePath, printer) {
 }
 
 // ── Print label image to Munbyn ──────────────────────────
-function printLabelImage(base64png) {
+// widthIn/heightIn are the physical label size in inches (default 3x2 for
+// backward compatibility with older cached frontend code).
+function printLabelImage(base64png, widthIn = 3, heightIn = 2) {
   return new Promise((resolve, reject) => {
     const tmpFile = path.join(tmpdir(), 'label_' + Date.now() + '.png');
     const imgData = base64png.replace(/^data:image\/\w+;base64,/, '');
@@ -83,7 +85,9 @@ function printLabelImage(base64png) {
 
     execFile('powershell', [
       '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass',
-      '-File', PS_LABEL, '-imagePath', tmpFile, '-printer', LABEL_PRINTER
+      '-File', PS_LABEL, '-imagePath', tmpFile, '-printer', LABEL_PRINTER,
+      '-widthHundredths', String(Math.round(widthIn * 100)),
+      '-heightHundredths', String(Math.round(heightIn * 100))
     ], { timeout: 15000 }, (err, stdout, stderr) => {
       try { unlinkSync(tmpFile); } catch {}
       if (err) reject(new Error(stderr || err.message));
@@ -116,7 +120,7 @@ const server = createServer(async (req, res) => {
     try {
       const body = await readBody(req);
       if (!body.image) throw new Error('Missing image data');
-      await printLabelImage(body.image);
+      await printLabelImage(body.image, body.widthIn, body.heightIn);
       console.log('[barcode] printed');
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true }));

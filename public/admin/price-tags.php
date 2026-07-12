@@ -294,15 +294,18 @@ function fmt_price($n) {
       }
       body.mode-shelf .tag-card { display: none !important; }
       body.mode-shelf .tag-card.selected {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         background: #fff !important;
         border: none !important;
         border-radius: 0;
-        padding: 2mm 2.5mm;
-        width: 25mm;
-        height: 51mm;
-        min-height: 51mm;
-        max-height: 51mm;
+        padding: 1mm 3mm;
+        width: 51mm;
+        height: 25mm;
+        min-height: 25mm;
+        max-height: 25mm;
         overflow: hidden;
         box-sizing: border-box;
         text-align: center;
@@ -315,33 +318,29 @@ function fmt_price($n) {
       }
       body.mode-shelf .tag-card-top { display: none !important; }
       body.mode-shelf .tag-price {
-        font-size: 14pt;
+        font-size: 15pt;
         font-weight: 900;
         color: #000 !important;
         line-height: 1.1;
-        display: block;
-        margin-top: 2mm;
         word-break: break-all;
       }
       body.mode-shelf .tag-name {
-        font-size: 5.5pt;
+        font-size: 6.5pt;
         font-weight: 700;
         color: #000 !important;
-        line-height: 1.3;
+        line-height: 1.2;
         display: -webkit-box;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        margin-top: 2mm;
-        text-align: left;
+        margin-top: 1mm;
       }
       body.mode-shelf .tag-store {
         font-size: 4pt;
         color: #777;
         letter-spacing: 1px;
         text-transform: uppercase;
-        display: block;
-        margin-top: 2mm;
+        margin-top: 0.5mm;
       }
       body.mode-shelf .tag-qty { display: none !important; }
       body.mode-shelf .empty { display: none !important; }
@@ -414,6 +413,77 @@ function fmt_price($n) {
       }
       body.mode-3x2 .tag-qty { display: none !important; }
       body.mode-3x2 .empty { display: none !important; }
+
+      /* ════════════════════════════════════════════════════════
+         PRINT — PHOMEMO MODE (Phomemo M110 40mm × 30mm labels)
+         Not sent to a Windows printer — used only as a preview;
+         actual output comes from "Download Labels (PNG)" below,
+         printed via the Phomemo phone app.
+      ════════════════════════════════════════════════════════ */
+      body.mode-phomemo { font-family: Arial, sans-serif; background: #fff !important; color: #000 !important; }
+      body.mode-phomemo header,
+      body.mode-phomemo .controls,
+      body.mode-phomemo .mode-row,
+      body.mode-phomemo .no-print { display: none !important; }
+
+      body.mode-phomemo .tag-grid {
+        max-width: 100%; margin: 0; padding: 0;
+        display: block;
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      body.mode-phomemo .tag-card { display: none !important; }
+      body.mode-phomemo .tag-card.selected {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #fff !important;
+        border: none !important;
+        border-radius: 0;
+        padding: 1.5mm 2.5mm;
+        width: 40mm;
+        height: 30mm;
+        min-height: 30mm;
+        max-height: 30mm;
+        overflow: hidden;
+        box-sizing: border-box;
+        text-align: center;
+        page-break-after: always;
+        break-after: page;
+      }
+      body.mode-phomemo .tag-card.selected:last-child {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      body.mode-phomemo .tag-card-top { display: none !important; }
+      body.mode-phomemo .tag-price {
+        font-size: 15pt;
+        font-weight: 900;
+        color: #000 !important;
+        line-height: 1.1;
+        word-break: break-all;
+      }
+      body.mode-phomemo .tag-name {
+        font-size: 6.5pt;
+        font-weight: 700;
+        color: #000 !important;
+        line-height: 1.25;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-top: 1mm;
+      }
+      body.mode-phomemo .tag-store {
+        font-size: 4.5pt;
+        color: #777;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-top: 0.5mm;
+      }
+      body.mode-phomemo .tag-qty { display: none !important; }
+      body.mode-phomemo .empty { display: none !important; }
     }
   </style>
 
@@ -450,6 +520,7 @@ function fmt_price($n) {
   <button class="mode-btn active" id="mode-sheet" onclick="setMode('sheet')">A4 Sheet (3 per row)</button>
   <button class="mode-btn" id="mode-shelf" onclick="setMode('shelf')">2"×1" Label (Shelf)</button>
   <button class="mode-btn" id="mode-3x2" onclick="setMode('3x2')">3"×2" Label (Product)</button>
+  <button class="mode-btn" id="mode-phomemo" onclick="setMode('phomemo')">Phomemo M110 (40×30mm)</button>
   <span class="mode-hint" id="mode-hint">Multiple tags per page, cut apart after printing</span>
 </div>
 
@@ -482,20 +553,28 @@ function setMode(mode) {
   document.getElementById('mode-sheet').classList.toggle('active', mode === 'sheet');
   document.getElementById('mode-shelf').classList.toggle('active', mode === 'shelf');
   document.getElementById('mode-3x2').classList.toggle('active', mode === '3x2');
+  document.getElementById('mode-phomemo').classList.toggle('active', mode === 'phomemo');
 
   const pageStyle = document.getElementById('page-size-style');
   const hint = document.getElementById('mode-hint');
+  const munbynBtn = document.getElementById('munbyn-btn');
 
   if (mode === 'shelf') {
-    pageStyle.textContent = '@page { size: 25mm 51mm; margin: 0; }';
-    hint.textContent = 'One tag per label — load 2"×1" labels on your Munbyn (portrait feed)';
+    pageStyle.textContent = '@page { size: 51mm 25mm; margin: 0; }';
+    hint.textContent = 'One tag per label — load 2"×1" labels on your Munbyn';
   } else if (mode === '3x2') {
     pageStyle.textContent = '@page { size: 76mm 51mm; margin: 0; }';
     hint.textContent = 'One tag per label — load 3"×2" labels on your Munbyn';
+  } else if (mode === 'phomemo') {
+    pageStyle.textContent = '@page { size: 40mm 30mm; margin: 0; }';
+    hint.textContent = 'Not printed from here — use "Download Labels (PNG)" and print from the Phomemo app on your phone';
   } else {
     pageStyle.textContent = '@page { size: A4; margin: 10mm; }';
     hint.textContent = 'Multiple tags per page, cut apart after printing';
   }
+
+  // Munbyn direct-print only supports its two physical label modes
+  munbynBtn.style.display = (mode === 'shelf' || mode === '3x2') ? '' : 'none';
 }
 
 function toggleCard(card) {
@@ -559,15 +638,18 @@ async function downloadPNGs() {
   const mode = currentMode;
 
   // Label size in pixels at 203 DPI
-  const PW = mode === '3x2' ? Math.round(3 * DPI) : Math.round(1 * DPI); // 609 or 203
-  const PH = mode === '3x2' ? Math.round(2 * DPI) : Math.round(2 * DPI); // 406 or 406
+  const MM_PER_IN = 25.4;
+  let PW, PH;
+  if (mode === '3x2') { PW = Math.round(3 * DPI); PH = Math.round(2 * DPI); } // 609x406
+  else if (mode === 'phomemo') { PW = Math.round(40 / MM_PER_IN * DPI); PH = Math.round(30 / MM_PER_IN * DPI); } // 320x240
+  else { PW = Math.round(2 * DPI); PH = Math.round(1 * DPI); } // shelf: 406x203
 
   const canvas = document.createElement('canvas');
   canvas.width = PW;
   canvas.height = PH;
   const ctx = canvas.getContext('2d');
 
-  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = Infinity) {
     const words = text.split(' ');
     let line = '';
     let lines = [];
@@ -579,6 +661,7 @@ async function downloadPNGs() {
       } else { line = test; }
     }
     if (line) lines.push(line);
+    lines = lines.slice(0, maxLines);
     lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
     return lines.length;
   }
@@ -608,21 +691,37 @@ async function downloadPNGs() {
       ctx.font = `${Math.round(0.07 * DPI)}px Arial`;
       ctx.fillStyle = '#555';
       ctx.fillText('AMERICAN SELECT', pad, Math.round(0.88 * DPI));
-    } else {
-      // 2×1: price centered top, name below, store bottom
+    } else if (mode === 'phomemo') {
+      // 40mm×30mm: name top, price center, store bottom — all centered
+      const cx = PW / 2;
       ctx.fillStyle = '#000';
-      ctx.font = `bold ${Math.round(0.2 * DPI)}px Arial`;
       ctx.textAlign = 'center';
-      ctx.fillText(price, PW / 2, Math.round(0.3 * DPI));
+      ctx.font = `bold ${Math.round(0.09 * DPI)}px Arial`;
+      const nameLineHeight = Math.round(0.12 * DPI);
+      const nameLines = wrapText(ctx, name, cx, Math.round(0.16 * DPI), PW - pad * 2, nameLineHeight, 2);
 
-      ctx.font = `bold ${Math.round(0.075 * DPI)}px Arial`;
-      ctx.textAlign = 'left';
-      wrapText(ctx, name, pad, Math.round(0.45 * DPI), PW - pad * 2, Math.round(0.11 * DPI));
+      ctx.font = `bold ${Math.round(0.26 * DPI)}px Arial`;
+      const priceY = Math.round(0.16 * DPI) + nameLines * nameLineHeight + Math.round(0.22 * DPI);
+      ctx.fillText(price, cx, priceY);
 
-      ctx.font = `${Math.round(0.06 * DPI)}px Arial`;
+      ctx.font = `${Math.round(0.055 * DPI)}px Arial`;
       ctx.fillStyle = '#777';
+      ctx.fillText('AMERICAN SELECT', cx, PH - Math.round(0.08 * DPI));
+    } else {
+      // 2"×1" landscape: price centered top, name below, store at bottom
+      const cx = PW / 2;
+      ctx.fillStyle = '#000';
+      ctx.font = `bold ${Math.round(0.34 * DPI)}px Arial`;
       ctx.textAlign = 'center';
-      ctx.fillText('AMERICAN SELECT', PW / 2, Math.round(0.92 * DPI));
+      ctx.fillText(price, cx, Math.round(0.42 * DPI));
+
+      ctx.font = `bold ${Math.round(0.09 * DPI)}px Arial`;
+      const nameLineHeight = Math.round(0.13 * DPI);
+      const nameLines = wrapText(ctx, name, cx, Math.round(0.62 * DPI), PW - pad * 2, nameLineHeight, 2);
+
+      ctx.font = `${Math.round(0.055 * DPI)}px Arial`;
+      ctx.fillStyle = '#777';
+      ctx.fillText('AMERICAN SELECT', cx, Math.round(0.62 * DPI) + nameLines * nameLineHeight + Math.round(0.08 * DPI));
     }
     ctx.textAlign = 'left';
   }
@@ -664,18 +763,27 @@ async function downloadPNGs() {
 async function printToMunbyn() {
   const selected = [...document.querySelectorAll('.tag-card.selected')];
   if (selected.length === 0) { alert('Select at least one product to print.'); return; }
+  if (currentMode !== 'shelf' && currentMode !== '3x2') {
+    alert('Direct Munbyn printing only works with a Munbyn label size selected above — pick "2"×1" Label" or "3"×2" Label" first. For Phomemo, use "Download Labels (PNG)" instead.');
+    return;
+  }
 
   const btn = document.getElementById('munbyn-btn');
   const orig = btn.textContent;
   btn.disabled = true;
 
-  // 3"×2" at 300 DPI
-  const W = 900, H = 600;
+  const isShelf = currentMode === 'shelf';
+  // 300 DPI canvas sized to match the physical label
+  const W = isShelf ? 600 : 900;
+  const H = isShelf ? 300 : 600;
+  const widthIn = isShelf ? 2 : 3;
+  const heightIn = isShelf ? 1 : 2;
+
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  function wrapLines(text, maxWidth) {
+  function wrapLines(text, maxWidth, maxLines = Infinity) {
     const words = text.split(' ');
     const lines = [];
     let line = '';
@@ -686,10 +794,10 @@ async function printToMunbyn() {
       } else line = test;
     }
     if (line) lines.push(line);
-    return lines;
+    return lines.slice(0, maxLines);
   }
 
-  function drawPriceTag(price, name) {
+  function drawPriceTag3x2(price, name) {
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, W, H);
@@ -699,7 +807,7 @@ async function printToMunbyn() {
     ctx.fillStyle = '#000';
     ctx.font = 'bold 68px Arial';
     ctx.textAlign = 'left';
-    const nameLines = wrapLines(name, W - pad * 2).slice(0, 3);
+    const nameLines = wrapLines(name, W - pad * 2, 3);
     nameLines.forEach((l, i) => ctx.fillText(l, pad, 88 + i * 82));
 
     // Divider below name
@@ -729,6 +837,32 @@ async function printToMunbyn() {
     ctx.textAlign = 'left';
   }
 
+  function drawPriceTagShelf(price, name) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+    const cx = W / 2;
+
+    // Price — dominant, centered near the top
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 92px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(price, cx, 118);
+
+    // Product name — small, wraps to at most 2 lines
+    ctx.font = 'bold 26px Arial';
+    const nameLines = wrapLines(name, W - 60, 2);
+    nameLines.forEach((l, i) => ctx.fillText(l, cx, 168 + i * 32));
+
+    // Store name — tiny, bottom
+    ctx.font = '18px Arial';
+    ctx.fillStyle = '#777';
+    ctx.fillText('AMERICAN SELECT', cx, 168 + nameLines.length * 32 + 20);
+    ctx.textAlign = 'left';
+  }
+
+  const drawFn = isShelf ? drawPriceTagShelf : drawPriceTag3x2;
+
   let printed = 0, failed = 0;
   for (let i = 0; i < selected.length; i++) {
     const card = selected[i];
@@ -736,14 +870,14 @@ async function printToMunbyn() {
     const name  = card.querySelector('.tag-name')?.textContent?.trim()  || '';
     btn.textContent = 'Printing ' + (i + 1) + '/' + selected.length + '…';
 
-    drawPriceTag(price, name);
+    drawFn(price, name);
     const image = canvas.toDataURL('image/png');
 
     try {
       const r = await fetch('http://localhost:3099/barcode', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image })
+        body: JSON.stringify({ image, widthIn, heightIn })
       });
       if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || r.status); }
       printed++;
