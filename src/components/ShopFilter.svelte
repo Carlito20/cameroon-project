@@ -5,6 +5,8 @@
   export let categories = [];
   export let whatsappNumber = "237679457181";
   export let viewOnly = false;
+  export let hidePrices = false;
+  export let hidePricesMessage = "Price coming soon";
 
   // Helper functions for product items
   function isSubCategory(item) {
@@ -156,6 +158,7 @@
   }
 
   function formatPrice(price) {
+    if (hidePrices) return hidePricesMessage;
     return price ? `${price.toLocaleString()} FCFA` : null;
   }
 
@@ -1236,8 +1239,10 @@
           <option value="default">Default</option>
           <option value="name-asc">Name (A-Z)</option>
           <option value="name-desc">Name (Z-A)</option>
-          <option value="price-low">Price (Low-High)</option>
-          <option value="price-high">Price (High-Low)</option>
+          {#if !hidePrices}
+            <option value="price-low">Price (Low-High)</option>
+            <option value="price-high">Price (High-Low)</option>
+          {/if}
         </select>
       </div>
     {/if}

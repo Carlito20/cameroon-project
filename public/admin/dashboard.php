@@ -424,13 +424,17 @@ try {
         <?php endif; ?>
         <hr class="menu-divider">
         <button class="menu-item" onclick="initializeAll(); closeMenu()">⚙ Initialize Stock</button>
-        <hr class="menu-divider">
-        <button class="menu-item danger" onclick="clearAllOrders(); closeMenu()">🗑 Clear Orders</button>
+        <?php if ($isAdmin): ?>
+        <button class="menu-item" onclick="document.getElementById('price-file-input').click(); closeMenu()">📤 Upload Price Spreadsheet</button>
+        <?php endif; ?>
         <hr class="menu-divider">
         <a href="logout.php" class="menu-item danger">↩ Logout</a>
       </div>
     </div>
     <span id="init-status"></span>
+    <?php if ($isAdmin): ?>
+    <input type="file" id="price-file-input" accept=".xlsx" style="display:none;" onchange="uploadPriceSpreadsheet(this)">
+    <?php endif; ?>
   </div>
 </header>
 
@@ -733,6 +737,46 @@ function initializeAll() {
   });
 }
 
+function uploadPriceSpreadsheet(input) {
+  const file = input.files[0];
+  input.value = ''; // allow re-selecting the same file next time
+  if (!file) return;
+
+  const statusEl = document.getElementById('init-status');
+  statusEl.textContent = 'Uploading price spreadsheet...';
+  statusEl.style.color = '#888';
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  fetch('/api/price-bulk-import.php', {
+    method: 'POST',
+    credentials: 'same-origin',
+    body: formData
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      let msg = '✓ ' + data.updated + ' price' + (data.updated !== 1 ? 's' : '') + ' updated';
+      if (data.skippedNoPrice) msg += ', ' + data.skippedNoPrice + ' skipped (no price)';
+      if (data.notFoundCount) msg += ', ' + data.notFoundCount + ' not found in catalog';
+      statusEl.textContent = msg;
+      statusEl.style.color = '#6dbf6d';
+      if (data.notFoundCount) {
+        console.warn('Products not found in catalog:', data.notFound);
+      }
+      setTimeout(() => location.reload(), 2000);
+    } else {
+      statusEl.textContent = data.error || 'Error';
+      statusEl.style.color = '#ff6b6b';
+    }
+  })
+  .catch(() => {
+    statusEl.textContent = 'Network error';
+    statusEl.style.color = '#ff6b6b';
+  });
+}
+
 // ── Header menu ──────────────────────────────────────
 function toggleMenu(e) {
   e.stopPropagation();
@@ -825,20 +869,6 @@ function filterTable(query) {
     if (show) visible++;
   });
   document.getElementById('row-count').textContent = visible + ' products';
-}
-
-async function clearAllOrders() {
-  const answer = prompt('Type DELETE to clear all orders (this cannot be undone):');
-  if (answer !== 'DELETE') return;
-  try {
-    const res = await fetch('/api/orders.php', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'clear_all' })
-    });
-    const data = await res.json();
-    if (data.success) alert('All orders cleared.');
-    else alert('Error: ' + (data.error || 'Failed'));
-  } catch { alert('Network error'); }
 }
 
 // Register Service Worker so checkout.php gets cached for offline use

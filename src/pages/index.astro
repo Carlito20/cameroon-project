@@ -4,6 +4,7 @@ import WelcomeHero from '../components/WelcomeHero.svelte';
 import HeroSlider from '../components/HeroSlider.svelte';
 import FeaturedProducts from '../components/FeaturedProducts.svelte';
 import InquiryBasket from '../components/InquiryBasket.svelte';
+import { HIDE_PRICES, HIDE_PRICES_MESSAGE } from '../config';
 import '../styles/index.css';
 
 const whatsappNumber = "237679457181";
@@ -17,7 +18,7 @@ const whatsappNumber = "237679457181";
   <HeroSlider client:load />
 
   <!-- Featured Products -->
-  <FeaturedProducts client:load />
+  <FeaturedProducts client:load hidePrices={HIDE_PRICES} hidePricesMessage={HIDE_PRICES_MESSAGE} />
 
   <section class="features section">
     <div class="container">
@@ -57,7 +58,7 @@ const whatsappNumber = "237679457181";
   </section>
 
   <!-- Inquiry Basket (needed for Add to Basket on home page) -->
-  <InquiryBasket client:load />
+  <InquiryBasket client:load hidePrices={HIDE_PRICES} hidePricesMessage={HIDE_PRICES_MESSAGE} />
 
 </BaseLayout>
 

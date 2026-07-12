@@ -2,6 +2,9 @@
   import { onMount } from 'svelte';
   import { categories } from '../data/categories.ts';
 
+  export let hidePrices = false;
+  export let hidePricesMessage = "Price coming soon";
+
   // Recursively collect all in-stock products with images from a category's items
   function collectProducts(items) {
     const result = [];
@@ -76,6 +79,7 @@
   }
 
   function fmt(n) {
+    if (hidePrices) return hidePricesMessage;
     return Number(n).toLocaleString('fr-CM') + ' FCFA';
   }
 

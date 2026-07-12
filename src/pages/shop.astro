@@ -4,7 +4,7 @@ import { categories } from '../data/categories';
 import HowToOrderModal from '../components/HowToOrderModal.svelte';
 import ShopFilter from '../components/ShopFilter.svelte';
 import InquiryBasket from '../components/InquiryBasket.svelte';
-import { VIEW_ONLY, VIEW_ONLY_MESSAGE } from '../config';
+import { VIEW_ONLY, VIEW_ONLY_MESSAGE, HIDE_PRICES, HIDE_PRICES_MESSAGE } from '../config';
 import '../styles/shop.css';
 
 const whatsappNumber = "237679457181";
@@ -52,6 +52,8 @@ const formspreeEndpoint = "https://formspree.io/f/xwvrbryr";
         categories={categories}
         whatsappNumber={whatsappNumber}
         viewOnly={VIEW_ONLY}
+        hidePrices={HIDE_PRICES}
+        hidePricesMessage={HIDE_PRICES_MESSAGE}
       />
 
       <!-- Inquiry Basket (Floating) — hidden in view-only mode -->
@@ -60,6 +62,8 @@ const formspreeEndpoint = "https://formspree.io/f/xwvrbryr";
           client:load
           whatsappNumber={whatsappNumber}
           formspreeEndpoint={formspreeEndpoint}
+          hidePrices={HIDE_PRICES}
+          hidePricesMessage={HIDE_PRICES_MESSAGE}
         />
       )}
     </div>

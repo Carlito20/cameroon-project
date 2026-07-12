@@ -3,6 +3,8 @@
 
   export let whatsappNumber = "237679457181";
   export let formspreeEndpoint = ""; // kept for prop compatibility, unused
+  export let hidePrices = false;
+  export let hidePricesMessage = "Price coming soon";
 
   // Cart expiration time: 1 hour in milliseconds
   const CART_EXPIRY_MS = 60 * 60 * 1000;
@@ -222,7 +224,7 @@
 
     const itemList = inquiryItems.map(item => {
       const qty = item.quantity || 1;
-      const itemTotal = item.price ? ` — ${formatPrice(item.price * qty)} FCFA` : '';
+      const itemTotal = (!hidePrices && item.price) ? ` — ${formatPrice(item.price * qty)} FCFA` : '';
       return `• ${item.name} (×${qty})${itemTotal}`;
     }).join('\n');
 
@@ -252,7 +254,8 @@
     const phoneLine = `\nPhone: ${customerPhone.trim()}`;
     const refLine = orderRef ? `\nOrder Ref: ${orderRef}` : '';
 
-    const message = `Hi! / Bonjour !\nI'd like to order from American Select / Je voudrais commander :\n\n${itemList}\n\nTotal: ${formatPrice(totalPrice)} FCFA${paymentLine}${nameLine}${phoneLine}${refLine}\n\nThank you! / Merci !`;
+    const totalLine = hidePrices ? '' : `\n\nTotal: ${formatPrice(totalPrice)} FCFA`;
+    const message = `Hi! / Bonjour !\nI'd like to order from American Select / Je voudrais commander :\n\n${itemList}${totalLine}${paymentLine}${nameLine}${phoneLine}${refLine}\n\nThank you! / Merci !`;
 
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
     clearAll();
@@ -359,7 +362,9 @@
                   {item.colorName}
                 </span>
               {/if}
-              {#if item.price}
+              {#if hidePrices}
+                <span class="item-price">{hidePricesMessage}</span>
+              {:else if item.price}
                 <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
               {/if}
               <div class="item-qty-controls">
@@ -375,7 +380,7 @@
 
       <div class="basket-total">
         <span class="total-label">Total:</span>
-        <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
+        <span class="total-price">{hidePrices ? hidePricesMessage : formatPrice(totalPrice) + ' FCFA'}</span>
       </div>
 
       <div class="pay-method-section">
@@ -475,7 +480,9 @@
                     {item.colorName}
                   </span>
                 {/if}
-                {#if item.price}
+                {#if hidePrices}
+                  <span class="item-price">{hidePricesMessage}</span>
+                {:else if item.price}
                   <span class="item-price">{formatPrice(item.price * (item.quantity || 1))} FCFA</span>
                 {/if}
                 <div class="item-qty-controls">
@@ -492,7 +499,7 @@
         <div class="basket-footer">
           <div class="basket-total">
             <span class="total-label">Total:</span>
-            <span class="total-price">{formatPrice(totalPrice)} FCFA</span>
+            <span class="total-price">{hidePrices ? hidePricesMessage : formatPrice(totalPrice) + ' FCFA'}</span>
           </div>
 
           <div class="pay-method-section">
@@ -548,7 +555,9 @@
       <button class="cart-preview-close" on:click={closePreview} aria-label="Close">×</button>
       <img src={previewItem.image} alt={previewItem.name} />
       <p class="cart-preview-name">{previewItem.name}</p>
-      {#if previewItem.price}
+      {#if hidePrices}
+        <p class="cart-preview-price">{hidePricesMessage}</p>
+      {:else if previewItem.price}
         <p class="cart-preview-price">{formatPrice(previewItem.price)} FCFA</p>
       {/if}
     </div>

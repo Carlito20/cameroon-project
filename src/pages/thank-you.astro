@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { HIDE_PRICES, HIDE_PRICES_MESSAGE } from '../config';
 ---
 
 <BaseLayout title="Thank You - American Select">
@@ -81,7 +82,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 </BaseLayout>
 
-<script>
+<script define:vars={{ HIDE_PRICES, HIDE_PRICES_MESSAGE }}>
   // Payment details — update these numbers as needed
   const PAYMENT_DETAILS = {
     'MTN MoMo': {
@@ -169,13 +170,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="oc-item-name">${item.name}</div>
         <div class="oc-item-meta">
           <span class="oc-item-qty">×${item.quantity || 1}</span>
-          ${item.price ? `<span class="oc-item-price">${formatPrice(item.price)} FCFA each</span>` : ''}
-          ${item.price ? `<span class="oc-item-line">${formatPrice(line)} FCFA</span>` : ''}
+          ${(!HIDE_PRICES && item.price) ? `<span class="oc-item-price">${formatPrice(item.price)} FCFA each</span>` : ''}
+          ${(!HIDE_PRICES && item.price) ? `<span class="oc-item-line">${formatPrice(line)} FCFA</span>` : ''}
         </div>
       </div>`;
     });
     document.getElementById('oc-items').innerHTML = itemsHtml;
-    document.getElementById('oc-total').textContent = formatPrice(order.total) + ' FCFA';
+    document.getElementById('oc-total').textContent = HIDE_PRICES ? HIDE_PRICES_MESSAGE : formatPrice(order.total) + ' FCFA';
 
     // Fill payment instructions
     document.getElementById('oc-pay-instructions').innerHTML =
