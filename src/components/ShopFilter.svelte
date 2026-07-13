@@ -2673,6 +2673,8 @@
   .lightbox-dot {
     width: 10px;
     height: 10px;
+    min-width: 0;
+    min-height: 0;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.4);
     border: none;
@@ -2856,6 +2858,8 @@
     display: inline-block;
     width: 28px;
     height: 28px;
+    min-width: 0;
+    min-height: 0;
     border-radius: 50%;
     border: 2.5px solid #e0e0e0;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
@@ -3947,6 +3951,8 @@
   .modal-dot {
     width: 8px;
     height: 8px;
+    min-width: 0;
+    min-height: 0;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.5);
     border: none;
