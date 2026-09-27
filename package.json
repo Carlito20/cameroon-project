@@ -18,12 +18,12 @@
     "migrate-tracker": "node scripts/migrate-tracker.mjs"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.80.0",
-    "@astrojs/svelte": "^7.2.5",
-    "@imgly/background-removal-node": "^1.4.5",
+    "@anthropic-ai/sdk": "^0.100.1",
+    "@astrojs/svelte": "^8.1.2",
+    "@imgly/background-removal-node": "^1.4.3",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.8",
-    "exceljs": "^4.4.0",
+    "astro": "^6.4.3",
+    "exceljs": "^3.4.0",
     "pdf-lib": "^1.17.1",
     "pngjs": "^7.0.0",
     "puppeteer": "^24.37.5",
