@@ -1117,6 +1117,13 @@
     runShowcaseCycle();
   }
 
+  let showcaseWrapperEl;
+
+  // Nav buttons sit below the grid — bring the new set of products into view
+  function scrollToShowcaseTop() {
+    showcaseWrapperEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   // Start/stop showcase based on view state
   $: {
     if (selectedCategory === 'all' && (!searchQuery || searchQuery.trim().length < 1)) {
@@ -1379,11 +1386,7 @@
 {:else if selectedCategory === 'all'}
 <!-- Random Product Showcase -->
 {#if showcaseVisible.length > 0}
-  <div class="showcase-wrapper">
-    <div class="showcase-nav">
-      <button class="showcase-nav-btn" on:click={prevShowcaseProduct} aria-label="Previous products">&#8249;</button>
-      <button class="showcase-nav-btn" on:click={nextShowcaseProduct} aria-label="Next products">&#8250;</button>
-    </div>
+  <div class="showcase-wrapper" bind:this={showcaseWrapperEl}>
     {#key showcaseOffset + sortBy}
       <div class="showcase-grid">
         {#each showcaseVisibleSorted as sp (sp.productName)}
@@ -1470,6 +1473,10 @@
         {/each}
       </div>
     {/key}
+    <div class="showcase-nav">
+      <button class="showcase-nav-btn" on:click={() => { prevShowcaseProduct(); scrollToShowcaseTop(); }} aria-label="Previous products">&#8249;</button>
+      <button class="showcase-nav-btn" on:click={() => { nextShowcaseProduct(); scrollToShowcaseTop(); }} aria-label="Next products">&#8250;</button>
+    </div>
   </div>
 {/if}
 {:else}
@@ -3738,14 +3745,15 @@
   /* ── Random Product Showcase ─────────────────────────────────────────── */
   .showcase-wrapper {
     margin-bottom: 1rem;
+    scroll-margin-top: 120px;
   }
 
   .showcase-nav {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.25rem;
   }
 
   .showcase-nav-btn {
