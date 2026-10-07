@@ -18,7 +18,9 @@ if ($method === 'GET') {
             echo json_encode(['discounts' => loadAllDiscounts(), 'today' => discountToday()]);
         } else {
             header('Cache-Control: no-store');
-            echo json_encode(loadActiveDiscounts());
+            $active = loadActiveDiscounts();
+            // Objects, not [], when empty — the shop looks discounts up by name
+            echo json_encode(['products' => (object)$active['products'], 'categories' => (object)$active['categories']]);
         }
     } catch (Exception $e) {
         http_response_code(500);
