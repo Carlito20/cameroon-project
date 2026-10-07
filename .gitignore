@@ -98,3 +98,6 @@ Loan_Payment_Breakdown.xlsx
 "American Select – Business Card.pdf"
 "Images/American Select .jpg"
 "Images/American Select — A4 Flyer.pdf"
+
+# Passwords and database login — never commit (template: public/api/db.example.php)
+public/api/db.php

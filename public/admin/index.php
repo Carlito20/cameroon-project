@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['admin_role'] = 'admin';
         header('Location: dashboard.php');
         exit;
-    } elseif ($password === '2026') {
+    } elseif (defined('STAFF_PASSWORD') && $password === STAFF_PASSWORD) {
         session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['last_activity'] = time();
