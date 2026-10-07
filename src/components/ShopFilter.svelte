@@ -1,5 +1,6 @@
 <script>
   import { onMount, onDestroy, tick } from 'svelte';
+  import { EMPTY_DISCOUNTS, fetchDiscounts, findDiscount, applyDiscount, discountBadge } from '../scripts/discounts.js';
 
   // Props passed from Astro
   export let categories = [];
@@ -48,14 +49,40 @@
     return item.images || (item.image ? [item.image] : null);
   }
 
-  function getProductPrice(item) {
+  // Regular price (live DB override, else catalog price)
+  function getBasePrice(item) {
     if (typeof item === 'string') return null;
     if (apiPrices[item.name] !== undefined && apiPrices[item.name] > 0) return apiPrices[item.name];
     return item.price;
   }
 
+  // Price the customer pays — regular price with any active discount applied
+  function getProductPrice(item) {
+    const base = getBasePrice(item);
+    if (!base) return base;
+    return applyDiscount(base, findDiscount(apiDiscounts, item.name, productCategory[item.name]));
+  }
+
+  // Regular price when the item is on sale, else null
+  function getWasPrice(item) {
+    if (hidePrices || !item || typeof item === 'string') return null;
+    const base = getBasePrice(item);
+    return base && getProductPrice(item) < base ? base : null;
+  }
+
   let apiStock = {};
   let apiPrices = {};
+  let apiDiscounts = EMPTY_DISCOUNTS;
+
+  // product name -> top-level category name (for category discounts)
+  const productCategory = {};
+  function mapCategory(items, categoryName) {
+    for (const item of items) {
+      if (isSubCategory(item)) mapCategory(item.items, categoryName);
+      else if (typeof item === 'object' && item) productCategory[item.name] = categoryName;
+    }
+  }
+  categories.forEach(c => mapCategory(c.items, c.name));
 
   function getProductQuantity(item) {
     if (typeof item === 'string') return null;
@@ -215,7 +242,7 @@
   }
 
   // Reactive search - triggers when searchQuery, categories, or live prices change
-  $: performSearch(searchQuery), categories, apiPrices;
+  $: performSearch(searchQuery), categories, apiPrices, apiDiscounts;
 
   // Sort helper for product items
   function sortProducts(items, sort) {
@@ -360,6 +387,9 @@
       .then(r => r.json())
       .then(data => { apiPrices = data; })
       .catch(() => {}); // silently fall back to categories.ts prices
+
+    // Fetch active discounts — sale prices shown with the regular price struck through
+    fetchDiscounts().then(d => { apiDiscounts = d; });
 
     // Listen for cart loaded from localStorage (on page refresh)
     const handleCartLoaded = (e) => {
@@ -1195,6 +1225,17 @@
   }
 </script>
 
+{#snippet priceTag(product, cls)}
+  <!-- apiPrices/apiDiscounts passed only so the tag re-renders when they load -->
+  {@const price = getProductPrice(product, apiPrices, apiDiscounts)}
+  {@const was = getWasPrice(product, apiPrices, apiDiscounts)}
+  <p class={cls} class:on-sale={was}>
+    {#if was}<s class="was-price">{formatPrice(was)}</s>{/if}
+    {formatPrice(price)}
+    {#if was}<span class="sale-badge">{discountBadge(was, price)}</span>{/if}
+  </p>
+{/snippet}
+
 <svelte:window on:click={() => { shareMenuOpen = null; }} on:touchstart|passive={(e) => { if (shareMenuOpen && !e.target.closest('.share-wrap')) shareMenuOpen = null; }} />
 
 <!-- Category Filter and Search -->
@@ -1303,8 +1344,8 @@
               <p class="product-category-tag">
                 {result.categoryName}{result.subCategoryName ? ` > ${result.subCategoryName}` : ''}
               </p>
-              {#if result.price}
-                <p class="product-price">{formatPrice(result.price)}</p>
+              {#if getProductPrice(result.product)}
+                {@render priceTag(result.product, 'product-price')}
               {/if}
               {#if result.quantity !== null && result.quantity !== undefined}
                 <p class="product-quantity">
@@ -1350,7 +1391,7 @@
                   class:added={addedItems[getDisplayName(result.product)]}
                   class:needs-color={!selectedColors[result.productName] && result.colors && result.colors.length > 1}
                   disabled={isOutOfStock(result.product) || !!(selectedColors[result.productName] && result.colors && result.colors.length > 1 && getColorRemaining(result.product, selectedColors[result.productName]) === 0)}
-                  on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, result.price)}
+                  on:click={() => handleInquiryClick(result.product, result.subCategoryName || result.categoryName, result.quantity, getProductPrice(result.product))}
                 >
                   {addedItems[getDisplayName(result.product)] ? `✓ Added (${addedItems[getDisplayName(result.product)]})` : 'Add to Cart'}
                 </button>
@@ -1398,8 +1439,8 @@
               <div class="product-info">
                 <p class="product-category-tag">{sp.categoryName}{sp.subCategoryName ? ` › ${sp.subCategoryName}` : ''}</p>
                 <h4>{sp.productName}</h4>
-                {#if sp.price}
-                  <p class="product-price">{formatPrice(sp.price)}</p>
+                {#if getProductPrice(sp.product)}
+                  {@render priceTag(sp.product, 'product-price')}
                 {/if}
                 {#if sp.quantity !== null && sp.quantity !== undefined}
                   <p class="product-quantity">
@@ -1448,7 +1489,7 @@
                   class:added={addedItems[getDisplayName(sp.product)]}
                   class:needs-color={!selectedColors[sp.productName] && sp.colors && sp.colors.length > 1}
                   disabled={isOutOfStock(sp.product) || !!(selectedColors[sp.productName] && sp.colors && sp.colors.length > 1 && getColorRemaining(sp.product, selectedColors[sp.productName]) === 0)}
-                  on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, sp.price)}
+                  on:click={() => handleInquiryClick(sp.product, sp.subCategoryName || sp.categoryName, sp.quantity, getProductPrice(sp.product))}
                 >
                   {addedItems[getDisplayName(sp.product)] ? `✓ Added (${addedItems[getDisplayName(sp.product)]})` : 'Add to Cart'}
                 </button>
@@ -1527,7 +1568,7 @@
                             <div class="product-info">
                               <h4>{getProductName(nestedProduct)}</h4>
                               {#if getProductPrice(nestedProduct)}
-                                <p class="product-price">{formatPrice(getProductPrice(nestedProduct))}</p>
+                                {@render priceTag(nestedProduct, 'product-price')}
                               {/if}
                               {#if getProductQuantity(nestedProduct) !== null && getProductQuantity(nestedProduct) !== undefined}
                                 <p class="product-quantity">
@@ -1620,7 +1661,7 @@
                   <div class="product-info">
                     <h4>{getProductName(subItem)}</h4>
                     {#if getProductPrice(subItem)}
-                      <p class="product-price">{formatPrice(getProductPrice(subItem))}</p>
+                      {@render priceTag(subItem, 'product-price')}
                     {/if}
                     {#if getProductQuantity(subItem) !== null && getProductQuantity(subItem) !== undefined}
                       <p class="product-quantity">
@@ -1715,7 +1756,7 @@
             <div class="product-info">
               <h4>{getProductName(item)}</h4>
               {#if getProductPrice(item)}
-                <p class="product-price">{formatPrice(getProductPrice(item))}</p>
+                {@render priceTag(item, 'product-price')}
               {/if}
               {#if getProductQuantity(item) !== null && getProductQuantity(item) !== undefined}
                 <p class="product-quantity">
@@ -1827,8 +1868,8 @@
         <div class="product-modal-info">
           <p class="product-modal-category">{productModal.categoryName}{productModal.subCategoryName ? ` › ${productModal.subCategoryName}` : ''}</p>
           <h2 class="product-modal-name">{productModal.productName}</h2>
-          {#if productModal.price}
-            <p class="product-modal-price">{formatPrice(productModal.price)}</p>
+          {#if getProductPrice(productModal.product)}
+            {@render priceTag(productModal.product, 'product-modal-price')}
           {/if}
           {#if productModal.quantity !== null && productModal.quantity !== undefined}
             <p class="product-modal-stock">
@@ -1874,7 +1915,7 @@
               class:added={addedItems[getDisplayName(productModal.product)]}
               class:needs-color={!selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1}
               disabled={!!(selectedColors[productModal.productName] && productModal.colors && productModal.colors.length > 1 && getColorRemaining(productModal.product, selectedColors[productModal.productName]) === 0)}
-              on:click={() => handleInquiryClick(productModal.product, productModal.subCategoryName || productModal.categoryName, productModal.quantity, productModal.price)}
+              on:click={() => handleInquiryClick(productModal.product, productModal.subCategoryName || productModal.categoryName, productModal.quantity, getProductPrice(productModal.product))}
             >
               {addedItems[getDisplayName(productModal.product)] ? `✓ Added (${addedItems[getDisplayName(productModal.product)]})` : 'Add to Cart'}
             </button>
@@ -2786,6 +2827,32 @@
     font-size: 1.1rem;
     font-weight: 700;
     color: #f0a500;
+  }
+
+  .product-price.on-sale,
+  .product-modal-price.on-sale {
+    color: #d32f2f;
+  }
+
+  .was-price {
+    display: block;
+    font-size: 0.75em;
+    font-weight: 500;
+    color: #999;
+  }
+
+  .sale-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: #d32f2f;
+    color: #fff;
+    font-size: 0.7em;
+    font-weight: 800;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .product-quantity {

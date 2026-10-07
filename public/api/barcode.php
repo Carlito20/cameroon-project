@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/discount-lib.php';
 session_start();
 
 header('Content-Type: application/json');
@@ -90,6 +91,14 @@ function getProductPrice($productName) {
     return 0;
 }
 
+// Lookup response with any active discount applied (original_price set when on sale)
+function productLookup($productName, $qty) {
+    $out = ['found' => true, 'product_name' => $productName, 'quantity' => $qty, 'price' => getProductPrice($productName)];
+    [$final, $orig] = discountedPrice(loadActiveDiscounts(), $productName, $out['price']);
+    if ($orig !== null) { $out['price'] = $final; $out['original_price'] = $orig; }
+    return $out;
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 // GET: look up by product name (for manual add in checkout)
@@ -99,8 +108,7 @@ if ($method === 'GET' && isset($_GET['name'])) {
     try {
         $pdo = getPdo();
         $qty = getCurrentStock($pdo, $productName);
-        $price = getProductPrice($productName);
-        echo json_encode(['found' => true, 'product_name' => $productName, 'quantity' => $qty, 'price' => $price]);
+        echo json_encode(productLookup($productName, $qty));
     } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
     exit;
 }
@@ -116,8 +124,7 @@ if ($method === 'GET') {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             $qty = getCurrentStock($pdo, $row['product_name']);
-            $price = getProductPrice($row['product_name']);
-            echo json_encode(['found' => true, 'product_name' => $row['product_name'], 'quantity' => $qty, 'price' => $price]);
+            echo json_encode(productLookup($row['product_name'], $qty));
         } else {
             echo json_encode(['found' => false]);
         }

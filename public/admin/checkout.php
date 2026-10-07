@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
+require_once __DIR__ . '/../api/discount-lib.php';
 session_start();
 if (empty($_SESSION['admin_logged_in'])) { header('Location: index.php'); exit; }
 
@@ -34,6 +35,14 @@ try {
     }
     unset($p);
 } catch (Exception $e) {}
+
+// Apply active discounts (price becomes the sale price; original_price kept for display/records)
+$activeDiscounts = loadActiveDiscounts();
+foreach ($products as &$p) {
+    [$final, $orig] = discountedPrice($activeDiscounts, $p['name'], (int)($p['price'] ?? 0), $p['category'] ?? null);
+    if ($orig !== null) { $p['price'] = $final; $p['original_price'] = $orig; }
+}
+unset($p);
 
 // Pre-load order from pending_orders if from_order param given
 $preloadOrder = null;
@@ -619,13 +628,13 @@ function scanBarcode(barcode) {
     .then(d => {
       if (d.error) { setScanStatus('Error: ' + d.error, 'err'); return; }
       if (!d.found) { setScanStatus('Unknown barcode — assign it in the Scan page first, or add manually below', 'err'); return; }
-      addToCart(d.product_name, d.price || 0, d.quantity);
+      addToCart(d.product_name, d.price || 0, d.quantity, d.original_price || null);
     })
     .catch(() => setScanStatus('Network error', 'err'));
 }
 
 // ── Cart ops ─────────────────────────────────────────────
-function addToCart(name, price, stock) {
+function addToCart(name, price, stock, originalPrice) {
   const ex = cart.find(i => i.name === name);
   if (ex) {
     ex.stock = stock;
@@ -639,7 +648,9 @@ function addToCart(name, price, stock) {
       setScanStatus('⚠ Out of stock — 0 available for: ' + name.substring(0, 40), 'err');
       return;
     }
-    cart.push({ name, price, qty: 1, stock, image: catalogMap[name]?.images?.[0] || catalogMap[name]?.image || '' });
+    const item = { name, price, qty: 1, stock, image: catalogMap[name]?.images?.[0] || catalogMap[name]?.image || '' };
+    if (originalPrice && originalPrice > price) item.original_price = originalPrice;
+    cart.push(item);
   }
   renderCart();
   broadcastDisplay();
@@ -713,7 +724,7 @@ function renderCart() {
     html += `<div class="cart-item">
       <div>
         <div class="ci-name">${esc(item.name)}</div>
-        <div class="ci-unit">${item.price ? item.price.toLocaleString() + ' FCFA each' : 'No price set'}</div>
+        <div class="ci-unit">${item.original_price ? '<s style="color:#666;">' + item.original_price.toLocaleString() + '</s> ' : ''}${item.price ? item.price.toLocaleString() + ' FCFA each' : 'No price set'}${item.original_price ? ' <span style="color:#e05050;font-weight:700;">SALE</span>' : ''}</div>
         <div class="ci-linetotal">${item.price ? line.toLocaleString() + ' FCFA' : '—'}</div>
         ${overStock ? '<div class="ci-stock-warn">⚠ Only ' + item.stock + ' in stock</div>' : ''}
       </div>
@@ -859,7 +870,7 @@ async function doCheckout() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'pos_sale',
-          items: snapshot.map(i => ({ name: i.name, quantity: i.qty, price: i.price })),
+          items: snapshot.map(i => ({ name: i.name, quantity: i.qty, price: i.price, ...(i.original_price ? { original_price: i.original_price } : {}) })),
           total: total,
           payment_method: selectedPayment,
           customer_phone: customerPhone || ''
@@ -891,7 +902,7 @@ function showReceipt(items) {
     html += `<div class="receipt-row">
       <div>
         <div class="receipt-item-name">${esc(item.name.length > 55 ? item.name.substring(0,55)+'…' : item.name)}</div>
-        <div class="receipt-item-meta">×${item.qty}  ·  ${item.price ? item.price.toLocaleString() + ' FCFA each / l\'unité' : ''}</div>
+        <div class="receipt-item-meta">×${item.qty}  ·  ${item.price ? item.price.toLocaleString() + ' FCFA each / l\'unité' : ''}${item.original_price ? '  ·  was ' + item.original_price.toLocaleString() : ''}</div>
       </div>
       <div class="receipt-item-amt">${item.price ? line.toLocaleString() + ' FCFA' : '—'}</div>
     </div>`;
@@ -966,7 +977,7 @@ function showReceipt(items) {
     items.map(item => {
       const line = item.price * item.qty;
       return `<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
-        <div><div>${esc(item.name)}</div><div style="color:#888;">×${item.qty} @ ${item.price.toLocaleString()} FCFA / l'unité</div></div>
+        <div><div>${esc(item.name)}</div><div style="color:#888;">×${item.qty} @ ${item.price.toLocaleString()} FCFA / l'unité${item.original_price ? ' (was ' + item.original_price.toLocaleString() + ')' : ''}</div></div>
         <div style="font-weight:bold;">${line.toLocaleString()} FCFA</div>
       </div>`;
     }).join('') +
@@ -1043,6 +1054,7 @@ async function printReceiptThermal() {
     const meta = '  x' + item.qty + ' @ ' + (item.price ? item.price.toLocaleString() + ' FCFA' : '--');
     const amt  = item.price ? fmt(line) : '--';
     d += padLine(meta, amt) + LF;
+    if (item.original_price) d += '  (was ' + item.original_price.toLocaleString() + ' FCFA)' + LF;
     d += LF;
   });
 
@@ -1182,7 +1194,7 @@ function filterProducts(q) {
   res.innerHTML = matches.map((p, i) =>
     `<div class="manual-item" data-idx="${i}" data-name="${esc(p.name)}" data-price="${p.price||0}" onclick="pickProduct(this)">
       <div class="manual-item-name">${esc(p.name)}</div>
-      <div class="manual-item-price">${p.price ? p.price.toLocaleString() + ' FCFA' : 'No price'}</div>
+      <div class="manual-item-price">${p.original_price ? '<s style="color:#666;">' + p.original_price.toLocaleString() + '</s> ' : ''}${p.price ? p.price.toLocaleString() + ' FCFA' : 'No price'}</div>
     </div>`
   ).join('');
   res.style.display = 'block';
@@ -1191,6 +1203,7 @@ function filterProducts(q) {
 function pickProduct(el) {
   const name = el.dataset.name;
   const price = parseInt(el.dataset.price, 10) || 0;
+  const originalPrice = catalogMap[name]?.original_price || null;
   document.getElementById('manual-input').value = '';
   document.getElementById('manual-results').style.display = 'none';
   document.getElementById('manual-wrap').classList.remove('open');
@@ -1199,9 +1212,9 @@ function pickProduct(el) {
     .then(r => r.json())
     .then(d => {
       const stock = (d && !d.error) ? d.quantity : (catalogMap[name]?.quantity ?? 99);
-      addToCart(name, price, stock);
+      addToCart(name, price, stock, originalPrice);
     })
-    .catch(() => addToCart(name, price, catalogMap[name]?.quantity ?? 99));
+    .catch(() => addToCart(name, price, catalogMap[name]?.quantity ?? 99, originalPrice));
 }
 
 // ── Cash Drawer via local relay (http://localhost:3099) ───────────────────────
@@ -1290,7 +1303,7 @@ function queueOfflineSale(items, total, payment) {
   q.push({
     id: 'offline_' + Date.now(),
     timestamp: Date.now(),
-    items: items.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+    items: items.map(i => ({ name: i.name, price: i.price, qty: i.qty, ...(i.original_price ? { original_price: i.original_price } : {}) })),
     total,
     payment
   });
@@ -1361,7 +1374,7 @@ async function syncOfflineQueue() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'pos_sale',
-          items: sale.items.map(i => ({ name: i.name, quantity: i.qty, price: i.price })),
+          items: sale.items.map(i => ({ name: i.name, quantity: i.qty, price: i.price, ...(i.original_price ? { original_price: i.original_price } : {}) })),
           total: sale.total,
           payment_method: sale.payment,
           sale_time: saleTime

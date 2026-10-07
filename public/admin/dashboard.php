@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
+require_once __DIR__ . '/../api/discount-lib.php';
 session_start();
 
 if (empty($_SESSION['admin_logged_in'])) {
@@ -66,6 +67,14 @@ try {
         $dbPrices[$row['product_name']] = (int)$row['price'];
     }
 } catch (Exception $e) { /* price table optional */ }
+
+// Discounts (all of them, incl. scheduled/paused/expired) + category list for category discounts
+$allDiscounts = [];
+try { $allDiscounts = loadAllDiscounts(); } catch (Exception $e) { /* discounts optional */ }
+$productCategories = [];
+foreach ($products as $p) {
+    if (!empty($p['category']) && !in_array($p['category'], $productCategories, true)) $productCategories[] = $p['category'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -392,6 +401,77 @@ try {
       margin-left: 8px;
     }
 
+    /* ── Discounts ─────────────────────────────────────── */
+    .disc-panel {
+      background: #120d0d; border: 1px solid #3a1a1a; border-radius: 10px;
+      padding: 14px 16px; margin-bottom: 20px;
+    }
+    .disc-panel h3 { color: #e05050; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .disc-panel p { color: #777; font-size: 12px; margin-bottom: 10px; }
+    .disc-cat-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 8px 0; border-top: 1px solid #241414; flex-wrap: wrap;
+    }
+    .disc-cat-name { font-size: 13px; color: #ccc; font-weight: 600; flex: 1; min-width: 140px; }
+    .disc-badge {
+      display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 8px;
+      border-radius: 4px; white-space: nowrap; line-height: 1.4;
+    }
+    .disc-active    { background: #3a0d0d; color: #ff6b6b; }
+    .disc-scheduled { background: #0d1a2a; color: #7b9fd4; }
+    .disc-paused, .disc-expired { background: #1a1a1a; color: #666; }
+    .disc-meta { font-size: 11px; color: #666; margin-top: 3px; }
+    .disc-sale-price { font-size: 13px; font-weight: 800; color: #ff6b6b; margin-top: 3px; }
+    .disc-btn {
+      padding: 6px 12px; background: transparent; color: #e05050;
+      border: 1px solid #3a1a1a; border-radius: 6px; font-size: 12px; font-weight: 700;
+      cursor: pointer; min-height: 44px; min-width: 44px; white-space: nowrap;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .disc-btn:hover { background: #2a0a0a; }
+    .disc-modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.7);
+      -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+      padding: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px))
+               calc(16px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
+      -webkit-transform: translateZ(0); transform: translateZ(0); will-change: transform;
+      overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+    }
+    .disc-modal-overlay.open { display: flex; }
+    .disc-modal {
+      background: #151515; border: 1px solid #2a2a2a; border-radius: 12px;
+      width: 100%; max-width: 420px; padding: 20px; margin: auto;
+    }
+    .disc-modal h3 { color: #e05050; font-size: 16px; margin-bottom: 4px; }
+    .disc-modal .disc-target { color: #aaa; font-size: 13px; margin-bottom: 16px; line-height: 1.4; word-break: break-word; }
+    .disc-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; flex: 1; min-width: 0; }
+    .disc-field label { font-size: 11px; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .disc-row { display: flex; gap: 10px; }
+    .disc-input {
+      width: 100%; padding: 9px 12px; background: #1a1a1a; border: 1px solid #2a2a2a;
+      border-radius: 6px; color: #e0e0e0; font-size: 16px; outline: none; min-height: 44px;
+      -webkit-appearance: none; appearance: none; touch-action: manipulation;
+      font-family: inherit;
+    }
+    .disc-input:focus { border-color: #e05050; }
+    .disc-type-toggle { display: flex; border: 1px solid #2a2a2a; border-radius: 6px; overflow: hidden; }
+    .disc-type-toggle button {
+      flex: 1; padding: 8px 10px; background: #1a1a1a; color: #888; border: none;
+      font-size: 14px; font-weight: 700; cursor: pointer; min-height: 44px;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    }
+    .disc-type-toggle button.on { background: #3a0d0d; color: #ff6b6b; }
+    .disc-preview { font-size: 13px; color: #aaa; margin-bottom: 14px; min-height: 18px; }
+    .disc-preview strong { color: #ff6b6b; }
+    .disc-hint { font-size: 11px; color: #555; margin: -8px 0 14px; }
+    .disc-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .disc-actions .btn { flex: 1; }
+    .disc-error { color: #ff6b6b; font-size: 12px; margin-bottom: 10px; }
+
     @media (max-width: 600px) {
       .product-name { max-width: 160px; font-size: 13px; }
       .qty-input { width: 64px; }
@@ -469,6 +549,22 @@ try {
   </div>
   <?php endif; ?>
 
+  <?php if (!empty($productCategories)): ?>
+  <div class="disc-panel">
+    <h3>🏷 Category Discounts</h3>
+    <p>Discount every product in a category at once. A discount set on a single product (in the table below) takes priority.</p>
+    <?php foreach ($productCategories as $cat): ?>
+    <div class="disc-cat-row" data-cat="<?= htmlspecialchars($cat) ?>">
+      <div class="disc-cat-name"><?= htmlspecialchars($cat) ?></div>
+      <div class="disc-cat-status"></div>
+      <?php if ($isAdmin): ?>
+      <button class="disc-btn" onclick="openDiscount('category', <?= htmlspecialchars(json_encode($cat)) ?>)">Set</button>
+      <?php endif; ?>
+    </div>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
+
   <div class="toolbar">
     <input type="text" class="search-box" id="search" placeholder="Search products..." oninput="filterTable(this.value)">
     <span class="count-badge" id="row-count"><?= count($products) ?> products</span>
@@ -484,6 +580,7 @@ try {
         <th>Save Qty</th>
         <th>Price (FCFA)</th>
         <th>Save Price</th>
+        <th>Discount</th>
       </tr>
     </thead>
     <tbody>
@@ -498,7 +595,7 @@ try {
         $displayPrice = $livePrice !== null ? $livePrice : $defaultPrice;
         $isPriceLive = $livePrice !== null;
       ?>
-      <tr data-name="<?= htmlspecialchars(strtolower($name)) ?>">
+      <tr data-name="<?= htmlspecialchars(strtolower($name)) ?>" data-product="<?= htmlspecialchars($name) ?>" data-category="<?= htmlspecialchars($product['category'] ?? '') ?>" data-price="<?= $displayPrice ?>">
         <td style="color:#555;font-size:12px;"><?= $i + 1 ?></td>
         <td class="product-name">
           <?= htmlspecialchars($name) ?>
@@ -557,12 +654,57 @@ try {
           <span class="status-msg" id="price-status-<?= $i ?>"></span>
           <?php endif; ?>
         </td>
+        <td class="disc-cell" style="white-space:nowrap;">
+          <div class="disc-cell-info"></div>
+          <?php if ($isAdmin): ?>
+          <button class="disc-btn" style="margin-top:4px;" onclick="openDiscountForRow(this)">＋ Discount</button>
+          <?php endif; ?>
+        </td>
       </tr>
       <?php endforeach; ?>
     </tbody>
   </table>
   </div>
 </div>
+
+<?php if ($isAdmin): ?>
+<div class="disc-modal-overlay" id="disc-modal" onclick="if (event.target === this) closeDiscount()">
+  <div class="disc-modal" role="dialog" aria-modal="true" aria-labelledby="disc-title">
+    <h3 id="disc-title">Discount</h3>
+    <div class="disc-target" id="disc-target"></div>
+    <div class="disc-field">
+      <label>Discount type</label>
+      <div class="disc-type-toggle">
+        <button type="button" id="disc-type-percent" onclick="setDiscountType('percent')">% off</button>
+        <button type="button" id="disc-type-fixed" onclick="setDiscountType('fixed')">FCFA off</button>
+      </div>
+    </div>
+    <div class="disc-field">
+      <label for="disc-value" id="disc-value-label">Percent off</label>
+      <input type="number" class="disc-input" id="disc-value" min="1" inputmode="numeric" oninput="updateDiscountPreview()">
+    </div>
+    <div class="disc-preview" id="disc-preview"></div>
+    <div class="disc-row">
+      <div class="disc-field">
+        <label for="disc-start">Starts (optional)</label>
+        <input type="date" class="disc-input" id="disc-start">
+      </div>
+      <div class="disc-field">
+        <label for="disc-end">Ends (optional)</label>
+        <input type="date" class="disc-input" id="disc-end">
+      </div>
+    </div>
+    <div class="disc-hint">Leave dates empty for a sale with no end date. A sale ends after its last day (Cameroon time).</div>
+    <div class="disc-error" id="disc-error"></div>
+    <div class="disc-actions">
+      <button type="button" class="btn btn-gold" id="disc-save" onclick="saveDiscount()">Save</button>
+      <button type="button" class="btn btn-outline" id="disc-pause" onclick="toggleDiscountPause()" style="display:none;">Pause</button>
+      <button type="button" class="btn btn-danger" id="disc-remove" onclick="removeDiscount()" style="display:none;">Remove</button>
+      <button type="button" class="btn btn-outline" onclick="closeDiscount()">Cancel</button>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
 
 <script>
 function markDone(productName, btn) {
@@ -870,6 +1012,199 @@ function filterTable(query) {
   });
   document.getElementById('row-count').textContent = visible + ' products';
 }
+
+// ── Discounts ────────────────────────────────────────
+let DISCOUNTS = { product: {}, category: {} };
+const DISC_STATUS_LABEL = { active: 'Active', scheduled: 'Scheduled', paused: 'Paused', expired: 'Expired' };
+
+function indexDiscounts(rows) {
+  DISCOUNTS = { product: {}, category: {} };
+  rows.forEach(r => { DISCOUNTS[r.scope][r.target] = r; });
+}
+indexDiscounts(<?= json_encode($allDiscounts) ?>);
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function discLabel(d) {
+  return d.type === 'percent' ? '-' + d.value + '%' : '-' + Number(d.value).toLocaleString() + ' FCFA';
+}
+function discDates(d) {
+  if (d.starts_on && d.ends_on) return d.starts_on + ' → ' + d.ends_on;
+  if (d.ends_on) return 'until ' + d.ends_on;
+  if (d.starts_on) return 'from ' + d.starts_on;
+  return 'no end date';
+}
+function discApply(price, d) {
+  if (!price || !d) return price;
+  const v = d.type === 'percent' ? Math.round(price * (100 - d.value) / 100) : price - d.value;
+  return Math.max(0, v);
+}
+function discBadge(d) {
+  return '<span class="disc-badge disc-' + d.status + '">' + escHtml(discLabel(d)) + ' · ' + DISC_STATUS_LABEL[d.status] + '</span>';
+}
+
+// Product discount for a row: exact name, else the base name of a colour variant "Name (Colour)"
+function ownDiscount(name) {
+  if (DISCOUNTS.product[name]) return DISCOUNTS.product[name];
+  const base = name.replace(/\s\([^()]*\)$/, '');
+  return base !== name ? (DISCOUNTS.product[base] || null) : null;
+}
+
+function rowPrice(row) {
+  const input = row.querySelector('.price-input');
+  if (input) return parseInt(input.value, 10) || 0;
+  return parseInt(row.dataset.price || '0', 10) || 0;
+}
+
+function renderDiscounts() {
+  document.querySelectorAll('#products-table tbody tr').forEach(row => {
+    const info = row.querySelector('.disc-cell-info');
+    const btn  = row.querySelector('.disc-cell .disc-btn');
+    if (!info) return;
+    const own = ownDiscount(row.dataset.product);
+    const cat = row.dataset.category ? DISCOUNTS.category[row.dataset.category] : null;
+    // Same rule as the server: an active product discount wins, then an active category discount
+    const effective = (own && own.status === 'active') ? own : (cat && cat.status === 'active') ? cat : null;
+    let html = '';
+    if (own) html += discBadge(own) + '<div class="disc-meta">' + escHtml(discDates(own)) + '</div>';
+    if (cat && (!own || own.status !== 'active')) {
+      html += '<div class="disc-meta">Category: ' + discBadge(cat) + '</div>';
+    }
+    const price = rowPrice(row);
+    if (effective && price) {
+      html += '<div class="disc-sale-price">Sale: ' + discApply(price, effective).toLocaleString() + ' FCFA</div>';
+    }
+    info.innerHTML = html;
+    if (btn) btn.textContent = own ? 'Edit' : '＋ Discount';
+  });
+  document.querySelectorAll('.disc-cat-row').forEach(row => {
+    const d = DISCOUNTS.category[row.dataset.cat];
+    row.querySelector('.disc-cat-status').innerHTML = d
+      ? discBadge(d) + '<div class="disc-meta">' + escHtml(discDates(d)) + '</div>'
+      : '<span class="disc-meta">No discount</span>';
+    const btn = row.querySelector('.disc-btn');
+    if (btn) btn.textContent = d ? 'Edit' : 'Set';
+  });
+}
+renderDiscounts();
+// Keep the "Sale:" price in step when the regular price is edited
+document.querySelectorAll('.price-input').forEach(i => i.addEventListener('input', renderDiscounts));
+
+let discEditing = null; // { scope, target, price, existing }
+let discType = 'percent';
+
+function openDiscountForRow(btn) {
+  const row = btn.closest('tr');
+  const own = ownDiscount(row.dataset.product);
+  // A discount set on the base name of a colour variant is edited in place
+  openDiscount('product', own ? own.target : row.dataset.product, rowPrice(row));
+}
+
+function openDiscount(scope, target, price) {
+  const existing = DISCOUNTS[scope][target] || null;
+  discEditing = { scope, target, price: price || 0, existing };
+  document.getElementById('disc-title').textContent = scope === 'category' ? 'Category discount' : 'Product discount';
+  document.getElementById('disc-target').textContent = target;
+  setDiscountType(existing ? existing.type : 'percent');
+  document.getElementById('disc-value').value = existing ? existing.value : '';
+  document.getElementById('disc-start').value = existing?.starts_on || '';
+  document.getElementById('disc-end').value = existing?.ends_on || '';
+  document.getElementById('disc-error').textContent = '';
+  document.getElementById('disc-remove').style.display = existing ? '' : 'none';
+  const pauseBtn = document.getElementById('disc-pause');
+  pauseBtn.style.display = existing ? '' : 'none';
+  pauseBtn.textContent = existing && !existing.active ? 'Resume' : 'Pause';
+  updateDiscountPreview();
+  document.getElementById('disc-modal').classList.add('open');
+  setTimeout(() => document.getElementById('disc-value').focus(), 50);
+}
+
+function closeDiscount() {
+  document.getElementById('disc-modal').classList.remove('open');
+  discEditing = null;
+}
+
+function setDiscountType(type) {
+  discType = type;
+  document.getElementById('disc-type-percent').classList.toggle('on', type === 'percent');
+  document.getElementById('disc-type-fixed').classList.toggle('on', type === 'fixed');
+  document.getElementById('disc-value-label').textContent = type === 'percent' ? 'Percent off' : 'Amount off (FCFA)';
+  document.getElementById('disc-value').max = type === 'percent' ? 99 : '';
+  updateDiscountPreview();
+}
+
+function updateDiscountPreview() {
+  const el = document.getElementById('disc-preview');
+  if (!discEditing) return;
+  const value = parseInt(document.getElementById('disc-value').value, 10);
+  if (!value) { el.innerHTML = ''; return; }
+  const d = { type: discType, value };
+  if (discEditing.scope === 'category') {
+    el.innerHTML = 'Every product in this category: <strong>' + escHtml(discLabel(d)) + '</strong>';
+    return;
+  }
+  const price = discEditing.price;
+  if (!price) { el.textContent = 'This product has no price set yet.'; return; }
+  el.innerHTML = price.toLocaleString() + ' FCFA → <strong>' + discApply(price, d).toLocaleString() + ' FCFA</strong>';
+}
+
+function discountRequest(payload) {
+  return fetch('/api/discounts.php', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(r => r.json());
+}
+
+function reloadDiscounts() {
+  return fetch('/api/discounts.php?all=1', { credentials: 'same-origin', cache: 'no-store' })
+    .then(r => r.json())
+    .then(data => { if (data.discounts) { indexDiscounts(data.discounts); renderDiscounts(); } });
+}
+
+function discountDone(data) {
+  if (data && data.success) return reloadDiscounts().then(closeDiscount);
+  document.getElementById('disc-error').textContent = (data && data.error) || 'Error';
+}
+
+function saveDiscount() {
+  if (!discEditing) return;
+  const err = document.getElementById('disc-error');
+  const value = parseInt(document.getElementById('disc-value').value, 10);
+  const starts_on = document.getElementById('disc-start').value;
+  const ends_on = document.getElementById('disc-end').value;
+  if (!value || value < 1) { err.textContent = 'Enter a discount amount.'; return; }
+  if (discType === 'percent' && value > 99) { err.textContent = 'Percentage must be 99 or less.'; return; }
+  if (discType === 'fixed' && discEditing.scope === 'product' && discEditing.price && value >= discEditing.price) {
+    err.textContent = 'Amount off must be less than the price (' + discEditing.price.toLocaleString() + ' FCFA).'; return;
+  }
+  if (starts_on && ends_on && ends_on < starts_on) { err.textContent = 'End date is before start date.'; return; }
+  const btn = document.getElementById('disc-save');
+  btn.disabled = true; btn.textContent = '...';
+  discountRequest({ action: 'save', scope: discEditing.scope, target: discEditing.target, type: discType, value, starts_on, ends_on })
+    .then(discountDone)
+    .catch(() => { err.textContent = 'Network error'; })
+    .finally(() => { btn.disabled = false; btn.textContent = 'Save'; });
+}
+
+function removeDiscount() {
+  if (!discEditing || !confirm('Remove this discount?')) return;
+  discountRequest({ action: 'delete', scope: discEditing.scope, target: discEditing.target })
+    .then(discountDone)
+    .catch(() => { document.getElementById('disc-error').textContent = 'Network error'; });
+}
+
+function toggleDiscountPause() {
+  if (!discEditing || !discEditing.existing) return;
+  discountRequest({ action: 'toggle', scope: discEditing.scope, target: discEditing.target, active: !discEditing.existing.active })
+    .then(discountDone)
+    .catch(() => { document.getElementById('disc-error').textContent = 'Network error'; });
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && discEditing) closeDiscount(); });
+// ── End discounts ────────────────────────────────────
 
 // Register Service Worker so checkout.php gets cached for offline use
 if ('serviceWorker' in navigator) {

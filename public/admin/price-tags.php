@@ -6,6 +6,7 @@ if (empty($_SESSION['admin_logged_in'])) {
 }
 
 require_once __DIR__ . '/../api/db.php';
+require_once __DIR__ . '/../api/discount-lib.php';
 
 $jsonPath = __DIR__ . '/../api/products-list.json';
 $products = [];
@@ -40,6 +41,15 @@ try {
     }
     unset($p);
 } catch (Exception $e) { /* price overrides optional */ }
+
+// Apply active discounts — tag shows the sale price with the old price struck through
+$activeDiscounts = loadActiveDiscounts();
+foreach ($products as &$p) {
+    if (!isset($p['price'])) continue;
+    [$final, $orig] = discountedPrice($activeDiscounts, $p['name'], (int)$p['price'], $p['category'] ?? null);
+    if ($orig !== null) { $p['price'] = $final; $p['original_price'] = $orig; }
+}
+unset($p);
 
 // Load live stock from DB
 try {
@@ -233,6 +243,9 @@ function fmt_price($n) {
     }
     .tag-name { font-size: 13px; font-weight: 600; color: #ddd; line-height: 1.4; }
     .tag-price { font-size: 18px; font-weight: 800; color: #d4af37; letter-spacing: 0.5px; }
+    .tag-was { font-size: 12px; font-weight: 600; color: #888; text-decoration: line-through; }
+    .tag-was .tag-sale { display: inline-block; text-decoration: none; color: #e05050; font-weight: 800; margin-left: 6px; }
+    @media print { .tag-was, .tag-was .tag-sale { color: #000 !important; } }
     .tag-store { font-size: 10px; color: #555; letter-spacing: 1px; text-transform: uppercase; }
     .tag-qty { font-size: 11px; color: #555; }
 
@@ -535,6 +548,9 @@ function fmt_price($n) {
     <div class="tag-card-top">
       <input type="checkbox" class="tag-check" onclick="event.stopPropagation(); syncCheck(this)" onchange="updateCount()">
     </div>
+    <?php if (!empty($p['original_price'])): ?>
+    <div class="tag-was"><?= fmt_price($p['original_price']) ?><span class="tag-sale">SALE</span></div>
+    <?php endif; ?>
     <div class="tag-price"><?= $price ?></div>
     <div class="tag-name"><?= $name ?></div>
     <div class="tag-store">American Select</div>

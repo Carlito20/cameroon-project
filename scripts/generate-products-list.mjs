@@ -45,6 +45,8 @@ const products = [];
 let cur = null;
 let colorsStr = '';
 let inColors  = false;
+let currentCategory = null;   // top-level category name (used for category discounts)
+let expectCategory  = false;  // the next name: line is a category's name
 
 for (const raw of lines) {
   const line = raw.trim();
@@ -62,11 +64,20 @@ for (const raw of lines) {
     continue;
   }
 
+  // id: — only top-level categories have one
+  if (/^id:\s*['"]/.test(line)) { expectCategory = true; continue; }
+
   // name:
   const nm = line.match(/^name:\s*['"](.+)['"]/);
   if (nm) {
     if (cur?.name && cur.quantity !== undefined) products.push(cur);
-    cur = { name: nm[1], quantity: undefined, price: undefined, colorsRaw: null };
+    if (expectCategory) {
+      currentCategory = nm[1];
+      expectCategory  = false;
+      cur = null;
+      continue;
+    }
+    cur = { name: nm[1], quantity: undefined, price: undefined, colorsRaw: null, category: currentCategory };
     continue;
   }
 
@@ -93,7 +104,7 @@ const parseColors = raw => raw ? (raw.match(/#[0-9a-fA-F]{6}/g) || []) : [];
 const result = [];
 const seen   = new Set();
 // Use existing quantity if present (preserves manual per-color stock edits)
-const add = (name, qty, price) => {
+const add = (name, qty, price, category) => {
   if (!seen.has(name)) {
     seen.add(name);
     const ex = existingMap[name];
@@ -101,6 +112,7 @@ const add = (name, qty, price) => {
       name,
       quantity: ex?.quantity !== undefined ? ex.quantity : qty,
       price:    ex?.price ?? price ?? undefined,
+      category: category ?? undefined,
     });
   }
 };
@@ -111,12 +123,12 @@ for (const p of products) {
 
   if (colors.length > 1) {
     const perColor = Math.ceil(p.quantity / colors.length);
-    for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor, p.price);
+    for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor, p.price, p.category);
   } else if (colors.length === 1) {
-    add(p.name, p.quantity, p.price);
-    add(`${p.name} (${getColorName(colors[0])})`, p.quantity, p.price);
+    add(p.name, p.quantity, p.price, p.category);
+    add(`${p.name} (${getColorName(colors[0])})`, p.quantity, p.price, p.category);
   } else {
-    add(p.name, p.quantity, p.price);
+    add(p.name, p.quantity, p.price, p.category);
   }
 }
 

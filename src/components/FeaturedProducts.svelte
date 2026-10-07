@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { categories } from '../data/categories.ts';
+  import { fetchDiscounts, findDiscount, applyDiscount, discountBadge } from '../scripts/discounts.js';
 
   export let hidePrices = false;
   export let hidePricesMessage = "Price coming soon";
@@ -39,14 +40,15 @@
     const offsets = [0, 2, 5, 7, 11, 13];
     const picks = categoryPools.map((cat, ci) => {
       const p = cat.products[(seed + offsets[ci % offsets.length]) % cat.products.length];
-      return { ...p, categoryId: cat.id };
+      return { ...p, categoryId: cat.id, categoryName: cat.name };
     });
 
     // Apply live DB price and stock overrides
     try {
-      const [priceRes, stockRes] = await Promise.all([
+      const [priceRes, stockRes, discounts] = await Promise.all([
         fetch('/api/price.php'),
         fetch('/api/stock.php?action=all'),
+        fetchDiscounts(),
       ]);
       if (priceRes.ok) {
         const prices = await priceRes.json();
@@ -56,6 +58,10 @@
         const stock = await stockRes.json();
         picks.forEach(p => { if (stock[p.name] != null) p.stock = stock[p.name]; });
       }
+      picks.forEach(p => {
+        const sale = applyDiscount(p.price, findDiscount(discounts, p.name, p.categoryName));
+        if (sale < p.price) { p.originalPrice = p.price; p.price = sale; }
+      });
     } catch (_) {}
 
     featured = picks;
@@ -103,10 +109,16 @@
         <div class="fp-card">
           <a href={shopLink(product.categoryId, product.name)} class="fp-img-wrap">
             <img src={product.image} alt={product.name} loading="lazy">
+            {#if product.originalPrice && !hidePrices}
+              <span class="fp-sale-badge">{discountBadge(product.originalPrice, product.price)}</span>
+            {/if}
           </a>
           <div class="fp-body">
             <p class="fp-name">{product.name}</p>
-            <p class="fp-price">{fmt(product.price)}</p>
+            <p class="fp-price" class:on-sale={product.originalPrice && !hidePrices}>
+              {#if product.originalPrice && !hidePrices}<s class="fp-was">{fmt(product.originalPrice)}</s>{/if}
+              {fmt(product.price)}
+            </p>
             <button
               class="fp-add-btn"
               class:added={addedIndex === i}
@@ -247,6 +259,32 @@
     font-weight: 700;
     color: var(--primary-color, #3498db);
     margin: 0;
+  }
+
+  .fp-price.on-sale {
+    color: #d32f2f;
+  }
+
+  .fp-was {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 500;
+    color: #999;
+  }
+
+  .fp-sale-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #d32f2f;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .fp-add-btn {
