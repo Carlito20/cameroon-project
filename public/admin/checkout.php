@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
 require_once __DIR__ . '/../api/discount-lib.php';
-session_start();
+require_once __DIR__ . '/../api/product-names-lib.php';
+require_once __DIR__ . '/../api/admin-session.php';
 if (empty($_SESSION['admin_logged_in'])) { header('Location: index.php'); exit; }
 
 $jsonPath = __DIR__ . '/../api/products-list.json';
@@ -559,6 +560,14 @@ const catalog = <?= json_encode(array_values($products)) ?>;
 const catalogMap = {};
 catalog.forEach(p => { catalogMap[p.name] = p; });
 
+// Display names set in the dashboard (✏️). Cart items keep the original name as the key.
+const PRODUCT_NAMES = <?= json_encode((object)loadProductNames()) ?>;
+function shown(name) {
+  if (PRODUCT_NAMES[name]) return PRODUCT_NAMES[name];
+  const m = name.match(/^(.*) \(([^()]*)\)$/);
+  return m && PRODUCT_NAMES[m[1]] ? PRODUCT_NAMES[m[1]] + ' (' + m[2] + ')' : name;
+}
+
 let cart = []; // [{name, price, qty, stock}]
 
 // Restore in-progress cart if browser was closed mid-sale
@@ -695,7 +704,7 @@ function broadcastDisplay() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       active: cart.length > 0,
-      items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty, image: i.image || '' })),
+      items: cart.map(i => ({ name: shown(i.name), price: i.price, qty: i.qty, image: i.image || '' })),
       total,
       payment: selectedPayment
     })
@@ -723,7 +732,7 @@ function renderCart() {
     totalPrice += line;
     html += `<div class="cart-item">
       <div>
-        <div class="ci-name">${esc(item.name)}</div>
+        <div class="ci-name">${esc(shown(item.name))}</div>
         <div class="ci-unit">${item.original_price ? '<s style="color:#666;">' + item.original_price.toLocaleString() + '</s> ' : ''}${item.price ? item.price.toLocaleString() + ' FCFA each' : 'No price set'}${item.original_price ? ' <span style="color:#e05050;font-weight:700;">SALE</span>' : ''}</div>
         <div class="ci-linetotal">${item.price ? line.toLocaleString() + ' FCFA' : '—'}</div>
         ${overStock ? '<div class="ci-stock-warn">⚠ Only ' + item.stock + ' in stock</div>' : ''}
@@ -901,7 +910,7 @@ function showReceipt(items) {
     total += line;
     html += `<div class="receipt-row">
       <div>
-        <div class="receipt-item-name">${esc(item.name.length > 55 ? item.name.substring(0,55)+'…' : item.name)}</div>
+        <div class="receipt-item-name">${esc(shown(item.name).length > 55 ? shown(item.name).substring(0,55)+'…' : shown(item.name))}</div>
         <div class="receipt-item-meta">×${item.qty}  ·  ${item.price ? item.price.toLocaleString() + ' FCFA each / l\'unité' : ''}${item.original_price ? '  ·  was ' + item.original_price.toLocaleString() : ''}</div>
       </div>
       <div class="receipt-item-amt">${item.price ? line.toLocaleString() + ' FCFA' : '—'}</div>
@@ -917,7 +926,7 @@ function showReceipt(items) {
   let waMsg = '*AMERICAN SELECT*\n' + dateStr + '\n\n';
   items.forEach(item => {
     const line = item.price * item.qty;
-    waMsg += '- ' + item.name + '\n';
+    waMsg += '- ' + shown(item.name) + '\n';
     waMsg += '  x' + item.qty + '  -  ' + (item.price ? line.toLocaleString() + ' FCFA' : '-') + '\n';
   });
   waMsg += '\n*TOTAL: ' + total.toLocaleString() + ' FCFA*\nPaid via / Payé via : ' + selectedPayment + '\n\nThank you for shopping with American Select!\nMerci de votre visite chez American Select !';
@@ -931,7 +940,7 @@ function showReceipt(items) {
     let msgLines = '';
     items.forEach(item => {
       const line = item.price * item.qty;
-      msgLines += `- ${item.name} x${item.qty}${item.price ? ' - ' + line.toLocaleString() + ' FCFA' : ''}\n`;
+      msgLines += `- ${shown(item.name)} x${item.qty}${item.price ? ' - ' + line.toLocaleString() + ' FCFA' : ''}\n`;
     });
     const waMsg =
       `*Payment Received / Paiement Reçu - American Select*\n` +
@@ -977,7 +986,7 @@ function showReceipt(items) {
     items.map(item => {
       const line = item.price * item.qty;
       return `<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
-        <div><div>${esc(item.name)}</div><div style="color:#888;">×${item.qty} @ ${item.price.toLocaleString()} FCFA / l'unité${item.original_price ? ' (was ' + item.original_price.toLocaleString() + ')' : ''}</div></div>
+        <div><div>${esc(shown(item.name))}</div><div style="color:#888;">×${item.qty} @ ${item.price.toLocaleString()} FCFA / l'unité${item.original_price ? ' (was ' + item.original_price.toLocaleString() + ')' : ''}</div></div>
         <div style="font-weight:bold;">${line.toLocaleString()} FCFA</div>
       </div>`;
     }).join('') +
@@ -1046,7 +1055,8 @@ async function printReceiptThermal() {
   cart.forEach(item => {
     const line = item.price * item.qty;
     total += line;
-    const name = item.name.length > W ? item.name.substring(0, W - 1) + '~' : item.name;
+    const label = shown(item.name);
+    const name = label.length > W ? label.substring(0, W - 1) + '~' : label;
     d += GS + '!\x01';          // double height for item name
     d += name + LF;
     d += GS + '!\x00';          // normal height
@@ -1189,11 +1199,11 @@ function filterProducts(q) {
   const res = document.getElementById('manual-results');
   q = q.trim().toLowerCase();
   if (!q) { res.style.display = 'none'; return; }
-  const matches = catalog.filter(p => p.name.toLowerCase().includes(q)).slice(0, 12);
+  const matches = catalog.filter(p => p.name.toLowerCase().includes(q) || shown(p.name).toLowerCase().includes(q)).slice(0, 12);
   if (!matches.length) { res.style.display = 'none'; return; }
   res.innerHTML = matches.map((p, i) =>
     `<div class="manual-item" data-idx="${i}" data-name="${esc(p.name)}" data-price="${p.price||0}" onclick="pickProduct(this)">
-      <div class="manual-item-name">${esc(p.name)}</div>
+      <div class="manual-item-name">${esc(shown(p.name))}</div>
       <div class="manual-item-price">${p.original_price ? '<s style="color:#666;">' + p.original_price.toLocaleString() + '</s> ' : ''}${p.price ? p.price.toLocaleString() + ' FCFA' : 'No price'}</div>
     </div>`
   ).join('');
@@ -1463,5 +1473,6 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
+<script src="/admin/idle-logout.js" defer></script>
 </body>
 </html>

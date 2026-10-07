@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
-session_start();
+require_once __DIR__ . '/../api/admin-session.php';
 if (empty($_SESSION['admin_logged_in'])) { header('Location: index.php'); exit; }
 
 $filter = $_GET['filter'] ?? 'pending';
@@ -700,5 +700,6 @@ if (FILTER === 'pending' || FILTER === 'all') {
   setInterval(loadOrders, 30000);
 }
 </script>
+<script src="/admin/idle-logout.js" defer></script>
 </body>
 </html>

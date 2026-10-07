@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
 require_once __DIR__ . '/../api/discount-lib.php';
-session_start();
+require_once __DIR__ . '/../api/product-names-lib.php';
+require_once __DIR__ . '/../api/admin-session.php';
 
 if (empty($_SESSION['admin_logged_in'])) {
     header('Location: index.php');
@@ -67,6 +68,9 @@ try {
         $dbPrices[$row['product_name']] = (int)$row['price'];
     }
 } catch (Exception $e) { /* price table optional */ }
+
+// Display names set with the ✏️ rename button
+$productNames = loadProductNames();
 
 // Discounts (all of them, incl. scheduled/paused/expired) + category list for category discounts
 $allDiscounts = [];
@@ -472,6 +476,19 @@ foreach ($products as $p) {
     .disc-actions .btn { flex: 1; }
     .disc-error { color: #ff6b6b; font-size: 12px; margin-bottom: 10px; }
 
+    /* ── Rename ───────────────────────────────────────── */
+    .rename-btn {
+      background: transparent; border: 1px solid #2a2a2a; border-radius: 6px;
+      font-size: 13px; cursor: pointer; margin-left: 4px; vertical-align: middle;
+      min-width: 36px; min-height: 36px; padding: 0 6px;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    }
+    .rename-btn:hover { border-color: #d4af37; }
+    .pn-original { font-size: 11px; color: #7b9fd4; margin-top: 2px; }
+    #rename-modal .disc-modal h3 { color: #d4af37; }
+    #rename-modal .disc-input:focus { border-color: #d4af37; }
+
     @media (max-width: 600px) {
       .product-name { max-width: 160px; font-size: 13px; }
       .qty-input { width: 64px; }
@@ -595,10 +612,15 @@ foreach ($products as $p) {
         $displayPrice = $livePrice !== null ? $livePrice : $defaultPrice;
         $isPriceLive = $livePrice !== null;
       ?>
-      <tr data-name="<?= htmlspecialchars(strtolower($name)) ?>" data-product="<?= htmlspecialchars($name) ?>" data-category="<?= htmlspecialchars($product['category'] ?? '') ?>" data-price="<?= $displayPrice ?>">
+      <?php $shownName = productDisplayName($name, $productNames); ?>
+      <tr data-name="<?= htmlspecialchars(strtolower($name . ' ' . $shownName)) ?>" data-product="<?= htmlspecialchars($name) ?>" data-base="<?= htmlspecialchars($product['base'] ?? $name) ?>" data-category="<?= htmlspecialchars($product['category'] ?? '') ?>" data-price="<?= $displayPrice ?>">
         <td style="color:#555;font-size:12px;"><?= $i + 1 ?></td>
         <td class="product-name">
-          <?= htmlspecialchars($name) ?>
+          <span class="pn-display"><?= htmlspecialchars($shownName) ?></span>
+          <?php if ($isAdmin): ?>
+          <button class="rename-btn" onclick="openRename(this)" title="Rename product" aria-label="Rename product">✏️</button>
+          <?php endif; ?>
+          <div class="pn-original"<?= $shownName === $name ? ' style="display:none;"' : '' ?>>Original: <?= htmlspecialchars($name) ?></div>
           <div class="qty-source <?= $isLive ? 'qty-live' : 'qty-default' ?>">
             Qty: <?= $isLive ? 'Live (DB)' : 'Default' ?>
           </div>
@@ -668,6 +690,25 @@ foreach ($products as $p) {
 </div>
 
 <?php if ($isAdmin): ?>
+<div class="disc-modal-overlay" id="rename-modal" onclick="if (event.target === this) closeRename()">
+  <div class="disc-modal" role="dialog" aria-modal="true" aria-labelledby="rename-title">
+    <h3 id="rename-title">Rename product</h3>
+    <div class="disc-target" id="rename-original"></div>
+    <div class="disc-field">
+      <label for="rename-input">Name shown to customers</label>
+      <input type="text" class="disc-input" id="rename-input" maxlength="500" autocomplete="off"
+             onkeydown="if (event.key === 'Enter') saveRename()">
+    </div>
+    <div class="disc-hint" id="rename-hint">Stock, prices, discounts, barcodes and order history stay linked — only the displayed name changes.</div>
+    <div class="disc-error" id="rename-error"></div>
+    <div class="disc-actions">
+      <button type="button" class="btn btn-gold" id="rename-save" onclick="saveRename()">Save</button>
+      <button type="button" class="btn btn-outline" id="rename-reset" onclick="resetRename()" style="display:none;">Use original</button>
+      <button type="button" class="btn btn-outline" onclick="closeRename()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="disc-modal-overlay" id="disc-modal" onclick="if (event.target === this) closeDiscount()">
   <div class="disc-modal" role="dialog" aria-modal="true" aria-labelledby="disc-title">
     <h3 id="disc-title">Discount</h3>
@@ -1206,10 +1247,90 @@ function toggleDiscountPause() {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && discEditing) closeDiscount(); });
 // ── End discounts ────────────────────────────────────
 
+// ── Rename (display names) ───────────────────────────
+// Renaming a product renames all its colour variants (rows sharing data-base)
+const PRODUCT_NAMES = <?= json_encode((object)$productNames) ?>;
+let renameTarget = null;
+
+function shownName(name, base) {
+  const display = PRODUCT_NAMES[base];
+  if (!display) return name;
+  return display + name.slice(base.length); // keeps " (Colour)" on variants
+}
+
+function refreshRenamedRows(base) {
+  document.querySelectorAll('#products-table tbody tr').forEach(row => {
+    if (row.dataset.base !== base) return;
+    const name = row.dataset.product;
+    const shown = shownName(name, base);
+    row.querySelector('.pn-display').textContent = shown;
+    row.querySelector('.pn-original').style.display = shown === name ? 'none' : '';
+    row.dataset.name = (name + ' ' + shown).toLowerCase();
+  });
+}
+
+function openRename(btn) {
+  const row = btn.closest('tr');
+  renameTarget = row.dataset.base;
+  const variants = document.querySelectorAll('#products-table tbody tr[data-base="' + CSS.escape(renameTarget) + '"]').length;
+  document.getElementById('rename-original').textContent = 'Original: ' + renameTarget;
+  document.getElementById('rename-hint').textContent =
+    (variants > 1 ? 'Applies to all ' + variants + ' colours. ' : '') +
+    'Stock, prices, discounts, barcodes and order history stay linked — only the displayed name changes.';
+  const input = document.getElementById('rename-input');
+  input.value = PRODUCT_NAMES[renameTarget] || renameTarget;
+  document.getElementById('rename-error').textContent = '';
+  document.getElementById('rename-reset').style.display = PRODUCT_NAMES[renameTarget] ? '' : 'none';
+  document.getElementById('rename-modal').classList.add('open');
+  setTimeout(() => { input.focus(); input.select(); }, 50);
+}
+
+function closeRename() {
+  document.getElementById('rename-modal').classList.remove('open');
+  renameTarget = null;
+}
+
+function sendRename(displayName) {
+  const err = document.getElementById('rename-error');
+  const btn = document.getElementById('rename-save');
+  btn.disabled = true; btn.textContent = '...';
+  return fetch('/api/product-names.php', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: renameTarget, display_name: displayName })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (!data.success) { err.textContent = data.error || 'Error'; return; }
+    if (data.renamed) PRODUCT_NAMES[renameTarget] = data.display_name;
+    else delete PRODUCT_NAMES[renameTarget];
+    refreshRenamedRows(renameTarget);
+    closeRename();
+  })
+  .catch(() => { err.textContent = 'Network error'; })
+  .finally(() => { btn.disabled = false; btn.textContent = 'Save'; });
+}
+
+function saveRename() {
+  if (!renameTarget) return;
+  const value = document.getElementById('rename-input').value.trim();
+  if (!value) { document.getElementById('rename-error').textContent = 'Enter a name, or use "Use original".'; return; }
+  sendRename(value);
+}
+
+function resetRename() {
+  if (renameTarget) sendRename('');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && renameTarget) closeRename(); });
+// ── End rename ───────────────────────────────────────
+
 // Register Service Worker so checkout.php gets cached for offline use
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' }).catch(() => {});
 }
 </script>
+<script src="/admin/idle-logout.js" defer></script>
 </body>
 </html>

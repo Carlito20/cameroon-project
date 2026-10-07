@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { categories } from '../data/categories.ts';
+  import { fetchProductNames, shownName } from '../scripts/product-names.js';
   import { fetchDiscounts, findDiscount, applyDiscount, discountBadge, isExpired, saleEndsLabel } from '../scripts/discounts.js';
 
   export let hidePrices = false;
@@ -34,8 +35,11 @@
   }
 
   let featured = [];
+  let productNames = {};
+  $: nameOf = name => shownName(productNames, name);
 
   onMount(async () => {
+    fetchProductNames().then(n => { productNames = n; });
     const seed = getSeed();
     const offsets = [0, 2, 5, 7, 11, 13];
     const picks = categoryPools.map((cat, ci) => {
@@ -123,13 +127,13 @@
       {#each featured as product, i}
         <div class="fp-card">
           <a href={shopLink(product.categoryId, product.name)} class="fp-img-wrap">
-            <img src={product.image} alt={product.name} loading="lazy">
+            <img src={product.image} alt={nameOf(product.name)} loading="lazy">
             {#if product.originalPrice && !hidePrices}
               <span class="fp-sale-badge">{discountBadge(product.originalPrice, product.price)}</span>
             {/if}
           </a>
           <div class="fp-body">
-            <p class="fp-name">{product.name}</p>
+            <p class="fp-name">{nameOf(product.name)}</p>
             <p class="fp-price" class:on-sale={product.originalPrice && !hidePrices}>
               {#if product.originalPrice && !hidePrices}<s class="fp-was">{fmt(product.originalPrice)}</s>{/if}
               {fmt(product.price)}

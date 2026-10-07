@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
-session_start();
+require_once __DIR__ . '/../api/admin-session.php';
 if (empty($_SESSION['admin_logged_in'])) { header('Location: index.php'); exit; }
 
 $filter  = $_GET['filter']  ?? 'all';
@@ -238,5 +238,6 @@ $actionColors = [
   <?php endif; ?>
   <?php endif; ?>
 </div>
+<script src="/admin/idle-logout.js" defer></script>
 </body>
 </html>

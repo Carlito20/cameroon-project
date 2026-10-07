@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once __DIR__ . '/discount-lib.php';
-session_start();
+require_once __DIR__ . '/admin-session.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $isAdmin = !empty($_SESSION['admin_logged_in']) && ($_SESSION['admin_role'] ?? '') === 'admin';

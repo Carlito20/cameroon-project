@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once __DIR__ . '/db.php';
-session_start();
+require_once __DIR__ . '/admin-session.php';
 
 function getDB() {
     $pdo = new PDO(

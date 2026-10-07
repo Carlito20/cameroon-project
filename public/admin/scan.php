@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
-session_start();
+require_once __DIR__ . '/../api/admin-session.php';
 if (empty($_SESSION['admin_logged_in'])) { header('Location: index.php'); exit; }
 
 $jsonPath = __DIR__ . '/../api/products-list.json';
@@ -521,5 +521,6 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     if (createBtn) { createBtn.disabled = false; createBtn.textContent = 'Create & Assign Barcode'; }
   }
 </script>
+<script src="/admin/idle-logout.js" defer></script>
 </body>
 </html>

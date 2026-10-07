@@ -1,5 +1,10 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
+  import { fetchProductNames, shownName } from '../scripts/product-names.js';
+
+  // Names renamed in the admin dashboard — display only; item.name stays the key
+  let productNames = {};
+  $: nameOf = name => shownName(productNames, name);
 
   export let whatsappNumber = "237679457181";
   export let formspreeEndpoint = ""; // kept for prop compatibility, unused
@@ -107,6 +112,7 @@
   }
 
   onMount(() => {
+    fetchProductNames().then(n => { productNames = n; });
     // Check URL for pre-loaded cart first
     const loadedFromUrl = loadCartFromUrl();
 
@@ -225,7 +231,7 @@
     const itemList = inquiryItems.map(item => {
       const qty = item.quantity || 1;
       const itemTotal = (!hidePrices && item.price) ? ` — ${formatPrice(item.price * qty)} FCFA` : '';
-      return `• ${item.name} (×${qty})${itemTotal}`;
+      return `• ${nameOf(item.name)} (×${qty})${itemTotal}`;
     }).join('\n');
 
     // Save order to database so it appears in admin
@@ -347,7 +353,7 @@
           <div class="basket-item-with-image">
             {#if item.image}
               <button class="item-image item-image-small item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
-                <img src={item.image} alt={item.name} />
+                <img src={item.image} alt={nameOf(item.name)} />
               </button>
             {:else}
               <button class="item-image item-image-small item-image-placeholder item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
@@ -355,7 +361,7 @@
               </button>
             {/if}
             <div class="item-details">
-              <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.colorName ? item.name.replace(` (${item.colorName})`, '') : item.name}</button>
+              <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.colorName ? nameOf(item.name.replace(` (${item.colorName})`, '')) : nameOf(item.name)}</button>
               {#if item.color && item.colorName}
                 <span class="item-color-tag">
                   <span class="item-color-dot" style="background:{item.color}"></span>
@@ -465,7 +471,7 @@
             <div class="basket-item-with-image">
               {#if item.image}
                 <button class="item-image item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
-                  <img src={item.image} alt={item.name} />
+                  <img src={item.image} alt={nameOf(item.name)} />
                 </button>
               {:else}
                 <button class="item-image item-image-placeholder item-clickable" on:click={() => viewProduct(item.name)} aria-label="View {item.name}">
@@ -473,7 +479,7 @@
                 </button>
               {/if}
               <div class="item-details">
-                <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.colorName ? item.name.replace(` (${item.colorName})`, '') : item.name}</button>
+                <button class="item-name item-name-clickable" on:click={() => viewProduct(item.name)}>{item.colorName ? nameOf(item.name.replace(` (${item.colorName})`, '')) : nameOf(item.name)}</button>
                 {#if item.color && item.colorName}
                   <span class="item-color-tag">
                     <span class="item-color-dot" style="background:{item.color}"></span>
@@ -553,8 +559,8 @@
   <div class="cart-preview-overlay" on:click={closePreview} role="dialog" aria-modal="true">
     <div class="cart-preview-content" on:click|stopPropagation>
       <button class="cart-preview-close" on:click={closePreview} aria-label="Close">×</button>
-      <img src={previewItem.image} alt={previewItem.name} />
-      <p class="cart-preview-name">{previewItem.name}</p>
+      <img src={previewItem.image} alt={nameOf(previewItem.name)} />
+      <p class="cart-preview-name">{nameOf(previewItem.name)}</p>
       {#if hidePrices}
         <p class="cart-preview-price">{hidePricesMessage}</p>
       {:else if previewItem.price}

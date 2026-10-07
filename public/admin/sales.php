@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
-session_start();
+require_once __DIR__ . '/../api/admin-session.php';
 if (empty($_SESSION['admin_logged_in']))              { header('Location: index.php');    exit; }
 if (($_SESSION['admin_role'] ?? '') !== 'admin')      { header('Location: dashboard.php'); exit; }
 
@@ -725,5 +725,6 @@ async function cancelSale(id) {
 // Default: today
 setQuick('today', document.querySelector('.quick-btns .btn'));
 </script>
+<script src="/admin/idle-logout.js" defer></script>
 </body>
 </html>

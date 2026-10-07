@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . '/db.php';
-session_start();
+require_once __DIR__ . '/admin-session.php';
 
 function getDB() {
     $pdo = new PDO(

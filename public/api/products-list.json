@@ -63,43 +63,50 @@
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Green)",
     "quantity": 1,
     "price": 10000,
-    "category": "Kitchen & Dining"
+    "category": "Kitchen & Dining",
+    "base": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice"
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Black)",
     "quantity": 1,
     "price": 10000,
-    "category": "Kitchen & Dining"
+    "category": "Kitchen & Dining",
+    "base": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice"
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Pink)",
     "quantity": 1,
     "price": 10000,
-    "category": "Kitchen & Dining"
+    "category": "Kitchen & Dining",
+    "base": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice"
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Deep Purple)",
     "quantity": 1,
     "price": 10000,
-    "category": "Kitchen & Dining"
+    "category": "Kitchen & Dining",
+    "base": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice"
   },
   {
     "name": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice (Blue)",
     "quantity": 1,
     "price": 10000,
-    "category": "Kitchen & Dining"
+    "category": "Kitchen & Dining",
+    "base": "380Ml Rechargeable Portable Blender Cup, Electric USB Juicer Blender, Mini Blender for Shakes And Smoothies, Juice"
   },
   {
     "name": "Manual Chopper. No Need for Electricity (Pink)",
     "quantity": 2,
     "price": 10000,
-    "category": "Kitchen & Dining"
+    "category": "Kitchen & Dining",
+    "base": "Manual Chopper. No Need for Electricity"
   },
   {
     "name": "Manual Chopper. No Need for Electricity (Gray)",
     "quantity": 2,
     "price": 10000,
-    "category": "Kitchen & Dining"
+    "category": "Kitchen & Dining",
+    "base": "Manual Chopper. No Need for Electricity"
   },
   {
     "name": "Dr Teal's Body Wash with Prebiotic Lemon Balm and Essential Oil Blend",
@@ -549,67 +556,78 @@
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Silver Blonde)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Dark Blonde)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Radiant Raspberry)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Auburn Brown)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Burgundy)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Bright Auburn)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Vibrant Violet)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Deep Burgundy)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Brown Black)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Black)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex (Ultra Light Ash Blonde)",
     "quantity": 3,
     "price": 4500,
-    "category": "Body, Bath & Personal Care"
+    "category": "Body, Bath & Personal Care",
+    "base": "Revlon ColorSilk Permanent Hair Color with Bond Repair Complex"
   },
   {
     "name": "Dr Teal's Kids 3-in-1 Sleep Bath: Bubble Bath, Body Wash & Shampoo with Melatonin & Essential Oil",
@@ -699,31 +717,36 @@
     "name": "Smart Watch Compatible with iPhone & Android Devices (Pink)",
     "quantity": 2,
     "price": 5000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Smart Watch Compatible with iPhone & Android Devices"
   },
   {
     "name": "Smart Watch Compatible with iPhone & Android Devices (Black)",
     "quantity": 2,
     "price": 5000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Smart Watch Compatible with iPhone & Android Devices"
   },
   {
     "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking (Black)",
     "quantity": 2,
     "price": 15000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking"
   },
   {
     "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking (Gold)",
     "quantity": 2,
     "price": 15000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking"
   },
   {
     "name": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking (Pink)",
     "quantity": 2,
     "price": 15000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Z68 Smartwatch Featuring Wireless Calling, Message Alerts, Various Sports Modes, Information Notifications, Multifunctional Phone Answering/Dialing, Remote Photography, Music Playback, Sports Tracking"
   },
   {
     "name": "LAXASFIT Unisex Smartwatch Compatible with Both iPhone and Android",
@@ -735,7 +758,8 @@
     "name": "LAXASFIT Unisex Smartwatch Compatible with Both iPhone and Android (Black)",
     "quantity": 2,
     "price": 15000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "LAXASFIT Unisex Smartwatch Compatible with Both iPhone and Android"
   },
   {
     "name": "PLEIVO New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone",
@@ -747,7 +771,8 @@
     "name": "PLEIVO New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone (Black)",
     "quantity": 1,
     "price": 15000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "PLEIVO New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone"
   },
   {
     "name": "Smart Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen",
@@ -759,7 +784,8 @@
     "name": "Smart Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen (Black)",
     "quantity": 1,
     "price": 15000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Smart Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen"
   },
   {
     "name": "GT4 PRO Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications",
@@ -771,7 +797,8 @@
     "name": "GT4 PRO Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications (Black)",
     "quantity": 2,
     "price": 15000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "GT4 PRO Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications"
   },
   {
     "name": "Doviico 1.83-inch Touch Screen, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones",
@@ -783,7 +810,8 @@
     "name": "Doviico 1.83-inch Touch Screen, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones (Pink)",
     "quantity": 2,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Doviico 1.83-inch Touch Screen, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones"
   },
   {
     "name": "256 GB Memory Card with Adapter - Enough Storage for your data",
@@ -813,19 +841,22 @@
     "name": "Rechargeable Portable Fan (Purple)",
     "quantity": 3,
     "price": 3000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Rechargeable Portable Fan"
   },
   {
     "name": "Rechargeable Portable Fan (Pink)",
     "quantity": 3,
     "price": 3000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Rechargeable Portable Fan"
   },
   {
     "name": "Rechargeable Portable Fan (Black)",
     "quantity": 3,
     "price": 3000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Rechargeable Portable Fan"
   },
   {
     "name": "Dark Grey USB Rechargeable Fan",
@@ -837,7 +868,8 @@
     "name": "Dark Grey USB Rechargeable Fan (Black)",
     "quantity": 4,
     "price": 5000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Dark Grey USB Rechargeable Fan"
   },
   {
     "name": "YISSVIC Rechargeable Electric Fly Swatter Foldable Bug Zapper",
@@ -855,91 +887,106 @@
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Green)",
     "quantity": 1,
     "price": 12000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker"
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Blue)",
     "quantity": 1,
     "price": 12000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker"
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Dark Red)",
     "quantity": 1,
     "price": 12000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker"
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Black)",
     "quantity": 1,
     "price": 12000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker"
   },
   {
     "name": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker (Army Green)",
     "quantity": 1,
     "price": 12000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG192 A Large Capacity 2400mAh Outdoor Wireless Speaker"
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Blue)",
     "quantity": 1,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG537 Portable Wireless Speaker - TWS Technology"
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Red)",
     "quantity": 1,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG537 Portable Wireless Speaker - TWS Technology"
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Black)",
     "quantity": 1,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG537 Portable Wireless Speaker - TWS Technology"
   },
   {
     "name": "TG537 Portable Wireless Speaker - TWS Technology (Cyan)",
     "quantity": 1,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG537 Portable Wireless Speaker - TWS Technology"
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets (Red)",
     "quantity": 1,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets"
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets (Blue)",
     "quantity": 1,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets"
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets (Black)",
     "quantity": 1,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets"
   },
   {
     "name": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets (Purple)",
     "quantity": 1,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "TG667 Compact and Portable Wireless Speaker. It Supports USB, TF Cards, and FM Radio, and Can Connect to Mobile Phones, Tablets"
   },
   {
     "name": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation (Gray)",
     "quantity": 5,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation"
   },
   {
     "name": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation (White)",
     "quantity": 5,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Hyundai LP5t Wireless Headphones with Surround Sound and Noise Cancellation"
   },
   {
     "name": "JS59 Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo, 50 Hours of Playback Time, USB-C",
@@ -951,7 +998,8 @@
     "name": "JS59 Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo, 50 Hours of Playback Time, USB-C (Black)",
     "quantity": 2,
     "price": 7000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "JS59 Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo, 50 Hours of Playback Time, USB-C"
   },
   {
     "name": "YD03 Wireless Earbuds",
@@ -975,43 +1023,50 @@
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation (Orange)",
     "quantity": 2,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation"
   },
   {
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation (Beige)",
     "quantity": 2,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation"
   },
   {
     "name": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation (Black)",
     "quantity": 2,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Acer OHR544 Wireless Headset with Heavy Bass Stereo + Talking Noise Cancellation"
   },
   {
     "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control (Purple)",
     "quantity": 2,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control"
   },
   {
     "name": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control (Black)",
     "quantity": 2,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Ace OHR501 Wireless 5.4 Bass Stereo Headset with Noise Cancelling Microphone, Touch Control"
   },
   {
     "name": "Nokia Go Earbuds+ TWS-201 (White)",
     "quantity": 5,
     "price": 8000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Nokia Go Earbuds+ TWS-201"
   },
   {
     "name": "Nokia Go Earbuds+ TWS-201 (Black)",
     "quantity": 5,
     "price": 8000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Nokia Go Earbuds+ TWS-201"
   },
   {
     "name": "Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology",
@@ -1023,7 +1078,8 @@
     "name": "Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology (White)",
     "quantity": 7,
     "price": 10000,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology"
   },
   {
     "name": "Y01 Over the Ear Wireless Headphones",
@@ -1083,13 +1139,15 @@
     "name": "45W High Quality Type-C Charger - Super Fast Charging (Black)",
     "quantity": 20,
     "price": 3500,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "45W High Quality Type-C Charger - Super Fast Charging"
   },
   {
     "name": "45W High Quality Type-C Charger - Super Fast Charging (White)",
     "quantity": 20,
     "price": 3500,
-    "category": "Electronics & Accessories"
+    "category": "Electronics & Accessories",
+    "base": "45W High Quality Type-C Charger - Super Fast Charging"
   },
   {
     "name": "Non-Contact Forehead Digital Thermometer",

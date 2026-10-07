@@ -147,7 +147,7 @@ if ($action === 'create' && $method === 'POST') {
 }
 
 // ── ADMIN ONLY below this point ──────────────────────────────────────────
-session_start();
+require_once __DIR__ . '/admin-session.php';
 if (empty($_SESSION['admin_logged_in'])) {
     http_response_code(401);
     echo json_encode(['error' => 'Unauthorized']);

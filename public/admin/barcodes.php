@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
-session_start();
+require_once __DIR__ . '/../api/admin-session.php';
 if (empty($_SESSION['admin_logged_in'])) { header('Location: index.php'); exit; }
 $isAdmin = ($_SESSION['admin_role'] ?? '') === 'admin';
 
@@ -1220,5 +1220,6 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 </script>
+<script src="/admin/idle-logout.js" defer></script>
 </body>
 </html>

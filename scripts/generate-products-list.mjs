@@ -104,7 +104,7 @@ const parseColors = raw => raw ? (raw.match(/#[0-9a-fA-F]{6}/g) || []) : [];
 const result = [];
 const seen   = new Set();
 // Use existing quantity if present (preserves manual per-color stock edits)
-const add = (name, qty, price, category) => {
+const add = (name, qty, price, category, base) => {
   if (!seen.has(name)) {
     seen.add(name);
     const ex = existingMap[name];
@@ -113,6 +113,7 @@ const add = (name, qty, price, category) => {
       quantity: ex?.quantity !== undefined ? ex.quantity : qty,
       price:    ex?.price ?? price ?? undefined,
       category: category ?? undefined,
+      base:     base ?? undefined,     // colour variants: the product they belong to
     });
   }
 };
@@ -123,10 +124,10 @@ for (const p of products) {
 
   if (colors.length > 1) {
     const perColor = Math.ceil(p.quantity / colors.length);
-    for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor, p.price, p.category);
+    for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor, p.price, p.category, p.name);
   } else if (colors.length === 1) {
     add(p.name, p.quantity, p.price, p.category);
-    add(`${p.name} (${getColorName(colors[0])})`, p.quantity, p.price, p.category);
+    add(`${p.name} (${getColorName(colors[0])})`, p.quantity, p.price, p.category, p.name);
   } else {
     add(p.name, p.quantity, p.price, p.category);
   }

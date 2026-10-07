@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../api/db.php';
-session_start();
+require_once __DIR__ . '/../api/admin-session.php';
 
 if (!empty($_SESSION['admin_logged_in'])) {
     header('Location: dashboard.php');
@@ -8,15 +8,21 @@ if (!empty($_SESSION['admin_logged_in'])) {
 }
 
 $error = '';
+$timedOut = !empty($_SESSION['timed_out']);
+unset($_SESSION['timed_out']);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     if ($password === ADMIN_PASSWORD) {
+        session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
+        $_SESSION['last_activity'] = time();
         $_SESSION['admin_role'] = 'admin';
         header('Location: dashboard.php');
         exit;
     } elseif ($password === '2026') {
+        session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
+        $_SESSION['last_activity'] = time();
         $_SESSION['admin_role'] = 'employee';
         header('Location: dashboard.php');
         exit;
@@ -111,6 +117,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <p>Staff Portal</p>
     </div>
 
+    <?php if ($timedOut && !$error): ?>
+      <div class="error" style="color:#d4af37;border-color:#3a3010;background:#1a1400;">You were logged out after <?= ADMIN_IDLE_MINUTES ?> minutes of inactivity. Please log in again.</div>
+    <?php endif; ?>
     <?php if ($error): ?>
       <div class="error"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>

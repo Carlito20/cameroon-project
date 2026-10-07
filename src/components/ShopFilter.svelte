@@ -1,5 +1,6 @@
 <script>
   import { onMount, onDestroy, tick } from 'svelte';
+  import { fetchProductNames, shownName } from '../scripts/product-names.js';
   import { EMPTY_DISCOUNTS, fetchDiscounts, findDiscount, applyDiscount, discountBadge, saleEndsLabel } from '../scripts/discounts.js';
 
   // Props passed from Astro
@@ -86,6 +87,11 @@
   let apiStock = {};
   let apiPrices = {};
   let apiDiscounts = EMPTY_DISCOUNTS;
+  let apiNames = {};
+
+  // Name shown to customers (renamed in the admin dashboard). Product names stay the
+  // keys for stock, cart and orders — only use this for display text.
+  $: nameOf = name => shownName(apiNames, name);
 
   // product name -> top-level category name (for category discounts)
   const productCategory = {};
@@ -224,7 +230,7 @@
         searchItems(item.items, lowerQuery, categoryName, item.name, results);
       } else {
         const name = getProductName(item);
-        if (name.toLowerCase().includes(lowerQuery)) {
+        if (name.toLowerCase().includes(lowerQuery) || shownName(apiNames, name).toLowerCase().includes(lowerQuery)) {
           results.push({
             product: item,
             productName: name,
@@ -255,7 +261,7 @@
   }
 
   // Reactive search - triggers when searchQuery, categories, or live prices change
-  $: performSearch(searchQuery), categories, apiPrices, apiDiscounts;
+  $: performSearch(searchQuery), categories, apiPrices, apiDiscounts, apiNames;
 
   // Sort helper for product items
   function sortProducts(items, sort) {
@@ -403,6 +409,7 @@
 
     // Fetch active discounts — sale prices shown with the regular price struck through
     fetchDiscounts().then(d => { apiDiscounts = d; });
+    fetchProductNames().then(n => { apiNames = n; });
     nowTimer = setInterval(() => { now = Date.now(); }, 30000);
 
     // Listen for cart loaded from localStorage (on page refresh)
@@ -502,8 +509,8 @@
     window.history.pushState({}, '', url);
   }
 
-  function getWhatsAppLink(item) {
-    const name = getProductName(item);
+  $: getWhatsAppLink = item => {
+    const name = nameOf(getProductName(item));
     const message = encodeURIComponent(`Hi, I have a question about: ${name}\n\n`);
     return `https://wa.me/${whatsappNumber}?text=${message}`;
   }
@@ -516,11 +523,11 @@
     return window.location.origin + '/shop?s=' + getProductSlug(name);
   }
 
-  function getWhatsAppShareLink(name) {
+  $: getWhatsAppShareLink = name => {
     const url = getProductShareUrl(name);
-    const text = 'Check out this product from American Select:\n\n*' + name + '*\n\n' + url;
+    const text = 'Check out this product from American Select:\n\n*' + nameOf(name) + '*\n\n' + url;
     return 'https://wa.me/?text=' + encodeURIComponent(text);
-  }
+  };
 
   // Share product dropdown
   let shareMenuOpen = null;
@@ -1351,12 +1358,12 @@
               {@const activeImgs = (selectedColors[result.productName] && result.colorImages?.[selectedColors[result.productName]]) || result.images}
               <div class="product-images">
                 <button class="product-image" on:click={() => openLightbox(activeImgs, result.productName + (selectedColors[result.productName] ? ` — ${getColorName(selectedColors[result.productName])}` : ''))}>
-                  <img src={activeImgs[activeImageIndexes[result.productName] ?? 0]} alt={result.productName} />
+                  <img src={activeImgs[activeImageIndexes[result.productName] ?? 0]} alt={nameOf(result.productName)} />
                 </button>
               </div>
             {/if}
             <div class="product-info">
-              <h4>{result.productName}</h4>
+              <h4>{nameOf(result.productName)}</h4>
               <p class="product-category-tag">
                 {result.categoryName}{result.subCategoryName ? ` > ${result.subCategoryName}` : ''}
               </p>
@@ -1450,11 +1457,11 @@
           <div class="product-item has-image">
             <a href="/shop?category={sp.categoryId}" class="showcase-item-link" on:click|preventDefault={() => openProductModal(sp)}>
               <div class="product-images">
-                <img src={((selectedColors[sp.productName] && sp.colorImages?.[selectedColors[sp.productName]]) || sp.images)[activeImageIndexes[sp.productName] ?? 0]} alt={sp.productName} class="showcase-thumb" />
+                <img src={((selectedColors[sp.productName] && sp.colorImages?.[selectedColors[sp.productName]]) || sp.images)[activeImageIndexes[sp.productName] ?? 0]} alt={nameOf(sp.productName)} class="showcase-thumb" />
               </div>
               <div class="product-info">
                 <p class="product-category-tag">{sp.categoryName}{sp.subCategoryName ? ` › ${sp.subCategoryName}` : ''}</p>
-                <h4>{sp.productName}</h4>
+                <h4>{nameOf(sp.productName)}</h4>
                 {#if getProductPrice(sp.product)}
                   {@render priceTag(sp.product, 'product-price')}
                 {/if}
@@ -1577,12 +1584,12 @@
                             {#if getProductImages(nestedProduct)}
                               <div class="product-images">
                                 <button class="product-image" on:click={() => openLightbox(nestedActiveImgs, nestedName + (selectedColors[nestedName] ? ` — ${getColorName(selectedColors[nestedName])}` : ''))}>
-                                  <img src={nestedActiveImgs[activeImageIndexes[nestedName] ?? 0]} alt={nestedName} />
+                                  <img src={nestedActiveImgs[activeImageIndexes[nestedName] ?? 0]} alt={nameOf(nestedName)} />
                                 </button>
                               </div>
                             {/if}
                             <div class="product-info">
-                              <h4>{getProductName(nestedProduct)}</h4>
+                              <h4>{nameOf(getProductName(nestedProduct))}</h4>
                               {#if getProductPrice(nestedProduct)}
                                 {@render priceTag(nestedProduct, 'product-price')}
                               {/if}
@@ -1670,12 +1677,12 @@
                   {#if getProductImages(subItem)}
                     <div class="product-images">
                       <button class="product-image" on:click={() => openLightbox(subActiveImgs, subItemName + (selectedColors[subItemName] ? ` — ${getColorName(selectedColors[subItemName])}` : ''))}>
-                        <img src={subActiveImgs[activeImageIndexes[subItemName] ?? 0]} alt={subItemName} />
+                        <img src={subActiveImgs[activeImageIndexes[subItemName] ?? 0]} alt={nameOf(subItemName)} />
                       </button>
                     </div>
                   {/if}
                   <div class="product-info">
-                    <h4>{getProductName(subItem)}</h4>
+                    <h4>{nameOf(getProductName(subItem))}</h4>
                     {#if getProductPrice(subItem)}
                       {@render priceTag(subItem, 'product-price')}
                     {/if}
@@ -1765,12 +1772,12 @@
             {#if getProductImages(item)}
               <div class="product-images">
                 <button class="product-image" on:click={() => openLightbox(itemActiveImgs, itemName + (selectedColors[itemName] ? ` — ${getColorName(selectedColors[itemName])}` : ''))}>
-                  <img src={itemActiveImgs[activeImageIndexes[itemName] ?? 0]} alt={itemName} />
+                  <img src={itemActiveImgs[activeImageIndexes[itemName] ?? 0]} alt={nameOf(itemName)} />
                 </button>
               </div>
             {/if}
             <div class="product-info">
-              <h4>{getProductName(item)}</h4>
+              <h4>{nameOf(getProductName(item))}</h4>
               {#if getProductPrice(item)}
                 {@render priceTag(item, 'product-price')}
               {/if}
@@ -1865,7 +1872,7 @@
         <div class="product-modal-gallery">
           <img
             src={modalImages[modalImageIndex]}
-            alt={productModal.productName}
+            alt={nameOf(productModal.productName)}
             class="product-modal-img"
             on:touchstart={handleTouchStart}
             on:touchend={handleModalTouchEnd}
@@ -1883,7 +1890,7 @@
         <!-- Product Info -->
         <div class="product-modal-info">
           <p class="product-modal-category">{productModal.categoryName}{productModal.subCategoryName ? ` › ${productModal.subCategoryName}` : ''}</p>
-          <h2 class="product-modal-name">{productModal.productName}</h2>
+          <h2 class="product-modal-name">{nameOf(productModal.productName)}</h2>
           {#if getProductPrice(productModal.product)}
             {@render priceTag(productModal.product, 'product-modal-price')}
           {/if}

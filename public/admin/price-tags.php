@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/../api/admin-session.php';
 if (empty($_SESSION['admin_logged_in'])) {
     header('Location: index.php');
     exit;
@@ -7,6 +7,7 @@ if (empty($_SESSION['admin_logged_in'])) {
 
 require_once __DIR__ . '/../api/db.php';
 require_once __DIR__ . '/../api/discount-lib.php';
+require_once __DIR__ . '/../api/product-names-lib.php';
 
 $jsonPath = __DIR__ . '/../api/products-list.json';
 $products = [];
@@ -539,7 +540,7 @@ function fmt_price($n) {
 
 <div class="tag-grid" id="tag-grid">
 <?php foreach ($products as $p):
-  $name  = htmlspecialchars($p['name'] ?? '');
+  $name  = htmlspecialchars(productDisplayName($p['name'] ?? ''));
   $price = isset($p['price']) ? fmt_price($p['price']) : '';
   $qty   = isset($p['quantity']) ? (int)$p['quantity'] : 0;
   if (!$name || !$price) continue;
@@ -913,5 +914,6 @@ async function printToMunbyn() {
   setTimeout(() => { btn.textContent = orig; btn.style.color = ''; btn.disabled = false; }, 3000);
 }
 </script>
+<script src="/admin/idle-logout.js" defer></script>
 </body>
 </html>
