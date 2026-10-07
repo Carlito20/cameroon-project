@@ -4,7 +4,7 @@
 (function () {
   const PING_URL = '/api/session-ping.php';
   const PING_EVERY = 60 * 1000;         // at most one keep-alive per minute
-  let idleLimit = 30 * 60 * 1000;       // replaced by the server's value
+  let idleLimit = 15 * 60 * 1000;       // replaced by the server's value
   let lastActivity = Date.now();
   let lastPing = 0;
 

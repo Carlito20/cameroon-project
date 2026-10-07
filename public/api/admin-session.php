@@ -5,7 +5,7 @@
 // session alive. admin/idle-logout.js pings session-ping.php while someone is
 // actually using a page, and returns to the login screen once the time is up.
 
-const ADMIN_IDLE_MINUTES = 30;
+const ADMIN_IDLE_MINUTES = 15;
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
