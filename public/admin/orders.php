@@ -153,6 +153,10 @@ $filter = $_GET['filter'] ?? 'pending';
     }
     .btn-wa-confirm:hover { background: #112a18; }
 
+    /* Phones: 16px text in fields so iOS Safari doesn't zoom in on focus */
+    @media (max-width: 768px) {
+      input:not([type=checkbox]):not([type=radio]):not([type=file]), select, textarea { font-size: 16px !important; }
+    }
     @media print {
       body > *:not(#print-area) { display: none !important; }
       #print-area { display: block !important; padding: 10mm 15mm; color: #000; background: #fff; }

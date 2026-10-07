@@ -171,6 +171,10 @@ usort($products, fn($a,$b) => strcmp($a['name']??'',$b['name']??''));
     /* ── Two columns ────────────────────────────────────────────────── */
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
+    /* Phones: 16px text in fields so iOS Safari doesn't zoom in on focus */
+    @media (max-width: 768px) {
+      input:not([type=checkbox]):not([type=radio]):not([type=file]), select, textarea { font-size: 16px !important; }
+    }
     @media (max-width: 900px) {
       .cards { grid-template-columns: repeat(2,1fr); }
       .two-col { grid-template-columns: 1fr; }

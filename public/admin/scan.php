@@ -236,7 +236,7 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     <input type="text" id="scanner-input"
            placeholder="Scan barcode with physical scanner…"
            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text"
-           style="flex:1;padding:13px 14px;background:#1a1a1a;border:2px solid #2a2a2a;border-radius:8px;
+           style="flex:1;min-width:0;padding:13px 14px;background:#1a1a1a;border:2px solid #2a2a2a;border-radius:8px;
                   color:#e0e0e0;font-size:16px;outline:none;-webkit-appearance:none;appearance:none;
                   min-height:50px;touch-action:manipulation;"
            onfocus="this.style.borderColor='#d4af37'" onblur="this.style.borderColor='#2a2a2a'">

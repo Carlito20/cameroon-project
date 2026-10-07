@@ -490,6 +490,17 @@ foreach ($products as $p) {
     #rename-modal .disc-input:focus { border-color: #d4af37; }
 
     @media (max-width: 600px) {
+      /* Header buttons wrap onto extra rows instead of widening the page (phones zoomed out) */
+      header {
+        flex-wrap: wrap; gap: 10px;
+        padding-left: calc(12px + env(safe-area-inset-left, 0px));
+        padding-right: calc(12px + env(safe-area-inset-right, 0px));
+      }
+      .header-actions { flex-wrap: wrap; width: 100%; gap: 6px; }
+      .header-actions .btn, .header-actions .menu-btn { flex: 1 1 auto; justify-content: center; padding: 8px 10px; min-height: 44px; }
+      .header-actions .menu-wrap { flex: 1 1 auto; display: flex; }
+      .header-actions .menu-wrap .menu-btn { width: 100%; }
+      #init-status:empty { display: none; }
       .product-name { max-width: 160px; font-size: 13px; }
       .qty-input { width: 64px; }
       .price-input { width: 86px; }

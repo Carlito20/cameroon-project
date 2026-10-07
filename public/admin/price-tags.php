@@ -247,6 +247,10 @@ function fmt_price($n) {
     .tag-was { font-size: 12px; font-weight: 600; color: #888; text-decoration: line-through; }
     .tag-was .tag-sale { display: inline-block; text-decoration: none; color: #e05050; font-weight: 800; margin-left: 6px; }
     @media print { .tag-was, .tag-was .tag-sale { color: #000 !important; } }
+    /* Phones: 16px text in fields so iOS Safari doesn't zoom in on focus */
+    @media (max-width: 768px) {
+      input:not([type=checkbox]):not([type=radio]):not([type=file]), select, textarea { font-size: 16px !important; }
+    }
     .tag-store { font-size: 10px; color: #555; letter-spacing: 1px; text-transform: uppercase; }
     .tag-qty { font-size: 11px; color: #555; }
 

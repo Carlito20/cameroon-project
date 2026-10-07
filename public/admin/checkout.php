@@ -130,7 +130,7 @@ if ($fromOrderId) {
     }
     .scan-row { display: flex; gap: 8px; align-items: center; }
     .barcode-input {
-      flex: 1; padding: 12px 14px; background: #1a1a1a;
+      flex: 1; min-width: 0; padding: 12px 14px; background: #1a1a1a;
       border: 2px solid #2a2a2a; border-radius: 8px; color: #e0e0e0;
       font-size: 16px; outline: none; -webkit-appearance: none; appearance: none;
       min-height: 50px; touch-action: manipulation;
@@ -339,6 +339,20 @@ if ($fromOrderId) {
       -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
     }
 
+    /* Phones: header buttons wrap onto extra rows instead of widening the page */
+    @media (max-width: 600px) {
+      header {
+        flex-wrap: wrap; gap: 10px;
+        padding-left: calc(12px + env(safe-area-inset-left, 0px));
+        padding-right: calc(12px + env(safe-area-inset-right, 0px));
+      }
+      .header-btns { flex-wrap: wrap; width: 100%; gap: 6px; }
+      .header-btns > * { flex: 1 1 auto; justify-content: center; text-align: center; }
+    }
+    /* Phones: 16px text in fields so iOS Safari doesn't zoom in on focus */
+    @media (max-width: 768px) {
+      input:not([type=checkbox]):not([type=radio]):not([type=file]), select, textarea { font-size: 16px !important; }
+    }
     @media (max-width: 480px) {
       .cart-item { flex-wrap: wrap; gap: 6px; }
       .pay-methods { gap: 6px; }

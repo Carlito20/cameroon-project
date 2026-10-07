@@ -121,6 +121,25 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     .pr-price { font-size: 12px; color: #6dbf6d; white-space: nowrap; }
     .pr-barcode-val { font-size: 11px; color: #555; font-family: monospace; }
     .pr-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+    /* Phones: header buttons wrap onto extra rows instead of widening the page */
+    @media (max-width: 600px) {
+      header {
+        flex-wrap: wrap; gap: 10px;
+        padding-left: calc(12px + env(safe-area-inset-left, 0px));
+        padding-right: calc(12px + env(safe-area-inset-right, 0px));
+      }
+      .header-btns { flex-wrap: wrap; width: 100%; gap: 6px; }
+      .header-btns > * { flex: 1 1 auto; justify-content: center; text-align: center; }
+    }
+    /* Phones: 16px text in fields so iOS Safari doesn't zoom in on focus */
+    @media (max-width: 768px) {
+      input:not([type=checkbox]):not([type=radio]):not([type=file]), select, textarea { font-size: 16px !important; }
+    }
+    @media (max-width: 480px) {
+      .pr-name { min-width: 0; flex-basis: 100%; }
+      .pr-actions { flex-wrap: wrap; flex-shrink: 1; width: 100%; }
+      .pr-actions .scan-input { flex: 1 1 140px; width: auto; min-width: 0; }
+    }
 
     /* Checkboxes for print selection */
     .pr-check {
