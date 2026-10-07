@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy, tick } from 'svelte';
-  import { EMPTY_DISCOUNTS, fetchDiscounts, findDiscount, applyDiscount, discountBadge } from '../scripts/discounts.js';
+  import { EMPTY_DISCOUNTS, fetchDiscounts, findDiscount, applyDiscount, discountBadge, saleEndsLabel } from '../scripts/discounts.js';
 
   // Props passed from Astro
   export let categories = [];
@@ -60,7 +60,11 @@
   function getProductPrice(item) {
     const base = getBasePrice(item);
     if (!base) return base;
-    return applyDiscount(base, findDiscount(apiDiscounts, item.name, productCategory[item.name]));
+    return applyDiscount(base, getDiscount(item));
+  }
+
+  function getDiscount(item) {
+    return findDiscount(apiDiscounts, item.name, productCategory[item.name], now);
   }
 
   // Regular price when the item is on sale, else null
@@ -69,6 +73,15 @@
     const base = getBasePrice(item);
     return base && getProductPrice(item) < base ? base : null;
   }
+
+  // Sale end date + countdown, '' when not on sale or no end date
+  function getSaleEnds(item) {
+    return getWasPrice(item) ? saleEndsLabel(getDiscount(item), now) : '';
+  }
+
+  // Ticks every 30s so countdowns update and expired sales drop back to the regular price
+  let now = Date.now();
+  let nowTimer = null;
 
   let apiStock = {};
   let apiPrices = {};
@@ -390,6 +403,7 @@
 
     // Fetch active discounts — sale prices shown with the regular price struck through
     fetchDiscounts().then(d => { apiDiscounts = d; });
+    nowTimer = setInterval(() => { now = Date.now(); }, 30000);
 
     // Listen for cart loaded from localStorage (on page refresh)
     const handleCartLoaded = (e) => {
@@ -1163,7 +1177,7 @@
     }
   }
 
-  onDestroy(() => stopShowcase());
+  onDestroy(() => { stopShowcase(); clearInterval(nowTimer); });
 
   // Collect all color image URLs so they can be rendered as hidden DOM
   // elements — forces the browser to fully decode them into GPU memory
@@ -1226,14 +1240,16 @@
 </script>
 
 {#snippet priceTag(product, cls)}
-  <!-- apiPrices/apiDiscounts passed only so the tag re-renders when they load -->
-  {@const price = getProductPrice(product, apiPrices, apiDiscounts)}
-  {@const was = getWasPrice(product, apiPrices, apiDiscounts)}
+  <!-- apiPrices/apiDiscounts/now passed only so the tag re-renders when they change -->
+  {@const price = getProductPrice(product, apiPrices, apiDiscounts, now)}
+  {@const was = getWasPrice(product, apiPrices, apiDiscounts, now)}
+  {@const ends = getSaleEnds(product, apiPrices, apiDiscounts, now)}
   <p class={cls} class:on-sale={was}>
     {#if was}<s class="was-price">{formatPrice(was)}</s>{/if}
     {formatPrice(price)}
     {#if was}<span class="sale-badge">{discountBadge(was, price)}</span>{/if}
   </p>
+  {#if ends}<p class="sale-ends">⏰ {ends}</p>{/if}
 {/snippet}
 
 <svelte:window on:click={() => { shareMenuOpen = null; }} on:touchstart|passive={(e) => { if (shareMenuOpen && !e.target.closest('.share-wrap')) shareMenuOpen = null; }} />
@@ -2839,6 +2855,13 @@
     font-size: 0.75em;
     font-weight: 500;
     color: #999;
+  }
+
+  .sale-ends {
+    margin: 0 0 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #d32f2f;
   }
 
   .sale-badge {

@@ -1,7 +1,7 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { categories } from '../data/categories.ts';
-  import { fetchDiscounts, findDiscount, applyDiscount, discountBadge } from '../scripts/discounts.js';
+  import { fetchDiscounts, findDiscount, applyDiscount, discountBadge, isExpired, saleEndsLabel } from '../scripts/discounts.js';
 
   export let hidePrices = false;
   export let hidePricesMessage = "Price coming soon";
@@ -59,13 +59,28 @@
         picks.forEach(p => { if (stock[p.name] != null) p.stock = stock[p.name]; });
       }
       picks.forEach(p => {
-        const sale = applyDiscount(p.price, findDiscount(discounts, p.name, p.categoryName));
-        if (sale < p.price) { p.originalPrice = p.price; p.price = sale; }
+        const discount = findDiscount(discounts, p.name, p.categoryName);
+        const sale = applyDiscount(p.price, discount);
+        if (sale < p.price) { p.originalPrice = p.price; p.price = sale; p.discount = discount; }
       });
     } catch (_) {}
 
     featured = picks;
+    nowTimer = setInterval(() => {
+      now = Date.now();
+      // Sale ended while the page was open — back to the regular price
+      if (featured.some(p => p.discount && isExpired(p.discount, now))) {
+        featured = featured.map(p => (p.discount && isExpired(p.discount, now))
+          ? { ...p, price: p.originalPrice, originalPrice: undefined, discount: undefined }
+          : p);
+      }
+    }, 30000);
   });
+
+  // Ticks every 30s for the sale countdown
+  let now = Date.now();
+  let nowTimer = null;
+  onDestroy(() => clearInterval(nowTimer));
 
   // ── State & helpers ────────────────────────────────────────────────────
   let addedIndex = -1;
@@ -119,6 +134,9 @@
               {#if product.originalPrice && !hidePrices}<s class="fp-was">{fmt(product.originalPrice)}</s>{/if}
               {fmt(product.price)}
             </p>
+            {#if product.discount && !hidePrices && saleEndsLabel(product.discount, now)}
+              <p class="fp-sale-ends">⏰ {saleEndsLabel(product.discount, now)}</p>
+            {/if}
             <button
               class="fp-add-btn"
               class:added={addedIndex === i}
@@ -270,6 +288,13 @@
     font-size: 0.8em;
     font-weight: 500;
     color: #999;
+  }
+
+  .fp-sale-ends {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #d32f2f;
   }
 
   .fp-sale-badge {

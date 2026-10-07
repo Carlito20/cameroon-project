@@ -11,18 +11,46 @@ export function fetchDiscounts() {
     .catch(() => EMPTY_DISCOUNTS);
 }
 
-export function findDiscount(discounts, name, category) {
+export function findDiscount(discounts, name, category, now = Date.now()) {
   if (!discounts || !name) return null;
+  const live = d => (d && !isExpired(d, now) ? d : null);
   const products = discounts.products || {};
-  if (products[name]) return products[name];
+  if (live(products[name])) return products[name];
   // Base product shown on the shop, discount set on one of its colour variants
   const prefix = name + ' (';
-  for (const key in products) if (key.startsWith(prefix)) return products[key];
+  for (const key in products) if (key.startsWith(prefix) && live(products[key])) return products[key];
   // Colour variant in the basket, discount set on the base product
   const base = name.replace(/\s\([^()]*\)$/, '');
-  if (base !== name && products[base]) return products[base];
-  if (category && discounts.categories?.[category]) return discounts.categories[category];
+  if (base !== name && live(products[base])) return products[base];
+  if (category) return live(discounts.categories?.[category]);
   return null;
+}
+
+// A sale runs to the end of its ends_on day in Cameroon time (UTC+1, no DST)
+export function saleEndTime(discount) {
+  if (!discount?.ends_on) return null;
+  const [y, m, d] = discount.ends_on.split('-').map(Number);
+  return Date.UTC(y, m - 1, d + 1) - 3600 * 1000;
+}
+
+export function isExpired(discount, now = Date.now()) {
+  const end = saleEndTime(discount);
+  return end !== null && now >= end;
+}
+
+// "Sale ends 31 Oct · 12 days left" → "Ends today · 5h 12m left" → "Ends in 12m"
+export function saleEndsLabel(discount, now = Date.now()) {
+  const end = saleEndTime(discount);
+  if (end === null || now >= end) return '';
+  const date = new Date(end - 1).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Africa/Douala' });
+  const mins  = Math.ceil((end - now) / 60000);
+  const days  = Math.floor(mins / 1440);
+  const hours = Math.floor((mins % 1440) / 60);
+  const m     = mins % 60;
+  if (days >= 2) return `Sale ends ${date} · ${days} days left`;
+  if (days === 1) return `Sale ends ${date} · 1d ${hours}h left`;
+  if (hours >= 1) return `Ends today · ${hours}h ${m}m left`;
+  return `Ends in ${m}m`;
 }
 
 export function applyDiscount(price, discount) {
