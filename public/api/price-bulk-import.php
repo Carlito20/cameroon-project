@@ -140,10 +140,12 @@ if ($zip->open($tmpPath) !== true) {
 // Load catalog product names so we only write prices for real products
 $jsonPath = __DIR__ . '/products-list.json';
 $catalogNames = [];
+$variantsByBase = [];   // "Rechargeable Portable Fan" => ["Rechargeable Portable Fan (Pink)", ...]
 if (file_exists($jsonPath)) {
     $catalog = json_decode(file_get_contents($jsonPath), true) ?? [];
     foreach ($catalog as $p) {
         if (!empty($p['name'])) $catalogNames[$p['name']] = true;
+        if (!empty($p['base'])) $variantsByBase[$p['base']][] = $p['name'];
     }
 }
 
@@ -191,16 +193,21 @@ try {
             $name = trim($row[$productCol] ?? '');
             $priceRaw = trim($row[$priceCol] ?? '');
             if ($name === '' || $priceRaw === '') continue;
+            if (ctype_digit($name)) continue;   // count rows from a summary tab, not products
 
             $price = (int)preg_replace('/[^\d]/', '', $priceRaw);
             if ($price <= 0) { $skippedNoPrice++; continue; }
 
-            if (!isset($catalogNames[$name])) {
+            // Base name of a multi-colour product → price every colour variant
+            $targets = isset($catalogNames[$name]) ? [$name] : ($variantsByBase[$name] ?? []);
+            if (!$targets) {
                 $notFound[] = $name;
                 continue;
             }
 
-            $stmt->execute([':name' => $name, ':price' => $price]);
+            foreach ($targets as $t) {
+                $stmt->execute([':name' => $t, ':price' => $price]);
+            }
             $updated++;
         }
     }

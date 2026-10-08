@@ -51,6 +51,29 @@ let expectCategory  = false;  // the next name: line is a category's name
 for (const raw of lines) {
   const line = raw.trim();
 
+  // one-line product: { name: '...', images: [...], price: 4500, quantity: 3 },
+  const inl = line.match(/^\{\s*name:\s*(['"])((?:\\.|(?!\1).)*)\1(.*)$/);
+  if (inl) {
+    if (cur?.name && cur.quantity !== undefined) products.push(cur);
+    const rest = inl[3];
+    const q  = rest.match(/\bquantity:\s*(\d+)/);
+    const pr = rest.match(/\bprice:\s*(\d+)/);
+    const c  = rest.match(/\bcolors:\s*\[[^\]]*\]/);
+    cur = {
+      name:      inl[2].replace(/\\(.)/g, '$1'),
+      quantity:  q ? parseInt(q[1]) : undefined,
+      price:     pr ? parseInt(pr[1]) : undefined,
+      colorsRaw: c ? c[0] : null,
+      category:  currentCategory,
+    };
+    // closes on the same line → done; otherwise keep parsing the following lines
+    if (/\}\s*,?$/.test(rest)) {
+      if (cur.quantity !== undefined) products.push(cur);
+      cur = null;
+    }
+    continue;
+  }
+
   // colors: array (may span multiple lines)
   if (/^colors:\s*\[/.test(line)) {
     inColors  = true;
