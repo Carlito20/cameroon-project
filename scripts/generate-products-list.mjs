@@ -47,6 +47,11 @@ let colorsStr = '';
 let inColors  = false;
 let currentCategory = null;   // top-level category name (used for category discounts)
 let expectCategory  = false;  // the next name: line is a category's name
+let imgPending      = false;  // images: [ opened — first path is on a following line
+let inColorImages   = false;  // inside colorImages: { '#hex': [ ... ] }
+let colorImgHex     = null;   // colour whose first image is still to be read
+let inNested        = false;  // inside another multi-line { ... } field
+const firstPath = s => s.match(/['"](\/images\/[^'"]+)['"]/)?.[1];
 
 for (const raw of lines) {
   const line = raw.trim();
@@ -59,12 +64,14 @@ for (const raw of lines) {
     const q  = rest.match(/\bquantity:\s*(\d+)/);
     const pr = rest.match(/\bprice:\s*(\d+)/);
     const c  = rest.match(/\bcolors:\s*\[[^\]]*\]/);
+    const im = rest.match(/\bimages?:\s*\[?\s*['"]([^'"]+)['"]/);
     cur = {
       name:      inl[2].replace(/\\(.)/g, '$1'),
       quantity:  q ? parseInt(q[1]) : undefined,
       price:     pr ? parseInt(pr[1]) : undefined,
       colorsRaw: c ? c[0] : null,
       category:  currentCategory,
+      image:     im ? im[1] : undefined,
     };
     // closes on the same line → done; otherwise keep parsing the following lines
     if (/\}\s*,?$/.test(rest)) {
@@ -86,6 +93,39 @@ for (const raw of lines) {
     if (line.includes(']')) { inColors = false; if (cur) cur.colorsRaw = colorsStr; }
     continue;
   }
+
+  // images: / image: — keep the first photo (shown on the checkout customer display)
+  if (/^images:\s*\[/.test(line) || /^image:\s*['"]/.test(line)) {
+    const p = firstPath(line);
+    if (cur && !cur.image && p) cur.image = p;
+    imgPending = !p && !line.includes(']');
+    continue;
+  }
+  if (imgPending) {
+    const p = firstPath(line);
+    if (p) { if (cur && !cur.image) cur.image = p; imgPending = false; }
+    if (line.includes(']')) imgPending = false;
+    continue;
+  }
+
+  // colorImages: { '#hex': [ '/images/...', ... ], ... } — first photo per colour
+  if (/^colorImages:\s*\{/.test(line)) { inColorImages = true; if (cur) cur.colorImages = {}; continue; }
+  if (inColorImages) {
+    const hx = line.match(/^['"](#[0-9a-fA-F]{6})['"]\s*:/);
+    if (hx) colorImgHex = hx[1].toLowerCase();
+    const p = firstPath(line);
+    if (p && colorImgHex && cur?.colorImages && !cur.colorImages[colorImgHex]) {
+      cur.colorImages[colorImgHex] = p;
+      colorImgHex = null;
+    }
+    if (/^\}\s*,?$/.test(line)) { inColorImages = false; colorImgHex = null; }
+    continue;
+  }
+
+  // other nested multi-line objects (e.g. colorQuantities: {) — skip, so their
+  // closing "}," isn't taken for the end of the product
+  if (/^\w+:\s*\{$/.test(line)) { inNested = true; continue; }
+  if (inNested) { if (/^\}\s*,?$/.test(line)) inNested = false; continue; }
 
   // id: — only top-level categories have one
   if (/^id:\s*['"]/.test(line)) { expectCategory = true; continue; }
@@ -127,7 +167,7 @@ const parseColors = raw => raw ? (raw.match(/#[0-9a-fA-F]{6}/g) || []) : [];
 const result = [];
 const seen   = new Set();
 // Use existing quantity if present (preserves manual per-color stock edits)
-const add = (name, qty, price, category, base) => {
+const add = (name, qty, price, category, base, image) => {
   if (!seen.has(name)) {
     seen.add(name);
     const ex = existingMap[name];
@@ -137,6 +177,7 @@ const add = (name, qty, price, category, base) => {
       price:    ex?.price ?? price ?? undefined,
       category: category ?? undefined,
       base:     base ?? undefined,     // colour variants: the product they belong to
+      image:    image ?? undefined,    // first photo — shown on the checkout customer display
     });
   }
 };
@@ -144,15 +185,16 @@ const add = (name, qty, price, category, base) => {
 for (const p of products) {
   if (!p.name || p.quantity == null) continue;
   const colors = parseColors(p.colorsRaw);
+  const imgFor = hex => p.colorImages?.[hex.toLowerCase()] ?? p.image;
 
   if (colors.length > 1) {
     const perColor = Math.ceil(p.quantity / colors.length);
-    for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor, p.price, p.category, p.name);
+    for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor, p.price, p.category, p.name, imgFor(hex));
   } else if (colors.length === 1) {
-    add(p.name, p.quantity, p.price, p.category);
-    add(`${p.name} (${getColorName(colors[0])})`, p.quantity, p.price, p.category, p.name);
+    add(p.name, p.quantity, p.price, p.category, undefined, p.image);
+    add(`${p.name} (${getColorName(colors[0])})`, p.quantity, p.price, p.category, p.name, imgFor(colors[0]));
   } else {
-    add(p.name, p.quantity, p.price, p.category);
+    add(p.name, p.quantity, p.price, p.category, undefined, p.image);
   }
 }
 

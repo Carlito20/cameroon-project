@@ -573,6 +573,8 @@ if ($fromOrderId) {
 const catalog = <?= json_encode(array_values($products)) ?>;
 const catalogMap = {};
 catalog.forEach(p => { catalogMap[p.name] = p; });
+// Product photo for the customer display (scan, manual add or website order)
+function imageFor(name) { return catalogMap[name]?.image || ''; }
 
 // Display names set in the dashboard (✏️). Cart items keep the original name as the key.
 const PRODUCT_NAMES = <?= json_encode((object)loadProductNames()) ?>;
@@ -612,7 +614,7 @@ let pendingOrderId = <?= $preloadOrder ? (int)$preloadOrder['id'] : 'null' ?>;
   }
   // Pre-load cart items
   order.items.forEach(item => {
-    cart.push({ name: item.name, price: item.price || 0, qty: item.quantity || 1, stock: 999 });
+    cart.push({ name: item.name, price: item.price || 0, qty: item.quantity || 1, stock: 999, image: imageFor(item.name) });
   });
   // Pre-select payment method
   if (order.payment_method) {
@@ -671,7 +673,7 @@ function addToCart(name, price, stock, originalPrice) {
       setScanStatus('⚠ Out of stock — 0 available for: ' + name.substring(0, 40), 'err');
       return;
     }
-    const item = { name, price, qty: 1, stock, image: catalogMap[name]?.images?.[0] || catalogMap[name]?.image || '' };
+    const item = { name, price, qty: 1, stock, image: imageFor(name) };
     if (originalPrice && originalPrice > price) item.original_price = originalPrice;
     cart.push(item);
   }
@@ -718,7 +720,7 @@ function broadcastDisplay() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       active: cart.length > 0,
-      items: cart.map(i => ({ name: shown(i.name), price: i.price, qty: i.qty, image: i.image || '' })),
+      items: cart.map(i => ({ name: shown(i.name), price: i.price, qty: i.qty, image: i.image || imageFor(i.name) })),
       total,
       payment: selectedPayment
     })
