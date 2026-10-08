@@ -198,8 +198,10 @@ try {
             $price = (int)preg_replace('/[^\d]/', '', $priceRaw);
             if ($price <= 0) { $skippedNoPrice++; continue; }
 
-            // Base name of a multi-colour product → price every colour variant
+            // Base name of a multi-colour product → price every colour variant (admin)
+            // plus the base name itself (the shop looks prices up by base name)
             $targets = isset($catalogNames[$name]) ? [$name] : ($variantsByBase[$name] ?? []);
+            if ($targets && !isset($catalogNames[$name])) $targets[] = $name;
             if (!$targets) {
                 $notFound[] = $name;
                 continue;
