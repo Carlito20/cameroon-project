@@ -152,6 +152,9 @@ $filter = $_GET['filter'] ?? 'pending';
       text-decoration: none; display: flex; align-items: center; justify-content: center;
     }
     .btn-wa-confirm:hover { background: #112a18; }
+    /* "Order Received" already sent — quieter, still tappable to resend */
+    .btn-wa-confirm.done { background: #121212; color: #7fbf8f; border-color: #24402a; flex-direction: column; gap: 1px; }
+    .btn-wa-confirm.done small { font-size: 10px; font-weight: 500; color: #5a7a62; }
 
     /* Phones: 16px text in fields so iOS Safari doesn't zoom in on focus */
     @media (max-width: 768px) {
@@ -441,7 +444,7 @@ function renderOrders(orders) {
         <button class="btn-complete" onclick="completeOrder(${o.id})">✓ Mark Paid & Complete</button>
         <button class="btn-scan"     onclick="scanOrder(${o.id})">📷 Scan & Process</button>
         <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>
-        ${waReceivedLink ? `<a class="btn-wa-confirm" href="${waReceivedLink}" target="_blank" rel="noopener noreferrer">📱 Order Received</a>` : ''}` : ''}
+        ${waReceivedLink ? receivedButton(o, waReceivedLink) : ''}` : ''}
       ${o.status !== 'cancelled' ? `<button class="btn-print-receipt" onclick="printOrderReceipt(${o.id})">🖨 Print Receipt</button>` : ''}
       ${waReceiptLink ? `<a class="btn-wa-confirm" href="${waReceiptLink}" target="_blank" rel="noopener noreferrer">📱 Payment Receipt</a>` : ''}
     </div>`;
@@ -581,6 +584,45 @@ function normalisePhone(raw) {
   if (phone.length === 9) return '237' + phone;
   // Fallback: return as-is
   return phone;
+}
+
+// "Receive Order" until the WhatsApp message has been opened, then "✓ Order Received"
+function receivedButton(o, link) {
+  const label = o.received_at
+    ? `✓ Order Received<small>${esc(receivedTime(o))} · tap to resend</small>`
+    : '📱 Receive Order';
+  return `<a class="btn-wa-confirm${o.received_at ? ' done' : ''}" id="recv-${o.id}" href="${link}" target="_blank" rel="noopener noreferrer" onclick="markReceived(${o.id})">${label}</a>`;
+}
+
+// received_ts = Unix seconds from the server, so it's right whatever the server's time zone
+function receivedTime(o) {
+  const d = o.received_ts ? new Date(o.received_ts * 1000) : new Date();
+  if (isNaN(d)) return '';
+  const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  return d.toDateString() === new Date().toDateString() ? time : d.toLocaleDateString([], { day: 'numeric', month: 'short' }) + ', ' + time;
+}
+
+// Runs alongside the link opening WhatsApp — records it so every device shows "✓ Order Received"
+function markReceived(id) {
+  const o = allOrders.find(x => x.id == id);
+  if (!o) return;
+  if (!o.received_at) {
+    o.received_at = 'pending';
+    o.received_ts = Math.floor(Date.now() / 1000);
+    // Update in place (not replace) so the click still opens WhatsApp
+    const btn = document.getElementById('recv-' + id);
+    if (btn) {
+      btn.classList.add('done');
+      btn.innerHTML = `✓ Order Received<small>${esc(receivedTime(o))} · tap to resend</small>`;
+    }
+  }
+  fetch('/api/orders.php', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+    body: JSON.stringify({ action: 'mark_received', id })
+  }).then(r => r.json()).then(d => {
+    if (d.success && d.received_at) { o.received_at = d.received_at; o.received_ts = d.received_ts; }
+    else if (d.error) showToast('Could not save "received": ' + d.error, 'err');
+  }).catch(() => showToast('Network error — "received" not saved', 'err'));
 }
 
 // Sent as soon as admin sees the order - lets customer know it's been received
