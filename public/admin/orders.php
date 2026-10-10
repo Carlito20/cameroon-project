@@ -614,17 +614,19 @@ function payByTs(o) { return (o.received_ts || Math.floor(Date.now() / 1000)) + 
 
 function cmTime(ts, lang) {
   const d = new Date(ts * 1000);
-  return lang === 'fr'
+  return (lang === 'fr'
     ? d.toLocaleString('fr-FR', { timeZone: CM_TZ, weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-    : d.toLocaleString('en-GB', { timeZone: CM_TZ, weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true });
+    : d.toLocaleString('en-GB', { timeZone: CM_TZ, weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true })
+  ).replace(/[  ]/g, ' ');   // Intl's no-break spaces → plain spaces for WhatsApp
 }
 
 // Bilingual deadline lines for the WhatsApp messages ('' once the deadline has passed)
 function deadlineLines(o) {
   const ts = payByTs(o);
   if (ts * 1000 <= Date.now()) return '';
-  return `⏰ Please pay by *${cmTime(ts, 'en')}* (Cameroon time). Unpaid orders are cancelled automatically after this time.\n` +
-         `⏰ Merci de payer avant le *${cmTime(ts, 'fr')}*. Les commandes non payees sont annulees automatiquement apres ce delai.\n\n`;
+  // Plain text only — some WhatsApp apps turn emoji in pre-filled wa.me messages into "�"
+  return `*Payment deadline:* please pay by *${cmTime(ts, 'en')}* (Cameroon time). Unpaid orders are cancelled automatically after this time.\n` +
+         `*Date limite :* merci de payer avant le *${cmTime(ts, 'fr')}*. Les commandes non payees sont annulees automatiquement apres ce delai.\n\n`;
 }
 
 function hm(ms) { const h = Math.floor(ms / 3600e3), m = Math.floor((ms % 3600e3) / 60e3); return `${h ? h + 'h ' : ''}${m}m`; }
