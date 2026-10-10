@@ -155,6 +155,15 @@ $filter = $_GET['filter'] ?? 'pending';
     /* "Order Received" already sent — quieter, still tappable to resend */
     .btn-wa-confirm.done { background: #121212; color: #7fbf8f; border-color: #24402a; flex-direction: column; gap: 1px; }
     .btn-wa-confirm.done small { font-size: 10px; font-weight: 500; color: #5a7a62; }
+    /* Payment reminder — amber so it stands out from the green WhatsApp buttons */
+    .btn-wa-confirm.btn-wa-remind { background: #221800; color: #f0b429; border-color: #4a3600; }
+    .btn-wa-confirm.btn-wa-remind:hover { background: #2c2000; }
+    .btn-wa-confirm.btn-wa-remind.done { background: #121212; color: #c9a24a; border-color: #3a2e10; }
+    .btn-wa-confirm.btn-wa-remind.done small { color: #8a7440; }
+    /* Time left before a pending order is auto-cancelled */
+    .order-expiry { font-size: 12px; color: #8a8a8a; margin-top: 4px; font-weight: 600; }
+    .order-expiry.soon { color: #f0b429; }
+    .order-expiry.urgent { color: #ff6b6b; }
 
     /* Phones: 16px text in fields so iOS Safari doesn't zoom in on focus */
     @media (max-width: 768px) {
@@ -396,8 +405,9 @@ function clearFilters() {
 
 function fmt(n) { return Number(n).toLocaleString('en-US'); }
 
-function timeAgo(dateStr) {
-  const d = new Date(dateStr + ' UTC');
+// Prefers created_ts (Unix seconds from the server) — created_at is in the DB server's local time
+function timeAgo(dateStr, ts) {
+  const d = ts ? new Date(ts * 1000) : new Date(dateStr + ' UTC');
   const diff = Math.floor((Date.now() - d.getTime()) / 1000);
   const dateLabel = (d.getMonth()+1).toString().padStart(2,'0') + '/' + d.getDate().toString().padStart(2,'0') + '/' + d.getFullYear();
   if (diff < 60) return 'just now · ' + dateLabel;
@@ -444,7 +454,8 @@ function renderOrders(orders) {
         <button class="btn-complete" onclick="completeOrder(${o.id})">✓ Mark Paid & Complete</button>
         <button class="btn-scan"     onclick="scanOrder(${o.id})">📷 Scan & Process</button>
         <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>
-        ${waReceivedLink ? receivedButton(o, waReceivedLink) : ''}` : ''}
+        ${waReceivedLink ? msgButton(o, 'received', waReceivedLink) : ''}
+        ${o.customer_phone && msLeft(o) > 0 && msLeft(o) < REMIND_WINDOW_MS ? msgButton(o, 'reminded', buildWaReminderLink(o)) : ''}` : ''}
       ${o.status !== 'cancelled' ? `<button class="btn-print-receipt" onclick="printOrderReceipt(${o.id})">🖨 Print Receipt</button>` : ''}
       ${waReceiptLink ? `<a class="btn-wa-confirm" href="${waReceiptLink}" target="_blank" rel="noopener noreferrer">📱 Payment Receipt</a>` : ''}
     </div>`;
@@ -460,7 +471,8 @@ function renderOrders(orders) {
         <div>
           <div class="order-ref">${esc(o.order_ref)}</div>
           ${customerHtml}
-          <div class="order-time">${timeAgo(o.created_at)}</div>
+          <div class="order-time">${timeAgo(o.created_at, o.created_ts)}</div>
+          ${expiryHtml(o)}
           <div class="order-pay">${payIcon(o.payment_method)}${esc(o.payment_method || 'Payment not specified')}</div>
         </div>
         <span class="status-badge ${o.status}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span>
@@ -586,43 +598,108 @@ function normalisePhone(raw) {
   return phone;
 }
 
-// "Receive Order" until the WhatsApp message has been opened, then "✓ Order Received"
-function receivedButton(o, link) {
-  const label = o.received_at
-    ? `✓ Order Received<small>${esc(receivedTime(o))} · tap to resend</small>`
-    : '📱 Receive Order';
-  return `<a class="btn-wa-confirm${o.received_at ? ' done' : ''}" id="recv-${o.id}" href="${link}" target="_blank" rel="noopener noreferrer" onclick="markReceived(${o.id})">${label}</a>`;
+// ── Payment deadline (orders auto-cancel 24h after they're placed) ─────
+const CM_TZ = 'Africa/Douala';          // customers are in Cameroon — always show their time
+const REMIND_WINDOW_MS = 6 * 3600e3;    // show "Send Reminder" when less than this is left
+
+function msLeft(o) { return o.expires_ts ? o.expires_ts * 1000 - Date.now() : null; }
+
+function deadlineText(o, lang) {
+  if (!o.expires_ts) return '';
+  const d = new Date(o.expires_ts * 1000);
+  return lang === 'fr'
+    ? d.toLocaleString('fr-FR', { timeZone: CM_TZ, weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+    : d.toLocaleString('en-GB', { timeZone: CM_TZ, weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true });
 }
 
-// received_ts = Unix seconds from the server, so it's right whatever the server's time zone
-function receivedTime(o) {
-  const d = o.received_ts ? new Date(o.received_ts * 1000) : new Date();
-  if (isNaN(d)) return '';
-  const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-  return d.toDateString() === new Date().toDateString() ? time : d.toLocaleDateString([], { day: 'numeric', month: 'short' }) + ', ' + time;
+// Bilingual deadline lines for the WhatsApp messages ('' once the deadline has passed)
+function deadlineLines(o) {
+  const left = msLeft(o);
+  if (left === null || left <= 0) return '';
+  return `⏰ Please pay by *${deadlineText(o, 'en')}* (Cameroon time). Unpaid orders are cancelled automatically after this time.\n` +
+         `⏰ Merci de payer avant le *${deadlineText(o, 'fr')}*. Les commandes non payees sont annulees automatiquement apres ce delai.\n\n`;
 }
 
-// Runs alongside the link opening WhatsApp — records it so every device shows "✓ Order Received"
-function markReceived(id) {
+// "⏰ Expires in 5h 12m · Sat 11 Oct, 3:40 pm" on pending order cards
+function expiryHtml(o) {
+  const left = msLeft(o);
+  if (o.status !== 'pending' || left === null) return '';
+  const cls = left < 2 * 3600e3 ? 'urgent' : left < REMIND_WINDOW_MS ? 'soon' : '';
+  let txt;
+  if (left <= 0) txt = 'Expiring now — will be auto-cancelled';
+  else {
+    const h = Math.floor(left / 3600e3), m = Math.floor((left % 3600e3) / 60e3);
+    txt = `Expires in ${h ? h + 'h ' : ''}${m}m · ${deadlineText(o, 'en')}`;
+  }
+  return `<div class="order-expiry ${cls}">⏰ ${esc(txt)}</div>`;
+}
+
+// ── WhatsApp message buttons that remember they were opened ─────────────
+// kind: 'received' (Receive Order → ✓ Order Received) or 'reminded' (Send Reminder → ✓ Reminder Sent)
+const MSG_KINDS = {
+  received: { action: 'mark_received', todo: '📱 Receive Order', done: '✓ Order Received', cls: '' },
+  reminded: { action: 'mark_reminded', todo: '⏰ Send Reminder', done: '✓ Reminder Sent',  cls: ' btn-wa-remind' },
+};
+
+function msgButton(o, kind, link) {
+  const k = MSG_KINDS[kind], sent = o[kind + '_ts'];
+  const label = sent ? `${k.done}<small>${esc(sentTime(sent))} · tap to resend</small>` : k.todo;
+  return `<a class="btn-wa-confirm${k.cls}${sent ? ' done' : ''}" id="${kind}-${o.id}" href="${link}" target="_blank" rel="noopener noreferrer" onclick="markSent(${o.id}, '${kind}')">${label}</a>`;
+}
+
+// ts = Unix seconds from the server, so it's right whatever the server's time zone
+function sentTime(ts) {
+  const d = new Date(ts * 1000);
+  const time = d.toLocaleTimeString('en-GB', { timeZone: CM_TZ, hour: 'numeric', minute: '2-digit', hour12: true });
+  const day = x => x.toLocaleDateString('en-GB', { timeZone: CM_TZ });
+  return day(d) === day(new Date()) ? time : d.toLocaleDateString('en-GB', { timeZone: CM_TZ, day: 'numeric', month: 'short' }) + ', ' + time;
+}
+
+// Runs alongside the link opening WhatsApp — records it so every device shows it as sent
+function markSent(id, kind) {
   const o = allOrders.find(x => x.id == id);
   if (!o) return;
-  if (!o.received_at) {
-    o.received_at = 'pending';
-    o.received_ts = Math.floor(Date.now() / 1000);
+  const k = MSG_KINDS[kind];
+  if (kind === 'reminded' || !o[kind + '_ts']) {
+    o[kind + '_ts'] = Math.floor(Date.now() / 1000);
     // Update in place (not replace) so the click still opens WhatsApp
-    const btn = document.getElementById('recv-' + id);
+    const btn = document.getElementById(kind + '-' + id);
     if (btn) {
       btn.classList.add('done');
-      btn.innerHTML = `✓ Order Received<small>${esc(receivedTime(o))} · tap to resend</small>`;
+      btn.innerHTML = `${k.done}<small>${esc(sentTime(o[kind + '_ts']))} · tap to resend</small>`;
     }
   }
   fetch('/api/orders.php', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
-    body: JSON.stringify({ action: 'mark_received', id })
+    body: JSON.stringify({ action: k.action, id })
   }).then(r => r.json()).then(d => {
-    if (d.success && d.received_at) { o.received_at = d.received_at; o.received_ts = d.received_ts; }
-    else if (d.error) showToast('Could not save "received": ' + d.error, 'err');
-  }).catch(() => showToast('Network error — "received" not saved', 'err'));
+    if (d.success && d.ts) o[kind + '_ts'] = d.ts;
+    else if (d.error) showToast('Could not save: ' + d.error, 'err');
+  }).catch(() => showToast('Network error — not saved', 'err'));
+}
+
+// Payment reminder — for pending orders close to their deadline
+function buildWaReminderLink(o) {
+  const phone = normalisePhone(o.customer_phone);
+  const items = JSON.parse(o.items || '[]');
+  let lines = '';
+  items.forEach(i => {
+    const line = (i.price || 0) * (i.quantity || 1);
+    lines += `- ${i.name} x${i.quantity || 1}${i.price ? ' - ' + Number(line).toLocaleString() + ' FCFA' : ''}\n`;
+  });
+  const name = o.customer_name || 'there';
+  const msg =
+    `*Payment Reminder - American Select*\n` +
+    `Hi ${name}! Your order *${o.order_ref}* is still waiting for payment.\n` +
+    `Bonjour ${name} ! Votre commande *${o.order_ref}* attend toujours le paiement.\n\n` +
+    lines +
+    `\nTotal: ${Number(o.total).toLocaleString()} FCFA\n\n` +
+    deadlineLines(o) +
+    `MTN MoMo: *679 457 181*\n` +
+    `Orange Money: *686 271 567*\n\n` +
+    `Already paid? Reply with your *MoMo transaction ID*.\n` +
+    `Deja paye ? Repondez avec votre *ID de transaction MoMo*.`;
+  return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
 // Sent as soon as admin sees the order - lets customer know it's been received
@@ -649,6 +726,7 @@ function buildWaOrderReceivedLink(o) {
     `Veuillez envoyer le paiement pour finaliser votre commande :\n` +
     `MTN MoMo: *679 457 181*\n` +
     `Orange Money: *686 271 567*\n\n` +
+    deadlineLines(o) +
     `After paying, please reply with your *MoMo transaction ID* so we can confirm.\n` +
     `Apres le paiement, merci de repondre avec votre *ID de transaction MoMo* pour confirmation.\n\n` +
     `We will confirm once payment is received. Thank you!\n` +

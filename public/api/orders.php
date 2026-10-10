@@ -29,6 +29,7 @@ function getPdo() {
     try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN customer_phone VARCHAR(30) AFTER customer_name"); } catch (Exception $e) {}
     try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN payment_ref VARCHAR(100) AFTER payment_method"); } catch (Exception $e) {}
     try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN received_at DATETIME NULL"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN reminded_at DATETIME NULL"); } catch (Exception $e) {}
     try { $pdo->exec("ALTER TABLE pending_orders MODIFY COLUMN status ENUM('pending','completed','cancelled','damaged','returned') DEFAULT 'pending'"); } catch (Exception $e) {}
     $pdo->exec("CREATE TABLE IF NOT EXISTS stock_transactions (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -91,6 +92,10 @@ function restoreStock($pdo, $items, $orderRef) {
             ->execute([$name, $qty, $stockBefore, $stockAfter, 'Restored — Cancelled ' . $orderRef]);
     }
 }
+
+// Unix timestamps for the admin page, so times are right whatever the server's time zone.
+// expires_ts must match the 24-hour window in autoExpireOrders() and cron-expire-orders.php.
+const ORDER_TIME_COLS = 'UNIX_TIMESTAMP(created_at) AS created_ts, UNIX_TIMESTAMP(created_at + INTERVAL 24 HOUR) AS expires_ts, UNIX_TIMESTAMP(received_at) AS received_ts, UNIX_TIMESTAMP(reminded_at) AS reminded_ts';
 
 // Auto-cancel orders older than 24 hours and restore their stock
 function autoExpireOrders($pdo) {
@@ -182,19 +187,20 @@ if ($action === 'complete' && $method === 'POST') {
     exit;
 }
 
-// ── MARK RECEIVED — admin opened the "Order Received" WhatsApp message ───
-if ($action === 'mark_received' && $method === 'POST') {
+// ── MARK RECEIVED / REMINDED — admin opened that WhatsApp message ─────
+if (($action === 'mark_received' || $action === 'mark_reminded') && $method === 'POST') {
     $id = (int)($data['id'] ?? 0);
     if (!$id) { echo json_encode(['error' => 'Invalid ID']); exit; }
+    $col = $action === 'mark_received' ? 'received_at' : 'reminded_at';
     try {
         $pdo = getPdo();
-        // Keep the first time it was marked; re-sending doesn't move it
-        $pdo->prepare('UPDATE pending_orders SET received_at = COALESCE(received_at, NOW()) WHERE id = ?')
-            ->execute([$id]);
-        $stmt = $pdo->prepare('SELECT received_at, UNIX_TIMESTAMP(received_at) AS received_ts FROM pending_orders WHERE id = ?');
+        // "Received" keeps the first time; a reminder records the latest one
+        $set = $col === 'received_at' ? 'COALESCE(received_at, NOW())' : 'NOW()';
+        $pdo->prepare("UPDATE pending_orders SET $col = $set WHERE id = ?")->execute([$id]);
+        $stmt = $pdo->prepare("SELECT $col AS at, UNIX_TIMESTAMP($col) AS ts FROM pending_orders WHERE id = ?");
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        echo json_encode(['success' => true, 'received_at' => $row['received_at'], 'received_ts' => (int)$row['received_ts']]);
+        echo json_encode(['success' => true, 'at' => $row['at'], 'ts' => (int)$row['ts']]);
     } catch (Exception $e) { echo json_encode(['error' => $e->getMessage()]); }
     exit;
 }
@@ -289,9 +295,9 @@ if ($method === 'GET') {
         autoExpireOrders($pdo);
 
         if ($status === 'all') {
-            $stmt = $pdo->query('SELECT *, UNIX_TIMESTAMP(received_at) AS received_ts FROM pending_orders ORDER BY created_at DESC LIMIT 200');
+            $stmt = $pdo->query('SELECT *, ' . ORDER_TIME_COLS . ' FROM pending_orders ORDER BY created_at DESC LIMIT 200');
         } else {
-            $stmt = $pdo->prepare('SELECT *, UNIX_TIMESTAMP(received_at) AS received_ts FROM pending_orders WHERE status = ? ORDER BY created_at DESC LIMIT 200');
+            $stmt = $pdo->prepare('SELECT *, ' . ORDER_TIME_COLS . ' FROM pending_orders WHERE status = ? ORDER BY created_at DESC LIMIT 200');
             $stmt->execute([$status]);
         }
         echo json_encode(['orders' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
