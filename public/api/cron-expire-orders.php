@@ -1,7 +1,9 @@
 <?php
 /**
  * cron-expire-orders.php
- * Cancels pending orders older than 24 hours and restores their stock.
+ * Cancels expired pending orders and restores their stock: unpaid 24 hours after the
+ * admin confirmed them ("Receive Order"), or never confirmed 48 hours after ordering.
+ * Must match autoExpireOrders() / ORDER_TIME_COLS in orders.php.
  *
  * Run via cPanel Cron Jobs every hour:
  *   /usr/bin/php /home/nu7wechphtdh/public_html/americanselect.net/api/cron-expire-orders.php
@@ -15,9 +17,14 @@ try {
         DB_USER, DB_PASS,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
+    // Same session time zone as orders.php, so NOW() lines up with the stored times
+    $pdo->exec("SET time_zone = '+00:00'");
 
-    // Find all pending orders older than 24 hours
-    $stmt = $pdo->query('SELECT * FROM pending_orders WHERE status = "pending" AND created_at < NOW() - INTERVAL 24 HOUR');
+    // received_at is added by orders.php — make sure it exists before the cron queries it
+    try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN received_at TIMESTAMP NULL"); } catch (Exception $e) {}
+
+    // Find all expired pending orders
+    $stmt = $pdo->query('SELECT * FROM pending_orders WHERE status = "pending" AND ((received_at IS NOT NULL AND received_at < NOW() - INTERVAL 24 HOUR) OR (received_at IS NULL AND created_at < NOW() - INTERVAL 48 HOUR))');
     $expired = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $count = 0;
@@ -43,8 +50,10 @@ try {
         }
 
         // Mark order as cancelled
-        $pdo->prepare('UPDATE pending_orders SET status = "cancelled", cancelled_at = NOW(), note = "Auto-cancelled after 24 hours — stock restored" WHERE id = ?')
-            ->execute([$order['id']]);
+        $pdo->prepare('UPDATE pending_orders SET status = "cancelled", cancelled_at = NOW(), note = ? WHERE id = ?')
+            ->execute([$order['received_at']
+                ? 'Auto-cancelled — not paid within 24 hours of confirmation — stock restored'
+                : 'Auto-cancelled — not confirmed within 48 hours — stock restored', $order['id']]);
 
         $count++;
         echo '[' . date('Y-m-d H:i:s') . '] Cancelled ' . $order['order_ref'] . ' — stock restored for ' . count($items) . " item(s)\n";

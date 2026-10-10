@@ -455,7 +455,7 @@ function renderOrders(orders) {
         <button class="btn-scan"     onclick="scanOrder(${o.id})">📷 Scan & Process</button>
         <button class="btn-cancel"   onclick="openCancelModal(${o.id})">✗ Cancel</button>
         ${waReceivedLink ? msgButton(o, 'received', waReceivedLink) : ''}
-        ${o.customer_phone && msLeft(o) > 0 && msLeft(o) < REMIND_WINDOW_MS ? msgButton(o, 'reminded', buildWaReminderLink(o)) : ''}` : ''}
+        ${o.customer_phone && o.received_ts && msLeft(o) > 0 && msLeft(o) < REMIND_WINDOW_MS ? msgButton(o, 'reminded', buildWaReminderLink(o)) : ''}` : ''}
       ${o.status !== 'cancelled' ? `<button class="btn-print-receipt" onclick="printOrderReceipt(${o.id})">🖨 Print Receipt</button>` : ''}
       ${waReceiptLink ? `<a class="btn-wa-confirm" href="${waReceiptLink}" target="_blank" rel="noopener noreferrer">📱 Payment Receipt</a>` : ''}
     </div>`;
@@ -598,15 +598,22 @@ function normalisePhone(raw) {
   return phone;
 }
 
-// ── Payment deadline (orders auto-cancel 24h after they're placed) ─────
+// ── Payment deadline ──────────────────────────────────────────────────
+// The customer gets 24h to pay from when the admin taps "Receive Order" (received_ts).
+// Orders never confirmed auto-cancel 48h after being placed. expires_ts from the server
+// follows the same rule (ORDER_TIME_COLS in api/orders.php).
 const CM_TZ = 'Africa/Douala';          // customers are in Cameroon — always show their time
+const PAY_WINDOW_S = 24 * 3600;         // time to pay after confirmation
 const REMIND_WINDOW_MS = 6 * 3600e3;    // show "Send Reminder" when less than this is left
 
 function msLeft(o) { return o.expires_ts ? o.expires_ts * 1000 - Date.now() : null; }
 
-function deadlineText(o, lang) {
-  if (!o.expires_ts) return '';
-  const d = new Date(o.expires_ts * 1000);
+// Pay-by time for the WhatsApp messages: 24h from confirmation — or from now, for the
+// "Order Received" message that is about to start the clock
+function payByTs(o) { return (o.received_ts || Math.floor(Date.now() / 1000)) + PAY_WINDOW_S; }
+
+function cmTime(ts, lang) {
+  const d = new Date(ts * 1000);
   return lang === 'fr'
     ? d.toLocaleString('fr-FR', { timeZone: CM_TZ, weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
     : d.toLocaleString('en-GB', { timeZone: CM_TZ, weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true });
@@ -614,24 +621,30 @@ function deadlineText(o, lang) {
 
 // Bilingual deadline lines for the WhatsApp messages ('' once the deadline has passed)
 function deadlineLines(o) {
-  const left = msLeft(o);
-  if (left === null || left <= 0) return '';
-  return `⏰ Please pay by *${deadlineText(o, 'en')}* (Cameroon time). Unpaid orders are cancelled automatically after this time.\n` +
-         `⏰ Merci de payer avant le *${deadlineText(o, 'fr')}*. Les commandes non payees sont annulees automatiquement apres ce delai.\n\n`;
+  const ts = payByTs(o);
+  if (ts * 1000 <= Date.now()) return '';
+  return `⏰ Please pay by *${cmTime(ts, 'en')}* (Cameroon time). Unpaid orders are cancelled automatically after this time.\n` +
+         `⏰ Merci de payer avant le *${cmTime(ts, 'fr')}*. Les commandes non payees sont annulees automatiquement apres ce delai.\n\n`;
 }
 
-// "⏰ Expires in 5h 12m · Sat 11 Oct, 3:40 pm" on pending order cards
+function hm(ms) { const h = Math.floor(ms / 3600e3), m = Math.floor((ms % 3600e3) / 60e3); return `${h ? h + 'h ' : ''}${m}m`; }
+
+// Pending order cards: payment countdown once confirmed, or a "confirm me" note before that
 function expiryHtml(o) {
   const left = msLeft(o);
   if (o.status !== 'pending' || left === null) return '';
   const cls = left < 2 * 3600e3 ? 'urgent' : left < REMIND_WINDOW_MS ? 'soon' : '';
   let txt;
-  if (left <= 0) txt = 'Expiring now — will be auto-cancelled';
-  else {
-    const h = Math.floor(left / 3600e3), m = Math.floor((left % 3600e3) / 60e3);
-    txt = `Expires in ${h ? h + 'h ' : ''}${m}m · ${deadlineText(o, 'en')}`;
+  if (!o.received_ts) {
+    txt = left <= 0
+      ? '⏳ Not confirmed — will be auto-cancelled'
+      : `⏳ Not confirmed — tap Receive Order to start the customer's 24h · auto-cancels in ${hm(left)}`;
+  } else {
+    txt = left <= 0
+      ? '⏰ Payment time is up — will be auto-cancelled'
+      : `⏰ Pay within ${hm(left)} · by ${cmTime(o.expires_ts, 'en')}`;
   }
-  return `<div class="order-expiry ${cls}">⏰ ${esc(txt)}</div>`;
+  return `<div class="order-expiry ${cls}" id="expiry-${o.id}">${esc(txt)}</div>`;
 }
 
 // ── WhatsApp message buttons that remember they were opened ─────────────
@@ -668,14 +681,22 @@ function markSent(id, kind) {
       btn.classList.add('done');
       btn.innerHTML = `${k.done}<small>${esc(sentTime(o[kind + '_ts']))} · tap to resend</small>`;
     }
+    if (kind === 'received') startPayClock(o);
   }
   fetch('/api/orders.php', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
     body: JSON.stringify({ action: k.action, id })
   }).then(r => r.json()).then(d => {
-    if (d.success && d.ts) o[kind + '_ts'] = d.ts;
+    if (d.success && d.ts) { o[kind + '_ts'] = d.ts; if (kind === 'received') startPayClock(o); }
     else if (d.error) showToast('Could not save: ' + d.error, 'err');
   }).catch(() => showToast('Network error — not saved', 'err'));
+}
+
+// "Receive Order" starts the customer's 24h — refresh the card's countdown line in place
+function startPayClock(o) {
+  o.expires_ts = o.received_ts + PAY_WINDOW_S;
+  const el = document.getElementById('expiry-' + o.id);
+  if (el) el.outerHTML = expiryHtml(o);
 }
 
 // Payment reminder — for pending orders close to their deadline

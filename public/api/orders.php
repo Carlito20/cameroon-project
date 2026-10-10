@@ -28,8 +28,8 @@ function getPdo() {
     try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN customer_name VARCHAR(100) AFTER order_ref"); } catch (Exception $e) {}
     try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN customer_phone VARCHAR(30) AFTER customer_name"); } catch (Exception $e) {}
     try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN payment_ref VARCHAR(100) AFTER payment_method"); } catch (Exception $e) {}
-    try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN received_at DATETIME NULL"); } catch (Exception $e) {}
-    try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN reminded_at DATETIME NULL"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN received_at TIMESTAMP NULL"); } catch (Exception $e) {}
+    try { $pdo->exec("ALTER TABLE pending_orders ADD COLUMN reminded_at TIMESTAMP NULL"); } catch (Exception $e) {}
     try { $pdo->exec("ALTER TABLE pending_orders MODIFY COLUMN status ENUM('pending','completed','cancelled','damaged','returned') DEFAULT 'pending'"); } catch (Exception $e) {}
     $pdo->exec("CREATE TABLE IF NOT EXISTS stock_transactions (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -94,18 +94,25 @@ function restoreStock($pdo, $items, $orderRef) {
 }
 
 // Unix timestamps for the admin page, so times are right whatever the server's time zone.
-// expires_ts must match the 24-hour window in autoExpireOrders() and cron-expire-orders.php.
-const ORDER_TIME_COLS = 'UNIX_TIMESTAMP(created_at) AS created_ts, UNIX_TIMESTAMP(created_at + INTERVAL 24 HOUR) AS expires_ts, UNIX_TIMESTAMP(received_at) AS received_ts, UNIX_TIMESTAMP(reminded_at) AS reminded_ts';
+// expires_ts must match the rule in autoExpireOrders() and cron-expire-orders.php:
+// 24h to pay once the admin taps "Receive Order" (received_at); 48h backup if never confirmed.
+const ORDER_TIME_COLS = 'UNIX_TIMESTAMP(created_at) AS created_ts, UNIX_TIMESTAMP(IF(received_at IS NULL, created_at + INTERVAL 48 HOUR, received_at + INTERVAL 24 HOUR)) AS expires_ts, UNIX_TIMESTAMP(received_at) AS received_ts, UNIX_TIMESTAMP(reminded_at) AS reminded_ts';
 
-// Auto-cancel orders older than 24 hours and restore their stock
+function expiryNote($order) {
+    return $order['received_at']
+        ? 'Auto-cancelled — not paid within 24 hours of confirmation — stock restored'
+        : 'Auto-cancelled — not confirmed within 48 hours — stock restored';
+}
+
+// Auto-cancel expired orders (see ORDER_TIME_COLS for the rule) and restore their stock
 function autoExpireOrders($pdo) {
-    $stmt = $pdo->query('SELECT * FROM pending_orders WHERE status = "pending" AND created_at < NOW() - INTERVAL 24 HOUR');
+    $stmt = $pdo->query('SELECT * FROM pending_orders WHERE status = "pending" AND ((received_at IS NOT NULL AND received_at < NOW() - INTERVAL 24 HOUR) OR (received_at IS NULL AND created_at < NOW() - INTERVAL 48 HOUR))');
     $expired = $stmt->fetchAll(PDO::FETCH_ASSOC);
     foreach ($expired as $order) {
         $items = json_decode($order['items'], true) ?? [];
         restoreStock($pdo, $items, $order['order_ref']);
-        $pdo->prepare('UPDATE pending_orders SET status = "cancelled", cancelled_at = NOW(), note = "Auto-cancelled after 24 hours — stock restored" WHERE id = ?')
-            ->execute([$order['id']]);
+        $pdo->prepare('UPDATE pending_orders SET status = "cancelled", cancelled_at = NOW(), note = ? WHERE id = ?')
+            ->execute([expiryNote($order), $order['id']]);
     }
     return count($expired);
 }
