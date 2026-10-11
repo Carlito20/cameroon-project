@@ -171,8 +171,9 @@ $filter = $_GET['filter'] ?? 'pending';
     }
     @media print {
       body > *:not(#print-area) { display: none !important; }
-      #print-area { display: block !important; padding: 10mm 15mm; color: #000; background: #fff; }
-      @page { size: A5; margin: 10mm; }
+      html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+      #print-area { display: block !important; width: 72mm; padding: 2mm 3mm; box-sizing: border-box; color: #000; background: #fff; }
+      #print-area * { color: #000 !important; }
     }
     .btn-cancel:hover { background: #1a0d0d; color: #e05c5c; border-color: #5a2a2a; }
 
@@ -834,11 +835,91 @@ function printOrderReceipt(id) {
     <p style="text-align:center;font-size:11px;color:#888;">Thank you for shopping with American Select!</p>
     <p style="text-align:center;font-size:11px;color:#888;">Merci pour votre achat chez American Select !</p>`;
 
-  const printArea = document.getElementById('print-area');
-  printArea.style.display = 'block';
-  const hidePrint = () => { printArea.style.display = 'none'; window.removeEventListener('afterprint', hidePrint); };
-  window.addEventListener('afterprint', hidePrint);
-  setTimeout(() => window.print(), 100);
+  // Preferred: send ESC/POS straight to the 80mm thermal printer via the local relay
+  // (no dialog, paper cut right after the last line). Fall back to browser print.
+  printOrderThermal(o, items, total).catch(() => {
+    const printArea = document.getElementById('print-area');
+    printArea.style.display = 'block';
+    // Size the page to the receipt itself: 80mm roll, height = content height
+    const heightMm = Math.ceil(printArea.offsetHeight * 25.4 / 96) + 4;
+    let pageStyle = document.getElementById('receipt-page-style');
+    if (!pageStyle) {
+      pageStyle = document.createElement('style');
+      pageStyle.id = 'receipt-page-style';
+      document.head.appendChild(pageStyle);
+    }
+    pageStyle.textContent = `@media print { @page { size: 80mm ${heightMm}mm; margin: 0; } }`;
+    const hidePrint = () => { printArea.style.display = 'none'; window.removeEventListener('afterprint', hidePrint); };
+    window.addEventListener('afterprint', hidePrint);
+    setTimeout(() => window.print(), 100);
+  });
+}
+
+// ── Thermal receipt via local relay (ESC/POS, 80mm) ──────
+async function printOrderThermal(o, items, itemsTotal) {
+  const W = 48; // characters per line on 80mm normal font
+  const ESC = '\x1B', GS = '\x1D', LF = '\x0A';
+  // Thermal printer font has no accents — strip them
+  const plain = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\x20-\x7E]/g, '');
+  const center = t => t.length >= W ? t : ' '.repeat(Math.floor((W - t.length) / 2)) + t;
+  const padLine = (l, r) => {
+    const gap = W - l.length - r.length;
+    return gap <= 0 ? l.substring(0, W - r.length - 1) + ' ' + r : l + ' '.repeat(gap) + r;
+  };
+  const dashes = () => '-'.repeat(W);
+  const fmt = n => Number(n).toLocaleString('en-US') + ' FCFA';
+  const date = new Date(o.created_at + ' UTC').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+  let d = ESC + '@';
+  d += ESC + 'a\x01' + ESC + 'E\x01' + GS + '!\x11' + 'AMERICAN SELECT' + LF;
+  d += GS + '!\x00' + ESC + 'E\x00';
+  d += 'Quality Imports from the USA & Canada' + LF;
+  d += 'Importations de qualite des Etats-Unis et Canada' + LF;
+  d += 'Yaounde, Cameroon / Cameroun' + LF;
+  d += 'MTN: 679 457 181  |  Orange: 686 271 567' + LF;
+  d += 'americanselect.net' + LF;
+  d += ESC + 'a\x00' + dashes() + LF;
+  d += padLine('Order: ' + plain(o.order_ref), date) + LF;
+  if (o.customer_name) {
+    d += plain('Customer: ' + o.customer_name + (o.customer_phone ? ' - ' + o.customer_phone : '')).substring(0, W) + LF;
+  }
+  d += dashes() + LF;
+  items.forEach(i => {
+    const qty = i.quantity || 1;
+    const name = plain(i.name);
+    d += (name.length > W ? name.substring(0, W - 1) + '~' : name) + LF;
+    const meta = '  x' + qty + (i.price ? ' @ ' + fmt(i.price) : '');
+    d += padLine(meta, i.price ? fmt(i.price * qty) : '--') + LF;
+  });
+  d += dashes() + LF;
+  d += ESC + 'E\x01' + GS + '!\x01' + padLine('TOTAL', fmt(o.total || itemsTotal)) + LF + GS + '!\x00' + ESC + 'E\x00';
+  d += 'Paid via / Paye via : ' + plain(o.payment_method || 'N/A') + LF;
+  if (o.payment_ref) d += 'Transaction ID: ' + plain(o.payment_ref) + LF;
+  d += dashes() + LF;
+  d += ESC + 'a\x01';
+  d += 'Thank you for shopping with American Select!' + LF;
+  d += 'Merci pour votre achat chez American Select !' + LF;
+  d += LF + LF + LF;
+  d += GS + 'V\x42\x05'; // feed + partial cut
+
+  const bytes = new Uint8Array([...d].map(c => c.charCodeAt(0) & 0xFF));
+  let bin = '';
+  bytes.forEach(b => { bin += String.fromCharCode(b); });
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const res = await fetch('http://localhost:3099/receipt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: btoa(bin) }),
+      signal: ctrl.signal
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.ok) throw new Error(json.error || 'Relay print failed');
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 loadOrders();
