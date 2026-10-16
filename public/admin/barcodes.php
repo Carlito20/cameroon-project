@@ -33,6 +33,18 @@ try {
     $dbError = $e->getMessage();
 }
 
+// Apply live price overrides from DB — products-list.json prices can be missing or out of date
+try {
+    $dbPrices = [];
+    foreach ($pdo->query('SELECT product_name, price FROM product_prices')->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $dbPrices[$row['product_name']] = (int)$row['price'];
+    }
+    foreach ($products as &$p) {
+        if (isset($dbPrices[$p['name']])) $p['price'] = $dbPrices[$p['name']];
+    }
+    unset($p);
+} catch (Throwable $e) { /* price overrides optional */ }
+
 $assigned   = array_filter($products, fn($p) => isset($barcodeMap[$p['name']]));
 $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]));
 ?>
