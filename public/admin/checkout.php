@@ -830,6 +830,7 @@ function renderCart() {
     body.innerHTML = '<div class="cart-empty"><div class="empty-icon">🛒</div>Scan items to add them</div>';
     foot.style.display = 'none';
     badge.textContent = 'Empty';
+    saveCartDraft(); // clears the saved cart — otherwise the last removed item came back on reload
     return;
   }
 
