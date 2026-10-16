@@ -308,6 +308,7 @@ $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_
     }
     .grid-heading span { color: #555; font-weight: 400; text-transform: none; letter-spacing: 0; }
     .group-card { border-style: dashed; border-color: #3a3010; }
+    .group-card.just-saved { border-style: solid; border-color: #d4af37; box-shadow: 0 0 0 3px rgba(212,175,55,0.35); }
     .custom-card { border-style: dashed; border-color: #1a2a40; }
     .custom-card.selected { border-style: solid; }
     .custom-badge {
@@ -952,6 +953,8 @@ async function saveGroups(payload, btn) {
     });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(data.error || ('HTTP ' + r.status));
+    // After the reload, scroll to and highlight what was just saved
+    try { sessionStorage.setItem('priceTagSaved', JSON.stringify(data.ids || [])); } catch (e) {}
     location.reload();
   } catch (e) {
     alert('Could not save: ' + e.message);
@@ -1147,6 +1150,18 @@ function openSuggestModal() {
     ...rows.map(r => r.box)
   ], [el('button', { class: 'btn btn-outline', onclick: closeModal }, 'Cancel'), create]);
 }
+
+// Highlight groups saved just before this reload
+(function showSavedGroups() {
+  let ids = [];
+  try { ids = JSON.parse(sessionStorage.getItem('priceTagSaved') || '[]'); sessionStorage.removeItem('priceTagSaved'); } catch (e) {}
+  const cards = ids.map(id => document.querySelector('.group-card[data-group-id="' + id + '"]')).filter(Boolean);
+  if (!cards.length) return;
+  if (currentView === 'products') setView('all');
+  cards.forEach(c => c.classList.add('just-saved'));
+  cards[0].scrollIntoView({ block: 'center' });
+  setTimeout(() => cards.forEach(c => c.classList.remove('just-saved')), 4000);
+})();
 
 // ── Download PNG labels for Munbyn app import ──────────
 async function downloadPNGs() {
