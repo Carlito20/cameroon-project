@@ -60,6 +60,15 @@ const PRICE_TAG_GROUP_TYPES = [
     ['/\b(perfume|parfum|cologne|edp|edt)\b/i', 'Perfume'],
 ];
 
+// Gadget types group across brands — "Smart Watches — 15 000" beats one tag per model
+// (GT4, Z68, PLEIVO…). Type => label printed on the tag.
+const PRICE_TAG_GROUP_ANY_BRAND = [
+    'Smartwatch' => 'Smart Watches',
+    'Speaker'    => 'Speakers',
+    'Earbuds'    => 'Earbuds',
+    'Headphones' => 'Headphones',
+];
+
 // Brand = first word, or first two when the first is a short prefix ("Dr Teal's", "St. Ives", "So Fresh")
 function priceTagGroupBrand($name) {
     $words = preg_split('/\s+/', trim($name));
@@ -77,7 +86,7 @@ function priceTagGroupShortName($name) {
 }
 
 // Suggests groups among products not already grouped. Products are matched by brand
-// + product type (or, failing a known type, as colour variants of one product), then
+// + product type (gadgets by type alone; failing a known type, as colour variants of one product), then
 // split by price — a label can only show one price. Prices that differ within a match
 // are reported, since they're often a pricing mistake worth checking.
 // $products: [['name', 'display', 'price', 'original_price'?]] with live prices applied.
@@ -92,12 +101,16 @@ function suggestPriceTagGroups($products, $groups) {
         $brand   = priceTagGroupBrand($display);
         $type    = null;
         foreach (PRICE_TAG_GROUP_TYPES as [$re, $label]) {
-            // Skip when the "brand" is really the type itself ("Smart Watch …" has no brand)
-            if (preg_match($re, $display, $m, PREG_OFFSET_CAPTURE) && $m[0][1] >= strlen($brand)) { $type = $label; break; }
+            if (!preg_match($re, $display, $m, PREG_OFFSET_CAPTURE)) continue;
+            // Brand-grouped types: skip when the "brand" is really the type itself ("Smart Watch …" has no brand)
+            if (isset(PRICE_TAG_GROUP_ANY_BRAND[$label]) || $m[0][1] >= strlen($brand)) { $type = $label; break; }
         }
         // Category keeps kids' and adult versions apart (Dr Teal's Kids body wash vs Dr Teal's body wash)
         $cat = mb_strtolower($p['category'] ?? '');
-        if ($type !== null) {
+        if ($type !== null && isset(PRICE_TAG_GROUP_ANY_BRAND[$type])) {
+            $key   = mb_strtolower($cat . '|any|' . $type);
+            $label = PRICE_TAG_GROUP_ANY_BRAND[$type];
+        } elseif ($type !== null) {
             $key   = mb_strtolower($cat . '|' . $brand . '|' . $type);
             $kids  = strpos($cat, 'kids') !== false && preg_match('/\bkids\b/i', $display) ? ' Kids' : '';
             $label = $brand . $kids . ' ' . $type;
