@@ -694,6 +694,15 @@ $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_
   <button class="btn btn-outline" onclick="openSuggestModal()" style="color:#d4af37;border-color:#3a3010;">&#10024; Suggest Groups<?= $suggestions ? ' (' . count($suggestions) . ')' : '' ?></button>
 </div>
 
+<?php if ($groups): ?>
+<div class="mode-row no-print">
+  <span class="mode-label">Show:</span>
+  <button class="mode-btn view-btn active" data-view="all" onclick="setView('all')">All</button>
+  <button class="mode-btn view-btn" data-view="groups" onclick="setView('groups')">Groups (<?= count($groups) ?>)</button>
+  <button class="mode-btn view-btn" data-view="products" onclick="setView('products')">Products</button>
+</div>
+<?php endif; ?>
+
 <div class="mode-row no-print">
   <span class="mode-label">Print on:</span>
   <button class="mode-btn active" id="mode-sheet" onclick="setMode('sheet')">A4 Sheet (3 per row)</button>
@@ -705,7 +714,7 @@ $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_
 
 <div class="tag-grid" id="tag-grid">
 <?php if ($groups): ?>
-  <div class="grid-heading no-print">Group labels <span>&middot; one tag covers several products at the same price</span></div>
+  <div class="grid-heading no-print" id="heading-groups">Group labels <span>&middot; one tag covers several products at the same price</span></div>
 <?php foreach ($groups as $g):
   $searchText = mb_strtolower($g['name'] . ' ' . implode(' ', $g['displays']));
   $mismatch = count($g['prices']) > 1;
@@ -738,7 +747,7 @@ $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_
     </details>
   </div>
 <?php endforeach; ?>
-  <div class="grid-heading no-print">Individual products</div>
+  <div class="grid-heading no-print" id="heading-products">Individual products</div>
 <?php endif; ?>
 <?php foreach ($products as $p):
   $name  = htmlspecialchars(productDisplayName($p['name'] ?? ''));
@@ -837,15 +846,36 @@ function updateCount() {
     n > 0 ? 'Print ' + n + ' Tag' + (n !== 1 ? 's' : '') : 'Print Selected';
 }
 
+// All / Groups / Products — remembered per browser
+let currentView = 'all';
+try { currentView = localStorage.getItem('priceTagView') || 'all'; } catch (e) {}
+
+function setView(view) {
+  currentView = view;
+  try { localStorage.setItem('priceTagView', view); } catch (e) {}
+  filterTags();
+}
+
 function filterTags() {
   const q = document.getElementById('search').value.toLowerCase().trim();
+  const hasGroups = !!document.querySelector('.group-card');
+  const view = hasGroups ? currentView : 'all';
   let visible = 0;
   document.querySelectorAll('.tag-card').forEach(card => {
-    const match = !q || card.dataset.name.includes(q);
+    const isGroup = card.classList.contains('group-card');
+    const match = (view === 'all' || (view === 'groups') === isGroup) && (!q || card.dataset.name.includes(q));
     card.style.display = match ? '' : 'none';
     if (match) visible++;
   });
-  document.getElementById('empty-msg').style.display = visible === 0 ? 'block' : 'none';
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+  for (const id of ['heading-groups', 'heading-products']) {
+    const h = document.getElementById(id);
+    if (h) h.style.display = view === 'all' ? '' : 'none';
+  }
+  const empty = document.getElementById('empty-msg');
+  empty.textContent = q ? 'No ' + (view === 'groups' ? 'groups' : 'products') + ' match your search.'
+    : view === 'groups' ? 'No groups yet.' : 'No products.';
+  empty.style.display = visible === 0 ? 'block' : 'none';
   document.getElementById('select-all').checked = false;
 }
 
@@ -856,6 +886,7 @@ function printSelected() {
 }
 
 updateCount();
+filterTags();
 
 // ── Group labels ───────────────────────────────────────
 const GROUPS      = <?= json_encode($groups, $jsonFlags) ?>;
