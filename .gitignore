@@ -101,3 +101,4 @@ Loan_Payment_Breakdown.xlsx
 
 # Passwords and database login — never commit (template: public/api/db.example.php)
 public/api/db.php
+public/api/display-state.json
