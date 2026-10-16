@@ -103,11 +103,11 @@ function suggestPriceTagGroups($products, $groups) {
         foreach (PRICE_TAG_GROUP_TYPES as [$re, $label]) {
             if (!preg_match($re, $display, $m, PREG_OFFSET_CAPTURE)) continue;
             // Brand-grouped types: skip when the "brand" is really the type itself ("Smart Watch …" has no brand)
-            if (isset(PRICE_TAG_GROUP_ANY_BRAND[$label]) || $m[0][1] >= strlen($brand)) { $type = $label; break; }
+            if (array_key_exists($label, PRICE_TAG_GROUP_ANY_BRAND) || $m[0][1] >= strlen($brand)) { $type = $label; break; }
         }
         // Category keeps kids' and adult versions apart (Dr Teal's Kids body wash vs Dr Teal's body wash)
         $cat = mb_strtolower($p['category'] ?? '');
-        if ($type !== null && isset(PRICE_TAG_GROUP_ANY_BRAND[$type])) {
+        if ($type !== null && array_key_exists($type, PRICE_TAG_GROUP_ANY_BRAND)) {
             $key   = mb_strtolower($cat . '|any|' . $type);
             $label = PRICE_TAG_GROUP_ANY_BRAND[$type];
         } elseif ($type !== null) {
