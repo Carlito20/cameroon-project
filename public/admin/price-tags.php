@@ -391,6 +391,12 @@ $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_
       -webkit-appearance: none; appearance: none;
     }
     .field input[type=text]:focus, .field select:focus { outline: none; border-color: #d4af37; }
+    .field select {
+      padding-right: 38px; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23d4af37' stroke-width='2'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+    }
+    .field input[type=text]:disabled { opacity: 0.55; }
     .modal-note { font-size: 12px; color: #888; line-height: 1.5; }
     .modal-note.warn { color: #e0a040; }
     .member-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
@@ -1026,22 +1032,30 @@ function openGroupModal() {
   const keys = [...document.querySelectorAll('.tag-card.selected[data-key]')].map(c => c.dataset.key);
   if (keys.length < 1) { alert('Tick the products you want on one label first, then click "Group Selected".'); return; }
 
+  // Name box first — type any name. Adding to an existing group is an optional second step.
+  const nameInput = el('input', { type: 'text', maxlength: 200, value: commonName(keys.map(k => PRODUCTS[k].display)), placeholder: 'Type a name, e.g. Wireless Earbuds' });
+  const nameHint = el('div', { class: 'modal-note warn', style: 'display:none' }, 'Type a name for the group.');
+  const nameField = el('label', { class: 'field' }, el('span', {}, 'Group name — type any name, this is what prints on the tag'), nameInput, nameHint);
   const target = el('select', {},
-    el('option', { value: '' }, 'New group'),
-    ...GROUPS.map(g => el('option', { value: g.id }, 'Add to: ' + g.name)));
-  const nameInput = el('input', { type: 'text', maxlength: 200, value: commonName(keys.map(k => PRODUCTS[k].display)), placeholder: 'e.g. Vaseline Body Lotion' });
-  const nameField = el('label', { class: 'field' }, el('span', {}, 'Label name (what prints on the tag)'), nameInput);
+    el('option', { value: '' }, 'No — create a new group with the name above'),
+    ...GROUPS.map(g => el('option', { value: g.id }, g.name + ' (' + g.products.length + ' products)')));
+  const targetField = GROUPS.length ? el('label', { class: 'field' }, el('span', {}, 'Or add these to a group you already have?'), target) : null;
   const priceBox = el('div');
   const list = el('ul', { class: 'member-list' }, ...keys.map(k => el('li', {},
     el('label', {}, PRODUCTS[k].display, el('span', { class: 'm-price' }, fmtFcfa(PRODUCTS[k].price))))));
 
+  let typedName = nameInput.value;
   function refresh() {
     const g = GROUPS.find(g => String(g.id) === target.value);
-    nameField.style.display = g ? 'none' : '';
+    // Adding to an existing group keeps that group's name; switching back restores what was typed
+    if (g) { if (!nameInput.disabled) typedName = nameInput.value; nameInput.value = g.name; nameInput.disabled = true; }
+    else if (nameInput.disabled) { nameInput.value = typedName; nameInput.disabled = false; }
     const all = g ? [...new Set([...g.products, ...keys])] : keys;
     priceBox.replaceChildren(priceSection(all, g?.price_mode).node);
   }
   target.addEventListener('change', refresh);
+  nameInput.addEventListener('input', () => { nameHint.style.display = 'none'; });
+  nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') save.click(); });
   refresh();
 
   const save = el('button', { class: 'btn btn-gold', onclick: () => {
@@ -1049,17 +1063,17 @@ function openGroupModal() {
     const products = g ? [...new Set([...g.products, ...keys])] : keys;
     const sel = priceBox.querySelector('select');
     const price_mode = sel ? sel.value : (g?.price_mode || 'max');
-    if (!g && !nameInput.value.trim()) { nameInput.focus(); return; }
+    if (!g && !nameInput.value.trim()) { nameHint.style.display = ''; nameInput.focus(); return; }
     if (products.length < 2) { alert('A group needs at least 2 products.'); return; }
     saveGroups({ id: g?.id, name: g ? g.name : nameInput.value, products, price_mode }, save);
   } }, 'Save');
 
   openModal('Group ' + keys.length + ' product' + (keys.length !== 1 ? 's' : ''), [
-    el('label', { class: 'field' }, el('span', {}, 'Save as'), target),
-    nameField, priceBox,
+    nameField, targetField, priceBox,
     el('div', { class: 'field' }, el('span', {}, 'Products'), list)
   ], [el('button', { class: 'btn btn-outline', onclick: closeModal }, 'Cancel'), save]);
-  if (!GROUPS.length) nameInput.focus();
+  nameInput.focus();
+  nameInput.select();
 }
 
 function openEditModal(id) {
