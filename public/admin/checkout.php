@@ -114,6 +114,32 @@ if ($fromOrderId) {
       -webkit-tap-highlight-color: transparent; display: none;
     }
     .btn-new:hover { background: #1a1500; }
+    .btn-hold, .btn-held {
+      background: transparent; color: #7b9fd4; border: 1px solid #1a2a40; border-radius: 6px;
+      padding: 7px 13px; font-size: 13px; font-weight: 700; cursor: pointer;
+      min-height: 44px; touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none; display: none;
+    }
+    .btn-hold:hover, .btn-held:hover { background: #0d1520; }
+    .btn-held { color: #e0e0e0; border-color: #2a3a55; background: #101a28; }
+
+    /* Held sales list */
+    .held-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px; border: 1px solid #2a2a2a; border-radius: 10px; margin-bottom: 8px;
+    }
+    .held-info { flex: 1; min-width: 0; }
+    .held-label { font-size: 15px; font-weight: 700; color: #e0e0e0; }
+    .held-meta { font-size: 12px; color: #777; margin-top: 3px; }
+    .held-items { font-size: 12px; color: #999; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .held-resume, .held-delete {
+      min-height: 44px; padding: 0 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    }
+    .held-resume { background: #d4af37; color: #000; border: none; }
+    .held-delete { background: transparent; color: #e05050; border: 1px solid #3a1a1a; min-width: 44px; }
+    .held-empty { color: #666; font-size: 14px; text-align: center; padding: 20px 0; }
 
     .container {
       max-width: 680px; margin: 0 auto;
@@ -480,7 +506,9 @@ if ($fromOrderId) {
   <div class="header-btns">
     <span class="drawer-status" id="drawer-status" title="Cash drawer connection via QZ Tray">⚫ Drawer</span>
     <button class="btn-display" onclick="openCustomerDisplay()" title="Open customer-facing display">🖥 Customer Display</button>
-    <button class="btn-new" id="btn-new" onclick="newSale()">＋ New Sale</button>
+    <button class="btn-held" id="btn-held" onclick="openHeldList()">🗂 Held</button>
+    <button class="btn-hold" id="btn-hold" onclick="holdSale()" title="Park this sale and serve the next customer">⏸ Hold</button>
+    <button class="btn-new" id="btn-new" onclick="confirmNewSale()">＋ New Sale</button>
     <a href="dashboard.php" class="back-btn">← Dashboard</a>
   </div>
 </header>
@@ -588,6 +616,16 @@ if ($fromOrderId) {
     <div class="colour-product" id="colour-product"></div>
     <div class="colour-grid" id="colour-grid"></div>
     <button type="button" class="colour-cancel" onclick="closeColourPicker()">Cancel</button>
+  </div>
+</div>
+
+<!-- Held sales -->
+<div class="colour-overlay" id="held-overlay" onclick="if (event.target === this) closeHeldList()">
+  <div class="colour-card" role="dialog" aria-modal="true" aria-labelledby="held-title">
+    <div class="colour-title" id="held-title">Held sales</div>
+    <div class="colour-product">Kept on this device until resumed, deleted, or the end of the day.</div>
+    <div id="held-list"></div>
+    <button type="button" class="colour-cancel" onclick="closeHeldList()">Close</button>
   </div>
 </div>
 
@@ -828,6 +866,8 @@ function renderCart() {
   const badge = document.getElementById('cart-badge');
   // New Sale shows whenever there is something to clear — including a cart restored on load
   document.getElementById('btn-new').style.display = cart.length ? 'inline-flex' : 'none';
+  document.getElementById('btn-hold').style.display = cart.length ? 'inline-flex' : 'none';
+  updateHeldButton();
   if (!cart.length) {
     body.innerHTML = '<div class="cart-empty"><div class="empty-icon">🛒</div>Scan items to add them</div>';
     foot.style.display = 'none';
@@ -1243,6 +1283,179 @@ async function printReceipt() {
   }
 }
 
+// ── Hold sale ────────────────────────────────────────────
+// Park the open sale (customer went back to the shelf), serve the next one, resume later.
+// Held sales live on this device and are cleared at the end of the day (Cameroon time).
+// Holding does not reserve stock; prices and stock are re-checked on resume.
+// Function declarations (not const): renderCart() can run before this point, e.g. for a website order.
+function heldKey() { return 'as_held_sales'; }
+function todayCM() { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Douala' }).format(new Date()); }
+
+function loadHeld() {
+  let held = [];
+  try { held = JSON.parse(localStorage.getItem(heldKey()) || '[]'); } catch {}
+  if (!Array.isArray(held)) held = [];
+  const today = todayCM();
+  const kept = held.filter(h => h.day === today && Array.isArray(h.cart) && h.cart.length);
+  if (kept.length !== held.length) saveHeld(kept);
+  return kept;
+}
+function saveHeld(held) {
+  try { held.length ? localStorage.setItem(heldKey(), JSON.stringify(held)) : localStorage.removeItem(heldKey()); } catch {}
+}
+function updateHeldButton() {
+  const n = loadHeld().length;
+  const btn = document.getElementById('btn-held');
+  btn.textContent = '🗂 Held (' + n + ')';
+  btn.style.display = n ? 'inline-flex' : 'none';
+}
+
+function cartTotal(c) { return c.reduce((t, i) => t + (i.price || 0) * i.qty, 0); }
+function nextCustomerLabel(held) {
+  let n = 1;
+  while (held.some(h => h.label === 'Customer ' + n)) n++;
+  return 'Customer ' + n;
+}
+
+// Saves the open sale as held. label omitted = ask the cashier. Returns false if nothing was held.
+function holdSale(label) {
+  if (!cart.length) return false;
+  if (document.getElementById('receipt-overlay').classList.contains('open')) return false; // already paid
+  const held = loadHeld();
+  if (label === undefined) {
+    const suggested = nextCustomerLabel(held);
+    label = prompt("Name for this held sale (e.g. the customer's name):", suggested);
+    if (label === null) return false;
+    label = label.trim() || suggested;
+  }
+  const banner = document.getElementById('order-banner');
+  held.push({
+    id: Date.now(),
+    label,
+    day: todayCM(),
+    heldAt: Date.now(),
+    cart: cart,
+    payment: selectedPayment,
+    phone: customerPhone,
+    pendingOrderId,
+    orderRef: pendingOrderId ? document.getElementById('ob-ref')?.textContent || null : null,
+  });
+  saveHeld(held);
+  pendingOrderId = null;
+  if (banner) banner.style.display = 'none';
+  newSale();
+  setScanStatus('⏸ "' + label + '" is on hold — ready for the next customer', 'ok');
+  return true;
+}
+
+function openHeldList() {
+  const list = document.getElementById('held-list');
+  const held = loadHeld();
+  if (!held.length) {
+    list.innerHTML = '<div class="held-empty">No held sales.</div>';
+  } else {
+    list.replaceChildren(...held.map(h => {
+      const units = h.cart.reduce((t, i) => t + i.qty, 0);
+      const mins = Math.max(0, Math.round((Date.now() - h.heldAt) / 60000));
+      const ago = mins < 1 ? 'just now' : mins < 60 ? mins + ' min ago' : Math.floor(mins / 60) + ' h ' + (mins % 60) + ' min ago';
+      const row = document.createElement('div');
+      row.className = 'held-row';
+      const info = document.createElement('div');
+      info.className = 'held-info';
+      const l = document.createElement('div'); l.className = 'held-label'; l.textContent = h.label + (h.orderRef ? ' · ' + h.orderRef : '');
+      const m = document.createElement('div'); m.className = 'held-meta';
+      m.textContent = units + ' item' + (units !== 1 ? 's' : '') + ' · ' + cartTotal(h.cart).toLocaleString() + ' FCFA · held ' + ago;
+      const it = document.createElement('div'); it.className = 'held-items';
+      it.textContent = h.cart.map(i => (i.qty > 1 ? i.qty + '× ' : '') + shown(i.name)).join(', ');
+      info.append(l, m, it);
+      const resume = document.createElement('button');
+      resume.type = 'button'; resume.className = 'held-resume'; resume.textContent = 'Resume';
+      resume.addEventListener('click', () => resumeHeld(h.id));
+      const del = document.createElement('button');
+      del.type = 'button'; del.className = 'held-delete'; del.textContent = '✕'; del.title = 'Delete this held sale';
+      del.addEventListener('click', () => {
+        if (!confirm('Delete the held sale "' + h.label + '"? Its items are not sold.')) return;
+        saveHeld(loadHeld().filter(x => x.id !== h.id));
+        updateHeldButton();
+        openHeldList();
+      });
+      row.append(info, resume, del);
+      return row;
+    }));
+  }
+  document.getElementById('held-overlay').classList.add('open');
+}
+function closeHeldList() {
+  if (!document.getElementById('held-overlay').classList.contains('open')) return;
+  document.getElementById('held-overlay').classList.remove('open');
+  setTimeout(() => document.getElementById('barcode-input')?.focus(), 80);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHeldList(); });
+
+async function resumeHeld(id) {
+  const h = loadHeld().find(x => x.id === id);
+  if (!h) { openHeldList(); return; }
+  // A sale is already open: hold it too, so nothing is lost
+  if (cart.length) {
+    if (!confirm('Put the current sale on hold and resume "' + h.label + '"?')) return;
+    holdSale(nextCustomerLabel(loadHeld()));
+  }
+  saveHeld(loadHeld().filter(x => x.id !== id));
+  closeHeldList();
+
+  cart = h.cart;
+  selectedPayment = h.payment || '';
+  document.querySelectorAll('.pay-btn').forEach(b => b.classList.toggle('selected', b.dataset.method === selectedPayment));
+  customerPhone = h.phone || '';
+  document.getElementById('customer-phone').value = customerPhone;
+  pendingOrderId = h.pendingOrderId || null;
+  const banner = document.getElementById('order-banner');
+  if (banner) {
+    banner.style.display = pendingOrderId ? 'flex' : 'none';
+    if (pendingOrderId && h.orderRef) document.getElementById('ob-ref').textContent = h.orderRef;
+  }
+  renderCart();
+  broadcastDisplay();
+  setScanStatus('▶ Resumed "' + h.label + '" — checking prices and stock…', '');
+
+  // Prices or stock may have changed while it was on hold
+  const changes = [];
+  if (navigator.onLine) {
+    await Promise.all(cart.map(async item => {
+      try {
+        const d = await fetch('/api/barcode.php?name=' + encodeURIComponent(item.name)).then(r => r.json());
+        if (!d || d.error) return;
+        if (typeof d.quantity === 'number') {
+          item.stock = d.quantity;
+          if (item.qty > d.quantity) changes.push(shown(item.name).substring(0, 40) + ': only ' + d.quantity + ' left');
+        }
+        if (d.price && d.price !== item.price) {
+          changes.push(shown(item.name).substring(0, 40) + ': price now ' + d.price.toLocaleString() + ' FCFA (was ' + (item.price || 0).toLocaleString() + ')');
+          item.price = d.price;
+        }
+        if (d.original_price) item.original_price = d.original_price; else delete item.original_price;
+      } catch {}
+    }));
+    renderCart();
+    broadcastDisplay();
+  }
+  if (changes.length) {
+    setScanStatus('⚠ Changed while on hold — ' + changes.join(' · '), 'err');
+    alert('While "' + h.label + '" was on hold:\n\n• ' + changes.join('\n• '));
+  } else {
+    setScanStatus('▶ Resumed "' + h.label + '"', 'ok');
+  }
+}
+
+// Header "New Sale" — asks before throwing a cart away
+function confirmNewSale() {
+  if (cart.length && !document.getElementById('receipt-overlay').classList.contains('open')) {
+    const units = cart.reduce((t, i) => t + i.qty, 0);
+    if (!confirm('Clear ' + units + ' item' + (units !== 1 ? 's' : '') + ' from this sale?\n\nTo keep it for later, press Cancel and use ⏸ Hold instead.')) return;
+  }
+  newSale();
+}
+
 // ── New Sale ─────────────────────────────────────────────
 function newSale() {
   cart = [];
@@ -1261,6 +1474,8 @@ function newSale() {
   document.getElementById('checkout-msg').textContent = '';
   document.getElementById('checkout-msg').className = 'checkout-msg';
   document.getElementById('btn-new').style.display = 'none';
+  document.getElementById('btn-hold').style.display = 'none';
+  updateHeldButton();
   setScanStatus('Ready — scan an item to begin', '');
   setTimeout(() => document.getElementById('barcode-input').focus(), 100);
 }
@@ -1412,17 +1627,19 @@ async function openCashDrawer(manual) {
 window.addEventListener('load', () => {
   setTimeout(checkRelay, 500);
   if (cart.length) renderCart();
+  updateHeldButton(); // held sales from earlier, even with an empty cart
 });
 
 // ── Offline queue ─────────────────────────────────────────
 const OFFLINE_QUEUE_KEY = 'as_offline_sales';
-const CART_DRAFT_KEY   = 'as_cart_draft';
+// Function, not const: renderCart() (which saves the draft) can run before this line — e.g. a website order
+function cartDraftKey() { return 'as_cart_draft'; }
 
 function saveCartDraft() {
-  if (cart.length) localStorage.setItem(CART_DRAFT_KEY, JSON.stringify(cart));
-  else             localStorage.removeItem(CART_DRAFT_KEY);
+  if (cart.length) localStorage.setItem(cartDraftKey(), JSON.stringify(cart));
+  else             localStorage.removeItem(cartDraftKey());
 }
-function clearCartDraft() { localStorage.removeItem(CART_DRAFT_KEY); }
+function clearCartDraft() { localStorage.removeItem(cartDraftKey()); }
 
 function loadOfflineQueue() {
   try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]'); } catch { return []; }
