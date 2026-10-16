@@ -45,8 +45,19 @@ try {
     unset($p);
 } catch (Throwable $e) { /* price overrides optional */ }
 
-$assigned   = array_filter($products, fn($p) => isset($barcodeMap[$p['name']]));
-$unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]));
+// Labels printed before a product was split into colours point at the old plain name.
+// Checkout and Scan ask "which colour?" for them, so each colour counts as covered.
+$productNameSet = array_flip(array_column($products, 'name'));
+$sharedMap = []; // colour product name => shared barcode
+foreach ($products as $p) {
+    if (isset($barcodeMap[$p['name']])) continue;
+    if (preg_match('/^(.*) \([^()]*\)$/', $p['name'], $m) && !isset($productNameSet[$m[1]]) && isset($barcodeMap[$m[1]])) {
+        $sharedMap[$p['name']] = $barcodeMap[$m[1]];
+    }
+}
+
+$assigned   = array_filter($products, fn($p) => isset($barcodeMap[$p['name']]) || isset($sharedMap[$p['name']]));
+$unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]) && !isset($sharedMap[$p['name']]));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -131,6 +142,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
     .product-row.no-barcode  { border-left: 3px solid #3a3010; }
     .pr-name { flex: 1; min-width: 200px; font-size: 13px; color: #ccc; line-height: 1.4; }
     .pr-price { font-size: 12px; color: #6dbf6d; white-space: nowrap; }
+    .pr-shared { color: #d4af37; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     .pr-barcode-val { font-size: 11px; color: #555; font-family: monospace; }
     .pr-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
     /* Phones: header buttons wrap onto extra rows instead of widening the page */
@@ -471,13 +483,14 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
   <div class="section-head" style="margin-top:24px;" id="assigned-head">✓ Barcodes Assigned (<?= count($assigned) ?>)</div>
   <div id="assigned-list">
     <?php foreach ($assigned as $p):
-      $bc = $barcodeMap[$p['name']];
+      $shared = !isset($barcodeMap[$p['name']]);
+      $bc = $shared ? $sharedMap[$p['name']] : $barcodeMap[$p['name']];
     ?>
     <div class="product-row has-barcode" data-name="<?= htmlspecialchars($p['name']) ?>">
       <input type="checkbox" class="pr-check" data-name="<?= htmlspecialchars($p['name']) ?>" data-barcode="<?= htmlspecialchars($bc) ?>" onchange="updatePrintCount()">
       <div class="pr-name">
         <?= htmlspecialchars($p['name']) ?>
-        <div class="pr-barcode-val"><?= htmlspecialchars($bc) ?></div>
+        <div class="pr-barcode-val"><?= htmlspecialchars($bc) ?><?php if ($shared): ?> <span class="pr-shared" title="The same label is on every colour — the cashier picks the colour when it is scanned">· shared by all colours</span><?php endif; ?></div>
       </div>
       <?php if ($p['price']): ?>
         <span class="pr-price"><?= number_format($p['price']) ?> FCFA</span>
@@ -485,7 +498,9 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]))
       <div class="pr-actions">
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
         <button class="btn-preview" onclick="previewBarcode(<?= json_encode($bc) ?>, <?= json_encode($p['name']) ?>)">👁 Preview</button>
-        <?php if ($isAdmin): ?>
+        <?php if ($isAdmin && $shared): ?>
+        <button class="btn-generate" title="Give this colour its own label instead of the shared one" onclick="if (confirm('Give this colour its own barcode? You will need to print it and stick it on this colour.')) generateBarcode(this, <?= htmlspecialchars(json_encode($p['name'])) ?>)">⚡ Own Label</button>
+        <?php elseif ($isAdmin): ?>
         <button class="btn-unassign" onclick="unassignBarcode(this, <?= json_encode($p['name']) ?>)">✕ Unassign</button>
         <?php endif; ?>
       </div>

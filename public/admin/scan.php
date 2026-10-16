@@ -99,6 +99,19 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     .result-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
     .result-product-name { font-size: 15px; font-weight: 600; color: #e0e0e0; line-height: 1.4; margin-bottom: 6px; }
     .result-stock { font-size: 13px; color: #888; margin-bottom: 4px; }
+    /* Colour choice — label shared by several colours */
+    .colour-row { display: none; margin: 10px 0 14px; }
+    .colour-row.visible { display: block; }
+    .colour-row-label { font-size: 13px; font-weight: 700; color: #d4af37; margin-bottom: 8px; }
+    .colour-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+    .colour-choice {
+      padding: 8px 14px; min-height: 44px; border-radius: 22px;
+      background: #1a1a1a; color: #ccc; border: 1px solid #333;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    }
+    .colour-choice.selected { background: #1a1500; color: #d4af37; border-color: #d4af37; }
     .result-stock span { color: #d4af37; font-weight: 700; font-size: 16px; }
     .result-price { font-size: 13px; color: #888; margin-bottom: 16px; }
     .result-price span { color: #6dbf6d; font-weight: 700; font-size: 16px; }
@@ -257,6 +270,11 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     <div class="result-price">Price: <span id="result-price">—</span></div>
     <div class="result-barcode" id="result-barcode"></div>
 
+    <div class="colour-row" id="colour-row">
+      <div class="colour-row-label">This label is on every colour — which one is it?</div>
+      <div class="colour-choices" id="colour-choices"></div>
+    </div>
+
     <div class="action-grid">
       <button class="action-btn received" onclick="selectAction('received')">
         <span class="action-icon">📦</span>Received
@@ -375,13 +393,39 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
       .then(r => r.json())
       .then(data => {
         if (data.error) { setStatus('Error: ' + data.error, 'error'); scanning = false; return; }
-        if (data.found) showProductCard(barcode, data.product_name, data.quantity, data.price);
+        if (data.found && data.variants) showColourCard(barcode, data);
+        else if (data.found) showProductCard(barcode, data.product_name, data.quantity, data.price);
         else showAssignCard(barcode);
       })
       .catch(() => { setStatus('Network error', 'error'); scanning = false; });
   }
 
+  // Label shared by every colour: stock moves only once a colour is picked
+  function showColourCard(barcode, data) {
+    showProductCard(barcode, data.product_name, '—', data.variants[0]?.price);
+    currentProductName = '';
+    const wrap = document.getElementById('colour-choices');
+    wrap.replaceChildren(...data.variants.map(v => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'colour-choice';
+      b.textContent = (v.product_name.match(/\(([^()]*)\)$/) || [])[1] || v.product_name;
+      b.addEventListener('click', () => {
+        wrap.querySelectorAll('.colour-choice').forEach(x => x.classList.toggle('selected', x === b));
+        currentProductName = v.product_name;
+        document.getElementById('result-name').textContent = v.product_name;
+        document.getElementById('result-stock').textContent = v.quantity;
+        document.getElementById('result-price').textContent = v.price ? v.price.toLocaleString() + ' FCFA' : '—';
+        if (selectedAction) selectAction(selectedAction);
+      });
+      return b;
+    }));
+    document.getElementById('colour-row').classList.add('visible');
+    setStatus('Pick the colour, then the action', 'found');
+  }
+
   function showProductCard(barcode, productName, quantity, price) {
+    document.getElementById('colour-row').classList.remove('visible');
     currentProductName = productName; selectedAction = '';
     document.getElementById('result-name').textContent = productName;
     document.getElementById('result-stock').textContent = quantity;
@@ -416,6 +460,7 @@ if (file_exists($jsonPath)) $products = json_decode(file_get_contents($jsonPath)
     document.querySelector('.action-btn.' + action).classList.add('selected');
     const labels = { received:'Confirm Received', sold:'Confirm Sold', damaged:'Confirm Damaged', returned:'Confirm Returned' };
     const btn = document.getElementById('confirm-btn');
+    if (!currentProductName) { btn.disabled = true; btn.textContent = 'Pick the colour first'; return; }
     btn.disabled = false; btn.textContent = labels[action];
   }
 

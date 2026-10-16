@@ -285,6 +285,50 @@ if ($fromOrderId) {
     .pay-btn.selected { border-color: #d4af37; background: #1a1500; color: #d4af37; }
     .pay-btn:active { background: #222; }
 
+    /* ── Colour picker (label shared by several colours) ── */
+    .colour-overlay {
+      position: fixed; inset: 0; z-index: 310;
+      background: rgba(0,0,0,0.88);
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+      padding-top: calc(20px + env(safe-area-inset-top, 0px));
+      padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+      padding-left: calc(20px + env(safe-area-inset-left, 0px));
+      padding-right: calc(20px + env(safe-area-inset-right, 0px));
+      transform: translateZ(0); will-change: transform;
+    }
+    .colour-overlay.open { display: flex; }
+    .colour-card {
+      background: #111; border: 1px solid #2a2a2a; border-radius: 16px;
+      padding: 22px 20px; width: 100%; max-width: 480px;
+      max-height: 85vh; overflow-y: auto;
+      -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+    }
+    .colour-title { color: #d4af37; font-size: 17px; font-weight: 800; }
+    .colour-product { color: #999; font-size: 13px; line-height: 1.4; margin: 6px 0 16px; }
+    .colour-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+    .colour-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 14px 10px; min-height: 72px;
+      background: #1a1a1a; color: #e0e0e0; border: 2px solid #2a2a2a; border-radius: 12px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    }
+    .colour-btn:hover, .colour-btn:focus-visible { border-color: #d4af37; outline: none; }
+    .colour-btn:active { background: #222; }
+    .colour-btn .cb-stock { font-size: 12px; font-weight: 600; color: #6dbf6d; }
+    .colour-btn:disabled { opacity: 0.4; cursor: default; border-color: #2a2a2a; }
+    .colour-btn:disabled .cb-stock { color: #e05050; }
+    .colour-cancel {
+      width: 100%; margin-top: 16px; padding: 12px; min-height: 44px;
+      background: transparent; color: #888; border: 1px solid #333; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    }
+
     /* ── Receipt overlay ── */
     .receipt-overlay {
       position: fixed; inset: 0; z-index: 300;
@@ -537,6 +581,16 @@ if ($fromOrderId) {
 
 </div>
 
+<!-- Colour picker — one label covers several colours -->
+<div class="colour-overlay" id="colour-overlay" onclick="if (event.target === this) closeColourPicker()">
+  <div class="colour-card" role="dialog" aria-modal="true" aria-labelledby="colour-title">
+    <div class="colour-title" id="colour-title">Which colour?</div>
+    <div class="colour-product" id="colour-product"></div>
+    <div class="colour-grid" id="colour-grid"></div>
+    <button type="button" class="colour-cancel" onclick="closeColourPicker()">Cancel</button>
+  </div>
+</div>
+
 <!-- Receipt -->
 <div class="receipt-overlay" id="receipt-overlay">
   <div class="receipt-card">
@@ -653,10 +707,50 @@ function scanBarcode(barcode) {
     .then(d => {
       if (d.error) { setScanStatus('Error: ' + d.error, 'err'); return; }
       if (!d.found) { setScanStatus('Unknown barcode — assign it in the Scan page first, or add manually below', 'err'); return; }
+      if (d.variants) { openColourPicker(d); return; }
       addToCart(d.product_name, d.price || 0, d.quantity, d.original_price || null);
     })
     .catch(() => setScanStatus('Network error', 'err'));
 }
+
+// ── Colour picker ────────────────────────────────────────
+// The label is shared by every colour of the product; the cashier taps the one in hand
+// so that colour's stock goes down (same as choosing a colour online).
+function openColourPicker(d) {
+  document.getElementById('colour-product').textContent = shown(d.product_name);
+  const grid = document.getElementById('colour-grid');
+  grid.replaceChildren(...d.variants.map(v => {
+    const colour = (v.product_name.match(/\(([^()]*)\)$/) || [])[1] || v.product_name;
+    const inCart = cart.find(i => i.name === v.product_name)?.qty || 0;
+    const left = v.quantity - inCart;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'colour-btn';
+    btn.disabled = left < 1;
+    const label = document.createElement('span');
+    label.textContent = colour;
+    const stock = document.createElement('span');
+    stock.className = 'cb-stock';
+    stock.textContent = left < 1 ? 'Out of stock' : left + ' left';
+    btn.append(label, stock);
+    btn.addEventListener('click', () => {
+      closeColourPicker();
+      addToCart(v.product_name, v.price || 0, v.quantity, v.original_price || null);
+    });
+    return btn;
+  }));
+  setScanStatus('Pick the colour for: ' + shown(d.product_name).substring(0, 40), '');
+  document.getElementById('colour-overlay').classList.add('open');
+  // Nothing focused: a scanner's Enter must never pick a colour by itself
+  document.activeElement?.blur();
+}
+
+function closeColourPicker() {
+  if (!document.getElementById('colour-overlay').classList.contains('open')) return;
+  document.getElementById('colour-overlay').classList.remove('open');
+  setTimeout(() => document.getElementById('barcode-input')?.focus(), 80);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeColourPicker(); });
 
 // ── Cart ops ─────────────────────────────────────────────
 function addToCart(name, price, stock, originalPrice) {

@@ -91,6 +91,38 @@ function getProductPrice($productName) {
     return 0;
 }
 
+// A barcode belongs to one product. Re-assigning it used to silently move it, taking the
+// label away from the product it was on (or from every colour of a shared label).
+// Returns an explanation when the barcode is already on a different product, else null.
+function barcodeTakenBy($pdo, $barcode, $productName) {
+    $stmt = $pdo->prepare('SELECT product_name FROM barcode_map WHERE barcode = ?');
+    $stmt->execute([$barcode]);
+    $current = $stmt->fetchColumn();
+    if ($current === false || $current === $productName) return null;
+    $what = colourVariants($current) ? 'every colour of "' . $current . '" (shared label)' : '"' . $current . '"';
+    return 'Barcode ' . $barcode . ' is already on ' . $what . '. Unassign it there first, or use ⚡ Generate for a new label.';
+}
+
+// Colour versions ("Name (Blue)", "Name (Red)"…) of a name that is no longer a product itself.
+// Empty when the name is a current product, or has no colours.
+function colourVariants($name) {
+    static $names = null;
+    if ($names === null) {
+        $names = [];
+        $jsonPath = __DIR__ . '/products-list.json';
+        if (file_exists($jsonPath)) {
+            foreach (json_decode(file_get_contents($jsonPath), true) ?? [] as $p) $names[$p['name']] = true;
+        }
+    }
+    if (isset($names[$name])) return [];
+    $prefix = $name . ' (';
+    $out = [];
+    foreach (array_keys($names) as $n) {
+        if (strpos($n, $prefix) === 0 && preg_match('/^ \([^()]*\)$/', substr($n, strlen($name)))) $out[] = $n;
+    }
+    return $out;
+}
+
 // Lookup response with any active discount applied (original_price set when on sale)
 function productLookup($productName, $qty) {
     $out = ['found' => true, 'product_name' => $productName, 'quantity' => $qty, 'price' => getProductPrice($productName)];
@@ -123,8 +155,19 @@ if ($method === 'GET') {
         $stmt->execute([$barcode]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            $qty = getCurrentStock($pdo, $row['product_name']);
-            echo json_encode(productLookup($row['product_name'], $qty));
+            // A label printed before a product was split into colours points at the old
+            // plain name — offer its colours so the cashier picks the one in hand.
+            $variants = colourVariants($row['product_name']);
+            if ($variants) {
+                echo json_encode([
+                    'found'        => true,
+                    'product_name' => $row['product_name'],
+                    'variants'     => array_map(fn($v) => productLookup($v, getCurrentStock($pdo, $v)), $variants),
+                ]);
+            } else {
+                $qty = getCurrentStock($pdo, $row['product_name']);
+                echo json_encode(productLookup($row['product_name'], $qty));
+            }
         } else {
             echo json_encode(['found' => false]);
         }
@@ -143,6 +186,10 @@ if ($method === 'POST') {
         if (!$barcode || !$productName) { echo json_encode(['error' => 'Missing data']); exit; }
         try {
             $pdo = getPdo();
+            if ($taken = barcodeTakenBy($pdo, $barcode, $productName)) {
+                echo json_encode(['error' => $taken]);
+                exit;
+            }
             $stmt = $pdo->prepare('INSERT INTO barcode_map (barcode, product_name) VALUES (?, ?) ON DUPLICATE KEY UPDATE product_name = VALUES(product_name)');
             $stmt->execute([$barcode, $productName]);
             $qty = getCurrentStock($pdo, $productName);
@@ -193,6 +240,10 @@ if ($method === 'POST') {
         if (!$productName) { echo json_encode(['error' => 'Product name is required']); exit; }
         try {
             $pdo = getPdo();
+            if ($barcode && ($taken = barcodeTakenBy($pdo, $barcode, $productName))) {
+                echo json_encode(['error' => $taken]);
+                exit;
+            }
             // Save to custom_products
             $pdo->prepare('INSERT INTO custom_products (name, price) VALUES (?, ?) ON DUPLICATE KEY UPDATE price = VALUES(price)')
                 ->execute([$productName, $price]);
