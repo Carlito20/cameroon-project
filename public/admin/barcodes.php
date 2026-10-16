@@ -838,12 +838,22 @@ function printSelected() {
 }
 
 // ── Search filter ────────────────────────────────────────
+// Search: every word must appear somewhere in the name, in any order.
+// "perfume" also finds fragrances named Eau De Parfum / EDP / EDT / Cologne.
+const FRAGRANCE_RE = /perfum|parfum|cologne|\bedp\b|\bedt\b|eau de/;
+const FRAGRANCE_WORDS = ['perfume', 'perfumes', 'parfum', 'fragrance', 'fragrances', 'cologne', 'colognes'];
+function matchesSearch(name, q) {
+  name = name.toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean)
+    .every(w => FRAGRANCE_WORDS.includes(w) ? FRAGRANCE_RE.test(name) : name.includes(w));
+}
+
 function filterProducts(q) {
   q = q.toLowerCase().trim();
   let anyUnassigned = false, anyAssigned = false;
   document.querySelectorAll('.product-row').forEach(row => {
     const name = (row.dataset.name || '').toLowerCase();
-    const visible = !q || name.startsWith(q);
+    const visible = !q || matchesSearch(name, q);
     row.style.display = visible ? '' : 'none';
     if (visible) {
       if (row.classList.contains('no-barcode')) anyUnassigned = true;

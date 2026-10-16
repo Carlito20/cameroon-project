@@ -873,6 +873,16 @@ function setView(view) {
   filterTags();
 }
 
+// Search: every word must appear somewhere in the name, in any order.
+// "perfume" also finds fragrances named Eau De Parfum / EDP / EDT / Cologne.
+const FRAGRANCE_RE = /perfum|parfum|cologne|\bedp\b|\bedt\b|eau de/;
+const FRAGRANCE_WORDS = ['perfume', 'perfumes', 'parfum', 'fragrance', 'fragrances', 'cologne', 'colognes'];
+function matchesSearch(name, q) {
+  name = name.toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean)
+    .every(w => FRAGRANCE_WORDS.includes(w) ? FRAGRANCE_RE.test(name) : name.includes(w));
+}
+
 function filterTags() {
   const q = document.getElementById('search').value.toLowerCase().trim();
   const hasGroups = !!document.querySelector('.group-card');
@@ -881,7 +891,7 @@ function filterTags() {
   document.querySelectorAll('.tag-card').forEach(card => {
     const isGroup = card.classList.contains('group-card');
     const isCustom = card.classList.contains('custom-card');
-    const match = (isCustom || view === 'all' || (view === 'groups') === isGroup) && (!q || card.dataset.name.includes(q));
+    const match = (isCustom || view === 'all' || (view === 'groups') === isGroup) && (!q || matchesSearch(card.dataset.name, q));
     card.style.display = match ? '' : 'none';
     if (match) visible++;
   });

@@ -1305,11 +1305,21 @@ function toggleManual() {
   if (wrap.classList.contains('open')) document.getElementById('manual-input').focus();
 }
 
+// Search: every word must appear somewhere in the name, in any order.
+// "perfume" also finds fragrances named Eau De Parfum / EDP / EDT / Cologne.
+const FRAGRANCE_RE = /perfum|parfum|cologne|\bedp\b|\bedt\b|eau de/;
+const FRAGRANCE_WORDS = ['perfume', 'perfumes', 'parfum', 'fragrance', 'fragrances', 'cologne', 'colognes'];
+function matchesSearch(name, q) {
+  name = name.toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean)
+    .every(w => FRAGRANCE_WORDS.includes(w) ? FRAGRANCE_RE.test(name) : name.includes(w));
+}
+
 function filterProducts(q) {
   const res = document.getElementById('manual-results');
   q = q.trim().toLowerCase();
   if (!q) { res.style.display = 'none'; return; }
-  const matches = catalog.filter(p => p.name.toLowerCase().includes(q) || shown(p.name).toLowerCase().includes(q)).slice(0, 12);
+  const matches = catalog.filter(p => matchesSearch(p.name, q) || matchesSearch(shown(p.name), q)).slice(0, 50);
   if (!matches.length) { res.style.display = 'none'; return; }
   res.innerHTML = matches.map((p, i) =>
     `<div class="manual-item" data-idx="${i}" data-name="${esc(p.name)}" data-price="${p.price||0}" onclick="pickProduct(this)">
