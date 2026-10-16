@@ -94,11 +94,14 @@ function getProductPrice($productName) {
 // A barcode belongs to one product. Re-assigning it used to silently move it, taking the
 // label away from the product it was on (or from every colour of a shared label).
 // Returns an explanation when the barcode is already on a different product, else null.
-function barcodeTakenBy($pdo, $barcode, $productName) {
+// $claimShared: the admin confirmed a shared label's code is really one colour's own box
+// code (e.g. each charger colour has its own) — moving it to that colour is allowed.
+function barcodeTakenBy($pdo, $barcode, $productName, $claimShared = false) {
     $stmt = $pdo->prepare('SELECT product_name FROM barcode_map WHERE barcode = ?');
     $stmt->execute([$barcode]);
     $current = $stmt->fetchColumn();
     if ($current === false || $current === $productName) return null;
+    if ($claimShared && in_array($productName, colourVariants($current), true)) return null;
     $what = colourVariants($current) ? 'every colour of "' . $current . '" (shared label)' : '"' . $current . '"';
     return 'Barcode ' . $barcode . ' is already on ' . $what . '. Unassign it there first, or use ⚡ Generate for a new label.';
 }
@@ -186,7 +189,7 @@ if ($method === 'POST') {
         if (!$barcode || !$productName) { echo json_encode(['error' => 'Missing data']); exit; }
         try {
             $pdo = getPdo();
-            if ($taken = barcodeTakenBy($pdo, $barcode, $productName)) {
+            if ($taken = barcodeTakenBy($pdo, $barcode, $productName, !empty($data['claim_shared']))) {
                 echo json_encode(['error' => $taken]);
                 exit;
             }

@@ -499,6 +499,7 @@ $unassigned = array_filter($products, fn($p) => !isset($barcodeMap[$p['name']]) 
         <input type="number" class="qty-input" value="1" min="1" max="99" title="Copies to print">
         <button class="btn-preview" onclick="previewBarcode(<?= json_encode($bc) ?>, <?= json_encode($p['name']) ?>)">👁 Preview</button>
         <?php if ($isAdmin && $shared): ?>
+        <button class="btn-preview" title="This code is printed on this colour's own box (not a shared label)" onclick="claimSharedCode(this, <?= htmlspecialchars(json_encode($bc)) ?>, <?= htmlspecialchars(json_encode($p['name'])) ?>)">✔ This Colour's Code</button>
         <button class="btn-generate" title="Give this colour its own label instead of the shared one" onclick="if (confirm('Give this colour its own barcode? You will need to print it and stick it on this colour.')) generateBarcode(this, <?= htmlspecialchars(json_encode($p['name'])) ?>)">⚡ Own Label</button>
         <?php elseif ($isAdmin): ?>
         <button class="btn-unassign" onclick="unassignBarcode(this, <?= json_encode($p['name']) ?>)">✕ Unassign</button>
@@ -681,6 +682,36 @@ async function assignManual(input, productName) {
 function esc(s) { return String(s).replace(/'/g,"\'").replace(/"/g,'&quot;'); }
 
 // ── Unassign barcode from product ───────────────────────
+// A shared code that is really one colour's own box code (e.g. the 45W charger's
+// manufacturer barcodes): move it to that colour. The other colours then get their
+// own code by scanning their box, or ⚡ Own Label.
+async function claimSharedCode(btn, barcode, productName) {
+  const colour = (productName.match(/\(([^()]*)\)$/) || [])[1] || productName;
+  if (!confirm(`Is ${barcode} printed on the ${colour} box only?
+
+It will belong to ${colour} alone. The other colours will show "No Barcode Yet" until you scan their own box code (or use ⚡ Generate).`)) return;
+  btn.disabled = true;
+  btn.textContent = '…';
+  try {
+    const res = await fetch('/api/barcode.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'assign', barcode, product_name: productName, claim_shared: true })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('✓ ' + barcode + ' now belongs to ' + colour, 'ok');
+      setTimeout(() => location.reload(), 800);
+    } else {
+      btn.disabled = false; btn.textContent = "✔ This Colour's Code";
+      showToast('Error: ' + (data.error || 'Failed'), 'err');
+    }
+  } catch {
+    btn.disabled = false; btn.textContent = "✔ This Colour's Code";
+    showToast('Network error', 'err');
+  }
+}
+
 async function unassignBarcode(btn, productName) {
   if (!confirm(`Remove barcode from "${productName}"?`)) return;
   btn.disabled = true;
