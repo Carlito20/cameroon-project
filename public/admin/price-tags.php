@@ -8,6 +8,7 @@ if (empty($_SESSION['admin_logged_in'])) {
 require_once __DIR__ . '/../api/db.php';
 require_once __DIR__ . '/../api/discount-lib.php';
 require_once __DIR__ . '/../api/product-names-lib.php';
+require_once __DIR__ . '/../api/price-tag-groups-lib.php';
 
 $jsonPath = __DIR__ . '/../api/products-list.json';
 $products = [];
@@ -73,6 +74,48 @@ usort($products, fn($a, $b) => strcmp($a['name'] ?? '', $b['name'] ?? ''));
 function fmt_price($n) {
     return number_format((float)$n, 0, '.', ' ') . ' FCFA';
 }
+
+// ── Group labels — price comes from the members' live prices ──
+$productNames = loadProductNames();
+$byName = [];
+foreach ($products as $p) {
+    if (!empty($p['name']) && isset($p['price'])) $byName[$p['name']] = $p;
+}
+
+$groups = loadPriceTagGroups();
+foreach ($groups as &$g) {
+    // Members no longer in the catalog are dropped from the label (and from the group on next save)
+    $members = array_values(array_filter($g['products'], fn($n) => isset($byName[$n])));
+    $g['missing']  = count($g['products']) - count($members);
+    $g['products'] = $members;
+    $g['displays'] = array_map(fn($n) => productDisplayName($n, $productNames), $members);
+    $prices = array_map(fn($n) => (int)$byName[$n]['price'], $members);
+    $origs  = array_map(fn($n) => $byName[$n]['original_price'] ?? null, $members);
+    $distinct = array_values(array_unique($prices));
+    rsort($distinct);
+    $g['prices']     = $distinct;
+    $g['price_text'] = '';
+    $g['was_text']   = '';
+    if ($distinct) {
+        if (count($distinct) === 1) {
+            $g['price_text'] = fmt_price($distinct[0]);
+            // "Was" line only when every member has the same sale
+            if ($origs[0] !== null && count(array_unique($origs)) === 1) $g['was_text'] = fmt_price($origs[0]);
+        } else {
+            $g['price_text'] = $g['price_mode'] === 'from' ? '<span class="tag-from">From</span> ' . fmt_price(min($distinct)) : fmt_price(max($distinct));
+        }
+    }
+}
+unset($g);
+
+$suggestions = suggestPriceTagGroups(array_map(fn($p) => [
+    'name'    => $p['name'],
+    'display' => productDisplayName($p['name'], $productNames),
+    'price'    => (int)$p['price'],
+    'category' => $p['category'] ?? '',
+], array_values($byName)), $groups);
+
+$jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -131,6 +174,7 @@ function fmt_price($n) {
     }
     .btn-gold { background: #d4af37; color: #000; }
     .btn-gold:hover { background: #e8c547; }
+    .btn:disabled { opacity: 0.45; cursor: default; }
     .btn-outline { background: transparent; color: #888; border: 1px solid #333; }
     .btn-outline:hover { color: #ccc; border-color: #555; }
     .btn-danger { background: transparent; color: #e05050; border: 1px solid #3a1a1a; }
@@ -244,6 +288,7 @@ function fmt_price($n) {
     }
     .tag-name { font-size: 13px; font-weight: 600; color: #ddd; line-height: 1.4; }
     .tag-price { font-size: 18px; font-weight: 800; color: #d4af37; letter-spacing: 0.5px; }
+    .tag-from { font-size: 0.6em; font-weight: 700; }
     .tag-was { font-size: 12px; font-weight: 600; color: #888; text-decoration: line-through; }
     .tag-was .tag-sale { display: inline-block; text-decoration: none; color: #e05050; font-weight: 800; margin-left: 6px; }
     @media print { .tag-was, .tag-was .tag-sale { color: #000 !important; } }
@@ -253,6 +298,120 @@ function fmt_price($n) {
     }
     .tag-store { font-size: 10px; color: #555; letter-spacing: 1px; text-transform: uppercase; }
     .tag-qty { font-size: 11px; color: #555; }
+
+    /* ── Group labels ───────────────────────────────────────── */
+    .grid-heading {
+      grid-column: 1 / -1;
+      font-size: 12px; font-weight: 700; color: #d4af37;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 8px 2px 0;
+    }
+    .grid-heading span { color: #555; font-weight: 400; text-transform: none; letter-spacing: 0; }
+    .group-card { border-style: dashed; border-color: #3a3010; }
+    .group-card.selected { border-style: solid; }
+    .group-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #d4af37;
+      background: #1e1a0c; border-radius: 10px; padding: 3px 8px; margin-top: 1px;
+    }
+    .group-edit {
+      margin-left: auto; background: transparent; color: #888;
+      border: 1px solid #333; border-radius: 6px; font-size: 12px; font-weight: 600;
+      padding: 0 12px; min-height: 32px; min-width: 44px; cursor: pointer;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    }
+    .group-edit:hover { color: #ccc; border-color: #555; }
+    .group-warn { font-size: 11px; color: #e0a040; line-height: 1.4; }
+    .group-empty { font-size: 13px; color: #666; font-weight: 600; }
+    .group-members { font-size: 11px; color: #777; }
+    .group-members summary {
+      cursor: pointer; color: #666; padding: 4px 0; list-style-position: inside;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+    }
+    .group-members ul { list-style: none; display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+    .group-members b { color: #999; white-space: nowrap; }
+
+    /* ── Modal ──────────────────────────────────────────────── */
+    .modal-backdrop {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+      padding: 16px;
+      padding-top: calc(16px + env(safe-area-inset-top, 0px));
+      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      padding-left: calc(16px + env(safe-area-inset-left, 0px));
+      padding-right: calc(16px + env(safe-area-inset-right, 0px));
+      transform: translateZ(0);
+      will-change: transform;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: #141414; border: 1px solid #2a2a2a; border-radius: 12px;
+      width: 100%; max-width: 620px; max-height: 100%;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid #222;
+    }
+    .modal-head h2 { font-size: 16px; color: #d4af37; }
+    .modal-close {
+      background: transparent; border: none; color: #888; font-size: 26px; line-height: 1;
+      min-width: 44px; min-height: 44px; cursor: pointer;
+      touch-action: manipulation; -webkit-user-select: none; user-select: none;
+      -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    }
+    .modal-body {
+      padding: 16px 18px; overflow-y: auto; flex: 1;
+      -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .modal-foot {
+      display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
+      padding: 12px 18px; border-top: 1px solid #222;
+    }
+    .modal-foot .btn-danger { margin-right: auto; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field > span { font-size: 12px; color: #888; }
+    .field input[type=text], .field select {
+      padding: 10px 12px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px;
+      color: #e0e0e0; font-size: 14px; min-height: 44px;
+      -webkit-appearance: none; appearance: none;
+    }
+    .field input[type=text]:focus, .field select:focus { outline: none; border-color: #d4af37; }
+    .modal-note { font-size: 12px; color: #888; line-height: 1.5; }
+    .modal-note.warn { color: #e0a040; }
+    .member-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .member-list label {
+      display: flex; align-items: center; gap: 10px; font-size: 13px; color: #ccc;
+      padding: 6px 4px; min-height: 40px; cursor: pointer;
+      -webkit-user-select: none; user-select: none; touch-action: manipulation;
+    }
+    .member-list input[type=checkbox] { width: 18px; height: 18px; accent-color: #d4af37; flex-shrink: 0; }
+    .member-list .m-price { margin-left: auto; color: #d4af37; font-weight: 700; white-space: nowrap; }
+    .sug {
+      border: 1px solid #2a2a2a; border-radius: 10px; padding: 12px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .sug.off { opacity: 0.45; }
+    .sug-top { display: flex; align-items: center; gap: 10px; }
+    .sug-top input[type=checkbox] { width: 20px; height: 20px; accent-color: #d4af37; flex-shrink: 0; }
+    .sug-top input[type=text] {
+      flex: 1; min-width: 0; padding: 8px 10px; background: #1a1a1a; border: 1px solid #333;
+      border-radius: 6px; color: #e0e0e0; font-size: 14px; font-weight: 600; min-height: 40px;
+      -webkit-appearance: none; appearance: none;
+    }
+    .sug-top input[type=text]:focus { outline: none; border-color: #d4af37; }
+    .sug-price { font-size: 15px; font-weight: 800; color: #d4af37; white-space: nowrap; }
+    @media (max-width: 520px) {
+      .sug-top { flex-wrap: wrap; }
+      .sug-top input[type=text] { flex-basis: calc(100% - 30px); }
+      .sug-price { padding-left: 30px; }
+    }
+    .sug ul { list-style: none; font-size: 12px; color: #888; display: flex; flex-direction: column; gap: 2px; padding-left: 30px; }
 
     /* ── Empty ───────────────────────────────────────────────── */
     .empty { text-align: center; color: #444; padding: 60px 20px; font-size: 15px; }
@@ -531,6 +690,8 @@ function fmt_price($n) {
     Select All
   </label>
   <span class="count-badge" id="count-badge">0 selected</span>
+  <button class="btn btn-outline" id="group-btn" onclick="openGroupModal()">&#43; Group Selected</button>
+  <button class="btn btn-outline" onclick="openSuggestModal()" style="color:#d4af37;border-color:#3a3010;">&#10024; Suggest Groups<?= $suggestions ? ' (' . count($suggestions) . ')' : '' ?></button>
 </div>
 
 <div class="mode-row no-print">
@@ -543,13 +704,49 @@ function fmt_price($n) {
 </div>
 
 <div class="tag-grid" id="tag-grid">
+<?php if ($groups): ?>
+  <div class="grid-heading no-print">Group labels <span>&middot; one tag covers several products at the same price</span></div>
+<?php foreach ($groups as $g):
+  $searchText = mb_strtolower($g['name'] . ' ' . implode(' ', $g['displays']));
+  $mismatch = count($g['prices']) > 1;
+?>
+  <div class="tag-card group-card" data-name="<?= htmlspecialchars($searchText) ?>" data-group-id="<?= $g['id'] ?>" onclick="toggleCard(this)">
+    <div class="tag-card-top">
+      <input type="checkbox" class="tag-check" onclick="event.stopPropagation(); syncCheck(this)" onchange="updateCount()" <?= $g['price_text'] === '' ? 'disabled' : '' ?>>
+      <span class="group-badge no-print">GROUP &middot; <?= count($g['products']) ?> products</span>
+      <button type="button" class="group-edit no-print" onclick="event.stopPropagation(); openEditModal(<?= $g['id'] ?>)">Edit</button>
+    </div>
+    <?php if ($mismatch): ?>
+    <div class="group-warn no-print">&#9888; Prices differ: <?= implode(' / ', array_map(fn($x) => number_format($x, 0, '.', ' '), $g['prices'])) ?>. Label shows <?= $g['price_mode'] === 'from' ? '"From" lowest' : 'the highest' ?> price.</div>
+    <?php endif; ?>
+    <?php if ($g['missing']): ?>
+    <div class="group-warn no-print">&#9888; <?= $g['missing'] ?> product<?= $g['missing'] > 1 ? 's' : '' ?> in this group no longer exist.</div>
+    <?php endif; ?>
+    <?php if ($g['was_text']): ?>
+    <div class="tag-was"><?= $g['was_text'] ?><span class="tag-sale">SALE</span></div>
+    <?php endif; ?>
+    <div class="tag-price"><?= $g['price_text'] !== '' ? $g['price_text'] : '<span class="group-empty">No products</span>' ?></div>
+    <div class="tag-name"><?= htmlspecialchars($g['name']) ?></div>
+    <div class="tag-store">American Select</div>
+    <details class="group-members no-print" onclick="event.stopPropagation()">
+      <summary>Show products</summary>
+      <ul>
+        <?php foreach ($g['products'] as $i => $n): ?>
+        <li><?= htmlspecialchars($g['displays'][$i]) ?> <b><?= number_format((int)$byName[$n]['price'], 0, '.', ' ') ?></b></li>
+        <?php endforeach; ?>
+      </ul>
+    </details>
+  </div>
+<?php endforeach; ?>
+  <div class="grid-heading no-print">Individual products</div>
+<?php endif; ?>
 <?php foreach ($products as $p):
   $name  = htmlspecialchars(productDisplayName($p['name'] ?? ''));
   $price = isset($p['price']) ? fmt_price($p['price']) : '';
   $qty   = isset($p['quantity']) ? (int)$p['quantity'] : 0;
   if (!$name || !$price) continue;
 ?>
-  <div class="tag-card" data-name="<?= strtolower($name) ?>" onclick="toggleCard(this)">
+  <div class="tag-card" data-name="<?= strtolower($name) ?>" data-key="<?= htmlspecialchars($p['name']) ?>" onclick="toggleCard(this)">
     <div class="tag-card-top">
       <input type="checkbox" class="tag-check" onclick="event.stopPropagation(); syncCheck(this)" onchange="updateCount()">
     </div>
@@ -564,6 +761,18 @@ function fmt_price($n) {
 </div>
 
 <div class="empty" id="empty-msg" style="display:none;">No products match your search.</div>
+
+<!-- Group / suggest modal — content built by JS -->
+<div class="modal-backdrop no-print" id="modal" onclick="if (event.target === this) closeModal()">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <h2 id="modal-title"></h2>
+      <button type="button" class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot" id="modal-foot"></div>
+  </div>
+</div>
 
 <script>
 let currentMode = 'sheet';
@@ -600,6 +809,7 @@ function setMode(mode) {
 
 function toggleCard(card) {
   const cb = card.querySelector('.tag-check');
+  if (cb.disabled) return;
   cb.checked = !cb.checked;
   card.classList.toggle('selected', cb.checked);
   updateCount();
@@ -613,6 +823,7 @@ function syncCheck(cb) {
 function toggleSelectAll(checked) {
   document.querySelectorAll('.tag-card:not([style*="display: none"])').forEach(card => {
     const cb = card.querySelector('.tag-check');
+    if (cb.disabled) return;
     cb.checked = checked;
     card.classList.toggle('selected', checked);
   });
@@ -645,6 +856,201 @@ function printSelected() {
 }
 
 updateCount();
+
+// ── Group labels ───────────────────────────────────────
+const GROUPS      = <?= json_encode($groups, $jsonFlags) ?>;
+const SUGGESTIONS = <?= json_encode($suggestions, $jsonFlags) ?>;
+const PRODUCTS    = <?= json_encode(array_map(fn($p) => ['display' => productDisplayName($p['name'], $productNames), 'price' => (int)$p['price']], $byName), $jsonFlags) ?>;
+
+// Bold Arial at `size`, shrunk until `text` fits `maxWidth` ("From 8 000 FCFA" on a 2"×1" label)
+function fitFont(ctx, text, maxWidth, size) {
+  ctx.font = `bold ${size}px Arial`;
+  while (size > 8 && ctx.measureText(text).width > maxWidth) {
+    size -= 2;
+    ctx.font = `bold ${size}px Arial`;
+  }
+}
+
+function fmtFcfa(n) { return Number(n).toLocaleString('fr-FR').replace(/\s/g, ' ') + ' FCFA'; }
+
+function el(tag, attrs = {}, ...children) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else if (v === true) e.setAttribute(k, '');
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  for (const c of children) if (c != null) e.append(c);
+  return e;
+}
+
+function openModal(title, bodyNodes, footNodes) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').replaceChildren(...bodyNodes);
+  document.getElementById('modal-foot').replaceChildren(...footNodes);
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+async function saveGroups(payload, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+  try {
+    const r = await fetch('/api/price-tag-groups.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || ('HTTP ' + r.status));
+    location.reload();
+  } catch (e) {
+    alert('Could not save: ' + e.message);
+    if (btn) { btn.disabled = false; btn.textContent = 'Save'; }
+  }
+}
+
+// Price summary + "highest / From lowest" choice when members' prices differ
+function priceSection(names, mode) {
+  const prices = [...new Set(names.map(n => PRODUCTS[n]?.price).filter(p => p != null))].sort((a, b) => b - a);
+  const wrap = el('div', { class: 'field' });
+  if (prices.length <= 1) {
+    wrap.append(el('span', {}, 'Label price'), el('div', { class: 'sug-price' }, prices.length ? fmtFcfa(prices[0]) : '—'));
+    return { node: wrap, select: null };
+  }
+  const select = el('select', {},
+    el('option', { value: 'max', selected: mode !== 'from' }, 'Show highest: ' + fmtFcfa(prices[0])),
+    el('option', { value: 'from', selected: mode === 'from' }, 'Show "From ' + fmtFcfa(prices[prices.length - 1]) + '"'));
+  wrap.append(
+    el('div', { class: 'modal-note warn' }, '⚠ These products have different prices (' + prices.map(p => p.toLocaleString('fr-FR')).join(' / ') +
+      '). Check the prices are right, or choose what the label shows:'),
+    select);
+  return { node: wrap, select };
+}
+
+// Longest run of leading words every name shares — a starting point for the group name
+function commonName(names) {
+  const split = names.map(n => n.split(/\s+/));
+  const out = [];
+  for (let i = 0; i < split[0].length; i++) {
+    const w = split[0][i];
+    if (split.every(s => (s[i] || '').toLowerCase() === w.toLowerCase())) out.push(w); else break;
+  }
+  return out.join(' ').replace(/[,\-–:]+$/, '');
+}
+
+function openGroupModal() {
+  const keys = [...document.querySelectorAll('.tag-card.selected[data-key]')].map(c => c.dataset.key);
+  if (keys.length < 1) { alert('Tick the products you want on one label first, then click "Group Selected".'); return; }
+
+  const target = el('select', {},
+    el('option', { value: '' }, 'New group'),
+    ...GROUPS.map(g => el('option', { value: g.id }, 'Add to: ' + g.name)));
+  const nameInput = el('input', { type: 'text', maxlength: 200, value: commonName(keys.map(k => PRODUCTS[k].display)), placeholder: 'e.g. Vaseline Body Lotion' });
+  const nameField = el('label', { class: 'field' }, el('span', {}, 'Label name (what prints on the tag)'), nameInput);
+  const priceBox = el('div');
+  const list = el('ul', { class: 'member-list' }, ...keys.map(k => el('li', {},
+    el('label', {}, PRODUCTS[k].display, el('span', { class: 'm-price' }, fmtFcfa(PRODUCTS[k].price))))));
+
+  function refresh() {
+    const g = GROUPS.find(g => String(g.id) === target.value);
+    nameField.style.display = g ? 'none' : '';
+    const all = g ? [...new Set([...g.products, ...keys])] : keys;
+    priceBox.replaceChildren(priceSection(all, g?.price_mode).node);
+  }
+  target.addEventListener('change', refresh);
+  refresh();
+
+  const save = el('button', { class: 'btn btn-gold', onclick: () => {
+    const g = GROUPS.find(g => String(g.id) === target.value);
+    const products = g ? [...new Set([...g.products, ...keys])] : keys;
+    const sel = priceBox.querySelector('select');
+    const price_mode = sel ? sel.value : (g?.price_mode || 'max');
+    if (!g && !nameInput.value.trim()) { nameInput.focus(); return; }
+    if (products.length < 2) { alert('A group needs at least 2 products.'); return; }
+    saveGroups({ id: g?.id, name: g ? g.name : nameInput.value, products, price_mode }, save);
+  } }, 'Save');
+
+  openModal('Group ' + keys.length + ' product' + (keys.length !== 1 ? 's' : ''), [
+    el('label', { class: 'field' }, el('span', {}, 'Save as'), target),
+    nameField, priceBox,
+    el('div', { class: 'field' }, el('span', {}, 'Products'), list)
+  ], [el('button', { class: 'btn btn-outline', onclick: closeModal }, 'Cancel'), save]);
+  if (!GROUPS.length) nameInput.focus();
+}
+
+function openEditModal(id) {
+  const g = GROUPS.find(g => g.id === id);
+  if (!g) return;
+  const nameInput = el('input', { type: 'text', maxlength: 200, value: g.name });
+  const priceBox = el('div');
+  const checks = g.products.map((n, i) => el('input', { type: 'checkbox', checked: true, value: n, onchange: refresh }));
+  const list = el('ul', { class: 'member-list' }, ...g.products.map((n, i) => el('li', {},
+    el('label', {}, checks[i], g.displays[i], el('span', { class: 'm-price' }, fmtFcfa(PRODUCTS[n].price))))));
+
+  function kept() { return checks.filter(c => c.checked).map(c => c.value); }
+  function refresh() {
+    const prev = priceBox.querySelector('select')?.value || g.price_mode;
+    priceBox.replaceChildren(priceSection(kept(), prev).node);
+  }
+  refresh();
+
+  const save = el('button', { class: 'btn btn-gold', onclick: () => {
+    const products = kept();
+    if (!nameInput.value.trim()) { nameInput.focus(); return; }
+    if (products.length < 2) { alert('A group needs at least 2 products. Delete the group instead?'); return; }
+    const sel = priceBox.querySelector('select');
+    saveGroups({ id: g.id, name: nameInput.value, products, price_mode: sel ? sel.value : g.price_mode }, save);
+  } }, 'Save');
+  const del = el('button', { class: 'btn btn-danger', onclick: () => {
+    if (confirm('Delete the group "' + g.name + '"? The products themselves are not affected.')) saveGroups({ action: 'delete', id: g.id }, del);
+  } }, 'Delete Group');
+
+  openModal('Edit group', [
+    el('label', { class: 'field' }, el('span', {}, 'Label name (what prints on the tag)'), nameInput),
+    priceBox,
+    el('div', { class: 'field' }, el('span', {}, 'Products — untick to remove. To add more, tick products on the page and use "Group Selected".'), list)
+  ], [del, el('button', { class: 'btn btn-outline', onclick: closeModal }, 'Cancel'), save]);
+}
+
+function openSuggestModal() {
+  if (!SUGGESTIONS.length) {
+    openModal('Suggest groups', [el('div', { class: 'modal-note' },
+      'No new suggestions. Every set of same-brand, same-type products at the same price is already in a group.')],
+      [el('button', { class: 'btn btn-outline', onclick: closeModal }, 'Close')]);
+    return;
+  }
+  const rows = SUGGESTIONS.map(s => {
+    const cb = el('input', { type: 'checkbox', 'aria-label': 'Create this group' });
+    const name = el('input', { type: 'text', maxlength: 200, value: s.name, 'aria-label': 'Group name' });
+    const box = el('div', { class: 'sug off' },
+      el('div', { class: 'sug-top' }, cb, name, el('span', { class: 'sug-price' }, fmtFcfa(s.price))),
+      el('ul', {}, ...s.displays.map(d => el('li', {}, '• ' + d))),
+      s.others.length ? el('div', { class: 'modal-note warn' },
+        '⚠ Left out (different price — check it\'s right): ' + s.others.map(o => o.name + ' (' + o.price.toLocaleString('fr-FR') + ')').join(', ')) : null);
+    cb.addEventListener('change', () => { box.classList.toggle('off', !cb.checked); updateBtn(); });
+    return { s, cb, name, box };
+  });
+  const create = el('button', { class: 'btn btn-gold', onclick: () => {
+    const groups = rows.filter(r => r.cb.checked).map(r => ({ name: r.name.value, products: r.s.products }));
+    if (!groups.length) return;
+    if (groups.some(g => !g.name.trim())) { alert('Every group needs a name.'); return; }
+    saveGroups({ groups }, create);
+  } });
+  function updateBtn() {
+    const n = rows.filter(r => r.cb.checked).length;
+    create.textContent = n ? 'Create ' + n + ' Group' + (n !== 1 ? 's' : '') : 'Tick groups to create';
+    create.disabled = n === 0;
+  }
+  updateBtn();
+  openModal('Suggested groups', [
+    el('div', { class: 'modal-note' },
+      'Products of the same brand and type (lotion, body wash, deodorant…) or colour variants of one product that have the same price. ' +
+      'Tick the ones you want and rename them as you like. The name is what prints on the label.'),
+    ...rows.map(r => r.box)
+  ], [el('button', { class: 'btn btn-outline', onclick: closeModal }, 'Cancel'), create]);
+}
 
 // ── Download PNG labels for Munbyn app import ──────────
 async function downloadPNGs() {
@@ -701,7 +1107,7 @@ async function downloadPNGs() {
       const nameLines = wrapText(ctx, name, pad, Math.round(0.2 * DPI), PW - pad * 2, Math.round(0.13 * DPI));
 
       // Price in middle
-      ctx.font = `bold ${Math.round(0.28 * DPI)}px Arial`;
+      fitFont(ctx, price, PW - pad * 2, Math.round(0.28 * DPI));
       ctx.fillText(price, pad, Math.round(0.7 * DPI));
 
       // Divider
@@ -721,7 +1127,7 @@ async function downloadPNGs() {
       const nameLineHeight = Math.round(0.12 * DPI);
       const nameLines = wrapText(ctx, name, cx, Math.round(0.16 * DPI), PW - pad * 2, nameLineHeight, 2);
 
-      ctx.font = `bold ${Math.round(0.26 * DPI)}px Arial`;
+      fitFont(ctx, price, PW - pad * 2, Math.round(0.26 * DPI));
       const priceY = Math.round(0.16 * DPI) + nameLines * nameLineHeight + Math.round(0.22 * DPI);
       ctx.fillText(price, cx, priceY);
 
@@ -732,7 +1138,7 @@ async function downloadPNGs() {
       // 2"×1" landscape: price centered top, name below, store at bottom
       const cx = PW / 2;
       ctx.fillStyle = '#000';
-      ctx.font = `bold ${Math.round(0.34 * DPI)}px Arial`;
+      fitFont(ctx, price, PW - pad * 2, Math.round(0.34 * DPI));
       ctx.textAlign = 'center';
       ctx.fillText(price, cx, Math.round(0.42 * DPI));
 
@@ -837,7 +1243,7 @@ async function printToMunbyn() {
     ctx.beginPath(); ctx.moveTo(pad, divY + 20); ctx.lineTo(W - pad, divY + 20); ctx.stroke();
 
     // Price — very large, pushed to lower portion
-    ctx.font = 'bold 158px Arial';
+    fitFont(ctx, price, W - pad * 2, 158);
     ctx.textAlign = 'center';
     ctx.fillStyle = '#000';
     ctx.fillText(price, W / 2, 468);
@@ -866,7 +1272,7 @@ async function printToMunbyn() {
 
     // Price — dominant, centered near the top
     ctx.fillStyle = '#000';
-    ctx.font = 'bold 92px Arial';
+    fitFont(ctx, price, W - 40, 92);
     ctx.textAlign = 'center';
     ctx.fillText(price, cx, 118);
 
