@@ -308,6 +308,15 @@ $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_
     }
     .grid-heading span { color: #555; font-weight: 400; text-transform: none; letter-spacing: 0; }
     .group-card { border-style: dashed; border-color: #3a3010; }
+    .custom-card { border-style: dashed; border-color: #1a2a40; }
+    .custom-card.selected { border-style: solid; }
+    .custom-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #7b9fd4;
+      background: #101a28; border-radius: 10px; padding: 3px 8px; margin-top: 1px;
+    }
+    /* Name-only custom label: the text sits where the price goes, so it prints big */
+    .tag-card.no-price .tag-price { word-break: normal !important; overflow-wrap: anywhere; line-height: 1.15; }
+    .tag-card .tag-name:empty { display: none !important; }
     .group-card.selected { border-style: solid; }
     .group-badge {
       font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #d4af37;
@@ -690,6 +699,7 @@ $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_
     Select All
   </label>
   <span class="count-badge" id="count-badge">0 selected</span>
+  <button class="btn btn-outline" onclick="openCustomModal()">&#43; Custom Label</button>
   <button class="btn btn-outline" id="group-btn" onclick="openGroupModal()">&#43; Group Selected</button>
   <button class="btn btn-outline" onclick="openSuggestModal()" style="color:#d4af37;border-color:#3a3010;">&#10024; Suggest Groups<?= $suggestions ? ' (' . count($suggestions) . ')' : '' ?></button>
 </div>
@@ -863,7 +873,8 @@ function filterTags() {
   let visible = 0;
   document.querySelectorAll('.tag-card').forEach(card => {
     const isGroup = card.classList.contains('group-card');
-    const match = (view === 'all' || (view === 'groups') === isGroup) && (!q || card.dataset.name.includes(q));
+    const isCustom = card.classList.contains('custom-card');
+    const match = (isCustom || view === 'all' || (view === 'groups') === isGroup) && (!q || card.dataset.name.includes(q));
     card.style.display = match ? '' : 'none';
     if (match) visible++;
   });
@@ -969,6 +980,46 @@ function commonName(names) {
     if (split.every(s => (s[i] || '').toLowerCase() === w.toLowerCase())) out.push(w); else break;
   }
   return out.join(' ').replace(/[,\-–:]+$/, '');
+}
+
+// ── Custom labels — one-off, gone on page reload ────────
+// Any text, optional price. Without a price the text takes the price's spot, so it prints big.
+function openCustomModal() {
+  const textInput = el('input', { type: 'text', maxlength: 80, placeholder: 'e.g. Wireless Speakers' });
+  const priceInput = el('input', { type: 'text', inputmode: 'numeric', maxlength: 12, placeholder: 'Leave empty for name only' });
+  const add = el('button', { class: 'btn btn-gold', onclick: () => {
+    const text = textInput.value.trim().replace(/\s+/g, ' ');
+    if (!text) { textInput.focus(); return; }
+    const raw = priceInput.value.replace(/[\s.,]/g, '').replace(/fcfa$/i, '');
+    if (raw && !/^\d+$/.test(raw)) { alert('Price should be a number, e.g. 10000 — or leave it empty.'); priceInput.focus(); return; }
+    addCustomCard(text, raw ? Number(raw) : null);
+    closeModal();
+  } }, 'Add Label');
+  for (const i of [textInput, priceInput]) i.addEventListener('keydown', e => { if (e.key === 'Enter') add.click(); });
+  openModal('Custom label', [
+    el('label', { class: 'field' }, el('span', {}, 'Label text'), textInput),
+    el('label', { class: 'field' }, el('span', {}, 'Price (optional)'), priceInput),
+    el('div', { class: 'modal-note' }, 'The label is added to the top of the page, already ticked. It is not saved — it disappears when you leave or reload the page.')
+  ], [el('button', { class: 'btn btn-outline', onclick: closeModal }, 'Cancel'), add]);
+  textInput.focus();
+}
+
+function addCustomCard(text, price) {
+  const cb = el('input', { type: 'checkbox', class: 'tag-check', checked: true,
+    onclick: e => { e.stopPropagation(); syncCheck(cb); }, onchange: updateCount });
+  const remove = el('button', { type: 'button', class: 'group-edit no-print', onclick: e => {
+    e.stopPropagation(); card.remove(); updateCount();
+  } }, 'Remove');
+  const card = el('div', { class: 'tag-card custom-card selected' + (price == null ? ' no-price' : ''), 'data-name': text.toLowerCase() },
+    el('div', { class: 'tag-card-top' }, cb, el('span', { class: 'custom-badge no-print' }, 'CUSTOM'), remove),
+    el('div', { class: 'tag-price' }, price == null ? text : fmtFcfa(price)),
+    el('div', { class: 'tag-name' }, price == null ? '' : text),
+    el('div', { class: 'tag-store' }, 'American Select'));
+  card.addEventListener('click', () => toggleCard(card));
+  document.getElementById('tag-grid').prepend(card);
+  filterTags();
+  updateCount();
+  card.scrollIntoView({ block: 'nearest' });
 }
 
 function openGroupModal() {
