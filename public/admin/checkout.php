@@ -826,6 +826,8 @@ function renderCart() {
   const body = document.getElementById('cart-body');
   const foot = document.getElementById('cart-foot');
   const badge = document.getElementById('cart-badge');
+  // New Sale shows whenever there is something to clear — including a cart restored on load
+  document.getElementById('btn-new').style.display = cart.length ? 'inline-flex' : 'none';
   if (!cart.length) {
     body.innerHTML = '<div class="cart-empty"><div class="empty-icon">🛒</div>Scan items to add them</div>';
     foot.style.display = 'none';
