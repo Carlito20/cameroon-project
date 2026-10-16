@@ -197,10 +197,16 @@
     return !selectedColors[name];
   }
 
-  function getDisplayName(productItem) {
+  // Cart/stock name for a colour choice. Only products with 2+ colours are tracked per colour;
+  // a single-colour product is one item under its plain name (no "Name (Black)" twin).
+  function variantName(productItem, colorHex) {
     const name = getProductName(productItem);
-    const color = selectedColors[name];
-    return color ? `${name} (${getColorName(color)})` : name;
+    const colors = getProductColors(productItem);
+    return colorHex && colors && colors.length > 1 ? `${name} (${getColorName(colorHex)})` : name;
+  }
+
+  function getDisplayName(productItem) {
+    return variantName(productItem, selectedColors[getProductName(productItem)]);
   }
 
   function formatPrice(price) {
@@ -622,8 +628,7 @@
 
   // Per-color remaining stock: use per-color API stock if available, else use getColorMax
   function getColorRemaining(productItem, colorHex) {
-    const baseName = getProductName(productItem);
-    const colorKey = `${baseName} (${getColorName(colorHex)})`;
+    const colorKey = variantName(productItem, colorHex);
     if (apiStock[colorKey] !== undefined) {
       return Math.max(0, apiStock[colorKey] - (cartTotals[colorKey] || 0));
     }
@@ -1019,7 +1024,7 @@
     const colorIdx = activeImageIndexes[itemName] ?? 0;
     const itemImage = activeImgs ? (activeImgs[colorIdx] ?? activeImgs[0]) : getProductImage(productItem);
     const selectedColor = selectedColors[itemName];
-    const displayName = selectedColor ? `${itemName} (${getColorName(selectedColor)})` : itemName;
+    const displayName = variantName(productItem, selectedColor);
     const effectiveMax = selectedColor
       ? (getColorRemaining(productItem, selectedColor) ?? stockQty ?? 99)
       : (stockQty ?? 99);
@@ -1034,7 +1039,7 @@
         price: itemPrice || 0,
         image: itemImage,
         color: selectedColor || null,
-        colorName: selectedColor ? getColorName(selectedColor) : null
+        colorName: displayName !== itemName ? getColorName(selectedColor) : null
       }
     });
     window.dispatchEvent(event);

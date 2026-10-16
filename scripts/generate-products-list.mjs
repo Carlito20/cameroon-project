@@ -191,8 +191,9 @@ for (const p of products) {
     const perColor = Math.ceil(p.quantity / colors.length);
     for (const hex of colors) add(`${p.name} (${getColorName(hex)})`, perColor, p.price, p.category, p.name, imgFor(hex));
   } else if (colors.length === 1) {
-    add(p.name, p.quantity, p.price, p.category, undefined, p.image);
-    add(`${p.name} (${getColorName(colors[0])})`, p.quantity, p.price, p.category, p.name, imgFor(colors[0]));
+    // One colour = one product. No "Name (Black)" twin — it doubled the stock and
+    // split barcodes between two entries for the same item.
+    add(p.name, p.quantity, p.price, p.category, undefined, imgFor(colors[0]));
   } else {
     add(p.name, p.quantity, p.price, p.category, undefined, p.image);
   }

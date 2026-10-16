@@ -65,10 +65,26 @@ function getOrInitStock($pdo, $productName) {
     return $qty;
 }
 
+// Stock is kept under the catalog name. Single-colour products used to also be listed as
+// "Name (Black)"; a cart saved before that was removed can still send it — map it to "Name".
+function stockName($name) {
+    static $names = null;
+    if ($names === null) {
+        $names = [];
+        $jsonPath = __DIR__ . '/products-list.json';
+        if (file_exists($jsonPath)) {
+            foreach (json_decode(file_get_contents($jsonPath), true) ?? [] as $p) $names[$p['name']] = true;
+        }
+    }
+    if (isset($names[$name])) return $name;
+    if (preg_match('/^(.*) \([^()]*\)$/', $name, $m) && isset($names[$m[1]])) return $m[1];
+    return $name;
+}
+
 // Reserve stock when order is placed — deducts immediately
 function reserveStock($pdo, $items, $orderRef) {
     foreach ($items as $item) {
-        $name = $item['name'];
+        $name = stockName($item['name']);
         $qty  = max(1, (int)($item['quantity'] ?? 1));
         $stockBefore = getOrInitStock($pdo, $name);
         $stockAfter  = max(0, $stockBefore - $qty);
@@ -82,7 +98,7 @@ function reserveStock($pdo, $items, $orderRef) {
 // Restore stock when order is cancelled
 function restoreStock($pdo, $items, $orderRef) {
     foreach ($items as $item) {
-        $name = $item['name'];
+        $name = stockName($item['name']);
         $qty  = max(1, (int)($item['quantity'] ?? 1));
         $stockBefore = getOrInitStock($pdo, $name);
         $stockAfter  = $stockBefore + $qty;

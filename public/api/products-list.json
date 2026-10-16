@@ -1388,26 +1388,10 @@
     "image": "/images/products/unisex-smartwatch-1.webp"
   },
   {
-    "name": "LAXASFIT Unisex Smartwatch Compatible with Both iPhone and Android (Black)",
-    "quantity": 2,
-    "price": 15000,
-    "category": "Electronics & Accessories",
-    "base": "LAXASFIT Unisex Smartwatch Compatible with Both iPhone and Android",
-    "image": "/images/products/unisex-smartwatch-1.webp"
-  },
-  {
     "name": "PLEIVO New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone",
     "quantity": 1,
     "price": 8000,
     "category": "Electronics & Accessories",
-    "image": "/images/products/smartwatch-led-1.webp"
-  },
-  {
-    "name": "PLEIVO New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone (Black)",
-    "quantity": 1,
-    "price": 15000,
-    "category": "Electronics & Accessories",
-    "base": "PLEIVO New Smart Watch with 2.01-inch Large Screen, LED Flashlight, Outdoor Sports Watch, Fitness Tracker Compatible with Android and iPhone",
     "image": "/images/products/smartwatch-led-1.webp"
   },
   {
@@ -1418,14 +1402,6 @@
     "image": "/images/products/smartwatch-round-1.webp"
   },
   {
-    "name": "Smart Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen (Black)",
-    "quantity": 1,
-    "price": 15000,
-    "category": "Electronics & Accessories",
-    "base": "Smart Watch with A Metal Frame, Ceramic Base, And A 2.01-inch Large Screen",
-    "image": "/images/products/smartwatch-round-1.webp"
-  },
-  {
     "name": "GT4 PRO Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications",
     "quantity": 2,
     "price": 8000,
@@ -1433,26 +1409,10 @@
     "image": "/images/products/smartwatch-versatile-1.webp"
   },
   {
-    "name": "GT4 PRO Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications (Black)",
-    "quantity": 2,
-    "price": 15000,
-    "category": "Electronics & Accessories",
-    "base": "GT4 PRO Smartwatch Featuring a Full Touchscreen, Wireless Calling, Over 100 Sports Modes, Weather Updates, Stopwatch, Timer, Alarm, SMS Notifications",
-    "image": "/images/products/smartwatch-versatile-1.webp"
-  },
-  {
     "name": "Doviico 1.83-inch Touch Screen, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones",
     "quantity": 2,
     "price": 5000,
     "category": "Electronics & Accessories",
-    "image": "/images/products/smart-bracelet-183-1.webp"
-  },
-  {
-    "name": "Doviico 1.83-inch Touch Screen, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones (Pink)",
-    "quantity": 2,
-    "price": 10000,
-    "category": "Electronics & Accessories",
-    "base": "Doviico 1.83-inch Touch Screen, Supports Call Function, Incoming Call And Message Notifications, Multifunctional Fitness And Sports Smart Bracelet, Wireless Connection with Android And Phones",
     "image": "/images/products/smart-bracelet-183-1.webp"
   },
   {
@@ -1512,14 +1472,6 @@
     "quantity": 4,
     "price": 3000,
     "category": "Electronics & Accessories",
-    "image": "/images/products/dark-grey-usb-fan1.webp"
-  },
-  {
-    "name": "Dark Grey USB Rechargeable Fan (Black)",
-    "quantity": 4,
-    "price": 5000,
-    "category": "Electronics & Accessories",
-    "base": "Dark Grey USB Rechargeable Fan",
     "image": "/images/products/dark-grey-usb-fan1.webp"
   },
   {
@@ -1664,14 +1616,6 @@
     "image": "/images/products/wireless-headphones-enc-1.webp"
   },
   {
-    "name": "JS59 Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo, 50 Hours of Playback Time, USB-C (Black)",
-    "quantity": 2,
-    "price": 7000,
-    "category": "Electronics & Accessories",
-    "base": "JS59 Wireless Headphones, 5.4 Headphones with 4 ENC Noise-Cancelling Microphones, HiFi Stereo, 50 Hours of Playback Time, USB-C",
-    "image": "/images/products/wireless-headphones-enc-1.webp"
-  },
-  {
     "name": "YD03 Wireless Earbuds",
     "quantity": 5,
     "price": 4000,
@@ -1753,14 +1697,6 @@
     "quantity": 7,
     "price": 6000,
     "category": "Electronics & Accessories",
-    "image": "/images/products/usb-tws-earbuds-1.webp"
-  },
-  {
-    "name": "Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology (White)",
-    "quantity": 7,
-    "price": 10000,
-    "category": "Electronics & Accessories",
-    "base": "Wireless Earbuds with Charging Case, USB Type-C Charging, TWS Technology",
     "image": "/images/products/usb-tws-earbuds-1.webp"
   },
   {
